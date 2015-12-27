@@ -15,7 +15,7 @@ export default class Highlight extends THREE.Sprite {
     this.material.opacity = 0.3
 
     this.name = name
-    this.scale.set(3, 3, 3)
+    this.scale.set(4, 4, 4)
 
     this.behave(new Strechable)
   }
@@ -27,7 +27,7 @@ class Strechable extends Behaviour {
   onAttach () {
     this.tween = null
 
-    this.dest = this.object.scale.x
+    this.dest = this.object.scale.x + 0.2
     this.init = this.object.scale.x - 0.2
 
     this.shrink()

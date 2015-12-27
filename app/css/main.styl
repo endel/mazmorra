@@ -1,3 +1,47 @@
+@import fonts
+
+body
+  overflow hidden
+  font 16px primary
+
+input
+  font 24px primary
+  width 50vw
+  padding 12px
+
 *
   margin 0
   padding 0
+
+.speak-modal
+  pointer-events none
+  position absolute
+  text-align center
+  width 100vw
+  height 100vh
+  top 0
+  bottom 0
+  right 0
+  left 0
+  margin auto
+  z-index 100
+  transition opacity 0.2s
+
+  form
+    position absolute
+    top 0
+    bottom 0
+    right 0
+    left 0
+    margin auto
+    height 60px
+
+  opacity 0
+  background rgba(0, 0, 0, 0.5)
+
+  // display none
+  &.active
+    pointer-events all
+    display block
+    opacity 1
+

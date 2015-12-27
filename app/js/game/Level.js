@@ -1,83 +1,117 @@
+import PF from 'pathfinding'
+
+import Generator from './level/Generator'
+
+import CharacterController from '../behaviors/CharacterController'
+
 import Character from '../entities/Character'
 import Enemy from '../entities/Enemy'
 import Item from '../entities/Item'
 import Chest from '../entities/Chest'
+import TileSelectionPreview from '../entities/TileSelectionPreview'
+import LightPole from '../entities/LightPole'
 
 export default class Level {
 
   constructor (scene, camera) {
     this.scene = scene
     this.camera = camera
-    this.entities = []
 
-    var floorTexture = ResourceManager.get('tile-rock-ground')
-    floorTexture.repeat.set(300, 300)
-    var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
-    var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
-    var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-    floor.position.y = -0.5;
-    floor.rotation.x = Math.PI / 2;
+    // // ambient light
+    // var light = new THREE.AmbientLight( 0xffffff ); // soft white light
+    // this.scene.add( light );
 
-    var wallTexture = ResourceManager.get('tile-rock-wall')
-    wallTexture.repeat.set(3, 3)
-    var wallMaterial = new THREE.MeshBasicMaterial( { map: wallTexture, side: THREE.DoubleSide } );
-    var wallGeometry = new THREE.PlaneGeometry(10, 10, 10, 10);
-    var wall = new THREE.Mesh(wallGeometry, wallMaterial);
-    wall.position.y = -0.5;
-    wall.position.z = -3;
-    wall.rotation.x = Math.PI;
-    this.scene.add(wall);
+    this.selection = new TileSelectionPreview()
+    this.selectionLight = new THREE.SpotLight(0xffffff, 0.5, 30);
+    this.scene.add(this.selectionLight)
+
+    // grid / generator / pathfinder
+    this.generator = new Generator(this.scene)
+    this.grid = this.generator.generate()
+    this.pathfinder = new PF.Grid(this.grid)
+
+    this.generator.createElements(this.grid)
 
     var character = new Character('man')
-    character.position.y = 0.2
+    character.behave(new CharacterController, camera)
     this.scene.add(character)
-
-    var enemy = new Enemy('rat')
-    enemy.position.x = -6
-    this.scene.add(enemy)
-
-    var enemy = new Enemy('green-snake')
-    enemy.position.x = -8
-    this.scene.add(enemy)
 
     camera.lookAt(character.position)
 
-    var light = new THREE.PointLight( 0xff0000, 1, 100 );
-    light.position.copy(character.position)
-    this.scene.add(light);
-
-    var item = new Item('sword')
-    item.position.y = 0
-    item.position.x = 3
-    this.scene.add(item)
-
-    var item = new Item('gold')
-    item.position.z = 5
-    item.position.x = 3
-    this.scene.add(item)
-
-    var item = new Item('shield-metal')
-    item.position.y = 0
-    item.position.x = 8
-    this.scene.add(item)
-
-    var chest = new Chest()
-    chest.position.x = -3
-    this.scene.add(chest)
-
-    this.scene.add(floor)
-
-    this.entities.push(item)
-    this.entities.push(character)
+    // var lightPole = new LightPole()
+    // lightPole.position.copy(character.position)
+    // lightPole.position.z -= 10
+    // lightPole.position.x -= 10
+    // this.scene.add(lightPole)
+    //
+    // var lightPole = new LightPole()
+    // lightPole.position.copy(character.position)
+    // lightPole.position.z -= 30
+    // lightPole.position.x = 5
+    // this.scene.add(lightPole)
+    //
+    // var enemy = new Enemy('rat')
+    // enemy.position.x = -6
+    // this.scene.add(enemy)
+    //
+    // var enemy = new Enemy('bat')
+    // enemy.position.x = -10
+    // this.scene.add(enemy)
+    //
+    // // var enemy = new Enemy('demon')
+    // // enemy.position.x = -12
+    // // this.scene.add(enemy)
+    //
+    // var enemy = new Enemy('green-snake')
+    // enemy.position.x = -8
+    // this.scene.add(enemy)
+    //
+    // var item = new Item('sword')
+    // item.position.x = 3
+    // this.scene.add(item)
+    //
+    // var item = new Item('gold')
+    // item.position.z = 3
+    // item.position.x = 3
+    // this.scene.add(item)
+    //
+    // var item = new Item('life-potion')
+    // item.position.z = 3
+    // item.position.x = 6
+    // this.scene.add(item)
+    //
+    // var item = new Item('mana-potion')
+    // item.position.z = 3
+    // this.scene.add(item)
+    //
+    // var item = new Item('elixir-potion')
+    // item.position.x = -3
+    // item.position.z = 3
+    // this.scene.add(item)
+    //
+    // var item = new Item('mana-heal')
+    // item.position.x = -6
+    // item.position.z = 3
+    // this.scene.add(item)
+    //
+    // var item = new Item('life-heal')
+    // item.position.x = -9
+    // item.position.z = 3
+    // this.scene.add(item)
+    //
+    // var item = new Item('shield-metal')
+    // item.position.x = 6
+    // this.scene.add(item)
+    //
+    // var chest = new Chest()
+    // chest.position.x = -3
+    // this.scene.add(chest)
   }
 
-  update () {
-    var i = this.entities.length
-    while (i--) {
-      if (this.entities[i].update) {
-        this.entities[i].update()
-      }
-    }
+  setTileSelection (object) {
+    object.add(this.selection)
+    this.selectionLight.position.set(object.position.x, 2, object.position.z)
+    this.selectionLight.target = object
   }
 
 }

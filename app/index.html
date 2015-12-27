@@ -4,9 +4,10 @@
     <meta charset="utf-8">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Generated with @endel/generator-modern-frontend</title>
+    <title>Knights</title>
 
     <!-- Place favicon.ico in the root directory -->
+    <link rel="icon" sizes="16x16" type="image/x-icon" href="images/favicon.png">
 
 
     <!-- build:css css/vendor.css -->
@@ -26,6 +27,8 @@
       <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
+    <p id="font-5px">.</p>
+
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
     <script>
       (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
@@ -35,6 +38,12 @@
       r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
       ga('create','UA-XXXXX-X');ga('send','pageview');
     </script>
+
+    <section class="speak-modal">
+      <form>
+        <input type="text" placeholder="Chat" maxlength="100" />
+      </form>
+    </section>
 
     <main id="game"></main>
 

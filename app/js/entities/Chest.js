@@ -13,6 +13,7 @@ export default class Chest extends THREE.Object3D {
       fog: true
     }))
     this.head.position.x = 0
+    this.head.position.y = 0.099
     this.add(this.head)
 
     this.body = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -25,7 +26,6 @@ export default class Chest extends THREE.Object3D {
 
     this.scale.set(3, 3, 3)
     this.behave(new ChestBehaviour)
-
   }
 
 }
@@ -34,8 +34,8 @@ class ChestBehaviour extends Behaviour {
 
   onAttach () {
     this.isOpen = false;
-    this.closedY = 0.3;
-    this.openedY = 0.5;
+    this.closedY = this.object.head.position.y;
+    this.openedY = this.closedY + 0.2;
     this.object.head.position.y = (this.isOpen) ? this.openedY : this.closedY
     window.chest = this
   }

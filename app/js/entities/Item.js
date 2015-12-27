@@ -11,13 +11,6 @@ export default class Item extends THREE.Object3D {
     super()
     var texture = ResourceManager.get( "items-" + name )
 
-    // only highlight important items
-    if (name.indexOf(unimportantItems) === -1) {
-      this.highlight = new Highlight()
-      this.highlight.position.y = 0.6
-      this.add(this.highlight)
-    }
-
     this.item = new THREE.Sprite(new THREE.SpriteMaterial({
       map: texture,
       color: 0xffffff,
@@ -27,12 +20,17 @@ export default class Item extends THREE.Object3D {
     this.item.behave(new Pickable)
     this.add(this.item)
 
-    // TODO: scale item accourding to it's texture size 4x4 / 8x8 / 16x16 px
-    console.log(texture.image, texture.image.width)
-    if (texture.image.width) {
+    // only highlight important items
+    if (unimportantItems.indexOf(name) === -1) {
+      this.highlight = new Highlight()
+      this.highlight.position.y = 0.6
+      // this.highlight.position.z = -0.05
+      this.add(this.highlight)
     }
 
-    this.scale.set(3, 3, 3)
+    var scale = SCALES[ texture.image.width ]
+    this.item.scale.set(scale, scale, scale)
+
   }
 
 }

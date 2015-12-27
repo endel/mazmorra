@@ -46,6 +46,8 @@
     "clock.js": "^1.0.5",
     "keycode.js": "0.0.1",
     "lerp": "^1.0.3",
+    "pathfinding": "^0.4.17",
+    "random-seed": "^0.3.0",
     "tweener": "^0.1.28"
   }
 }

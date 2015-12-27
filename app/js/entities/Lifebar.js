@@ -20,8 +20,8 @@ export default class Lifebar extends THREE.Object3D {
     this.color = 'green'
     this.position.y = 1
 
-    this.scale.set(1, 0.1, 1)
-    setInterval(() => { this.progress -= 0.01 }, 500)
+    this.scale.set(1, 0.195, 1)
+    setInterval(() => { if (this.progress > 0) this.progress -= 0.01 }, 500)
   }
 
   set color (color) {

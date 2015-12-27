@@ -1,9 +1,12 @@
 import { Behaviour } from 'behaviour.js'
 
+import Shadow from './Shadow'
+
 export default class Pickable extends Behaviour {
 
   onAttach () {
     this.tween = null
+    this.object.behave(new Shadow)
 
     this.initY = this.object.position.y
     this.destY = this.initY + 0.2

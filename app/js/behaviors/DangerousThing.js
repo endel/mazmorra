@@ -1,13 +1,17 @@
 import { Behaviour } from 'behaviour.js'
 
+import Shadow from './Shadow'
+
 export default class DangerousThing extends Behaviour {
 
-  onAttach () {
+  onAttach (amount = 0.05, duration) {
+    this.object.behave(new Shadow)
+
     this.tween = null
 
     this.initY = this.object.position.y
-    this.destY = this.initY + 0.1
-    this.duration = 800 + (Math.random() * 200)
+    this.destY = this.initY + amount
+    this.duration = (duration) ? duration : 400 + (Math.random() * 200)
 
     setTimeout(() => this.goUp(), Math.random() * 1500)
   }
