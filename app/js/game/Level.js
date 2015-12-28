@@ -18,6 +18,9 @@ export default class Level {
     this.scene = scene
     this.camera = camera
 
+    // TODO: remove me!
+    this.timeouts = []
+
     // // ambient light
     // var light = new THREE.AmbientLight( 0xffffff ); // soft white light
     // this.scene.add( light );
@@ -119,6 +122,9 @@ export default class Level {
   }
 
   playerAction () {
+    // clear previous timeouts
+    this.timeouts.forEach(timeout => clearTimeout(timeout))
+
     console.log(this.player.userData, this.targetPosition)
     var finder = new PF.AStarFinder(); // { allowDiagonal: true, dontCrossCorners: true }
 
@@ -132,7 +138,10 @@ export default class Level {
     path.forEach((point,i) => {
       var pos = {x: 0, z: 0}
       this.generator.fixTilePosition(pos, point[1], point[0]) // TODO: why need to invert x/y here?
-      setTimeout(() => this.playerNetwork.move(pos, point[0], point[1]), timeout * i)
+
+      this.timeouts.push(
+        setTimeout(() => this.playerNetwork.move(pos, point[0], point[1]), timeout * i)
+      )
     })
 
     console.log(path)

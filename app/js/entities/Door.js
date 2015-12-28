@@ -19,7 +19,7 @@ export default class Door extends THREE.Object3D {
     this.add(mesh)
 
     var lightColor = 0xfcfcfc
-      , light = new THREE.PointLight(lightColor, 2.5, 5);
+      , light = new THREE.PointLight(lightColor, 1.5, 5);
 
     light.position.set(0, 0.35, 0.5)
 

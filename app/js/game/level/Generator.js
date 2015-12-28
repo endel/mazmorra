@@ -75,9 +75,18 @@ export default class LevelGenerator {
 
     // door start position
     var door = new Door()
+    this.fixTilePosition(door.position, firstRoom.position.x + 1, firstRoom.position.y)
+    door.position.z += 1.5001 // TODO: automate a good-looking position based on door direction
+
+    this.rooms.forEach(room => {
+      if (helpers.randInt(0, 3) === 3) {
+        var lightPole = new LightPole()
+        this.fixTilePosition(lightPole.position, room.position.x + 1 + helpers.randInt(0, room.size.x - 3), room.position.y + 1 + helpers.randInt(0, room.size.y - 3))
+        this.container.add(lightPole)
+      }
+    })
+
     this.container.add(door)
-
-
   }
 
   createTiles () {
