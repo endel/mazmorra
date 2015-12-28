@@ -7,6 +7,7 @@
 import helpers from './helpers'
 
 export default {
+
     generate: function(gridSize, minRoomSize, maxRoomSize, maxRooms) {
         // 1) Create the grid
         var grid = [];
@@ -86,8 +87,9 @@ export default {
         // 12) Add the up and down staircases inside random rooms of the dungeon.
         // 13) Finally, add some monsters, items, and gold in random areas of the dungeon.
 
-        return grid;
+        return [grid, rooms];
     },
+
     generateRoom: function(minSize, maxSize) {
         var room = new helpers.Room(),
             sx = room.size.x = helpers.randInt(minSize.x, maxSize.x),

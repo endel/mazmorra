@@ -11,7 +11,8 @@ export default class CharacterController extends Behaviour {
 
     this.object.behave(new Chat)
 
-    this.light = new THREE.PointLight(0xffffff, 1, 300, 10);
+    this.light = new THREE.SpotLight(0xffffff, 1, 300, 10);
+    this.light.target = this.object
     // this.light = new THREE.PointLight(0xffffff, 1, 50, 1 );
 
     // light.castShadow = true;
@@ -24,7 +25,9 @@ export default class CharacterController extends Behaviour {
     // light.shadowMapHeight = 1024;
     // light.shadowBias = 0.01;
     // light.shadowDarkness = 0.5;
-    this.light.position.set(0, 0.25, 0)
+
+    // this.light.position.set(0, 3, 0)
+    this.light.position.set(0, 5, 0)
     this.object.add(this.light)
 
     this.keys = {

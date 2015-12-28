@@ -33,11 +33,11 @@ export default class Game {
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
 
-    this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
-    // this.camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -1, 100 );
-    // this.camera.zoom = 20
-    // this.camera.updateProjectionMatrix()
-    // this.scene.rotateY(-1)
+    // this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
+    this.camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -1, 100 );
+    this.camera.zoom = 20
+    this.camera.updateProjectionMatrix()
+    this.scene.rotateY(-0.4)
 
     // this.camera.position.y = 10;
     // this.camera.position.y = 15;
@@ -76,6 +76,9 @@ export default class Game {
     this.container.appendChild( this.renderer.domElement );
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
     window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false )
+
+    window.addEventListener( 'click', this.onClick.bind(this), false )
+    // window.addEventListener( 'touchend', this.onClick.bind(this), false )
   }
 
   onWindowResize () {
@@ -89,11 +92,16 @@ export default class Game {
     // this.cameraController.handleResize();
   }
 
-  onMouseMove( event ) {
+  onMouseMove (e) {
     // calculate mouse position in normalized device coordinates
     // (-1 to +1) for both components
-    this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    this.mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
+    this.mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
+  }
+
+  onClick (e) {
+    e.preventDefault()
+    this.level.playerAction()
   }
 
   update () {
@@ -107,11 +115,7 @@ export default class Game {
     // this.camera.lookAt(position)
 
     this.stats.update()
-
-    // this.keyboard.update(clock.delta)
   }
-
-
 
   render () {
     requestAnimationFrame( this.render.bind(this) );

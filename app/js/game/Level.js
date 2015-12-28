@@ -2,14 +2,15 @@ import PF from 'pathfinding'
 
 import Generator from './level/Generator'
 
-import CharacterController from '../behaviors/CharacterController'
+import Network from '../behaviors/Player/Network'
+import TileSelectionPreview from '../entities/TileSelectionPreview'
 
 import Character from '../entities/Character'
 import Enemy from '../entities/Enemy'
 import Item from '../entities/Item'
 import Chest from '../entities/Chest'
-import TileSelectionPreview from '../entities/TileSelectionPreview'
 import LightPole from '../entities/LightPole'
+import Door from '../entities/Door'
 
 export default class Level {
 
@@ -27,16 +28,18 @@ export default class Level {
 
     // grid / generator / pathfinder
     this.generator = new Generator(this.scene)
-    this.grid = this.generator.generate()
-    this.pathfinder = new PF.Grid(this.grid)
+    this.pathfinder = new PF.Grid(this.generator.generate())
 
-    this.generator.createElements(this.grid)
+    this.generator.createTiles()
+    this.entities = this.generator.createEntities()
 
-    var character = new Character('man')
-    character.behave(new CharacterController, camera)
-    this.scene.add(character)
+    // create player
+    this.player = this.generator.createPlayer()
+    this.playerNetwork = new Network
+    this.player.behave(this.playerNetwork)
+    this.camera.lookAt(this.player.position)
 
-    camera.lookAt(character.position)
+    window.player =  this.player
 
     // var lightPole = new LightPole()
     // lightPole.position.copy(character.position)
@@ -112,6 +115,27 @@ export default class Level {
     object.add(this.selection)
     this.selectionLight.position.set(object.position.x, 2, object.position.z)
     this.selectionLight.target = object
+    this.targetPosition = object.userData
+  }
+
+  playerAction () {
+    console.log(this.player.userData, this.targetPosition)
+    var finder = new PF.AStarFinder(); // { allowDiagonal: true, dontCrossCorners: true }
+
+    var path = finder.findPath(
+      this.player.userData.x, this.player.userData.y,
+      this.targetPosition.y, this.targetPosition.x, // TODO: why need to invert x/y here?
+      this.pathfinder.clone() // FIXME: we shouldn't create leaks that way!
+    );
+
+    var timeout = 200
+    path.forEach((point,i) => {
+      var pos = {x: 0, z: 0}
+      this.generator.fixTilePosition(pos, point[1], point[0]) // TODO: why need to invert x/y here?
+      setTimeout(() => this.playerNetwork.move(pos, point[0], point[1]), timeout * i)
+    })
+
+    console.log(path)
   }
 
 }

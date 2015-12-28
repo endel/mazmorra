@@ -1,14 +1,23 @@
 import Dungeon from '../../core/Dungeon'
 import helpers from '../../core/helpers'
 
-var materials = {}
-var geometries = {}
+import CharacterController from '../../behaviors/CharacterController'
+
+import Character from '../../entities/Character'
+import Enemy from '../../entities/Enemy'
+import Item from '../../entities/Item'
+import Chest from '../../entities/Chest'
+import TileSelectionPreview from '../../entities/TileSelectionPreview'
+import LightPole from '../../entities/LightPole'
+import Door from '../../entities/Door'
 
 export default class LevelGenerator {
 
   constructor (container) {
-    this.map = null
     this.container = container
+
+    this.grid = null
+    this.rooms = null
 
     this.ground = []
     this.wall = []
@@ -21,14 +30,59 @@ export default class LevelGenerator {
    * @param maxRoomSize {x: 24, y: 24}
    * @param maxRooms 30
    */
-  // generate (gridSize = {x: 16, y: 16}, minRoomSize = {x: 4, y: 4}, maxRoomSize = {x: 16, y: 16}, maxRooms = 24) {
-  generate (gridSize = {x: 64, y: 64}, minRoomSize = {x: 8, y: 8}, maxRoomSize = {x: 16, y: 16}, maxRooms = 24) {
-    return Dungeon.generate(gridSize, minRoomSize, maxRoomSize, maxRooms)
+  generate (gridSize = {x: 16, y: 16}, minRoomSize = {x: 4, y: 4}, maxRoomSize = {x: 8, y: 8}, maxRooms = 24) {
+  // generate (gridSize = {x: 64, y: 64}, minRoomSize = {x: 8, y: 8}, maxRoomSize = {x: 16, y: 16}, maxRooms = 24) {
+    let [ grid, rooms ] = Dungeon.generate(gridSize, minRoomSize, maxRoomSize, maxRooms)
+
+    this.rooms = rooms
+    this.grid = grid
+
+    // expose 0/1 grid for path finder
+    // 0 = walkable
+    // 1 = blocked
+    console.log(grid)
+
+    return JSON.parse(JSON.stringify(grid)).map(line => {
+      return line.map(type => {
+        return ((type & helpers.TILE_TYPE.FLOOR) ? 0 : 1)
+      })
+    })
   }
 
-  createElements (grid) {
-    var xlen = grid.length
-      , ylen = grid[0].length;
+  createPlayer () {
+    var firstRoom = this.rooms[0]
+      , lastRoom = this.rooms[ this.rooms.length - 1 ]
+      //
+    // character start position
+    var initX = parseInt(firstRoom.position.x + (firstRoom.size.x / 2))
+    var initY = parseInt(firstRoom.position.y + (firstRoom.size.y / 2))
+    var character = new Character('man')
+    this.fixTilePosition(character.position, initX, initY)
+    character.behave(new CharacterController, camera)
+    this.container.add(character)
+
+    character.userData.x = initX
+    character.userData.y = initY
+
+    console.log(firstRoom)
+
+    return character
+  }
+
+  createEntities () {
+    var firstRoom = this.rooms[0]
+      , lastRoom = this.rooms[ this.rooms.length - 1 ]
+
+    // door start position
+    var door = new Door()
+    this.container.add(door)
+
+
+  }
+
+  createTiles () {
+    var xlen = this.grid.length
+      , ylen = this.grid[0].length;
 
     // // ambient light
     // var light = new THREE.AmbientLight( 0xffffff ); // soft white light
@@ -36,14 +90,14 @@ export default class LevelGenerator {
 
     for (var x = 0; x < xlen; ++x) {
       for (var y = 0; y < ylen; ++y) {
-        var tile = grid[x][y];
+        var tile = this.grid[x][y];
 
         if (tile & helpers.TILE_TYPE.EMPTY) {
           continue;
         }
 
         // map 3d coordinates (-width/2~width/2 x -height/2~height/2)
-        this.addTile(tile, x - (xlen / 2), y - (ylen / 2));
+        this.addTile(tile, x, y);
       }
     }
   }
@@ -62,30 +116,17 @@ export default class LevelGenerator {
     // ignore corners for a while
     if (resource === null) return
 
-    var texture = ResourceManager.get(resource)
-      , material = materials[resource] || new THREE.MeshPhongMaterial( {
-        // color: 0xa0adaf,
-        // specular: 0x111111,
-        // shininess: 60,
-        shading: THREE.FlatShading,
-        map: texture,
-        side: THREE.DoubleSide
-      } )
-      , geometry = geometries[resource] || new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE)
-      , tile = new THREE.Mesh(geometry, material)
-
-    // cache material
-    if (!materials[resource]) materials[resource] = material
-    if (!geometries[resource]) geometries[resource] = geometry
-
-    texture.repeat.set(3, 3)
+    var tile = ResourceManager.createTileMesh(resource)
 
     // set tile position
-    tile.position.x = x * TILE_SIZE;
-    tile.position.z = y * TILE_SIZE;
+    this.fixTilePosition(tile.position, x, y)
 
     if (type & helpers.TILE_TYPE.FLOOR) {
       group = this.ground
+
+      // keep tile x/y reference on Object3D
+      tile.userData.x = x
+      tile.userData.y = y
 
       tile.position.y = -0.5;
       tile.rotation.x = Math.PI / 2;
@@ -143,6 +184,18 @@ export default class LevelGenerator {
 
     group.push(tile)
     this.container.add(tile)
+  }
+
+  fixTilePosition(vec, x, y) {
+    var xlen = this.grid.length
+      , ylen = this.grid[0].length;
+
+    vec.x = (x - (xlen / 2)) * TILE_SIZE
+    vec.z = (y - (ylen / 2)) * TILE_SIZE
+    // vec.x = x * TILE_SIZE
+    // vec.z = y * TILE_SIZE
+
+    return vec
   }
 
 }
