@@ -25,7 +25,7 @@ export default class Chest extends THREE.Object3D {
     this.add(this.body)
 
     this.scale.set(3, 3, 3)
-    this.behave(new ChestBehaviour)
+    this.addBehaviour(new ChestBehaviour)
   }
 
 }

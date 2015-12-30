@@ -15,14 +15,14 @@ export default class LightPole extends THREE.Object3D {
       color: 0xffffff,
       fog: true
     }))
-    this.sprite.position.y = 0.5
+    this.sprite.position.y = 0.55
     this.add(this.sprite)
 
     var scale = SCALES[ texture.image.width ]
     this.sprite.scale.set(scale, scale, scale)
 
-    var light = new THREE.PointLight(this.colors[0], 1, 50);
-    light.behave(new LightOscillator, 0.9, 1.1)
+    var light = new THREE.PointLight(this.colors[0], 0.3, 50);
+    light.addBehaviour(new LightOscillator, 0.2, 0.4)
     light.position.set(0, 1.5, 0)
     this.add(light)
   }

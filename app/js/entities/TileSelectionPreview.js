@@ -2,36 +2,48 @@
 
 export default class TileSelectionPreview extends THREE.Object3D {
 
-  constructor () {
+  constructor (light) {
     super()
 
-    var material = new THREE.MeshPhongMaterial( {
+    this._target = null
+
+    this.light = light
+    this.lightColors = {}
+
+    this.material = new THREE.MeshPhongMaterial( {
       shading: THREE.FlatShading,
       map: ResourceManager.get('effects-tile-selection'),
       side: THREE.DoubleSide,
       transparent: true,
       fog: true
     })
-    var geometry = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE)
-    var mesh = new THREE.Mesh(geometry, material)
+    this.geometry = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE)
 
-    this.add(mesh)
+    this.mesh = new THREE.Mesh(this.geometry, this.material)
+    this.add(this.mesh)
 
-    // var light = new THREE.PointLight(0xfcfcfc, 2, 5);
-    // // this.light = new THREE.PointLight(0xffffff, 1, 50, 1 );
-    //
-    // // light.castShadow = true;
-    // // light.shadowCameraNear = 1;
-    // // light.shadowCameraFar = 30;
-    // // light.shadowCameraVisible = true;
-    // // light.shadowMapWidth = 64;
-    // // light.shadowMapHeight = 64;
-    // // light.shadowMapWidth = 2048;
-    // // light.shadowMapHeight = 1024;
-    // // light.shadowBias = 0.01;
-    // // light.shadowDarkness = 0.5;
-    // light.position.set(0, 0.25, 0)
-    // this.add(light)
+    this.setColor()
+  }
+
+  set target (target) {
+    if (this._target !== target) {
+      if (this._target) {
+        this._target.forEach(e => e.__ENTITY__ && e.__ENTITY__.emit('mouseout', this))
+      }
+      if (target) {
+        target.forEach(e => e.__ENTITY__ && e.__ENTITY__.emit('mouseover', this))
+      }
+    }
+    this._target = target
+  }
+
+  setColor (hex = 0xffffff) {
+    if (!this.lightColors[hex]) {
+      this.lightColors[hex] = new THREE.Color(hex)
+    }
+
+    this.material.color = this.lightColors[hex]
+    this.light.color = this.lightColors[hex]
   }
 
 }

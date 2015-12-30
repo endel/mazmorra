@@ -1,9 +1,9 @@
-import gen from 'random-seed'
+var gen = require('random-seed')
 
 // create predicatble random generator
 var rand = gen.create()
 
-export default {
+var helpers = {
     // useful utils
     randInt: function(low, high) {
         return rand.intBetween(low, high)
@@ -46,6 +46,18 @@ export default {
 
     CORNER: 65536,
 
+    // game entities
+    ENTITIES: {
+      DOOR: 0,
+      LIGHT: 1,
+      CHEST: 3,
+
+      // items 100~400
+      ITEM_COIN: 100,
+
+      ENEMY_RAT: 1000,
+    },
+
     // common classes
     Room: function() {
         this.position = { x: 0, y: 0 };
@@ -54,3 +66,5 @@ export default {
         this.walls = []; //indexes for wall tiles
     }
 };
+
+module.exports = helpers

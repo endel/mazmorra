@@ -1,0 +1,24 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start-production": "pm2 start index.js --node-args='--harmony --use-strict'",
+    "start": "nodemon --harmony ./index.js localhost 3553"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "clock-timer.js": "^1.0.0",
+    "colyseus": "^0.2.0",
+    "cors": "^2.7.1",
+    "express": "^4.13.3",
+    "mongodb": "^2.1.0",
+    "pathfinding": "^0.4.17",
+    "random-seed": "^0.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.7.1"
+  }
+}

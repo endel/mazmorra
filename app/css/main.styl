@@ -4,6 +4,11 @@ body
   overflow hidden
   font 16px primary
 
+// main#game
+//   cursor url(../images/cursor-pointer.png), pointer
+//   &.attack
+//     cursor url(../images/cursor-punch.png) -8px -8px,  auto !important
+
 input
   font 24px primary
   width 50vw
@@ -24,8 +29,8 @@ input
   right 0
   left 0
   margin auto
-  z-index 100
   transition opacity 0.2s
+  z-index -100
 
   form
     position absolute
@@ -44,4 +49,4 @@ input
     pointer-events all
     display block
     opacity 1
-
+    z-index 100

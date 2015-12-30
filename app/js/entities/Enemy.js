@@ -1,7 +1,7 @@
 'use strict';
 
 import DangerousThing from '../behaviors/DangerousThing'
-import Lifebar from './Lifebar'
+import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
 
 export default class Enemy extends THREE.Object3D {
 
@@ -20,7 +20,7 @@ export default class Enemy extends THREE.Object3D {
 
     this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: this.textures[ this._direction ],
-      color: 0xffffff,
+      // color: 0xffffff,
       fog: true
     }))
 
@@ -29,14 +29,11 @@ export default class Enemy extends THREE.Object3D {
     // this.sprite.position.y = scale/2 // - this.sprite.material.map.image.height
     this.sprite.position.y = 0.1
     console.log(name, this.sprite.position.y)
-    this.sprite.behave(new DangerousThing)
+
     this.add(this.sprite)
 
-    // lifebar
-    this.lifebar = new Lifebar()
-    this.lifebar.position.y = 0.1
-    this.lifebar.position.z = 1
-    this.add(this.lifebar)
+    this.addBehaviour(new DangerousThing)
+    this.addBehaviour(new NearPlayerOpacity)
 
     // TODO: change me
     setInterval(() => {
@@ -59,5 +56,3 @@ export default class Enemy extends THREE.Object3D {
   }
 
 }
-
-

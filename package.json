@@ -44,10 +44,12 @@
   "dependencies": {
     "behaviour.js": "file:../behaviour.js",
     "clock.js": "^1.0.5",
+    "colyseus.js": "^0.2.0",
     "keycode.js": "0.0.1",
     "lerp": "^1.0.3",
     "pathfinding": "^0.4.17",
     "random-seed": "^0.3.0",
+    "tiny-emitter": "^1.0.2",
     "tweener": "^0.1.28"
   }
 }

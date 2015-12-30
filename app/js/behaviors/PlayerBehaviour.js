@@ -5,7 +5,7 @@ import Shadow from './Shadow'
 export default class PlayerBehaviour extends Behaviour {
 
   onAttach () {
-    this.object.behave(new Shadow)
+    this.object.addBehaviour(new Shadow)
   }
 
   update () {

@@ -11,22 +11,24 @@ export default class Lifebar extends THREE.Object3D {
       green:  { bg: 0x183400, fg: 0x7cac20 }
     }
 
-    this.bar = new THREE.Sprite(new THREE.SpriteMaterial({ color: 0xffffffff }))
-    this.add(this.bar)
+    // this.background = new THREE.Sprite(new THREE.SpriteMaterial({ color: 0xffffffff }))
+    // this.background.position.z -= 0.1
+    // this.add(this.background)
 
-    this.background = new THREE.Sprite(new THREE.SpriteMaterial({ color: 0xffffffff }))
-    this.add(this.background)
+    this.bar = new THREE.Sprite(new THREE.SpriteMaterial({ color: 0xffffffff }))
+    // this.bar.position.z += 0.15
+    this.add(this.bar)
 
     this.color = 'green'
     this.position.y = 1
 
-    this.scale.set(1, 0.195, 1)
+    this.scale.set(1, 0.2, 1)
     setInterval(() => { if (this.progress > 0) this.progress -= 0.01 }, 500)
   }
 
   set color (color) {
     this.bar.material.color = new THREE.Color(this.colors[ color ].fg)
-    this.background.material.color = new THREE.Color(this.colors[ color ].bg)
+    // this.background.material.color = new THREE.Color(this.colors[ color ].bg)
   }
 
   set progress (value) {
@@ -39,7 +41,7 @@ export default class Lifebar extends THREE.Object3D {
     }
 
     this.bar.scale.x = value
-    this.bar.position.x = value/2 - 0.5
+    // this.bar.position.x = value/2 - 0.5
   }
 
   get progress () {

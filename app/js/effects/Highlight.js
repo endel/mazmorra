@@ -12,12 +12,12 @@ export default class Highlight extends THREE.Sprite {
       transparent: true
     }))
 
-    this.material.opacity = 0.3
+    this.material.opacity = 0.8
 
     this.name = name
-    this.scale.set(4, 4, 4)
+    this.scale.set(5, 4, 5)
 
-    this.behave(new Strechable)
+    this.addBehaviour(new Strechable)
   }
 
 }

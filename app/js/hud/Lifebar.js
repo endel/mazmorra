@@ -30,7 +30,7 @@ export default class Lifebar extends THREE.Object3D {
       , usableRatio = ((totalHeight - unusableHeight * 2)/totalHeight)
 
     // (1 - %)
-    var percentage = 0.3
+    var percentage = Math.random()
     var finalPercentage = (unusableHeight/totalHeight) + (usableRatio - (percentage * usableRatio)) // (unusableHeight/totalHeight) // - (0.6*usableRatio)
     var randWaitTime = 1000 + (Math.random() * 1000)
 

@@ -1,7 +1,5 @@
-import Dungeon from '../../core/Dungeon'
-import helpers from '../../core/helpers'
-
-import CharacterController from '../../behaviors/CharacterController'
+import Dungeon from '../../../../shared/Dungeon'
+import helpers from '../../../../shared/helpers'
 
 import Character from '../../entities/Character'
 import Enemy from '../../entities/Enemy'
@@ -13,89 +11,58 @@ import Door from '../../entities/Door'
 
 export default class LevelGenerator {
 
-  constructor (container) {
+  constructor (container, state) {
     this.container = container
 
-    this.grid = null
-    this.rooms = null
-
+    // visual groups
     this.ground = []
     this.wall = []
     this.entities = []
   }
 
-  /**
-   * @param gridSize {x: 72, y: 72}
-   * @param minRoomSize {x: 4, y: 4}
-   * @param maxRoomSize {x: 24, y: 24}
-   * @param maxRooms 30
-   */
-  generate (gridSize = {x: 16, y: 16}, minRoomSize = {x: 4, y: 4}, maxRoomSize = {x: 8, y: 8}, maxRooms = 24) {
-  // generate (gridSize = {x: 64, y: 64}, minRoomSize = {x: 8, y: 8}, maxRoomSize = {x: 16, y: 16}, maxRooms = 24) {
-    let [ grid, rooms ] = Dungeon.generate(gridSize, minRoomSize, maxRoomSize, maxRooms)
-
-    this.rooms = rooms
+  setGrid (grid) {
     this.grid = grid
-
-    // expose 0/1 grid for path finder
-    // 0 = walkable
-    // 1 = blocked
-    console.log(grid)
-
-    return JSON.parse(JSON.stringify(grid)).map(line => {
-      return line.map(type => {
-        return ((type & helpers.TILE_TYPE.FLOOR) ? 0 : 1)
-      })
-    })
   }
 
-  createPlayer () {
-    var firstRoom = this.rooms[0]
-      , lastRoom = this.rooms[ this.rooms.length - 1 ]
-      //
-    // character start position
-    var initX = parseInt(firstRoom.position.x + (firstRoom.size.x / 2))
-    var initY = parseInt(firstRoom.position.y + (firstRoom.size.y / 2))
+  createPlayer (player) {
     var character = new Character('man')
-    this.fixTilePosition(character.position, initX, initY)
-    character.behave(new CharacterController, camera)
+
+    // WHY this needs to be inverted!?!?!?
+    this.fixTilePosition(character.position, player.position.y, player.position.x)
+    character.userData.x = player.position.x
+    character.userData.y = player.position.y
+
     this.container.add(character)
-
-    character.userData.x = initX
-    character.userData.y = initY
-
-    console.log(firstRoom)
-
     return character
   }
 
-  createEntities () {
-    var firstRoom = this.rooms[0]
-      , lastRoom = this.rooms[ this.rooms.length - 1 ]
+  createEntity (entity) {
+    var element = null
 
-    // door start position
-    var door = new Door()
-    this.fixTilePosition(door.position, firstRoom.position.x + 1, firstRoom.position.y)
-    door.position.z += 1.5001 // TODO: automate a good-looking position based on door direction
+    switch (entity.type) {
+      case helpers.ENTITIES.DOOR:
+        element = new Door()
+        break;
 
-    this.rooms.forEach(room => {
-      if (helpers.randInt(0, 3) === 3) {
-        var lightPole = new LightPole()
-        this.fixTilePosition(lightPole.position, room.position.x + 1 + helpers.randInt(0, room.size.x - 3), room.position.y + 1 + helpers.randInt(0, room.size.y - 3))
-        this.container.add(lightPole)
-      }
-    })
+      case helpers.ENTITIES.ENEMY_RAT:
+        element = new Enemy('rat')
+        break;
 
-    this.container.add(door)
+      case helpers.ENTITIES.LIGHT:
+        element = new LightPole()
+        break;
+    }
+
+    this.fixTilePosition(element.position, entity.position.x, entity.position.y)
+    this.container.add(element)
+
+    element.userData.position = entity.position
+    return element
   }
 
-  createTiles () {
+  createTiles (mapkind = 'grass') {
     var xlen = this.grid.length
       , ylen = this.grid[0].length;
-
-    // // ambient light
-    // var light = new THREE.AmbientLight( 0xffffff ); // soft white light
-    // container.add( light );
 
     for (var x = 0; x < xlen; ++x) {
       for (var y = 0; y < ylen; ++y) {
@@ -106,20 +73,28 @@ export default class LevelGenerator {
         }
 
         // map 3d coordinates (-width/2~width/2 x -height/2~height/2)
-        this.addTile(tile, x, y);
+        this.addTile(mapkind, tile, x, y);
       }
     }
   }
 
-  addTile (type, x, y) {
+  addTile (mapkind, type, x, y) {
     var resource = null
       , group = null
 
     if (type & helpers.TILE_TYPE.FLOOR) {
-      resource = 'tile-rock-ground'
+      resource = 'tile-'+mapkind+'-ground'
+      // resource = 'tile-rock-ground'
+      // resource = 'tile-grass-ground'
+      // resource = 'tile-inferno-ground'
+      // resource = 'tile-ice-ground'
 
     } else if (type & helpers.TILE_TYPE.WALL) {
-      resource = (type & helpers.CORNER) ? null : 'tile-rock-wall'
+      resource = (type & helpers.CORNER) ? null : 'tile-'+mapkind+'-wall'
+      // resource = (type & helpers.CORNER) ? null : 'tile-rock-wall'
+      // resource = (type & helpers.CORNER) ? null : 'tile-grass-wall'
+      // resource = (type & helpers.CORNER) ? null : 'tile-inferno-wall'
+      // resource = (type & helpers.CORNER) ? null : 'tile-ice-wall'
     }
 
     // ignore corners for a while
@@ -144,28 +119,28 @@ export default class LevelGenerator {
       // Add wall tiles on room connections
       //
       if (type & helpers.DIRECTION.NORTH) {
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.EAST, x, y);
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.WEST, x, y);
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.EAST, x, y + 1);
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.WEST, x, y + 1);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.EAST, x, y);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.WEST, x, y);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.EAST, x, y + 1);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.WEST, x, y + 1);
 
       } else if (type & helpers.DIRECTION.SOUTH) {
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.EAST, x, y);
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.WEST, x, y);
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.EAST, x, y - 1);
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.WEST, x, y - 1);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.EAST, x, y);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.WEST, x, y);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.EAST, x, y - 1);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.WEST, x, y - 1);
 
       } else if (type & helpers.DIRECTION.EAST) {
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.SOUTH, x, y);
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.NORTH, x, y);
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.SOUTH, x - 1, y);
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.NORTH, x - 1, y);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.SOUTH, x, y);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.NORTH, x, y);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.SOUTH, x - 1, y);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.NORTH, x - 1, y);
 
       } else if (type & helpers.DIRECTION.WEST) {
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.SOUTH, x, y);
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.NORTH, x, y);
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.SOUTH, x + 1, y);
-        this.addTile(helpers.TILE_TYPE.WALL | helpers.DIRECTION.NORTH, x + 1, y);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.SOUTH, x, y);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.NORTH, x, y);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.SOUTH, x + 1, y);
+        this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.NORTH, x + 1, y);
       }
 
     } else if (type & helpers.TILE_TYPE.WALL) {
@@ -201,8 +176,6 @@ export default class LevelGenerator {
 
     vec.x = (x - (xlen / 2)) * TILE_SIZE
     vec.z = (y - (ylen / 2)) * TILE_SIZE
-    // vec.x = x * TILE_SIZE
-    // vec.z = y * TILE_SIZE
 
     return vec
   }

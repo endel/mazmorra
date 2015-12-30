@@ -4,9 +4,9 @@
 // - It is possible with small rooms for it to not be closed (i.e. a wall tile missing)
 // - Walls often double up (more room spacing?)
 
-import helpers from './helpers'
+var helpers = require('./helpers')
 
-export default {
+var dungeon = {
 
     generate: function(gridSize, minRoomSize, maxRoomSize, maxRooms) {
         // 1) Create the grid
@@ -216,3 +216,5 @@ export default {
         }
     }
 };
+
+module.exports = dungeon
