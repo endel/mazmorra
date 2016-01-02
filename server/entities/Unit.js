@@ -1,10 +1,13 @@
 'use strict';
 
+var Entity = require('./Entity')
 var Movement = require('../core/Movement')
 
-class Unit {
+class Unit extends Entity {
 
-  constructor () {
+  constructor (id) {
+    super(id)
+
     this.position = new Movement(this)
     this.direction = 'bottom'
 

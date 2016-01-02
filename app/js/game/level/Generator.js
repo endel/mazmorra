@@ -28,22 +28,21 @@ export default class LevelGenerator {
     this.grid = grid
   }
 
-  createEntity (entity) {
+  createEntity (data) {
     var element = null
 
-    switch (entity.type) {
+    switch (data.type) {
       case helpers.ENTITIES.DOOR:
         element = new Door()
         break;
 
       case helpers.ENTITIES.ENEMY:
-        element = new Enemy(entity)
+        element = new Enemy(data)
         break;
 
       case helpers.ENTITIES.PLAYER:
-        element = new Character(entity)
-
-        if (entity.id !== this.colyseus.id) {
+        element = new Character(data)
+        if (data.id !== this.colyseus.id) {
           element.addBehaviour(new HasLifebar, this)
         }
         break;
@@ -53,11 +52,11 @@ export default class LevelGenerator {
         break;
     }
 
-    this.fixTilePosition(element.position, entity.position.x, entity.position.y)
+    this.fixTilePosition(element.position, data.position.y, data.position.x)
     this.container.add(element)
 
     element.addBehaviour(new GameObject, this)
-    element.userData.position = entity.position
+    element.userData = data
     return element
   }
 

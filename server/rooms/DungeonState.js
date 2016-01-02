@@ -21,8 +21,9 @@ class DungeonState {
 
     this.grid = data[0]
     this.rooms = data[1]
-    this.entities = []
-    this.players = []
+
+    this.entities = {}
+    this.players = {}
 
     this.pathgrid = new PF.Grid(this.grid.map(line => {
       // 0 = walkable, 1 = blocked
@@ -35,26 +36,32 @@ class DungeonState {
     this.createEntities()
   }
 
+  addEntity (entity) { this.entities[ entity.id ] = entity }
+  removeEntity (entity) { delete this.entities[ entity.id ] }
+
   createPlayer (client) {
     var player = new Player(client.id)
     player.type = helpers.ENTITIES.PLAYER
     player.position.on('move', this.onEntityMove.bind(this, player))
     player.position.set(this.startPosition.y, this.startPosition.x)
 
-    this.entities.push(player)
-    this.players.push(player)
+    this.addEntity(player)
+    this.players[ player.id ] = player
 
     client.player = player
   }
 
   removePlayer (player) {
-    this.players.splice(this.players.indexOf(player), 1)
-    this.entities.splice(this.entities.indexOf(player), 1)
+    delete this.players[ player.id ]
+    this.removeEntity(player)
   }
 
   createEntities () {
     // entrance door door
-    this.entities.push(new SwitchEntity(helpers.ENTITIES.DOOR, this.startPosition))
+    var entranceDoor = new SwitchEntity(helpers.ENTITIES.DOOR)
+    entranceDoor.position.x = this.startPosition.y
+    entranceDoor.position.y = this.startPosition.x
+    this.addEntity(entranceDoor)
 
     this.rooms.forEach(room => {
       // if (helpers.randInt(0, 3) === 3) {
@@ -62,10 +69,10 @@ class DungeonState {
         enemy.type = helpers.ENTITIES.ENEMY
         enemy.position.on('move', this.onEntityMove.bind(this, enemy))
         enemy.position.set(
-          room.position.x + 1 + helpers.randInt(0, room.size.x - 3),
-          room.position.y + 1 + helpers.randInt(0, room.size.y - 3)
+          room.position.y + 1 + helpers.randInt(0, room.size.y - 3),
+          room.position.x + 1 + helpers.randInt(0, room.size.x - 3)
         )
-        this.entities.push(enemy)
+        this.addEntity(enemy)
       // }
     })
 
@@ -91,9 +98,8 @@ class DungeonState {
   }
 
   update (deltaTime) {
-    var i = this.players.length;
-    while (i--) {
-      this.players[i].update(deltaTime)
+    for (var id in this.entities) {
+      this.entities[id].update(deltaTime)
     }
   }
 
@@ -112,7 +118,14 @@ class DungeonState {
   }
 
   getEntityAt (x, y) {
-    return this.entities.filter(entity => entity.position.x == x && entity.position.y == y)
+    var entities = []
+      for (var id in this.entities) {
+        if (this.entities[ id ].position.y == x &&
+            this.entities[ id ].position.x == y) {
+          entities.push(this.entities[ id ])
+        }
+      }
+    return entities
   }
 
   toJSON () {

@@ -5,11 +5,10 @@ var Unit = require('./Unit')
 class Player extends Unit {
 
   constructor (id) {
-    super()
+    super(id)
 
     var genders = ['man', 'man-2', 'woman']
 
-    this.id = id
     this.gender = genders[ Math.floor(Math.random()*genders.length) ]
     this.name = this.gender
     this.lvl = 1

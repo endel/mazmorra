@@ -1,10 +1,14 @@
 'use strict';
 
-class SwitchEntity {
+var Entity = require('./Entity')
 
-  constructor (type, position) {
+class SwitchEntity extends Entity {
+
+  constructor (type) {
+    super()
+
     this.type = type
-    this.position = position
+    this.position = { x: null, y: null }
   }
 
 }

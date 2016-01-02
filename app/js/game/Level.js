@@ -29,7 +29,7 @@ export default class Level extends EventEmitter {
     this.room.on('update', this.onRoomUpdate.bind(this))
     this.room.on('error', (err) => console.error(err))
 
-    this.entities = []
+    this.entities = {}
 
     this.selectionLight = new THREE.SpotLight(0xffffff, 0.5, 30);
     this.selection = new TileSelectionPreview(this.selectionLight, this.hud.selectionText)
@@ -110,7 +110,6 @@ export default class Level extends EventEmitter {
   }
 
   onRoomUpdate (state, patches) {
-    console.log("onRoomUpdate", state, patches)
     if (!patches) {
       this.emit('setup', state)
 
@@ -118,26 +117,28 @@ export default class Level extends EventEmitter {
       this.setInitialState(state)
 
     } else {
+      console.log("Patches:", patches)
       patches.map(patch => {
         if (patch.op === "remove" && patch.path.indexOf("/entities") !== -1) {
-          let [ _, index ] = patch.path.match(/entities\/([0-9]+)/)
-          this.removeEntity(this.entities[index])
-          this.entities.splice(index, 1)
+          let [ _, index ] = patch.path.match(/entities\/([a-zA-Z0-9_-]+)/)
+          this.removeEntity(this.entities[ index ])
+          delete this.entities[ index ]
 
         } else if (patch.op === "add" && patch.path.indexOf("/entities") !== -1) {
+          console.log(patch)
           // create new player
           let entity = this.generator.createEntity(patch.value)
-          this.entities.push(entity)
+          this.entities[ entity.userData.id ] = entity
 
-          if (patch.value.id === this.colyseus.id) {
+          if (entity.userData.id === this.colyseus.id) {
             entity.addBehaviour(new CharacterController, this.camera)
             this.playerEntity = entity.getEntity()
           }
 
         } else if (patch.path.indexOf("/entities/") !== -1) {
-          let [ _, index, attribute ] = patch.path.match(/entities\/([0-9]+)\/(.*)/)
-          var entity = this.entities[ parseInt(index) ].getEntity()
-          entity.emit('patch', state.entities[index], {
+          let [ _, id, attribute ] = patch.path.match(/entities\/([a-zA-Z0-9_-]+)\/(.*)/)
+          var entity = this.entities[ id ].getEntity()
+          entity.emit('patch', state.entities[ id ], {
             op: patch.op,
             path: attribute,
             value: patch.value
@@ -162,8 +163,8 @@ export default class Level extends EventEmitter {
     this.generator.setGrid(state.grid)
     this.generator.createTiles(state.mapkind)
 
-    for (var i=0, l=state.entities.length; i<l; i++) {
-      this.entities.push(this.generator.createEntity(state.entities[ i ]))
+    for (var id in state.entities) {
+      this.entities[ id ] = this.generator.createEntity(state.entities[ id ])
     }
   }
 
@@ -180,8 +181,15 @@ export default class Level extends EventEmitter {
         object.add(this.selection)
         this.targetPosition = object.userData
 
-        this.selection.target = this.entities.
-          filter(entity => (entity.userData.position.x == object.userData.x && entity.userData.position.y == object.userData.y))
+        // search for entities inside highlighted tile
+        var entities = []
+        for (var id in this.entities) {
+          if (this.entities[ id ].userData.position.y == object.userData.x &&
+              this.entities[ id ].userData.position.x == object.userData.y) {
+            entities.push(this.entities[ id ])
+          }
+        }
+        this.selection.target = entities
 
         this.selectionLight.intensity = 0.5
         this.selectionLight.position.set(object.position.x, 2, object.position.z)
