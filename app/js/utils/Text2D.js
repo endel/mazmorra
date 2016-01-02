@@ -93,6 +93,9 @@ class Text2D extends THREE.Object3D {
     this._canvas.width = Math.ceil(textWidth);
     this._canvas.height = getFontHeight(this._font);
 
+    this.width = this._canvas.width
+    this.height = this._canvas.height
+
     this._ctx.font = this._font;
 
     this._ctx.fillStyle = this._fillStyle;

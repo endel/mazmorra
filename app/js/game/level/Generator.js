@@ -1,6 +1,9 @@
 import Dungeon from '../../../../shared/Dungeon'
 import helpers from '../../../../shared/helpers'
 
+import GameObject from '../../behaviors/GameObject'
+import HasLifebar from '../../behaviors/HasLifebar'
+
 import Character from '../../entities/Character'
 import Enemy from '../../entities/Enemy'
 import Item from '../../entities/Item'
@@ -11,8 +14,9 @@ import Door from '../../entities/Door'
 
 export default class LevelGenerator {
 
-  constructor (container, state) {
+  constructor (container, colyseus) {
     this.container = container
+    this.colyseus = colyseus
 
     // visual groups
     this.ground = []
@@ -24,18 +28,6 @@ export default class LevelGenerator {
     this.grid = grid
   }
 
-  createPlayer (player) {
-    var character = new Character('man')
-
-    // WHY this needs to be inverted!?!?!?
-    this.fixTilePosition(character.position, player.position.y, player.position.x)
-    character.userData.x = player.position.x
-    character.userData.y = player.position.y
-
-    this.container.add(character)
-    return character
-  }
-
   createEntity (entity) {
     var element = null
 
@@ -44,8 +36,16 @@ export default class LevelGenerator {
         element = new Door()
         break;
 
-      case helpers.ENTITIES.ENEMY_RAT:
-        element = new Enemy('rat')
+      case helpers.ENTITIES.ENEMY:
+        element = new Enemy(entity)
+        break;
+
+      case helpers.ENTITIES.PLAYER:
+        element = new Character(entity)
+
+        if (entity.id !== this.colyseus.id) {
+          element.addBehaviour(new HasLifebar, this)
+        }
         break;
 
       case helpers.ENTITIES.LIGHT:
@@ -56,6 +56,7 @@ export default class LevelGenerator {
     this.fixTilePosition(element.position, entity.position.x, entity.position.y)
     this.container.add(element)
 
+    element.addBehaviour(new GameObject, this)
     element.userData.position = entity.position
     return element
   }
@@ -84,17 +85,9 @@ export default class LevelGenerator {
 
     if (type & helpers.TILE_TYPE.FLOOR) {
       resource = 'tile-'+mapkind+'-ground'
-      // resource = 'tile-rock-ground'
-      // resource = 'tile-grass-ground'
-      // resource = 'tile-inferno-ground'
-      // resource = 'tile-ice-ground'
 
     } else if (type & helpers.TILE_TYPE.WALL) {
       resource = (type & helpers.CORNER) ? null : 'tile-'+mapkind+'-wall'
-      // resource = (type & helpers.CORNER) ? null : 'tile-rock-wall'
-      // resource = (type & helpers.CORNER) ? null : 'tile-grass-wall'
-      // resource = (type & helpers.CORNER) ? null : 'tile-inferno-wall'
-      // resource = (type & helpers.CORNER) ? null : 'tile-ice-wall'
     }
 
     // ignore corners for a while

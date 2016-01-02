@@ -12,7 +12,12 @@ class DungeonRoom extends Room {
   constructor (options) {
     super(options)
 
-    this.mapkind = options.mapkind || "grass"
+    var mapkind = ['grass', 'rock', 'ice', 'inferno']
+      , i = Math.floor(Math.random() * mapkind.length)
+
+    this.mapkind = mapkind[i]
+
+    // this.mapkind = options.mapkind || "grass"
     this.level = options.level || 1
 
     this.setState(new DungeonState(
@@ -32,8 +37,9 @@ class DungeonRoom extends Room {
 
   onJoin (client, options) {
     console.log(client.id, 'joined')
-    this.state.createPlayer(client)
     this.sendState(client)
+
+    this.state.createPlayer(client)
   }
 
   onMessage (client, data) {
@@ -47,6 +53,7 @@ class DungeonRoom extends Room {
 
   onLeave (client) {
     console.log(client.id, "leaved")
+    this.state.removePlayer(client.player)
   }
 
   tick () {

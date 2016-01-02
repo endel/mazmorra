@@ -6,6 +6,7 @@ class Unit {
 
   constructor () {
     this.position = new Movement(this)
+    this.direction = 'bottom'
 
     this.hp = { current: 1, max: 1 }
     this.mp = { current: 0, max: 0 }

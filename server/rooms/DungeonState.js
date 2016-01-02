@@ -37,10 +37,19 @@ class DungeonState {
 
   createPlayer (client) {
     var player = new Player(client.id)
+    player.type = helpers.ENTITIES.PLAYER
+    player.position.on('move', this.onEntityMove.bind(this, player))
     player.position.set(this.startPosition.y, this.startPosition.x)
+
+    this.entities.push(player)
     this.players.push(player)
 
     client.player = player
+  }
+
+  removePlayer (player) {
+    this.players.splice(this.players.indexOf(player), 1)
+    this.entities.splice(this.entities.indexOf(player), 1)
   }
 
   createEntities () {
@@ -49,7 +58,9 @@ class DungeonState {
 
     this.rooms.forEach(room => {
       // if (helpers.randInt(0, 3) === 3) {
-        var enemy = new Enemy(helpers.ENTITIES.ENEMY_RAT)
+        var enemy = new Enemy('skeleton')
+        enemy.type = helpers.ENTITIES.ENEMY
+        enemy.position.on('move', this.onEntityMove.bind(this, enemy))
         enemy.position.set(
           room.position.x + 1 + helpers.randInt(0, room.size.x - 3),
           room.position.y + 1 + helpers.randInt(0, room.size.y - 3)
@@ -60,12 +71,20 @@ class DungeonState {
 
   }
 
+  onEntityMove (entity, prevX, prevY, currentX, currentY) {
+    // if (prevX && prevY) this.pathgrid.setWalkableAt(prevX, prevY, true)
+    // console.log(entity, currentX, currentY)
+    // this.pathgrid.setWalkableAt(currentX, currentY, false)
+  }
+
   move (client, destiny) {
     var moves = this.finder.findPath(
       client.player.position.x, client.player.position.y,
       destiny.y, destiny.x, // TODO: why need to invert x/y here?
       this.pathgrid.clone() // FIXME: we shouldn't create leaks that way!
     );
+
+    console.log(this.getEntityAt(destiny.x, destiny.y))
 
     moves.shift() // first block is always the starting point, we don't need it
     client.player.position.moveTo(moves)
@@ -92,12 +111,16 @@ class DungeonState {
     return { x: likelyTiles[ rand ], y: firstRoom.position.y + 1 }
   }
 
+  getEntityAt (x, y) {
+    return this.entities.filter(entity => entity.position.x == x && entity.position.y == y)
+  }
+
   toJSON () {
     return {
       mapkind: this.mapkind,
       daylight: this.daylight,
       grid: this.grid,
-      players: this.players,
+      // players: this.players,
       entities: this.entities,
     }
   }

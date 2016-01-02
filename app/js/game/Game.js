@@ -6,6 +6,10 @@ import { createComponentSystem } from 'behaviour.js'
 
 window.TILE_SIZE = 3
 
+// list of colors (for highlight)
+window.COLOR_RED = 0xd00000
+window.COLOR_GREEN = 0x6ca018
+
 // window.CLEAR_COLOR = 0x440000 // red / inferno
 window.CLEAR_COLOR = 0x002a0d // green / forest
 // window.CLEAR_COLOR = 0x000c4c // blue / ice
@@ -49,6 +53,8 @@ export default class Game {
     this.camera.updateProjectionMatrix()
     this.scene.rotateY(-0.4)
 
+    window.scene = this.scene;
+
     // this.camera.position.y = 10;
     // this.camera.position.y = 15;
     // this.camera.position.y = 30;
@@ -60,24 +66,23 @@ export default class Game {
 
     window.camera = this.camera
 
-    this.stats = new Stats();
-    this.stats.domElement.style.position = 'absolute';
-    this.stats.domElement.style.top = '0px';
-    this.container.appendChild( this.stats.domElement );
+    this.hud = new HUD()
 
-    //
-    // setup scene
-    //
-    this.level = new Level(this.scene, this.camera)
+    this.level = new Level(this.scene, this.hud, this.camera)
     this.level.on('setup', this.onSetupLevel.bind(this))
 
     this.updateInterval = setInterval(this.update.bind(this), 1000 / 60)
     this.container.appendChild( this.renderer.domElement );
 
-    this.hud = new HUD()
     window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false )
     window.addEventListener( 'click', this.onClick.bind(this), false )
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
+
+    // stats
+    this.stats = new Stats();
+    this.stats.domElement.style.position = 'absolute';
+    this.stats.domElement.style.top = '0px';
+    this.container.appendChild( this.stats.domElement );
   }
 
   onSetupLevel (state) {

@@ -1,10 +1,7 @@
 import Colyseus from 'colyseus.js'
-import PF from 'pathfinding'
 
 import Generator from './level/Generator'
 
-import Network from '../behaviors/Player/Network'
-import GameObject from '../behaviors/GameObject'
 import TileSelectionPreview from '../entities/TileSelectionPreview'
 
 import CharacterController from '../behaviors/CharacterController'
@@ -20,10 +17,11 @@ import EventEmitter from 'tiny-emitter'
 
 export default class Level extends EventEmitter {
 
-  constructor (scene, camera) {
+  constructor (scene, hud, camera) {
     super()
 
     this.scene = scene
+    this.hud = hud
     this.camera = camera
 
     this.colyseus = new Colyseus('ws://localhost:3553')
@@ -32,13 +30,12 @@ export default class Level extends EventEmitter {
     this.room.on('error', (err) => console.error(err))
 
     this.entities = []
-    this.players = []
 
     this.selectionLight = new THREE.SpotLight(0xffffff, 0.5, 30);
-    this.selection = new TileSelectionPreview(this.selectionLight)
+    this.selection = new TileSelectionPreview(this.selectionLight, this.hud.selectionText)
     this.scene.add(this.selectionLight)
 
-    this.generator = new Generator(this.scene)
+    this.generator = new Generator(this.scene, this.colyseus)
 
     // this.entities = this.generator.createEntities()
 
@@ -122,16 +119,25 @@ export default class Level extends EventEmitter {
 
     } else {
       patches.map(patch => {
-        if (patch.op === "add" && patch.path.indexOf("/players") !== -1) {
-          // create new player
-          let character = this.generator.createPlayer(patch.value)
-          character.addBehaviour(new GameObject, this.generator)
-          this.players.push(character)
+        if (patch.op === "remove" && patch.path.indexOf("/entities") !== -1) {
+          let [ _, index ] = patch.path.match(/entities\/([0-9]+)/)
+          this.removeEntity(this.entities[index])
+          this.entities.splice(index, 1)
 
-        } else if (patch.path.indexOf("/players/") !== -1) {
-          let [ _, index, attribute ] = patch.path.match(/players\/([0-9])\/(.*)/)
-          var entity = this.players[ parseInt(index) ].getEntity()
-          entity.emit('patch', state.players[index], {
+        } else if (patch.op === "add" && patch.path.indexOf("/entities") !== -1) {
+          // create new player
+          let entity = this.generator.createEntity(patch.value)
+          this.entities.push(entity)
+
+          if (patch.value.id === this.colyseus.id) {
+            entity.addBehaviour(new CharacterController, this.camera)
+            this.playerEntity = entity.getEntity()
+          }
+
+        } else if (patch.path.indexOf("/entities/") !== -1) {
+          let [ _, index, attribute ] = patch.path.match(/entities\/([0-9]+)\/(.*)/)
+          var entity = this.entities[ parseInt(index) ].getEntity()
+          entity.emit('patch', state.entities[index], {
             op: patch.op,
             path: attribute,
             value: patch.value
@@ -145,6 +151,8 @@ export default class Level extends EventEmitter {
   setInitialState (state) {
     console.log("setInitialState", state)
 
+    window.IS_DAY = state.daylight
+
     if (state.daylight) {
       // ambient light
       var light = new THREE.AmbientLight( 0xffffff ); // soft white light
@@ -155,22 +163,7 @@ export default class Level extends EventEmitter {
     this.generator.createTiles(state.mapkind)
 
     for (var i=0, l=state.entities.length; i<l; i++) {
-      let entity = this.generator.createEntity(state.entities[ i ])
-      entity.addBehaviour(new GameObject, this.generator)
-      this.entities.push(entity)
-    }
-
-    // create players
-    for (var i=0, l=state.players.length; i<l; i++) {
-      let character = this.generator.createPlayer(state.players[ i ])
-      character.addBehaviour(new GameObject, this.generator)
-      this.players.push(character)
-
-      if (state.players[ i ].id === this.colyseus.id) {
-        character.addBehaviour(new CharacterController, this.camera)
-        character.addBehaviour(new Network, this.colyseus, this.room)
-        this.playerEntity = character.getEntity()
-      }
+      this.entities.push(this.generator.createEntity(state.entities[ i ]))
     }
   }
 
@@ -186,12 +179,20 @@ export default class Level extends EventEmitter {
       if (this.selection.parent !== object) {
         object.add(this.selection)
         this.targetPosition = object.userData
-        this.selection.target = this.entities.filter(entity => (entity.userData.position.x == object.userData.x && entity.userData.position.y == object.userData.y))
+
+        this.selection.target = this.entities.
+          filter(entity => (entity.userData.position.x == object.userData.x && entity.userData.position.y == object.userData.y))
+
         this.selectionLight.intensity = 0.5
         this.selectionLight.position.set(object.position.x, 2, object.position.z)
         this.selectionLight.target = object
       }
     }
+  }
+
+  removeEntity (object) {
+    object.parent.remove(object)
+    object.getEntity().destroy()
   }
 
   playerAction () {
@@ -201,37 +202,6 @@ export default class Level extends EventEmitter {
       x: this.targetPosition.x,
       y: this.targetPosition.y
     }])
-
-    // this.playerEntity.emit('action', {
-    //   x: this.targetPosition.x,
-    //   y: this.targetPosition.y
-    // })
-
-    // // clear previous timeouts
-    // // TODO: we shouldn't need this!
-    // this.timeouts.forEach(timeout => clearTimeout(timeout))
-    // this.timeouts = []
-    //
-    // var finder = new PF.AStarFinder(); // { allowDiagonal: true, dontCrossCorners: true }
-    //
-    // var path = finder.findPath(
-    //   this.player.userData.x, this.player.userData.y,
-    //   this.targetPosition.y, this.targetPosition.x, // TODO: why need to invert x/y here?
-    //   this.pathfinder.clone() // FIXME: we shouldn't create leaks that way!
-    // );
-    //
-    // // first block is always the starting point, we don't need it
-    // path.shift()
-    //
-    // var timeout = 200
-    // path.forEach((point,i) => {
-    //   var pos = {x: 0, z: 0}
-    //   this.generator.fixTilePosition(pos, point[1], point[0]) // TODO: why need to invert x/y here?
-    //
-    //   this.timeouts.push(
-    //     setTimeout(() => this.playerNetwork.move(pos, point[0], point[1]), timeout * i)
-    //   )
-    // })
   }
 
 }

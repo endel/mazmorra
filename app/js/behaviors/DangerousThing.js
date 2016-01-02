@@ -1,41 +1,20 @@
 import { Behaviour } from 'behaviour.js'
 
-import Lifebar from '../entities/Lifebar'
 import Shadow from './Shadow'
+import HasLifebar from './HasLifebar'
 
 export default class DangerousThing extends Behaviour {
 
   onAttach (amount = 0.05, duration) {
+    this.object.addBehaviour(new HasLifebar)
     this.object.addBehaviour(new Shadow)
-
-    this.tween = null
 
     this.initY = this.object.position.y
     this.destY = this.initY + amount
     this.duration = (duration) ? duration : 400 + (Math.random() * 200)
 
-    // lifebar
-    this.lifebar = new Lifebar()
-    this.lifebar.position.x = 0.5
-    this.lifebar.position.y = 2.5
-    this.lifebar.position.z = 1
-    this.lifebar.visible = false
-    this.object.add(this.lifebar)
-
-    this.on('mouseover', this.onMouseOver.bind(this))
-    this.on('mouseout', this.onMouseOut.bind(this))
-
+    this.tween = null
     setTimeout(() => this.goUp(), Math.random() * 1500)
-  }
-
-  onMouseOver (tileSelection) {
-    this.lifebar.visible = true
-    tileSelection.setColor(0xd00000)
-  }
-
-  onMouseOut (tileSelection) {
-    this.lifebar.visible = false
-    tileSelection.setColor()
   }
 
   goUp () {

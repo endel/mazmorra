@@ -23,23 +23,13 @@ export default class GameObject extends Behaviour {
       // TODO: possible leak here
       this.nextPoint = this.generator.fixTilePosition(this.object.position.clone(), state.position.y, state.position.x)
 
-      var direction = null
-
-      if (this.object.userData.x < state.position.x) {
-        direction = 'bottom'
-      } else if (this.object.userData.x > state.position.x) {
-        direction = 'top'
-      } else if (this.object.userData.y > state.position.y) {
-        direction = 'left'
-      } else if (this.object.userData.y < state.position.y) {
-        direction = 'right'
-      }
-
-      if (direction) this.object.direction = direction
-
       this.object.userData.x = state.position.x
       this.object.userData.y = state.position.y
+
+    } else if (patch.path.indexOf('direction') !== -1) {
+      this.object.direction = patch.value
     }
+
 
   }
 

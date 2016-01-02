@@ -51,11 +51,12 @@ var helpers = {
       DOOR: 0,
       LIGHT: 1,
       CHEST: 3,
+      PLAYER: 10,
 
       // items 100~400
       ITEM_COIN: 100,
 
-      ENEMY_RAT: 1000,
+      ENEMY: 1000,
     },
 
     // common classes

@@ -27,8 +27,18 @@ export default class Door extends THREE.Object3D {
       , light = new THREE.PointLight(lightColor, 1.5, 5); // Spotlight would be better here
 
     light.position.set(0, 0.7, -0.25)
-
     this.add(light)
+
+    this.getEntity().on('mouseover', this.onMouseOver.bind(this))
+    this.getEntity().on('mouseout', this.onMouseOut.bind(this))
+  }
+
+  onMouseOver (tileSelection) {
+    tileSelection.setColor(COLOR_GREEN)
+  }
+
+  onMouseOut (tileSelection) {
+    tileSelection.setColor()
   }
 
 }

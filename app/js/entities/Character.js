@@ -1,16 +1,17 @@
 export default class Character extends THREE.Object3D {
 
-  constructor (gender = 'man') {
+  constructor (data) {
     super()
 
+    this.userData = data
+
     this.textures = {
-      top: ResourceManager.get( 'character-' + gender + '-top' ),
-      bottom: ResourceManager.get( 'character-' + gender + '-bottom' ),
-      left: ResourceManager.get( 'character-' + gender + '-left' ),
-      right: ResourceManager.get( 'character-' + gender + '-right' )
+      top: ResourceManager.get( 'character-' + this.userData.gender + '-top' ),
+      bottom: ResourceManager.get( 'character-' + this.userData.gender + '-bottom' ),
+      left: ResourceManager.get( 'character-' + this.userData.gender + '-left' ),
+      right: ResourceManager.get( 'character-' + this.userData.gender + '-right' )
     }
 
-    this.gender = gender
     this._direction = "bottom"
 
     this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -19,9 +20,13 @@ export default class Character extends THREE.Object3D {
       fog: true
     }))
     this.add(this.sprite)
-    this.sprite.position.y = 0.1
+    this.sprite.position.y = 0.5
 
-    this.scale.set(3, 3, 3)
+    this.sprite.scale.set(3, 3, 3)
+  }
+
+  get label () {
+    return `${ this.userData.name } - LVL ${ this.userData.lvl }`
   }
 
   set direction (direction) {
@@ -31,7 +36,7 @@ export default class Character extends THREE.Object3D {
     this.sprite.material.map = texture
 
     var scale = SCALES[ texture.image.width ]
-    this.scale.set(scale, scale, scale)
+    this.sprite.scale.set(scale, scale, scale)
   }
 
 }

@@ -4,12 +4,11 @@ var Unit = require('./Unit')
 
 class Enemy extends Unit {
 
-  constructor (type) {
+  constructor (kind) {
     super()
 
-    this.type = type
+    this.kind = kind
     this.lvl = 1
-
     this.setHP(8)
 
     // this.armor = 0

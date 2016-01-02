@@ -27,6 +27,11 @@ export default class HUD {
     this.expbar = new ExpBar()
     this.scene.add(this.expbar)
 
+    //
+    // Label
+    this.selectionText = new Text2D("WELCOME", { font: "50px primary", fillStyle: '#fff', antialias: false })
+    this.scene.add(this.selectionText)
+
     // Resources
     this.resources = new Resources()
     this.scene.add(this.resources)
@@ -46,6 +51,9 @@ export default class HUD {
     var characterMarginRatio = 8 // "magic number" due blank spaces on all sprites (they're all centered power-of-two)
     this.character.position.set(- window.innerWidth / 2 + this.character.width + HUD_MARGIN * characterMarginRatio, window.innerHeight / 2 - this.character.height - HUD_MARGIN * characterMarginRatio, 0)
     this.levelUpButton.position.set(this.character.position.x + HUD_MARGIN * HUD_SCALE, this.character.position.y - this.levelUpButton.height + (HUD_SCALE/3 * HUD_SCALE), 1)
+
+    // selection text
+    this.selectionText.position.set(0, window.innerHeight / 2 - this.selectionText.height, 0)
 
     this.lifebar.position.set(- window.innerWidth / 2 + this.lifebar.width, - window.innerHeight / 2 + this.lifebar.height * 1.7, 0)
     this.manabar.position.set(- window.innerWidth / 2 + this.lifebar.width * 1.65, this.lifebar.position.y - HUD_SCALE, 0)

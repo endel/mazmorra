@@ -29,6 +29,9 @@ export default class Lifebar extends THREE.Object3D {
       , usableHeight = totalHeight - unusableHeight
       , usableRatio = ((totalHeight - unusableHeight * 2)/totalHeight)
 
+  }
+
+  set (percentage) {
     // (1 - %)
     var percentage = Math.random()
     var finalPercentage = (unusableHeight/totalHeight) + (usableRatio - (percentage * usableRatio)) // (unusableHeight/totalHeight) // - (0.6*usableRatio)
