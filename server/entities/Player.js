@@ -14,9 +14,9 @@ class Player extends Unit {
     this.lvl = 1
 
     // hit | mana | experience points
-    this.setHP(100)
-    this.setMP(100)
-    this.setXP(0, 100)
+    this.hp = this.hpMax = 100
+    this.mp = this.mpMax = 100
+    this.xpMax = 100
 
     this.attributes = {
       strenght: 5,

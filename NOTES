@@ -1,7 +1,13 @@
 TODO:
 
-- adding / removing entities by array **index**, does it work all the time? Shouldn't we use object ids instead?
 - battle!
+  - reducing life
+  - dropping gold
+  - dropping items
 - leaving and entering rooms
+
+- inventory system!
+
+- chest
 
 Family knight

@@ -5,9 +5,12 @@ var dungeon  = require('../../shared/dungeon')
 
   , PF = require('pathfinding')
 
+  , GridUtils  = require('../utils/GridUtils')
+
   // entities
   , Player  = require('../entities/Player')
   , Enemy  = require('../entities/Enemy')
+  , Unit  = require('../entities/Unit')
   , SwitchEntity  = require('../entities/SwitchEntity')
 
 class DungeonState {
@@ -25,14 +28,13 @@ class DungeonState {
     this.entities = {}
     this.players = {}
 
-    this.pathgrid = new PF.Grid(this.grid.map(line => {
-      // 0 = walkable, 1 = blocked
-      return line.map(type => (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1)
-    }))
+    this.gridUtils = new GridUtils(this.entities)
+
+    // 0 = walkable, 1 = blocked
+    this.pathgrid = new PF.Grid(this.grid.map(line => { return line.map(type => (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1) }))
     this.finder = new PF.AStarFinder(); // { allowDiagonal: true, dontCrossCorners: true }
 
     this.startPosition = this.getStartPosition()
-
     this.createEntities()
   }
 
@@ -42,7 +44,7 @@ class DungeonState {
   createPlayer (client) {
     var player = new Player(client.id)
     player.type = helpers.ENTITIES.PLAYER
-    player.position.on('move', this.onEntityMove.bind(this, player))
+    player.position.on('move', this.onEntityMove.bind(this))
     player.position.set(this.startPosition.y, this.startPosition.x)
 
     this.addEntity(player)
@@ -65,9 +67,10 @@ class DungeonState {
 
     this.rooms.forEach(room => {
       // if (helpers.randInt(0, 3) === 3) {
-        var enemy = new Enemy('skeleton')
+        // var enemy = new Enemy('skeleton')
+        var enemy = new Enemy('rabbit')
         enemy.type = helpers.ENTITIES.ENEMY
-        enemy.position.on('move', this.onEntityMove.bind(this, enemy))
+        enemy.position.on('move', this.onEntityMove.bind(this))
         enemy.position.set(
           room.position.y + 1 + helpers.randInt(0, room.size.y - 3),
           room.position.x + 1 + helpers.randInt(0, room.size.x - 3)
@@ -78,23 +81,58 @@ class DungeonState {
 
   }
 
-  onEntityMove (entity, prevX, prevY, currentX, currentY) {
+  onEntityMove (moveEvent, prevX, prevY, currentX, currentY) {
+    var entity = moveEvent.target
+
+    // check if target position has been changed
+    if (entity.position.target) {
+      if (currentX === entity.position.target.position.x &&
+          currentY === entity.position.target.position.y) {
+        console.log("Reached!")
+        moveEvent.cancel()
+
+        return
+      }
+
+      if (
+          entity.position.destiny && (
+            entity.position.destiny.x !== entity.position.target.position.x ||
+            entity.position.destiny.y !== entity.position.target.position.y
+          )
+      ) {
+        console.log("Recompute position...")
+        entity.position.x = currentX
+        entity.position.y = currentY
+        this.move(entity, { x: entity.position.target.position.y, y: entity.position.target.position.x }, false)
+      }
+
+    }
+
     // if (prevX && prevY) this.pathgrid.setWalkableAt(prevX, prevY, true)
     // console.log(entity, currentX, currentY)
     // this.pathgrid.setWalkableAt(currentX, currentY, false)
   }
 
-  move (client, destiny) {
+  move (player, destiny, allowChangeTarget) {
+    if (typeof(allowChangeTarget)==="undefined") {
+      allowChangeTarget = true
+    }
+
     var moves = this.finder.findPath(
-      client.player.position.x, client.player.position.y,
+      player.position.x, player.position.y,
       destiny.y, destiny.x, // TODO: why need to invert x/y here?
       this.pathgrid.clone() // FIXME: we shouldn't create leaks that way!
     );
 
-    console.log(this.getEntityAt(destiny.x, destiny.y))
+    if (allowChangeTarget) {
+      player.position.target = this.gridUtils.getEntityAt(destiny.x, destiny.y)
+      if (player.position.target instanceof Enemy) {
+        player.attack(player.position.target)
+      }
+    }
 
     moves.shift() // first block is always the starting point, we don't need it
-    client.player.position.moveTo(moves)
+    player.position.moveTo(moves)
   }
 
   update (deltaTime) {
@@ -115,17 +153,6 @@ class DungeonState {
 
     var rand = helpers.randInt(0, likelyTiles.length-1)
     return { x: likelyTiles[ rand ], y: firstRoom.position.y + 1 }
-  }
-
-  getEntityAt (x, y) {
-    var entities = []
-      for (var id in this.entities) {
-        if (this.entities[ id ].position.y == x &&
-            this.entities[ id ].position.x == y) {
-          entities.push(this.entities[ id ])
-        }
-      }
-    return entities
   }
 
   toJSON () {

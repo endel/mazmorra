@@ -47,7 +47,7 @@ class DungeonRoom extends Room {
       , value = data[1]
 
     if (key == 'pos') {
-      this.state.move(client, value)
+      this.state.move(client.player, value, true)
     }
   }
 

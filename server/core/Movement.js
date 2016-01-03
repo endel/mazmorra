@@ -14,14 +14,21 @@ class Movement extends EventEmitter {
     this.unit = unit
   }
 
+  get destiny () {
+    var lastIndex = this.pending.length - 1
+    return (lastIndex !== -1) ? { x: this.pending[ lastIndex ][ 0 ], y: this.pending[ lastIndex ][ 1 ] } : null
+  }
+
   get x () { return this.position.x }
+  set x (x) { this.position.x = x }
   get y () { return this.position.y }
+  set y (y) { this.position.y = y }
 
   set (x, y) {
-    this.emit('move', this.position.x, this.position.y, x, y)
+    var event = new MoveEvent(this.unit)
+    this.emit('move', event, this.position.x, this.position.y, x, y)
 
-    var direction = null
-
+    // change direction
     if (this.position.x < x) {
       this.unit.direction = 'bottom'
 
@@ -35,8 +42,10 @@ class Movement extends EventEmitter {
       this.unit.direction = 'right'
     }
 
-    this.position.x = x
-    this.position.y = y
+    if ( event.valid() ) {
+      this.position.x = x
+      this.position.y = y
+    }
   }
 
   moveTo (pending) {
@@ -71,5 +80,14 @@ class Movement extends EventEmitter {
     return this.position
   }
 
+}
+
+class MoveEvent {
+  constructor (target) {
+    this.isCancelled = false
+    this.target = target
+  }
+  cancel () { this.isCancelled = true }
+  valid () { return !this.isCancelled }
 }
 module.exports = Movement

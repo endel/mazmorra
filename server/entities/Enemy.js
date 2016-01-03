@@ -9,7 +9,10 @@ class Enemy extends Unit {
 
     this.kind = kind
     this.lvl = 1
-    this.setHP(8)
+
+    this.hp = this.hpMax = 80
+    // this.mp = this.mpMax = 100
+    // this.xpMax = 100
 
     // this.armor = 0
     // this.damage = 1
