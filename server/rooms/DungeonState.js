@@ -128,6 +128,8 @@ class DungeonState {
       player.position.target = this.gridUtils.getEntityAt(destiny.x, destiny.y)
       if (player.position.target instanceof Enemy) {
         player.attack(player.position.target)
+      } else {
+        player.attack(null)
       }
     }
 

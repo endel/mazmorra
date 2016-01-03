@@ -68,6 +68,7 @@ class Movement extends EventEmitter {
       if (this.pending.length > 0) {
         for (var i=0; i<moves; i++) {
           pos = this.pending.shift()
+          // console.log(pos)
           this.set(pos[0], pos[1])
         }
 

@@ -28,6 +28,7 @@ export default class Level extends EventEmitter {
     this.room = this.colyseus.join('grass')
     this.room.on('update', this.onRoomUpdate.bind(this))
     this.room.on('error', (err) => console.error(err))
+    this.patchId = 0
 
     this.entities = {}
 
@@ -117,14 +118,14 @@ export default class Level extends EventEmitter {
       this.setInitialState(state)
 
     } else {
-      console.log("Patches:", patches)
+      this.patchId++
       patches.map(patch => {
-        if (patch.op === "remove" && patch.path.indexOf("/entities") !== -1) {
+        if (patch.op === "remove" && patch.path.indexOf("/entities") !== -1 && patch.path.indexOf("/action") === -1) {
           let [ _, index ] = patch.path.match(/entities\/([a-zA-Z0-9_-]+)/)
           this.removeEntity(this.entities[ index ])
           delete this.entities[ index ]
 
-        } else if (patch.op === "add" && patch.path.indexOf("/entities") !== -1) {
+        } else if (patch.op === "add" && patch.path.indexOf("/entities") !== -1 && patch.path.indexOf("/action") === -1) {
           console.log(patch)
           // create new player
           let entity = this.generator.createEntity(patch.value)
@@ -142,7 +143,7 @@ export default class Level extends EventEmitter {
             op: patch.op,
             path: attribute,
             value: patch.value
-          })
+          }, this.patchId)
         }
 
       })
@@ -205,6 +206,8 @@ export default class Level extends EventEmitter {
 
   playerAction () {
     if (!this.targetPosition) return false;
+
+    this.playerEntity.emit('action-requested')
 
     this.room.send(['pos', {
       x: this.targetPosition.x,

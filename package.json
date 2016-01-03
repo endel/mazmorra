@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "behaviour.js": "^0.2.1",
-    "clock.js": "^1.0.5",
+    "clock-timer.js": "^1.0.0",
     "colyseus.js": "^0.2.0",
     "keycode.js": "0.0.1",
     "lerp": "^1.0.3",

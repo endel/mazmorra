@@ -33,20 +33,6 @@ export default class Enemy extends THREE.Object3D {
 
     this.addBehaviour(new DangerousThing)
     this.addBehaviour(new NearPlayerOpacity)
-
-    // // TODO: change me
-    // setInterval(() => {
-    //   var directions = Object.keys(this.textures)
-    //   var currentIndex = directions.indexOf(this._direction)
-    //
-    //   this._direction =( currentIndex < 3) ? directions[currentIndex+1] : directions[0]
-    //   var texture = this.textures[ this._direction ]
-    //
-    //   this.sprite.material.map = texture
-    //
-    //   var scale = SCALES[ texture.image.width ]
-    //   this.sprite.scale.set(scale, scale, scale)
-    // }, 2000)
   }
 
   get label () {

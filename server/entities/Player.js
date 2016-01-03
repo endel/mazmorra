@@ -29,7 +29,7 @@ class Player extends Unit {
     this.damage = 1
 
     this.walkSpeed = 600
-    this.attackSpeed = 600
+    this.attackSpeed = 1000
   }
 
 }

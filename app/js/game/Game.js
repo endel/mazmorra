@@ -1,4 +1,4 @@
-import Clock from 'clock.js'
+import Clock from 'clock-timer.js'
 import Level from './Level'
 import HUD from './HUD'
 

@@ -14,7 +14,7 @@ class Unit extends Entity {
     this.position = new Movement(this)
     this.direction = 'bottom'
 
-    this.currentAction = null
+    this.action = null
 
     this.hpCurrent = 1; this.hpMax = 1;
     this.mpCurrent = 0; this.mpMax = 0;
@@ -29,13 +29,15 @@ class Unit extends Entity {
 
     this.armor = 0
     this.damage = 1
+    this.damageAttribute = 'strenght'
+    this.criticalBonus = 1.5 // damage * criticalBonus (on critical)
 
     // walking attributes
     this.walkSpeed = 1000
 
     // attack attributes
     this.attackDistance = 1
-    this.attackSpeed = 1000
+    this.attackSpeed = 2000
   }
 
   get hp () { return this.hpCurrent; }
@@ -49,12 +51,15 @@ class Unit extends Entity {
 
   update (deltaTime) {
     this.position.update(deltaTime)
-    if (this.currentAction) this.currentAction.update()
+    if (this.action) this.action.update(deltaTime)
   }
 
   attack (defender) {
-    if (!this.currentAction || (this.currentAction instanceof BattleAction && this.currentAction.defender !== defender)) {
-      this.currentAction = new BattleAction(this, defender)
+    if (defender === null) {
+      this.action = null
+
+    } else if (!this.action || (this.action instanceof BattleAction && this.action.defender !== defender)) {
+      this.action = new BattleAction(this, defender)
     }
   }
 
