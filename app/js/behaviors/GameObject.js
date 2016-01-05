@@ -3,9 +3,13 @@ import { Behaviour } from 'behaviour.js'
 import BattleBehaviour from './BattleBehaviour'
 import lerp from 'lerp'
 
+import helpers from '../../../shared/helpers'
+
 export default class GameObject extends Behaviour {
 
   onAttach (generator) {
+    this.lastPatchId = 0
+
     this.nextPoint = null
     this.generator = generator
 
@@ -18,44 +22,62 @@ export default class GameObject extends Behaviour {
   update () {
     if (this.nextPoint) {
       let destX = this.nextPoint.x
-        , destZ = this.nextPoint.z;
+        , destZ = this.nextPoint.z
+        , lerpTime = 0.09
 
       if (this.battleBehaviour.togglePosition) {
-        destX += (this.battleBehaviour.attackingPoint.x - this.nextPoint.x) / 2
-        destZ += (this.battleBehaviour.attackingPoint.z - this.nextPoint.z) / 2
+        destX += (this.battleBehaviour.attackingPoint.x - this.nextPoint.x) / 3
+        destZ += (this.battleBehaviour.attackingPoint.z - this.nextPoint.z) / 3
+        lerpTime = 0.2
       }
 
-      this.object.position.x = lerp(this.object.position.x, destX, 0.09)
-      this.object.position.z = lerp(this.object.position.z, destZ, 0.09)
+      this.object.position.x = lerp(this.object.position.x, destX, lerpTime)
+      this.object.position.z = lerp(this.object.position.z, destZ, lerpTime)
     }
   }
 
-  onPatch (state, patch) { // , patchId
+  onPatch (state, patch, patchId) {
     if (patch.path.indexOf('position') !== -1) {
       // TODO: possible leak here
       this.nextPoint = this.generator.fixTilePosition(this.object.position.clone(), state.position.y, state.position.x)
 
       this.object.userData.x = state.position.x
       this.object.userData.y = state.position.y
-      console.log("position!")
+
+    } else if (patch.path.indexOf('hp') !== -1) {
+      console.log(patch.value)
 
     } else if (patch.path.indexOf('direction') !== -1) {
       this.object.direction = patch.value
 
     } else if (patch.path.indexOf('action') !== -1) {
-      if (!this.battleBehaviour.isAttacking && state.action.type == "attack") {
-        console.log("action!", state.action)
+      if (patchId > this.lastPatchId) {
+        if (!this.battleBehaviour.isAttacking && state.action.type == "attack") {
+          this.attackingPoint = this.generator.fixTilePosition(this.object.position.clone(), state.action.position.y, state.action.position.x)
+          this.entity.emit('attack-start', this.attackingPoint)
+        }
 
-        this.attackingPoint = this.generator.fixTilePosition(this.object.position.clone(), state.action.position.y, state.action.position.x)
-        this.entity.emit('attack', this.attackingPoint)
+        let text = `-${ state.action.damage }`
+          , kind = 'attention'
 
-        state.action.type
-        state.action.missed
-        state.action.lastHitTime
-        state.action.damage
-        state.action.critical
+        if (state.action.missed) {
+          kind = 'warn'
+          text = 'miss'
+        }
+
+        // create label entity
+        this.generator.createEntity({
+          type: helpers.ENTITIES.TEXT_EVENT,
+          text: text,
+          kind: kind,
+          special: state.action.critical,
+          position: state.action.position
+        })
+        this.entity.emit('attack', state.action)
       }
     }
+
+    this.lastPatchId = patchId
   }
 
   onDestroy () {

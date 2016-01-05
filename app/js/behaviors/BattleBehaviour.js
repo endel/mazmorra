@@ -10,6 +10,7 @@ export default class BattleBehaviour extends Behaviour {
     this.attackingInterval = null
 
     this.on('attack', this.onAttack.bind(this))
+    this.on('attack-start', this.onAttackStart.bind(this))
     this.on('action-requested', this.disable.bind(this))
   }
 
@@ -22,7 +23,11 @@ export default class BattleBehaviour extends Behaviour {
     }
   }
 
-  onAttack (attackingPoint) {
+  onAttack (data) {
+    // show damage / miss / critical
+  }
+
+  onAttackStart (attackingPoint) {
     if (this.isAttacking) return false;
 
     this.isAttacking = true

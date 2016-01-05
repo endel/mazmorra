@@ -52,6 +52,7 @@ var helpers = {
       LIGHT: 1,
       CHEST: 3,
       PLAYER: 10,
+      TEXT_EVENT: 11,
 
       // items 100~400
       ITEM_COIN: 100,

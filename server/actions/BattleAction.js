@@ -25,9 +25,9 @@ class BattleAction extends EventEmitter {
 
   attack () {
     console.log("attack!")
-    let d20 = Math.floor(Math.random() * 20)
+    let d20 = Math.ceil(Math.random() * 20)
 
-    this.missed = (d20 == 1)
+    this.missed = (d20 <= this.defender.armor)
     this.critical = (d20 == 20)
 
     if (!this.missed) {
@@ -35,6 +35,10 @@ class BattleAction extends EventEmitter {
       if (this.critical) {
         this.damage *= this.attacker.criticalBonus
       }
+
+      // TODO: consider defender attributes to
+      this.defender.hp -= this.damage
+      console.log(this.damage, this.defender.hp)
     }
   }
 

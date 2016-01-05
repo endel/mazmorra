@@ -51,8 +51,6 @@ export default class CharacterController extends Behaviour {
     this.camera.position.y = this.originalY + 12
   }
 
-  onDestroy () {
-    // if (this.tween) this.tween.dispose()
-  }
+  onDestroy () { }
 
 }

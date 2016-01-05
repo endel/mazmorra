@@ -1,4 +1,4 @@
-import Text2D from '../utils/Text2D'
+import { Text2D, textAlign } from 'three-text2d'
 
 export default class Character extends THREE.Object3D {
 
@@ -15,11 +15,13 @@ export default class Character extends THREE.Object3D {
     this.height = (this.sprite.material.map.image.height * HUD_SCALE) / 2
 
     this.levelText = new Text2D("1", {
+      align: textAlign.left,
       font: "50px primary",
       fillStyle: '#d0c01c',
       antialias: false
     })
-    this.levelText.position.x = this.levelText._canvas.width * 3 // FIXME!
+    this.levelText.position.x = (HUD_MARGIN * 2) * HUD_SCALE
+    this.levelText.position.y = HUD_MARGIN * HUD_SCALE
     this.add(this.levelText)
 
     window.text = this.levelText

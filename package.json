@@ -49,6 +49,7 @@
     "lerp": "^1.0.3",
     "random-seed": "^0.3.0",
     "tiny-emitter": "^1.0.2",
+    "three-text2d": "file:../three-text2d",
     "tweener": "^0.1.28"
   }
 }

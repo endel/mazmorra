@@ -11,6 +11,7 @@ import Chest from '../../entities/Chest'
 import TileSelectionPreview from '../../entities/TileSelectionPreview'
 import LightPole from '../../entities/LightPole'
 import Door from '../../entities/Door'
+import TextEvent from '../../entities/TextEvent'
 
 export default class LevelGenerator {
 
@@ -49,6 +50,10 @@ export default class LevelGenerator {
 
       case helpers.ENTITIES.LIGHT:
         element = new LightPole()
+        break;
+
+      case helpers.ENTITIES.TEXT_EVENT:
+        element = new TextEvent(data)
         break;
     }
 

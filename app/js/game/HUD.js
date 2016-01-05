@@ -3,7 +3,7 @@ import ExpBar from '../hud/ExpBar'
 import Resources from '../hud/Resources'
 import Character from '../hud/Character'
 import LevelUpButton from '../hud/LevelUpButton'
-import Text2D from '../utils/Text2D'
+import { Text2D, textAlign } from 'three-text2d'
 
 window.HUD_MARGIN = 2.5
 window.HUD_SCALE = 9
@@ -53,7 +53,7 @@ export default class HUD {
     this.levelUpButton.position.set(this.character.position.x + HUD_MARGIN * HUD_SCALE, this.character.position.y - this.levelUpButton.height + (HUD_SCALE/3 * HUD_SCALE), 1)
 
     // selection text
-    this.selectionText.position.set(0, window.innerHeight / 2 - this.selectionText.height, 0)
+    this.selectionText.position.set(0, window.innerHeight / 2 - (HUD_MARGIN * HUD_SCALE), 0)
 
     this.lifebar.position.set(- window.innerWidth / 2 + this.lifebar.width, - window.innerHeight / 2 + this.lifebar.height * 1.7, 0)
     this.manabar.position.set(- window.innerWidth / 2 + this.lifebar.width * 1.65, this.lifebar.position.y - HUD_SCALE, 0)

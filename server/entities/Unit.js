@@ -16,7 +16,7 @@ class Unit extends Entity {
 
     this.action = null
 
-    this.hpCurrent = 1; this.hpMax = 1;
+    this.hpCurrent = 50; this.hpMax = 50;
     this.mpCurrent = 0; this.mpMax = 0;
     this.xpCurrent = 0; this.xpMax = 10;
 
@@ -27,7 +27,7 @@ class Unit extends Entity {
       vitality: 1
     }
 
-    this.armor = 0
+    this.armor = 1
     this.damage = 1
     this.damageAttribute = 'strenght'
     this.criticalBonus = 1.5 // damage * criticalBonus (on critical)
@@ -41,17 +41,17 @@ class Unit extends Entity {
   }
 
   get hp () { return this.hpCurrent; }
-  set hp (hp) { this.hpCurrent = (hp > this.hpMax) ? this.hpMax : hp }
+  set hp (hp) { this.hpCurrent = Math.max(0, Math.min(hp, this.hpMax)) }
 
   get mp () { return this.mpCurrent; }
-  set mp (mp) { this.mpCurrent = (mp > this.mpMax) ? this.mpMax : mp }
+  set mp (mp) { this.mpCurrent = Math.max(0, Math.min(mp, this.mpMax)) }
 
   get xp () { return this.xpCurrent; }
-  set xp (xp) { this.xpCurrent = (xp > this.xpMax) ? this.xpMax : xp }
+  set xp (xp) { this.xpCurrent = Math.max(0, Math.min(xp, this.xpMax)) }
 
   update (deltaTime) {
-    this.position.update(deltaTime)
     if (this.action) this.action.update(deltaTime)
+    this.position.update(deltaTime)
   }
 
   attack (defender) {

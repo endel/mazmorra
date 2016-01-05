@@ -7,11 +7,12 @@ import { createComponentSystem } from 'behaviour.js'
 window.TILE_SIZE = 3
 
 // list of colors (for highlight)
-window.COLOR_RED = 0xd00000
-window.COLOR_GREEN = 0x6ca018
+window.COLOR_RED = new THREE.Color(0xd00000)
+window.COLOR_GREEN = new THREE.Color(0x6ca018)
+window.COLOR_YELLOW = new THREE.Color(0xfcf458)
 
 // window.CLEAR_COLOR = 0x440000 // red / inferno
-window.CLEAR_COLOR = 0x002a0d // green / forest
+window.CLEAR_COLOR = new THREE.Color(0x002a0d) // green / forest
 // window.CLEAR_COLOR = 0x000c4c // blue / ice
 
 window.clock = new Clock();
@@ -82,7 +83,7 @@ export default class Game {
     this.stats = new Stats();
     this.stats.domElement.style.position = 'absolute';
     this.stats.domElement.style.top = '0px';
-    this.container.appendChild( this.stats.domElement );
+    // this.container.appendChild( this.stats.domElement );
   }
 
   onSetupLevel (state) {

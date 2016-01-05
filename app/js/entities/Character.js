@@ -17,7 +17,7 @@ export default class Character extends THREE.Object3D {
     this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: this.textures.bottom,
       color: 0xffffff,
-      fog: true
+      fog: true,
     }))
     this.add(this.sprite)
     this.sprite.position.y = 0.5

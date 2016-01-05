@@ -17,6 +17,10 @@ export default class HasLifebar extends Behaviour {
     this.on('mouseout', this.onMouseOut.bind(this))
   }
 
+  update () {
+    this.lifebar.progress = (this.object.userData.hpCurrent / this.object.userData.hpMax)
+  }
+
   onMouseOver (tileSelection) {
     this.lifebar.visible = true
     tileSelection.setColor(COLOR_RED)
