@@ -8,41 +8,42 @@ import { Text2D, textAlign } from 'three-text2d'
 window.HUD_MARGIN = 2.5
 window.HUD_SCALE = 9
 
-export default class HUD {
+export default class HUD extends THREE.Scene {
 
   constructor () {
+    super()
+
+    this.playerEntity = null
 
     this.camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, - 1, 10 );
     this.camera.position.z = 10
 
-    this.scene = new THREE.Scene()
-
     // Life / Mana / Expr
     this.manabar = new Lifebar('mana')
-    this.scene.add(this.manabar)
+    this.add(this.manabar)
 
     this.lifebar = new Lifebar()
-    this.scene.add(this.lifebar)
+    this.add(this.lifebar)
 
     this.expbar = new ExpBar()
-    this.scene.add(this.expbar)
+    this.add(this.expbar)
 
     //
     // Label
     this.selectionText = new Text2D("WELCOME", { font: "50px primary", fillStyle: '#fff', antialias: false })
-    this.scene.add(this.selectionText)
+    this.add(this.selectionText)
 
     // Resources
     this.resources = new Resources()
-    this.scene.add(this.resources)
+    this.add(this.resources)
 
     // Character
     this.character = new Character()
-    this.scene.add(this.character)
+    this.add(this.character)
 
     // Level Up Button
     this.levelUpButton = new LevelUpButton()
-    // this.scene.add(this.levelUpButton)
+    // this.add(this.levelUpButton)
 
     this.resize()
   }
@@ -53,11 +54,11 @@ export default class HUD {
     this.levelUpButton.position.set(this.character.position.x + HUD_MARGIN * HUD_SCALE, this.character.position.y - this.levelUpButton.height + (HUD_SCALE/3 * HUD_SCALE), 1)
 
     // selection text
-    this.selectionText.position.set(0, window.innerHeight / 2 - (HUD_MARGIN * HUD_SCALE), 0)
+    this.selectionText.position.set(0, window.innerHeight / 2 - (HUD_MARGIN * 2 * HUD_SCALE), 0)
 
-    this.lifebar.position.set(- window.innerWidth / 2 + this.lifebar.width, - window.innerHeight / 2 + this.lifebar.height * 1.7, 0)
-    this.manabar.position.set(- window.innerWidth / 2 + this.lifebar.width * 1.65, this.lifebar.position.y - HUD_SCALE, 0)
-    this.expbar.position.set(- window.innerWidth / 2 + this.lifebar.width + HUD_SCALE * 2, this.lifebar.position.y - this.lifebar.height, 0)
+    this.lifebar.position.set(-this.lifebar.width - HUD_SCALE * (HUD_MARGIN * 3), - window.innerHeight / 2 + this.lifebar.height, 0)
+    this.manabar.position.set(this.manabar.width + HUD_SCALE * (HUD_MARGIN * 3), - window.innerHeight / 2 + this.lifebar.height, 0)
+    this.expbar.position.set(-HUD_SCALE/2, - window.innerHeight / 2 + this.expbar.height - (HUD_SCALE * HUD_MARGIN), 0)
 
     this.resources.position.set(window.innerWidth / 2 - this.resources.width * HUD_MARGIN, window.innerHeight / 2 - this.resources.height * HUD_MARGIN, 0)
 

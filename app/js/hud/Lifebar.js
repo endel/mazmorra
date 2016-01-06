@@ -1,9 +1,10 @@
-var blankPixelArea = 4 // 4 blank pixels
 
 export default class Lifebar extends THREE.Object3D {
 
   constructor (type = 'life') {
     super()
+
+    this.blankPixelArea = 4 // 4 blank pixels
 
     this.fg = new THREE.Sprite(new THREE.SpriteMaterial({
       map: ResourceManager.get("hud-" + type + "-bar-fill"),
@@ -23,27 +24,23 @@ export default class Lifebar extends THREE.Object3D {
 
     this.width = (this.bg.material.map.image.width * HUD_SCALE) / 2
     this.height = (this.bg.material.map.image.height * HUD_SCALE) / 2
+  }
 
+  set (percentage) {
     var totalHeight = this.bg.material.map.image.height
       , unusableHeight = blankPixelArea
       , usableHeight = totalHeight - unusableHeight
       , usableRatio = ((totalHeight - unusableHeight * 2)/totalHeight)
 
-  }
-
-  set (percentage) {
     // (1 - %)
     var percentage = Math.random()
     var finalPercentage = (unusableHeight/totalHeight) + (usableRatio - (percentage * usableRatio)) // (unusableHeight/totalHeight) // - (0.6*usableRatio)
-    var randWaitTime = 1000 + (Math.random() * 1000)
 
     tweener.
       add(this.fg.material.map.offset).
-      wait(randWaitTime).
       to({ y: -finalPercentage }, 400, Tweener.ease.cubicOut)
     tweener.
       add(this.fg.position).
-      wait(randWaitTime).
       to({ y: -finalPercentage }, 400, Tweener.ease.cubicOut)
   }
 

@@ -20,7 +20,7 @@ export default class HasLifebar extends Behaviour {
   }
 
   update () {
-    this.lifebar.progress = (this.object.userData.hpCurrent / this.object.userData.hpMax)
+    this.lifebar.progress = (this.object.userData.hp.current / this.object.userData.hp.max)
   }
 
   onMouseOver (tileSelection) {
@@ -29,7 +29,8 @@ export default class HasLifebar extends Behaviour {
   }
 
   onMouseOut (tileSelection) {
-    this.lifebar.visible = false
+    // only hide on mouseout if enemy didn't took any damage
+    if (this.lifebar.progress == 1) this.lifebar.visible = false
     tileSelection.setColor()
   }
 

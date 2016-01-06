@@ -5,6 +5,7 @@ import Generator from './level/Generator'
 import TileSelectionPreview from '../entities/TileSelectionPreview'
 
 import CharacterController from '../behaviors/CharacterController'
+import HUDController from '../behaviors/HUDController'
 
 import Character from '../entities/Character'
 import Enemy from '../entities/Enemy'
@@ -110,6 +111,12 @@ export default class Level extends EventEmitter {
     // this.scene.add(chest)
   }
 
+  createPlayerBehaviour (entity) {
+    entity.addBehaviour(new CharacterController, this.camera)
+    this.hud.addBehaviour(new HUDController, entity)
+    this.playerEntity = entity.getEntity()
+  }
+
   onRoomUpdate (state, patches) {
     if (!patches) {
       this.emit('setup', state)
@@ -132,8 +139,7 @@ export default class Level extends EventEmitter {
           this.entities[ entity.userData.id ] = entity
 
           if (entity.userData.id === this.colyseus.id) {
-            entity.addBehaviour(new CharacterController, this.camera)
-            this.playerEntity = entity.getEntity()
+            this.createPlayerBehaviour(entity)
           }
 
         } else if (patch.path.indexOf("/entities/") !== -1) {
@@ -200,7 +206,6 @@ export default class Level extends EventEmitter {
   }
 
   getEntityAt (position) {
-    console.log('getEntityAt', position)
     for (var id in this.entities) {
       if (this.entities[ id ].userData.position.x == position.x &&
           this.entities[ id ].userData.position.y == position.y) {

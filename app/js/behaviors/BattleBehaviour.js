@@ -8,7 +8,6 @@ export default class BattleBehaviour extends Behaviour {
 
     this.isAttacking = false
     this.attackingPoint = { x: 0, z: 0 }
-    this.attackingInterval = null
     this.defender = null
 
     this.generator = generator
@@ -22,13 +21,14 @@ export default class BattleBehaviour extends Behaviour {
   disable () {
     this.isAttacking = false
     this.togglePosition = false
-    if (this.attackingInterval) {
-      this.attackingInterval.clear()
-      this.attackingInterval = null
-    }
   }
 
   onAttack (data) {
+    this.togglePosition = true
+    clock.setTimeout(() => { this.togglePosition = false }, 100)
+
+    if (!data.type) { return this.disable(); }
+
     if (!this.isAttacking) {
       this.defender = this.generator.level.getEntityAt(data.position)
 
@@ -61,17 +61,6 @@ export default class BattleBehaviour extends Behaviour {
     this.isAttacking = true
     this.togglePosition = true
     this.attackingPoint = attackingPoint
-
-    var interval = this.object.userData.attackSpeed / 2
-    this.attackingInterval = clock.setInterval(this.onAnimationLoop.bind(this), interval)
-  }
-
-  onAnimationLoop () {
-    if (this.defender.userData.hpCurrent > 0) {
-      this.togglePosition = !this.togglePosition
-    } else {
-      this.disable()
-    }
   }
 
   onDied () {
@@ -81,7 +70,7 @@ export default class BattleBehaviour extends Behaviour {
       add(this.object.sprite.material).
       to({ rotation: Math.PI }, 150, Tweener.ease.cubicInOut).
       add(this.object.position).
-      to({ y: initY }, 300, Tweener.ease.cubicOut).
+      to({ y: initY }, 300, Tweener.ease.bounceOut).
       then(this.detach.bind(this))
   }
 

@@ -3,6 +3,7 @@
 import Highlight from '../effects/Highlight'
 import Pickable from '../behaviors/Pickable'
 import LightOscillator from '../behaviors/LightOscillator'
+import Stretchable from '../behaviors/Stretchable'
 
 var unimportantItems = ['diamond', 'elixir-heal', 'elixir-potion', 'gold', 'life-heal', 'life-potion', 'mana-heal', 'mana-potion']
 
@@ -27,6 +28,7 @@ export default class Item extends THREE.Object3D {
       this.highlight.position.y = 0.7
       this.highlight.position.x -= 0.28
       this.highlight.position.z = -0.4
+      this.highlight.addBehaviour(new Stretchable)
       this.add(this.highlight)
 
       var light = new THREE.SpotLight(0xffffff, 0.5, 50);

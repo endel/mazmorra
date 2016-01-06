@@ -42,6 +42,11 @@ export default class TileSelectionPreview extends THREE.Object3D {
         target.forEach(e => e.__ENTITY__ && e.__ENTITY__.emit('mouseover', this))
       }
     }
+
+    // TODO: improve me
+    // clear highlight color if there's nothing on target
+    if (target.length == 0) this.setColor()
+
     this._target = target
   }
 

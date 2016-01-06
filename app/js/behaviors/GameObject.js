@@ -1,8 +1,9 @@
 import { Behaviour } from 'behaviour.js'
 
 import BattleBehaviour from './BattleBehaviour'
-import lerp from 'lerp'
+import LevelUp from '../effects/LevelUp'
 
+import lerp from 'lerp'
 import helpers from '../../../shared/helpers'
 
 export default class GameObject extends Behaviour {
@@ -13,10 +14,21 @@ export default class GameObject extends Behaviour {
     this.nextPoint = null
     this.generator = generator
 
-    this.battleBehaviour = new BattleBehaviour
-    this.object.addBehaviour(this.battleBehaviour, this.generator)
+    if (typeof(this.object.userData.hp) !== "undefined") {
+      this.actAsUnit()
+    }
 
     this.on('patch', this.onPatch.bind(this))
+  }
+
+  actAsUnit () {
+    if (this.object.userData.hp.current > 0) {
+      this.battleBehaviour = new BattleBehaviour
+      this.object.addBehaviour(this.battleBehaviour, this.generator)
+    } else {
+      // TODO: refactor me
+      this.object.sprite.material.rotation = Math.PI
+    }
   }
 
   update () {
@@ -49,17 +61,23 @@ export default class GameObject extends Behaviour {
         this.entity.emit('died')
       }
 
+    } else if (patch.path.indexOf('lvl') !== -1) {
+      this.object.add( new LevelUp() )
+
     } else if (patch.path.indexOf('direction') !== -1) {
       this.object.direction = patch.value
 
     } else if (patch.path.indexOf('action') !== -1) {
-      if (patchId > this.lastPatchId) {
+      // console.log(patchId > this.lastPatchId, state.action)
+      // if (patchId > this.lastPatchId) {
         // attack
-        this.entity.emit(state.action.type, state.action)
-      }
+        let actionType = state.action.type || this.lastActionType
+        if (actionType) {
+          this.entity.emit(actionType, state.action)
+        }
+        this.lastActionType = state.action.type
+      // }
     }
-
-    this.lastPatchId = patchId
   }
 
   onDetach () {

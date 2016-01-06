@@ -75,6 +75,7 @@ class Movement extends EventEmitter {
         // }
 
         this.lastMove = currentTime
+        // if (this.unit.action) this.unit.action.lastUpdateTime = currentTime + this.unit.walkSpeed
       }
     }
   }

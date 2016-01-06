@@ -44,18 +44,18 @@ export default class Game {
     this.renderer.autoClear = false;
 
     this.scene = new THREE.Scene();
+    this.scene.rotateY(-0.4)
+    window.scene = this.scene;
 
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
 
-    // this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
+    // this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 20000 );
     this.camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -1, 100 );
     this.camera.zoom = ZOOM
     this.camera.updateProjectionMatrix()
-    this.scene.rotateY(-0.4)
 
-    window.scene = this.scene;
-
+    // ORTOGRAPHIC
     // this.camera.position.y = 10;
     // this.camera.position.y = 15;
     // this.camera.position.y = 30;
@@ -104,8 +104,8 @@ export default class Game {
   onWindowResize () {
     this.hud.resize()
 
-    // update camera aspect ratio / projection matrix
-    this.camera.aspect = window.innerWidth / window.innerHeight;
+    // // update camera aspect ratio / projection matrix
+    // this.camera.aspect = window.innerWidth / window.innerHeight;
 
     // update orthogonal camera aspect ratio / projection matrix
     this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -138,11 +138,6 @@ export default class Game {
 
     this.componentSystem.update()
 
-    // update camera position
-    // let position = this.level.players[0].position
-    // this.camera.position.set(position.x, position.y, position.z)
-    // this.camera.lookAt(position)
-
     this.stats.update()
   }
 
@@ -157,7 +152,7 @@ export default class Game {
     this.renderer.clearDepth();
 
     if (this.hud)
-      this.renderer.render( this.hud.scene, this.hud.camera )
+      this.renderer.render( this.hud, this.hud.camera )
   }
 
   raycast () {

@@ -33,6 +33,10 @@ export default class Door extends THREE.Object3D {
     this.getEntity().on('mouseout', this.onMouseOut.bind(this))
   }
 
+  get label () {
+    return "Door"
+  }
+
   onMouseOver (tileSelection) {
     tileSelection.setColor(COLOR_GREEN)
   }

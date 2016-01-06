@@ -1,9 +1,10 @@
-var blankPixelArea = 1
 
 export default class ExpBar extends THREE.Object3D {
 
   constructor () {
     super()
+
+    this.blankPixelArea = 1
 
     this.fg = new THREE.Sprite(new THREE.SpriteMaterial({
       map: ResourceManager.get("hud-exp-bar-fill"),
@@ -25,7 +26,7 @@ export default class ExpBar extends THREE.Object3D {
     this.height = (this.bg.material.map.image.height * HUD_SCALE) / 2
 
     var totalHeight = this.bg.material.map.image.height
-      , unusableHeight = blankPixelArea
+      , unusableHeight = this.blankPixelArea
       , usableHeight = totalHeight - unusableHeight
       , usableRatio = ((totalHeight - unusableHeight * 2)/totalHeight)
 

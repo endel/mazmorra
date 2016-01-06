@@ -1,6 +1,7 @@
 'use strict';
 
 var Entity = require('./Entity')
+var Bar = require('../core/Bar')
 var Movement = require('../core/Movement')
 
 // Actions
@@ -16,9 +17,9 @@ class Unit extends Entity {
 
     this.action = null
 
-    this.hpCurrent = 50; this.hpMax = 50;
-    this.mpCurrent = 0; this.mpMax = 0;
-    this.xpCurrent = 0; this.xpMax = 10;
+    this.hp = new Bar(50)
+    this.mp = new Bar(0)
+    this.xp = new Bar(0, 10)
 
     this.attributes = {
       strenght: 1,
@@ -40,32 +41,69 @@ class Unit extends Entity {
     this.attackSpeed = 2000
   }
 
-  get hp () { return this.hpCurrent; }
-  set hp (hp) { this.hpCurrent = Math.max(0, Math.min(hp, this.hpMax)) }
+  levelUp () {
+    this.lvl ++
 
-  get mp () { return this.mpCurrent; }
-  set mp (mp) { this.mpCurrent = Math.max(0, Math.min(mp, this.mpMax)) }
-
-  get xp () { return this.xpCurrent; }
-  set xp (xp) { this.xpCurrent = Math.max(0, Math.min(xp, this.xpMax)) }
-
-  get isAlive () { return this.hpCurrent > 0 }
-
-  update (deltaTime) {
-    if (this.action && this.action.isEligible)  {
-      this.action.update(deltaTime)
-    // } else {
+    for (let attr in this.attributes) {
+      this.attributes[ attr ]++
     }
-    this.position.update(deltaTime)
+
+    this.hp.current = this.hp.max
+    this.mp.current = this.mp.max
+    this.xp.current = 0
+  }
+
+  onKill (unit) {
+    // compute experience this unit received by killing another one
+    // var xp =  unit.lvl / (this.lvl / 2)
+    var xp =  unit.lvl / (this.lvl / 4)
+
+    // level up!
+    if (this.xp.current + xp > this.xp.max) {
+      xp = (this.xp.current + xp) - this.xp.max
+      this.levelUp()
+    }
+
+    this.xp.current += xp
+  }
+
+  get isAlive () { return this.hp.current > 0 }
+
+  update (currentTime) {
+    // a dead unit can't do much, I guess
+    if (!this.isAlive) return
+
+    if (this.action && this.action.isEligible)  {
+      this.action.update(currentTime)
+    }
+
+    this.position.update(currentTime)
   }
 
   attack (defender) {
     if (defender === null || !defender.isAlive) {
       this.action = null
 
-    } else if (!this.action || (this.action instanceof BattleAction && this.action.defender !== defender)) {
+    } else if (!this.isBattlingAgainst(defender)) {
       this.action = new BattleAction(this, defender)
     }
+  }
+
+  isBattlingAgainst (unit) {
+    return this.action && (this.action instanceof BattleAction && this.action.defender === unit)
+  }
+
+  takeDamage (battleAction) {
+    var damageTaken = battleAction.damage
+
+    if (!this.isBattlingAgainst(battleAction.attacker)) {
+      this.action = new BattleAction(this, battleAction.attacker)
+    }
+
+    // TODO: consider attributes to reduce damage
+    this.hp.current -= damageTaken
+
+    return damageTaken
   }
 
 }

@@ -17,8 +17,7 @@ class BattleAction extends EventEmitter {
     this.damage = null
     this.critical = null
 
-    this.lastHitTime = null
-    this.lastUpdateTime = Date.now()
+    this.lastUpdateTime = null
 
     this.active = false;
   }
@@ -28,7 +27,6 @@ class BattleAction extends EventEmitter {
   }
 
   attack () {
-    console.log("attack!")
     let d20 = Math.ceil(Math.random() * 20)
 
     this.missed = (d20 <= this.defender.armor)
@@ -40,9 +38,14 @@ class BattleAction extends EventEmitter {
         this.damage *= this.attacker.criticalBonus
       }
 
-      // TODO: consider defender attributes to
-      this.defender.hp -= this.damage
-      console.log(this.damage, this.defender.hp)
+      let damageTaken = this.defender.takeDamage(this)
+
+      if (!this.defender.isAlive) {
+        this.attacker.onKill(this.defender)
+      }
+      //
+      // TODO: use damageTaken for lifestealing or other modifiers
+      //
     }
   }
 
@@ -50,7 +53,7 @@ class BattleAction extends EventEmitter {
     this.active = this.isEligible
 
     if (this.active) {
-      let timeDiff = currentTime - this.lastHitTime
+      let timeDiff = currentTime - this.lastUpdateTime
         , attacks = 0
         , pos = null
 
@@ -61,11 +64,9 @@ class BattleAction extends EventEmitter {
         // }
 
         this.attack()
-        this.lastHitTime = currentTime
+        this.lastUpdateTime = currentTime
       }
     }
-
-    this.lastUpdateTime = currentTime
   }
 
   toJSON () {
@@ -75,7 +76,7 @@ class BattleAction extends EventEmitter {
       damage: this.damage,
       critical: this.critical,
       position: this.position,
-      lastHitTime: this.lastHitTime
+      lastUpdateTime: this.lastUpdateTime
     } : null
   }
 

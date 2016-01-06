@@ -88,7 +88,7 @@ class DungeonState {
     if (entity.position.target) {
 
       // TODO: improve me
-      if (entity.position.target instanceof Enemy &&
+      if (entity.position.target instanceof Unit &&
           entity.position.target.isAlive &&
           currentX === entity.position.target.position.x &&
           currentY === entity.position.target.position.y) {
@@ -102,7 +102,6 @@ class DungeonState {
             entity.position.destiny.y !== entity.position.target.position.y
           )
       ) {
-        console.log("Recompute position...")
         entity.position.x = currentX
         entity.position.y = currentY
         this.move(entity, { x: entity.position.target.position.y, y: entity.position.target.position.x }, false)
@@ -131,8 +130,7 @@ class DungeonState {
     if (allowChangeTarget) {
       player.position.target = this.gridUtils.getEntityAt(destiny.x, destiny.y)
       // TODO: refactor me
-      if (player.position.target instanceof Enemy && player.position.target.isAlive) {
-        moves.pop()
+      if (player.position.target instanceof Unit && player.position.target.isAlive) {
         player.attack(player.position.target)
       } else {
         player.attack(null)
@@ -142,9 +140,9 @@ class DungeonState {
     player.position.moveTo(moves)
   }
 
-  update (deltaTime) {
+  update (currentTime) {
     for (var id in this.entities) {
-      this.entities[id].update(deltaTime)
+      this.entities[id].update(currentTime)
     }
   }
 

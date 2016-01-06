@@ -46,9 +46,18 @@ export default class CharacterController extends Behaviour {
 
     // Update camera position
     // var characterPosition = this.object.localToWorld(this.object.position)
+
+    // Ortographic
     this.camera.position.x = this.object.position.x // + (window.innerWidth / window.innerHeight)
     this.camera.position.z = this.object.position.z + 20
     this.camera.position.y = this.originalY + 12
+
+    // // Perspective
+    // this.camera.position.x = this.object.position.x + (window.innerWidth / window.innerHeight)
+    // this.camera.position.z = this.object.position.z + 10
+    // this.camera.position.y = this.object.position.y + 10
+    // this.camera.lookAt(this.object.position)
+
   }
 
   onDestroy () { }
