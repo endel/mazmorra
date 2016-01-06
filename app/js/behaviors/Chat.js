@@ -34,7 +34,7 @@ export default class CharacterController extends Behaviour {
     }
   }
 
-  onDestroy () {
+  onDetach () {
     // if (this.tween) this.tween.dispose()
   }
 

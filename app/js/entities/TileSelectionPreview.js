@@ -30,7 +30,7 @@ export default class TileSelectionPreview extends THREE.Object3D {
   set target (target) {
     if (this._target !== target) {
       if (this._target) {
-        this.setLabel("")
+        this.setLabel(null)
         this._target.forEach(e => e.__ENTITY__ && e.__ENTITY__.emit('mouseout', this))
       }
       if (target) {
@@ -46,6 +46,8 @@ export default class TileSelectionPreview extends THREE.Object3D {
   }
 
   setColor (hex = 0xffffff) {
+    if (hex instanceof THREE.Color) this.lightColors[hex] = hex
+
     if (!this.lightColors[hex]) {
       this.lightColors[hex] = new THREE.Color(hex)
     }
@@ -55,6 +57,8 @@ export default class TileSelectionPreview extends THREE.Object3D {
   }
 
   setLabel (label) {
+    this.labelText.visible = !!label
+
     if (label !== this.labelText.text) {
       this.labelText.text = label
     }

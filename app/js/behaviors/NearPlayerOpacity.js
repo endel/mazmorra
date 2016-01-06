@@ -21,7 +21,7 @@ export default class NearPlayerOpacity extends Behaviour {
     }
   }
 
-  onDestroy () { }
+  onDetach () { }
 
 }
 

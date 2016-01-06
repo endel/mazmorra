@@ -11,7 +11,7 @@ export default class PlayerBehaviour extends Behaviour {
   update () {
   }
 
-  onDestroy () {
+  onDetach () {
     // if (this.tween) this.tween.dispose()
   }
 

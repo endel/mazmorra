@@ -86,11 +86,13 @@ class DungeonState {
 
     // check if target position has been changed
     if (entity.position.target) {
-      if (currentX === entity.position.target.position.x &&
-          currentY === entity.position.target.position.y) {
-        console.log("Reached!")
-        moveEvent.cancel()
 
+      // TODO: improve me
+      if (entity.position.target instanceof Enemy &&
+          entity.position.target.isAlive &&
+          currentX === entity.position.target.position.x &&
+          currentY === entity.position.target.position.y) {
+        moveEvent.cancel()
         return
       }
 
@@ -124,16 +126,18 @@ class DungeonState {
       this.pathgrid.clone() // FIXME: we shouldn't create leaks that way!
     );
 
+    moves.shift() // first block is always the starting point, we don't need it
+
     if (allowChangeTarget) {
       player.position.target = this.gridUtils.getEntityAt(destiny.x, destiny.y)
       if (player.position.target instanceof Enemy) {
+        moves.pop()
         player.attack(player.position.target)
       } else {
         player.attack(null)
       }
     }
 
-    moves.shift() // first block is always the starting point, we don't need it
     player.position.moveTo(moves)
   }
 

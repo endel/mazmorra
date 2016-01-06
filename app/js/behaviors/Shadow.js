@@ -32,7 +32,7 @@ export default class Shadow extends Behaviour {
     this.shadow.scale.set(fixedScale, fixedScale, fixedScale)
   }
 
-  onDestroy () {
+  onDetach () {
     // this.object.remove(this.shadow)
   }
 

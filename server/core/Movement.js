@@ -12,6 +12,7 @@ class Movement extends EventEmitter {
     this.lastMove = 0
 
     this.unit = unit
+    this.active = false
   }
 
   get destiny () {
@@ -66,10 +67,12 @@ class Movement extends EventEmitter {
       moves = Math.floor(timeDiff / this.unit.walkSpeed)
 
       if (this.pending.length > 0) {
-        for (var i=0; i<moves; i++) {
-          pos = this.pending.shift()
-          this.set(pos[0], pos[1])
-        }
+        pos = this.pending.shift()
+        this.set(pos[0], pos[1])
+        // for (var i=0; i<moves; i++) {
+        //   pos = this.pending.shift()
+        //   this.set(pos[0], pos[1])
+        // }
 
         this.lastMove = currentTime
       }

@@ -47,7 +47,7 @@ class Strechable extends Behaviour {
       then(this.shrink.bind(this))
   }
 
-  onDestroy () {
+  onDetach () {
     if (this.tween) this.tween.dispose()
   }
 

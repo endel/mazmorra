@@ -49,13 +49,18 @@ class Unit extends Entity {
   get xp () { return this.xpCurrent; }
   set xp (xp) { this.xpCurrent = Math.max(0, Math.min(xp, this.xpMax)) }
 
+  get isAlive () { return this.hpCurrent > 0 }
+
   update (deltaTime) {
-    if (this.action) this.action.update(deltaTime)
+    if (this.action && this.action.isEligible)  {
+      this.action.update(deltaTime)
+    // } else {
+    }
     this.position.update(deltaTime)
   }
 
   attack (defender) {
-    if (defender === null) {
+    if (defender === null || !defender.isAlive) {
       this.action = null
 
     } else if (!this.action || (this.action instanceof BattleAction && this.action.defender !== defender)) {

@@ -30,7 +30,7 @@ export default class Pickable extends Behaviour {
       then(this.goUp.bind(this))
   }
 
-  onDestroy () {
+  onDetach () {
     if (this.tween) this.tween.dispose()
   }
 

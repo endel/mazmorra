@@ -23,6 +23,10 @@ class BattleAction extends EventEmitter {
     this.active = false;
   }
 
+  get isEligible () {
+    return this.defender.isAlive && (distance(this.attacker.position, this.defender.position) <= this.attacker.attackDistance)
+  }
+
   attack () {
     console.log("attack!")
     let d20 = Math.ceil(Math.random() * 20)
@@ -43,7 +47,7 @@ class BattleAction extends EventEmitter {
   }
 
   update (currentTime) {
-    this.active = (distance(this.attacker.position, this.defender.position) <= this.attacker.attackDistance)
+    this.active = this.isEligible
 
     if (this.active) {
       let timeDiff = currentTime - this.lastHitTime

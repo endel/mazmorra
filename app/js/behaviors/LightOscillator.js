@@ -28,7 +28,7 @@ export default class LightOscillator extends Behaviour {
     this.object.decay = lerp(this.object.decay, this.targetDecay, this.lerpRatio)
   }
 
-  onDestroy () {
+  onDetach () {
     clearInterval(this.oscillateInterval)
   }
 

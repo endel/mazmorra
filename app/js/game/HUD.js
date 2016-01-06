@@ -42,7 +42,7 @@ export default class HUD {
 
     // Level Up Button
     this.levelUpButton = new LevelUpButton()
-    this.scene.add(this.levelUpButton)
+    // this.scene.add(this.levelUpButton)
 
     this.resize()
   }

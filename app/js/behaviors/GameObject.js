@@ -14,7 +14,7 @@ export default class GameObject extends Behaviour {
     this.generator = generator
 
     this.battleBehaviour = new BattleBehaviour
-    this.object.addBehaviour(this.battleBehaviour)
+    this.object.addBehaviour(this.battleBehaviour, this.generator)
 
     this.on('patch', this.onPatch.bind(this))
   }
@@ -45,42 +45,24 @@ export default class GameObject extends Behaviour {
       this.object.userData.y = state.position.y
 
     } else if (patch.path.indexOf('hp') !== -1) {
-      console.log(patch.value)
+      if (patch.value <= 0) {
+        this.entity.emit('died')
+      }
 
     } else if (patch.path.indexOf('direction') !== -1) {
       this.object.direction = patch.value
 
     } else if (patch.path.indexOf('action') !== -1) {
       if (patchId > this.lastPatchId) {
-        if (!this.battleBehaviour.isAttacking && state.action.type == "attack") {
-          this.attackingPoint = this.generator.fixTilePosition(this.object.position.clone(), state.action.position.y, state.action.position.x)
-          this.entity.emit('attack-start', this.attackingPoint)
-        }
-
-        let text = `-${ state.action.damage }`
-          , kind = 'attention'
-
-        if (state.action.missed) {
-          kind = 'warn'
-          text = 'miss'
-        }
-
-        // create label entity
-        this.generator.createEntity({
-          type: helpers.ENTITIES.TEXT_EVENT,
-          text: text,
-          kind: kind,
-          special: state.action.critical,
-          position: state.action.position
-        })
-        this.entity.emit('attack', state.action)
+        // attack
+        this.entity.emit(state.action.type, state.action)
       }
     }
 
     this.lastPatchId = patchId
   }
 
-  onDestroy () {
+  onDetach () {
     if (this.attackingInterval) { this.attackingInterval.clear() }
   }
 

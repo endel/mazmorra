@@ -36,7 +36,9 @@ export default class Enemy extends THREE.Object3D {
   }
 
   get label () {
-    return `${ this.userData.kind } - LVL ${ this.userData.lvl }`
+    if (this.userData.hpCurrent > 0) {
+      return `${ this.userData.kind } - LVL ${ this.userData.lvl }`
+    }
   }
 
   set direction (direction) {

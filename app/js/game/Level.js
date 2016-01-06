@@ -36,7 +36,7 @@ export default class Level extends EventEmitter {
     this.selection = new TileSelectionPreview(this.selectionLight, this.hud.selectionText)
     this.scene.add(this.selectionLight)
 
-    this.generator = new Generator(this.scene, this.colyseus)
+    this.generator = new Generator(this, this.scene, this.colyseus)
 
     // this.entities = this.generator.createEntities()
 
@@ -195,6 +195,16 @@ export default class Level extends EventEmitter {
         this.selectionLight.intensity = 0.5
         this.selectionLight.position.set(object.position.x, 2, object.position.z)
         this.selectionLight.target = object
+      }
+    }
+  }
+
+  getEntityAt (position) {
+    console.log('getEntityAt', position)
+    for (var id in this.entities) {
+      if (this.entities[ id ].userData.position.x == position.x &&
+          this.entities[ id ].userData.position.y == position.y) {
+        return this.entities[ id ]
       }
     }
   }

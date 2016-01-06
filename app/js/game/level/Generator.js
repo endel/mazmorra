@@ -15,7 +15,8 @@ import TextEvent from '../../entities/TextEvent'
 
 export default class LevelGenerator {
 
-  constructor (container, colyseus) {
+  constructor (level, container, colyseus) {
+    this.level = level
     this.container = container
     this.colyseus = colyseus
 

@@ -15,6 +15,8 @@ export default class DangerousThing extends Behaviour {
 
     this.tween = null
     setTimeout(() => this.goUp(), Math.random() * 1500)
+
+    this.on('died', this.detach.bind(this))
   }
 
   goUp () {
@@ -31,7 +33,7 @@ export default class DangerousThing extends Behaviour {
       then(this.goUp.bind(this))
   }
 
-  onDestroy () {
+  onDetach () {
     if (this.tween) this.tween.dispose()
   }
 

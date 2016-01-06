@@ -15,6 +15,8 @@ export default class HasLifebar extends Behaviour {
 
     this.on('mouseover', this.onMouseOver.bind(this))
     this.on('mouseout', this.onMouseOut.bind(this))
+
+    this.on('died', this.detach.bind(this))
   }
 
   update () {
@@ -31,7 +33,7 @@ export default class HasLifebar extends Behaviour {
     tileSelection.setColor()
   }
 
-  onDestroy () {
+  onDetach () {
     this.lifebar.parent.remove(this.lifebar)
   }
 
