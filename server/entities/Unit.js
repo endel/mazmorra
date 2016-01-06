@@ -41,32 +41,6 @@ class Unit extends Entity {
     this.attackSpeed = 2000
   }
 
-  levelUp () {
-    this.lvl ++
-
-    for (let attr in this.attributes) {
-      this.attributes[ attr ]++
-    }
-
-    this.hp.current = this.hp.max
-    this.mp.current = this.mp.max
-    this.xp.current = 0
-  }
-
-  onKill (unit) {
-    // compute experience this unit received by killing another one
-    // var xp =  unit.lvl / (this.lvl / 2)
-    var xp =  unit.lvl / (this.lvl / 4)
-
-    // level up!
-    if (this.xp.current + xp > this.xp.max) {
-      xp = (this.xp.current + xp) - this.xp.max
-      this.levelUp()
-    }
-
-    this.xp.current += xp
-  }
-
   get isAlive () { return this.hp.current > 0 }
 
   update (currentTime) {
@@ -105,6 +79,33 @@ class Unit extends Entity {
 
     return damageTaken
   }
+
+  onKill (unit) {
+    // compute experience this unit received by killing another one
+    // var xp =  unit.lvl / (this.lvl / 2)
+    var xp =  unit.lvl / (this.lvl / 4)
+
+    // level up!
+    if (this.xp.current + xp > this.xp.max) {
+      xp = (this.xp.current + xp) - this.xp.max
+      this.levelUp()
+    }
+
+    this.xp.current += xp
+  }
+
+  levelUp () {
+    this.lvl ++
+
+    for (let attr in this.attributes) {
+      this.attributes[ attr ]++
+    }
+
+    this.hp.current = this.hp.max
+    this.mp.current = this.mp.max
+    this.xp.current = 0
+  }
+
 
 }
 

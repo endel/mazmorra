@@ -1,6 +1,7 @@
 'use strict';
 
 import Highlight from './Highlight'
+import TextEvent from '../entities/TextEvent'
 
 export default class LevelUp extends Highlight {
 

@@ -63,6 +63,14 @@ export default class GameObject extends Behaviour {
 
     } else if (patch.path.indexOf('lvl') !== -1) {
       this.object.add( new LevelUp() )
+      // LEVEL UP text event
+      this.generator.createEntity({
+        type: helpers.ENTITIES.TEXT_EVENT,
+        text: 'UP',
+        kind: 'warn',
+        special: true,
+        position: this.object.userData.position
+      })
 
     } else if (patch.path.indexOf('direction') !== -1) {
       this.object.direction = patch.value
