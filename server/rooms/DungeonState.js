@@ -130,7 +130,8 @@ class DungeonState {
 
     if (allowChangeTarget) {
       player.position.target = this.gridUtils.getEntityAt(destiny.x, destiny.y)
-      if (player.position.target instanceof Enemy) {
+      // TODO: refactor me
+      if (player.position.target instanceof Enemy && player.position.target.isAlive) {
         moves.pop()
         player.attack(player.position.target)
       } else {
