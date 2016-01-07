@@ -4,6 +4,7 @@ import Highlight from '../effects/Highlight'
 import Pickable from '../behaviors/Pickable'
 import LightOscillator from '../behaviors/LightOscillator'
 import Stretchable from '../behaviors/Stretchable'
+import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
 
 var unimportantItems = ['diamond', 'elixir-heal', 'elixir-potion', 'gold', 'life-heal', 'life-potion', 'mana-heal', 'mana-potion']
 

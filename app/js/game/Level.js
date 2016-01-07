@@ -133,7 +133,6 @@ export default class Level extends EventEmitter {
           delete this.entities[ index ]
 
         } else if (patch.op === "add" && patch.path.indexOf("/entities") !== -1 && patch.path.indexOf("/action") === -1) {
-          console.log(patch)
           // create new player
           let entity = this.generator.createEntity(patch.value)
           this.entities[ entity.userData.id ] = entity

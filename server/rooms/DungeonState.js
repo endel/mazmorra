@@ -77,6 +77,7 @@ class DungeonState {
           room.position.y + 1 + helpers.randInt(0, room.size.y - 3),
           room.position.x + 1 + helpers.randInt(0, room.size.x - 3)
         )
+        enemy.state = this
         this.addEntity(enemy)
       // }
     })

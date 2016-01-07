@@ -1,11 +1,15 @@
 'use strict';
 
+var helpers  = require('../../shared/helpers')
+
 var Entity = require('./Entity')
 var Bar = require('../core/Bar')
 var Movement = require('../core/Movement')
 
 // Actions
 var BattleAction = require('../actions/BattleAction')
+
+var state = new WeakMap()
 
 class Unit extends Entity {
 
@@ -41,6 +45,9 @@ class Unit extends Entity {
     this.attackSpeed = 2000
   }
 
+  set state (value) { state.set(this, value) }
+  get state () { return state.get(this) }
+
   get isAlive () { return this.hp.current > 0 }
 
   update (currentTime) {
@@ -52,6 +59,16 @@ class Unit extends Entity {
     }
 
     this.position.update(currentTime)
+  }
+
+  drop () {
+    if (!this.state) return
+
+    let dropped = new Entity
+    dropped.type = helpers.ENTITIES.ITEM_COIN
+    dropped.position = this.position
+
+    this.state.addEntity(dropped)
   }
 
   attack (defender) {
@@ -89,6 +106,11 @@ class Unit extends Entity {
     if (this.xp.current + xp > this.xp.max) {
       xp = (this.xp.current + xp) - this.xp.max
       this.levelUp()
+    }
+
+    // killed unit may drop something
+    if (unit.state) {
+      unit.drop();
     }
 
     this.xp.current += xp

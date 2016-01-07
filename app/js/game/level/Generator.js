@@ -56,6 +56,10 @@ export default class LevelGenerator {
       case helpers.ENTITIES.TEXT_EVENT:
         element = new TextEvent(data)
         break;
+
+      case helpers.ENTITIES.ITEM_COIN:
+        element = new Item('gold')
+        break;
     }
 
     this.fixTilePosition(element.position, data.position.y, data.position.x)

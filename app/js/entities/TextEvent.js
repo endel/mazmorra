@@ -33,7 +33,7 @@ export default class TextEvent extends THREE.Object3D {
       to({ opacity: 0 }, this.fadeTime, Tweener.ease.cubicOut).
       then(this.removeFromParent.bind(this))
 
-    var offsetY = 2
+    var offsetY = 2.5
     if (data.special) {
       offsetY += 1.5
       tweener.add(this.scale).
