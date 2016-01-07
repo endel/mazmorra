@@ -68,6 +68,7 @@ export default class GameObject extends Behaviour {
         type: helpers.ENTITIES.TEXT_EVENT,
         text: 'UP',
         kind: 'warn',
+        ttl: 500,
         special: true,
         position: this.object.userData.position
       })

@@ -1,9 +1,11 @@
 import { Behaviour } from 'behaviour.js'
 import Keycode from 'keycode.js'
 
-export default class CharacterController extends Behaviour {
+export default class Chat extends Behaviour {
 
-  onAttach () {
+  onAttach (room) {
+    this.room = room
+
     this.modal = document.querySelector('.speak-modal')
     this.form = this.modal.querySelector('form')
     this.input = this.form.querySelector('input')
@@ -29,7 +31,7 @@ export default class CharacterController extends Behaviour {
     var message = this.input.value
     if (message !== "" && message !== this.lastMessage) {
       this.lastMessage = message
-      this.entity.emit('chat', message)
+      this.room.send(['msg', message])
       setTimeout(() => this.input.value = "", 500)
     }
   }

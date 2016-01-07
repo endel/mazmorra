@@ -112,7 +112,7 @@ export default class Level extends EventEmitter {
   }
 
   createPlayerBehaviour (entity) {
-    entity.addBehaviour(new CharacterController, this.camera)
+    entity.addBehaviour(new CharacterController, this.camera, this.room)
     this.hud.addBehaviour(new HUDController, entity)
     this.playerEntity = entity.getEntity()
   }
@@ -215,14 +215,14 @@ export default class Level extends EventEmitter {
   }
 
   removeEntity (object) {
-    object.parent.remove(object)
+    // entity may already be removed by this client somehow (text event?)
+    if (object.parent)
+      object.parent.remove(object)
     object.getEntity().destroy()
   }
 
   playerAction () {
     if (!this.targetPosition) return false;
-
-    this.playerEntity.emit('action-requested')
 
     this.room.send(['pos', {
       x: this.targetPosition.x,

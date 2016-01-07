@@ -10,6 +10,7 @@ window.TILE_SIZE = 3
 window.COLOR_RED = new THREE.Color(0xd00000)
 window.COLOR_GREEN = new THREE.Color(0x6ca018)
 window.COLOR_YELLOW = new THREE.Color(0xfcf458)
+window.COLOR_WHITE = new THREE.Color(0xffffff)
 
 // window.CLEAR_COLOR = 0x440000 // red / inferno
 window.CLEAR_COLOR = new THREE.Color(0x002a0d) // green / forest

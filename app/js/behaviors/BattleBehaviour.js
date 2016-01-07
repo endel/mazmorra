@@ -13,8 +13,6 @@ export default class BattleBehaviour extends Behaviour {
     this.generator = generator
 
     this.on('attack', this.onAttack.bind(this))
-    this.on('action-requested', this.disable.bind(this))
-
     this.on('died', this.onDied.bind(this))
   }
 
@@ -50,6 +48,7 @@ export default class BattleBehaviour extends Behaviour {
       type: helpers.ENTITIES.TEXT_EVENT,
       text: text,
       kind: kind,
+      ttl: 100,
       special: data.critical,
       position: data.position
     })

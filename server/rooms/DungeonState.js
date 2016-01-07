@@ -11,6 +11,7 @@ var dungeon  = require('../../shared/dungeon')
   , Player  = require('../entities/Player')
   , Enemy  = require('../entities/Enemy')
   , Unit  = require('../entities/Unit')
+  , Entity  = require('../entities/Entity')
   , SwitchEntity  = require('../entities/SwitchEntity')
 
 class DungeonState {
@@ -57,6 +58,7 @@ class DungeonState {
     delete this.players[ player.id ]
     this.removeEntity(player)
   }
+
 
   createEntities () {
     // entrance door door
@@ -138,6 +140,15 @@ class DungeonState {
     }
 
     player.position.moveTo(moves)
+  }
+
+  addMessage (client, message) {
+    var textEvent = new Entity()
+    textEvent.type = helpers.ENTITIES.TEXT_EVENT
+    textEvent.text = message
+    textEvent.position = client.player.position
+    this.addEntity(textEvent)
+    return textEvent
   }
 
   update (currentTime) {

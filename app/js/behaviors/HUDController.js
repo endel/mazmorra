@@ -11,6 +11,7 @@ export default class HUDController extends Behaviour {
     this.setPercentage( this.object.lifebar, this.player.userData.hp.current / this.player.userData.hp.max, 'y'  )
     this.setPercentage( this.object.manabar, this.player.userData.mp.current / this.player.userData.mp.max, 'y'  )
     this.setPercentage( this.object.expbar, this.player.userData.xp.current / this.player.userData.xp.max, 'x' )
+    this.object.character.levelText.text = this.player.userData.lvl
   }
 
   setPercentage (object, percentage, attr) {

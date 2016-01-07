@@ -5,13 +5,15 @@ import Chat from './Chat'
 
 export default class CharacterController extends Behaviour {
 
-  onAttach (camera) {
+  onAttach (camera, room) {
     this.camera = camera
     this.camera.lookAt(this.object.position)
 
+    this.room = room
+
     this.originalY = this.object.position.y
 
-    this.object.addBehaviour(new Chat)
+    this.object.addBehaviour(new Chat, room)
 
     this.light = new THREE.SpotLight(0xffffff, 1, 300, 10);
     this.light.target = this.object
@@ -19,6 +21,7 @@ export default class CharacterController extends Behaviour {
     this.light.position.set(0, 30, 0)
     this.object.add(this.light)
 
+    this.on('chat')
     window.player = this.object
   }
 
@@ -60,6 +63,6 @@ export default class CharacterController extends Behaviour {
 
   }
 
-  onDestroy () { }
+  onDetach () { }
 
 }

@@ -48,7 +48,15 @@ class DungeonRoom extends Room {
 
     if (key == 'pos') {
       this.state.move(client.player, value, true)
+    } else if (key == 'msg') {
+      // remove message after 3 seconds
+      let entity = this.state.addMessage(client, value)
+      this.clock.setTimeout(this.removeEntity.bind(this, entity), 3000)
     }
+  }
+
+  removeEntity (entity) {
+    this.state.removeEntity(entity)
   }
 
   onLeave (client) {
