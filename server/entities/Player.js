@@ -18,6 +18,9 @@ class Player extends Unit {
     this.mp.set(100, 100)
     this.xp.set(0, 10)
 
+    this.gold = 0
+    this.diamond = 0
+
     this.attributes = {
       strenght: 5,
       dexterity: 5,

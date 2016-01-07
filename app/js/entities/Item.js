@@ -10,10 +10,13 @@ var unimportantItems = ['diamond', 'elixir-heal', 'elixir-potion', 'gold', 'life
 
 export default class Item extends THREE.Object3D {
 
-  constructor (name = 'sword') {
+  constructor (data, name = 'sword') {
     super()
-    var texture = ResourceManager.get( "items-" + name )
 
+    this.userData = data
+    this.userData.name = name
+
+    var texture = ResourceManager.get( "items-" + name )
     this.item = new THREE.Sprite(new THREE.SpriteMaterial({
       map: texture,
       color: 0xffffff,
@@ -44,7 +47,10 @@ export default class Item extends THREE.Object3D {
 
     var scale = SCALES[ texture.image.width ]
     this.item.scale.set(scale, scale, scale)
+  }
 
+  get label () {
+    return this.userData.name
   }
 
 }

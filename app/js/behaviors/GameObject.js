@@ -37,7 +37,7 @@ export default class GameObject extends Behaviour {
         , destZ = this.nextPoint.z
         , lerpTime = 0.09
 
-      if (this.battleBehaviour.togglePosition) {
+      if (this.battleBehaviour && this.battleBehaviour.togglePosition) {
         destX += (this.battleBehaviour.attackingPoint.x - this.nextPoint.x) / 3
         destZ += (this.battleBehaviour.attackingPoint.z - this.nextPoint.z) / 3
         lerpTime = 0.2

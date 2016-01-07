@@ -35,8 +35,11 @@ export default class TileSelectionPreview extends THREE.Object3D {
       }
       if (target) {
         // apply HUD label
-        if (target[0] && target[0].label) {
-          this.setLabel(target[0].label)
+        let availableLabels = target.filter(t => t.label)
+          , lastLabel = availableLabels.length-1
+
+        if (lastLabel !== -1) {
+          this.setLabel(availableLabels[ lastLabel ].label)
         }
 
         target.forEach(e => e.__ENTITY__ && e.__ENTITY__.emit('mouseover', this))

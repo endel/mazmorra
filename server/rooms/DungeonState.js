@@ -110,6 +110,10 @@ class DungeonState {
         this.move(entity, { x: entity.position.target.position.y, y: entity.position.target.position.x }, false)
       }
 
+      // check if player picked up some item
+      if (moveEvent.target instanceof Player) {
+        this.checkOverlapingEntities(moveEvent.target, currentX, currentY)
+      }
     }
 
     // if (prevX && prevY) this.pathgrid.setWalkableAt(prevX, prevY, true)
@@ -117,7 +121,30 @@ class DungeonState {
     // this.pathgrid.setWalkableAt(currentX, currentY, false)
   }
 
+  checkOverlapingEntities (player, x, y) {
+    var entities = this.gridUtils.getAllEntitiesAt(y, x)
+
+    for (var i=0; i<entities.length; i++) {
+      let entity = entities[i]
+      if (!(entity instanceof Unit)) {
+
+        // TODO: improve me!
+        if (entity.type === helpers.ENTITIES.ITEM_COIN) {
+          let gold = Math.floor(Math.random() * 5)+1
+          player.gold += gold
+          this.addTextEvent("+" + gold, player.position, 'warn', 100)
+          this.removeEntity( entity )
+        }
+
+      }
+    }
+  }
+
   move (player, destiny, allowChangeTarget) {
+    if (destiny.x == player.position.y && destiny.y == player.position.x) {
+      return false;
+    }
+
     if (typeof(allowChangeTarget)==="undefined") {
       allowChangeTarget = true
     }
@@ -144,10 +171,16 @@ class DungeonState {
   }
 
   addMessage (client, message) {
+    return this.addTextEvent(message, client.player.position)
+  }
+
+  addTextEvent (text, position, kind, ttl) {
     var textEvent = new Entity()
+    if (kind) { textEvent.kind = kind }
+    if (ttl) { textEvent.ttl = ttl }
     textEvent.type = helpers.ENTITIES.TEXT_EVENT
-    textEvent.text = message
-    textEvent.position = client.player.position
+    textEvent.text = text
+    textEvent.position = position
     this.addEntity(textEvent)
     return textEvent
   }

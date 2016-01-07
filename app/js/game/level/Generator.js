@@ -58,7 +58,7 @@ export default class LevelGenerator {
         break;
 
       case helpers.ENTITIES.ITEM_COIN:
-        element = new Item('gold')
+        element = new Item(data, 'gold')
         break;
     }
 
