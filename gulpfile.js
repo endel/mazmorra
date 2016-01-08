@@ -19,7 +19,7 @@ gulp.task('stylesheet', ['sprites'], function () {
   return gulp.src('app/css/main.styl')
     .pipe($.if(isDevelopment, $.sourcemaps.init()))
     .pipe($.stylus({
-      import: ['sprites/*'], // auto-import sprite files 
+      import: ['sprites/*'], // auto-import sprite files
       errors: true
     }))
     .on('error', function (error) {
@@ -133,6 +133,7 @@ gulp.task('clean', require('del').bind(null, ['.tmp', 'dist']));
 
 gulp.task('serve', ['stylesheet', 'javascript', 'fonts'], function () {
   browserSync({
+    ghostMode: false,
     notify: false,
     port: 9000,
     server: {
@@ -159,6 +160,7 @@ gulp.task('serve', ['stylesheet', 'javascript', 'fonts'], function () {
 
 gulp.task('serve:dist', function () {
   browserSync({
+    reloadOnRestart: false,
     notify: false,
     port: 9000,
     server: {

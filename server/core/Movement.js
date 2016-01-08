@@ -29,20 +29,6 @@ class Movement extends EventEmitter {
     var event = new MoveEvent(this.unit)
     this.emit('move', event, this.position.x, this.position.y, x, y)
 
-    // change direction
-    if (this.position.x < x) {
-      this.unit.direction = 'bottom'
-
-    } else if (this.position.x > x) {
-      this.unit.direction = 'top'
-
-    } else if (this.position.y > y) {
-      this.unit.direction = 'left'
-
-    } else if (this.position.y < y) {
-      this.unit.direction = 'right'
-    }
-
     if ( event.valid() ) {
       this.position.x = x
       this.position.y = y
@@ -67,6 +53,8 @@ class Movement extends EventEmitter {
       moves = Math.floor(timeDiff / this.unit.walkSpeed)
 
       if (this.pending.length > 0) {
+        this.touch(currentTime)
+
         pos = this.pending.shift()
         this.set(pos[0], pos[1])
         // for (var i=0; i<moves; i++) {
@@ -74,7 +62,6 @@ class Movement extends EventEmitter {
         //   this.set(pos[0], pos[1])
         // }
 
-        this.touch(currentTime)
         // if (this.unit.action) this.unit.action.lastUpdateTime = currentTime + this.unit.walkSpeed
       }
     }
@@ -82,6 +69,24 @@ class Movement extends EventEmitter {
 
   touch (currentTime) {
     this.lastMove = currentTime
+
+    // change direction
+    if (this.pending.length > 0) {
+      var x = this.pending[0][0], y = this.pending[0][1]
+      if (this.position.x < x) {
+        this.unit.direction = 'bottom'
+
+      } else if (this.position.x > x) {
+        this.unit.direction = 'top'
+
+      } else if (this.position.y > y) {
+        this.unit.direction = 'left'
+
+      } else if (this.position.y < y) {
+        this.unit.direction = 'right'
+      }
+    }
+
   }
 
   toJSON () {

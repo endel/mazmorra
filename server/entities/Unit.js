@@ -85,16 +85,6 @@ class Unit extends Entity {
   takeDamage (battleAction) {
     var damageTaken = battleAction.damage
 
-    if (!this.isBattlingAgainst(battleAction.attacker)) {
-      this.action = new BattleAction(this, battleAction.attacker)
-      // TODO: refactor me!
-        // console.log("Attack!")
-        // console.log(defender)
-        // console.log("Has state?", typeof(defender.state)!=="undefined")
-      this.state.move(this, { x: battleAction.attacker.position.y, y: battleAction.attacker.position.x })
-
-    }
-
     // TODO: consider attributes to reduce damage
     this.hp.current -= damageTaken
 
