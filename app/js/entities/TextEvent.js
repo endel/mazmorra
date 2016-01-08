@@ -7,11 +7,15 @@ export default class TextEvent extends THREE.Object3D {
   constructor (data) {
     super()
 
+    var offsetY = 2.5
+
     var color = COLOR_WHITE
-    if (data.kind === 'warn') {
+    if (data.kind === 'warn' || data.kind === 'yellow') {
       color = COLOR_YELLOW
-    } else if (data.kind === 'attention') {
+    } else if (data.kind === 'attention' || data.kind === 'red') {
       color = COLOR_RED
+    } else if (data.kind === 'blue') {
+      color = COLOR_BLUE
     }
 
     this.movingTime = 500
@@ -21,10 +25,16 @@ export default class TextEvent extends THREE.Object3D {
     this.userData = data
 
     this.text = new Text2D(data.text, { font: "50px primary", fillStyle: `#${ color.getHexString() }`, antialias: false })
-    this.text.scale.set(0.03, 0.03, 0.03)
     this.text.material.alphaTest = 0.5
     this.text.material.opacity = 0
     this.add(this.text)
+
+    if (!data.small) {
+      this.text.scale.set(0.03, 0.03, 0.03)
+    } else {
+      offsetY += 1
+      this.text.scale.set(0.02, 0.02, 0.02)
+    }
 
     tweener.
       add(this.text.material).
@@ -33,7 +43,6 @@ export default class TextEvent extends THREE.Object3D {
       to({ opacity: 0 }, this.fadeTime, Tweener.ease.cubicOut).
       then(this.removeFromParent.bind(this))
 
-    var offsetY = 2.5
     if (data.special) {
       offsetY += 1.5
       tweener.add(this.scale).

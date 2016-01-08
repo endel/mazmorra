@@ -10,13 +10,13 @@ var unimportantItems = ['diamond', 'elixir-heal', 'elixir-potion', 'gold', 'life
 
 export default class Item extends THREE.Object3D {
 
-  constructor (data, name = 'sword') {
+  constructor (data) {
     super()
 
+    console.log("Item!", data)
     this.userData = data
-    this.userData.name = name
 
-    var texture = ResourceManager.get( "items-" + name )
+    var texture = ResourceManager.get( "items-" + data.type )
     this.item = new THREE.Sprite(new THREE.SpriteMaterial({
       map: texture,
       color: 0xffffff,
@@ -27,7 +27,7 @@ export default class Item extends THREE.Object3D {
     this.add(this.item)
 
     // only highlight important items
-    if (unimportantItems.indexOf(name) === -1) {
+    if (unimportantItems.indexOf(data.type) === -1) {
       this.highlight = new Highlight()
       this.highlight.position.y = 0.7
       this.highlight.position.x -= 0.28
@@ -50,7 +50,7 @@ export default class Item extends THREE.Object3D {
   }
 
   get label () {
-    return this.userData.name
+    return this.userData.type
   }
 
 }

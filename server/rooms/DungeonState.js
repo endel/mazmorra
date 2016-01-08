@@ -12,6 +12,7 @@ var dungeon  = require('../../shared/dungeon')
   , Enemy  = require('../entities/Enemy')
   , Unit  = require('../entities/Unit')
   , Entity  = require('../entities/Entity')
+  , Item  = require('../entities/Item')
   , SwitchEntity  = require('../entities/SwitchEntity')
 
 class DungeonState {
@@ -59,6 +60,10 @@ class DungeonState {
     this.removeEntity(player)
   }
 
+  dropItemFrom (unit) {
+    let dropped = new Item(helpers.ENTITIES.GOLD, unit.position)
+    this.addEntity(dropped)
+  }
 
   createEntities () {
     // entrance door door
@@ -74,7 +79,7 @@ class DungeonState {
         enemy.type = helpers.ENTITIES.ENEMY
         enemy.position.on('move', this.onEntityMove.bind(this))
         enemy.position.set(
-          room.position.y + 1 + helpers.randInt(0, room.size.y - 3),
+          room.position.y + 1 + helpers.randInt(0, room.size.y - 4), // ( isn't -3 to prevent enemies to be behide walls  )
           room.position.x + 1 + helpers.randInt(0, room.size.x - 3)
         )
         enemy.state = this
@@ -128,12 +133,28 @@ class DungeonState {
       let entity = entities[i]
       if (!(entity instanceof Unit)) {
 
-        // TODO: improve me!
-        if (entity.type === helpers.ENTITIES.ITEM_COIN) {
+        // TODO: refactor me!
+        if (entity.type === helpers.ENTITIES.GOLD) {
           let gold = Math.floor(Math.random() * 5)+1
           player.gold += gold
-          this.addTextEvent("+" + gold, player.position, 'warn', 100)
+          this.addTextEvent("+" + gold, player.position, 'yellow', 100)
           this.removeEntity( entity )
+
+        } else if (entity.type === helpers.ENTITIES.LIFE_HEAL) {
+          let heal = Math.floor(Math.random() * 5)+1
+          player.hp.current += heal
+          this.addTextEvent("+" + heal, player.position, 'red', 100)
+          this.removeEntity( entity )
+
+        } else if (entity.type === helpers.ENTITIES.MANA_HEAL) {
+          let heal = Math.floor(Math.random() * 5)+1
+          player.mp.current += heal
+          this.addTextEvent("+" + heal, player.position, 'blue', 100)
+          this.removeEntity( entity )
+
+        } else if (entity.type === helpers.ENTITIES.DOOR) {
+          console.log("ENTER DOOR!")
+
         }
 
       }
@@ -171,13 +192,14 @@ class DungeonState {
   }
 
   addMessage (client, message) {
-    return this.addTextEvent(message, client.player.position)
+    return this.addTextEvent(message, client.player.position, false, false, true)
   }
 
-  addTextEvent (text, position, kind, ttl) {
+  addTextEvent (text, position, kind, ttl, small) {
     var textEvent = new Entity()
     if (kind) { textEvent.kind = kind }
     if (ttl) { textEvent.ttl = ttl }
+    if (small) { textEvent.small = true }
     textEvent.type = helpers.ENTITIES.TEXT_EVENT
     textEvent.text = text
     textEvent.position = position

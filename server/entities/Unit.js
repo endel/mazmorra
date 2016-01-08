@@ -56,19 +56,17 @@ class Unit extends Entity {
 
     if (this.action && this.action.isEligible)  {
       this.action.update(currentTime)
-    }
+      this.position.touch(currentTime)
 
-    this.position.update(currentTime)
+    } else {
+      this.position.update(currentTime)
+    }
   }
 
   drop () {
     if (!this.state) return
 
-    let dropped = new Entity
-    dropped.type = helpers.ENTITIES.ITEM_COIN
-    dropped.position = this.position
-
-    this.state.addEntity(dropped)
+    this.state.dropItemFrom(this)
   }
 
   attack (defender) {
@@ -89,6 +87,12 @@ class Unit extends Entity {
 
     if (!this.isBattlingAgainst(battleAction.attacker)) {
       this.action = new BattleAction(this, battleAction.attacker)
+      // TODO: refactor me!
+        // console.log("Attack!")
+        // console.log(defender)
+        // console.log("Has state?", typeof(defender.state)!=="undefined")
+      this.state.move(this, { x: battleAction.attacker.position.y, y: battleAction.attacker.position.x })
+
     }
 
     // TODO: consider attributes to reduce damage

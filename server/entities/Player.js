@@ -31,6 +31,8 @@ class Player extends Unit {
     this.armor = 0
     this.damage = 1
 
+    this.attackDistance = 3
+
     this.walkSpeed = 600
     this.attackSpeed = 1000
   }

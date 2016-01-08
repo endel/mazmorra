@@ -74,10 +74,14 @@ class Movement extends EventEmitter {
         //   this.set(pos[0], pos[1])
         // }
 
-        this.lastMove = currentTime
+        this.touch(currentTime)
         // if (this.unit.action) this.unit.action.lastUpdateTime = currentTime + this.unit.walkSpeed
       }
     }
+  }
+
+  touch (currentTime) {
+    this.lastMove = currentTime
   }
 
   toJSON () {
