@@ -3,18 +3,21 @@ import { Behaviour } from 'behaviour.js'
 export default class Openable extends Behaviour {
 
   onAttach () {
-    this.isOpen = false;
     this.closedY = this.object.head.position.y;
     this.openedY = this.closedY + 0.5;
-    this.object.head.position.y = (this.isOpen) ? this.openedY : this.closedY
-    window.chest = this
 
-    this.on('open', this.open.bind(this))
+    if (!this.isOpen) {
+      this.on('open', this.open.bind(this))
+    } else {
+      this.open()
+    }
+  }
+
+  get isOpen () {
+    return typeof(this.object.userData.action)==="object" && this.object.userData.action.type === 'open'
   }
 
   open() {
-    this.isOpen = true
-
     tweener.add(this.object.head.position).
       to({ y: this.openedY }, 500, Tweener.ease.quartOut).
       wait(100).
@@ -22,7 +25,6 @@ export default class Openable extends Behaviour {
   }
 
   close () {
-    this.isOpen = false
     tweener.add(this.object.head.position).
       to({ y: this.closedY }, 500, Tweener.ease.quartOut)
   }

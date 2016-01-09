@@ -63,7 +63,7 @@ export default class LevelGenerator {
         break;
 
       case helpers.ENTITIES.CHEST:
-        element = new Chest()
+        element = new Chest(data)
         break;
 
       case helpers.ENTITIES.TEXT_EVENT:

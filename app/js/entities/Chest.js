@@ -4,22 +4,20 @@ import Openable from '../behaviors/Openable'
 
 export default class Chest extends THREE.Object3D {
 
-  constructor () {
+  constructor (data) {
     super()
+    this.userData = data
 
     this.head = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: ResourceManager.get( 'interactive-chest-head' ),
-      // map: ResourceManager.get( 'interactive-bucket-head' ),
+      map: ResourceManager.get( `interactive-${ data.kind }-head` ),
       color: 0xffffff,
       fog: true
     }))
     this.head.position.x = 0
-    // this.head.position.y = 0.099
     this.add(this.head)
 
     this.body = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: ResourceManager.get( 'interactive-chest-body' ),
-      // map: ResourceManager.get( 'interactive-bucket-body' ),
+      map: ResourceManager.get( `interactive-${ data.kind }-body` ),
       color: 0xffffff,
       fog: true
     }))
