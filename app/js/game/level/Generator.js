@@ -8,6 +8,8 @@ import Character from '../../entities/Character'
 import Enemy from '../../entities/Enemy'
 import Item from '../../entities/Item'
 import Chest from '../../entities/Chest'
+import Rock from '../../entities/Rock'
+import Aesthetic from '../../entities/Aesthetic'
 import TileSelectionPreview from '../../entities/TileSelectionPreview'
 import LightPole from '../../entities/LightPole'
 import Door from '../../entities/Door'
@@ -23,7 +25,6 @@ export default class LevelGenerator {
     // visual groups
     this.ground = []
     this.wall = []
-    this.entities = []
   }
 
   setGrid (grid) {
@@ -51,6 +52,18 @@ export default class LevelGenerator {
 
       case helpers.ENTITIES.LIGHT:
         element = new LightPole()
+        break;
+
+      case helpers.ENTITIES.AESTHETICS:
+        element = new Aesthetic()
+        break;
+
+      case helpers.ENTITIES.ROCK:
+        element = new Rock()
+        break;
+
+      case helpers.ENTITIES.CHEST:
+        element = new Chest()
         break;
 
       case helpers.ENTITIES.TEXT_EVENT:
@@ -235,6 +248,17 @@ export default class LevelGenerator {
     vec.z = (y - (ylen / 2)) * TILE_SIZE
 
     return vec
+  }
+
+  cleanup () {
+    let l = this.ground.length;
+    while (l--) this.ground[l].parent.remove(this.ground[l])
+
+    l = this.wall.length;
+    while (l--) this.wall[l].parent.remove(this.wall[l])
+
+    this.ground = []
+    this.wall = []
   }
 
 }

@@ -22,7 +22,7 @@ export default class HUD extends THREE.Scene {
     this.manabar = new Lifebar('mana')
     this.add(this.manabar)
 
-    this.lifebar = new Lifebar()
+    this.lifebar = new Lifebar('life')
     this.add(this.lifebar)
 
     this.expbar = new ExpBar()

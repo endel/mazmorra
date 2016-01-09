@@ -1,25 +1,35 @@
  'use strict';
 
-var dungeon  = require('../../shared/dungeon')
-  , helpers  = require('../../shared/helpers')
+var gen = require('random-seed')
 
+  , dungeon  = require('../../../shared/Dungeon')
+  , helpers  = require('../../../shared/helpers')
+
+  , EventEmitter  = require('events').EventEmitter
   , PF = require('pathfinding')
 
-  , GridUtils  = require('../utils/GridUtils')
+  , GridUtils  = require('../../utils/GridUtils')
 
   // entities
-  , Player  = require('../entities/Player')
-  , Enemy  = require('../entities/Enemy')
-  , Unit  = require('../entities/Unit')
-  , Entity  = require('../entities/Entity')
-  , Item  = require('../entities/Item')
-  , SwitchEntity  = require('../entities/SwitchEntity')
+  , Player  = require('../../entities/Player')
+  , Enemy  = require('../../entities/Enemy')
+  , Unit  = require('../../entities/Unit')
+  , Entity  = require('../../entities/Entity')
+  , Item  = require('../../entities/Item')
+  , SwitchEntity  = require('../../entities/SwitchEntity')
 
-class DungeonState {
 
-  constructor (mapkind, level, daylight) {
+class DungeonState extends EventEmitter {
+
+  constructor (mapkind, difficulty, daylight) {
+    super()
+
+    // predicatble random generator
+    this.rand = gen.create()
+
     // (gridSize, minRoomSize, maxRoomSize, maxRooms) {
-    var data = dungeon.generate({x: 16, y: 16}, {x: 4, y: 4}, {x: 8, y: 8}, 24)
+    // var data = dungeon.generate({x: 16, y: 16}, {x: 4, y: 4}, {x: 8, y: 8}, 24)
+    var data = dungeon.generate(this.rand, {x: 24, y: 24}, {x: 6, y: 6}, {x: 12, y: 12}, 3)
 
     this.mapkind = mapkind
     this.daylight = daylight
@@ -52,7 +62,10 @@ class DungeonState {
     this.addEntity(player)
     this.players[ player.id ] = player
 
+    // TODO: remove me!
     client.player = player
+
+    return player
   }
 
   removePlayer (player) {
@@ -70,21 +83,75 @@ class DungeonState {
     var entranceDoor = new SwitchEntity(helpers.ENTITIES.DOOR)
     entranceDoor.position.x = this.startPosition.y
     entranceDoor.position.y = this.startPosition.x
+    entranceDoor.goto = { identifier: 'grass', mapkind: 'grass', difficulty: 1, progress: 1 }
     this.addEntity(entranceDoor)
 
     this.rooms.forEach(room => {
-      // if (helpers.randInt(0, 3) === 3) {
+      // if (this.rand.intBetween(0, 3) === 3) {
         // var enemy = new Enemy('skeleton')
         var enemy = new Enemy('rabbit')
         enemy.type = helpers.ENTITIES.ENEMY
         enemy.position.on('move', this.onEntityMove.bind(this))
         enemy.position.set(
-          room.position.y + 1 + helpers.randInt(0, room.size.y - 4), // ( isn't -3 to prevent enemies to be behide walls  )
-          room.position.x + 1 + helpers.randInt(0, room.size.x - 3)
+          room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4), // ( isn't -3 to prevent enemies to be behide walls  )
+          room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
         )
         enemy.state = this
         this.addEntity(enemy)
       // }
+
+        var enemy = new Enemy('skeleton')
+        enemy.type = helpers.ENTITIES.ENEMY
+        enemy.position.on('move', this.onEntityMove.bind(this))
+        enemy.position.set(
+          room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4), // ( isn't -3 to prevent enemies to be behide walls  )
+          room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
+        )
+        enemy.state = this
+        this.addEntity(enemy)
+
+        var enemy = new Enemy('rat')
+        enemy.type = helpers.ENTITIES.ENEMY
+        enemy.position.on('move', this.onEntityMove.bind(this))
+        enemy.position.set(
+          room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4), // ( isn't -3 to prevent enemies to be behide walls  )
+          room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
+        )
+        enemy.state = this
+        this.addEntity(enemy)
+
+        var entity = new Entity()
+        entity.type = helpers.ENTITIES.ROCK
+        entity.position = {
+          x: room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4),
+          y: room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
+        }
+        this.addEntity(entity)
+        this.pathgrid.setWalkableAt(entity.position.x, entity.position.y, false)
+
+        var entity = new Entity()
+        entity.type = helpers.ENTITIES.AESTHETICS
+        entity.position = {
+          x: room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4),
+          y: room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
+        }
+        this.addEntity(entity)
+
+        // var enemy = new Enemy('rabbit')
+        // enemy.type = helpers.ENTITIES.ENEMY
+        // enemy.position.on('move', this.onEntityMove.bind(this))
+        // enemy.position.set(
+        //   room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4), // ( isn't -3 to prevent enemies to be behide walls  )
+        //   room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
+        // )
+        // enemy.state = this
+        // this.addEntity(enemy)
+
+        // var heal = new Item(helpers.ENTITIES.LIFE_HEAL, {
+        //   x: room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4), // ( isn't -3 to prevent enemies to be behide walls  )
+        //   y: room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
+        // })
+        // this.addEntity(heal)
     })
 
   }
@@ -141,20 +208,20 @@ class DungeonState {
           this.removeEntity( entity )
 
         } else if (entity.type === helpers.ENTITIES.LIFE_HEAL) {
-          let heal = Math.floor(Math.random() * 5)+1
+          let heal = Math.floor(Math.random() * 10)+10
           player.hp.current += heal
           this.addTextEvent("+" + heal, player.position, 'red', 100)
           this.removeEntity( entity )
 
         } else if (entity.type === helpers.ENTITIES.MANA_HEAL) {
-          let heal = Math.floor(Math.random() * 5)+1
+          let heal = Math.floor(Math.random() * 10)+10
           player.mp.current += heal
           this.addTextEvent("+" + heal, player.position, 'blue', 100)
           this.removeEntity( entity )
 
         } else if (entity.type === helpers.ENTITIES.DOOR) {
           console.log("ENTER DOOR!")
-
+          this.emit('goto', player, entity.goto)
         }
 
       }
@@ -191,8 +258,8 @@ class DungeonState {
     player.position.moveTo(moves)
   }
 
-  addMessage (client, message) {
-    return this.addTextEvent(message, client.player.position, false, false, true)
+  addMessage (player, message) {
+    return this.addTextEvent(message, player.position, false, false, true)
   }
 
   addTextEvent (text, position, kind, ttl, small) {
@@ -223,7 +290,7 @@ class DungeonState {
       }
     }
 
-    var rand = helpers.randInt(0, likelyTiles.length-1)
+    var rand = this.rand.intBetween(0, likelyTiles.length-1)
     return { x: likelyTiles[ rand ], y: firstRoom.position.y + 1 }
   }
 

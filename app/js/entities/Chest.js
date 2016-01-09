@@ -8,7 +8,7 @@ export default class Chest extends THREE.Object3D {
     super()
 
     this.head = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: ResourceManager.get( 'thing-chest-head' ),
+      map: ResourceManager.get( 'interactive-chest-head' ),
       color: 0xffffff,
       fog: true
     }))
@@ -17,7 +17,7 @@ export default class Chest extends THREE.Object3D {
     this.add(this.head)
 
     this.body = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: ResourceManager.get( 'thing-chest-body' ),
+      map: ResourceManager.get( 'interactive-chest-body' ),
       color: 0xffffff,
       fog: true
     }))

@@ -20,9 +20,6 @@ window.clock = new Clock();
 window.ZOOM = 23
 window.IS_DAY = true
 
-// Dark / Caves
-if (!window.IS_DAY) window.CLEAR_COLOR = 0x000
-
 // sprite scales based on the texture size
 window.SCALES = {
   32: 6,
@@ -77,6 +74,7 @@ export default class Game {
     this.container.appendChild( this.renderer.domElement );
 
     window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false )
+    window.addEventListener( 'touchstart', this.onTouchStart.bind(this), false )
     window.addEventListener( 'click', this.onClick.bind(this), false )
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
 
@@ -89,17 +87,18 @@ export default class Game {
 
   onSetupLevel (state) {
     var colors = {
+      'dark': 0x000000,    // black
       'grass': 0x002a0d,   // green
       'rock': 0x343434,    // gray
       'ice': 0x000c4c,     // blue
       'inferno': 0x440000, // red
-      'dark': 0x000000     // red
+      'castle': 0x443434   // brown
     }
 
     window.CLEAR_COLOR = (state.daylight) ? colors[ state.mapkind ] : colors.dark
 
     this.renderer.setClearColor( CLEAR_COLOR );
-    this.scene.fog = new THREE.FogExp2( CLEAR_COLOR, 1 );
+    // this.scene.fog = new THREE.FogExp2( CLEAR_COLOR, 1 );
   }
 
   onWindowResize () {
@@ -119,6 +118,17 @@ export default class Game {
 
     this.renderer.setSize( window.innerWidth, window.innerHeight );
     // this.cameraController.handleResize();
+  }
+
+  onTouchStart (e) {
+    if (e.touches && e.touches[0]) {
+      let touch = e.touches[0]
+      this.onMouseMove(touch)
+      if (this.lastTargetPosition === this.level.targetPosition) {
+        this.onClick(e)
+      }
+      this.lastTargetPosition = this.level.targetPosition;
+    }
   }
 
   onMouseMove (e) {

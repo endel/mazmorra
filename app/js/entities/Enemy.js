@@ -31,7 +31,10 @@ export default class Enemy extends THREE.Object3D {
 
     this.add(this.sprite)
 
-    this.addBehaviour(new DangerousThing)
+    // only attach lifebar if enemy is alive
+    if (data.hp.current > 0) {
+      this.addBehaviour(new DangerousThing)
+    }
     this.addBehaviour(new NearPlayerOpacity)
   }
 

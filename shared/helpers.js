@@ -1,15 +1,6 @@
-var gen = require('random-seed')
-
-// create predicatble random generator
-var rand = gen.create()
-
 var helpers = {
-    // useful utils
-    randInt: function(low, high) {
-        return rand.intBetween(low, high)
-    },
 
-    randElm: function(array, start, end) {
+    randElm: function(rand, array, start, end) {
         //ensure we have an array, and there are elements to check
         if(!array || !array.length)
             return null;
@@ -26,7 +17,7 @@ var helpers = {
         if(!end || end < 0)
             end = array.length - 1;
 
-        return array[ this.randInt(start, end) ];
+        return array[ rand.intBetween(start, end) ];
     },
 
     // useful constants
@@ -54,8 +45,16 @@ var helpers = {
       PLAYER: 10,
       TEXT_EVENT: 11,
 
+      // Friendly units
+      VILLAGE_MAN: 'village-man',
+      VILLAGE_CHILD: 'village-child',
+      VILLAGE_MAN_2: 'village-man-2',
+      VILLAGE_CHILD_2: 'village-child-2',
+      VILLAGE_OLD_MAN: 'village-old-man',
+      VILLAGE_WOMAN: 'village-woman',
+      GUARD: 'guard',
+
       // items 100~400
-      GOLD: 'gold',
       BOOK_BLUE: 'book-blue',
       BOOK_GREEN: 'book-green',
       BOOK_RED: 'book-red',
@@ -110,6 +109,12 @@ var helpers = {
       SWORD_RED: 'sword-red',
       SWORD: 'sword',
       TORCH: 'torch',
+
+      // Interactive
+      ROCK: 'rock',
+
+      // non-interactive / aesthetics
+      AESTHETICS: 'aesthetics',
 
       ENEMY: 1000,
     },

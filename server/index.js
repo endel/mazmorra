@@ -12,6 +12,7 @@ var colyseus = require('colyseus')
 
   , DungeonRoom = require('./rooms/DungeonRoom')
 
+gameServer.register('castle', DungeonRoom, { mapkind: 'castle' })
 gameServer.register('grass', DungeonRoom, { mapkind: 'grass' })
 gameServer.register('rock', DungeonRoom, { mapkind: 'rock' })
 gameServer.register('ice', DungeonRoom, { mapkind: 'ice' })

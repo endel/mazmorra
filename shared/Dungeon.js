@@ -8,7 +8,7 @@ var helpers = require('./helpers')
 
 var dungeon = {
 
-    generate: function(gridSize, minRoomSize, maxRoomSize, maxRooms) {
+    generate: function(rand, gridSize, minRoomSize, maxRoomSize, maxRooms) {
         // 1) Create the grid
         var grid = [];
         for(var x = 0; x < gridSize.x; ++x) {
@@ -20,7 +20,7 @@ var dungeon = {
 
         // 2) Create a random sized room in the middle of the grid
         // 3) Add the new room to a list of all created rooms.
-        var rooms = [this.generateRoom(minRoomSize, maxRoomSize)];
+        var rooms = [this.generateRoom(rand, minRoomSize, maxRoomSize)];
         this.placeRoom(
             grid,
             rooms[0],
@@ -37,11 +37,11 @@ var dungeon = {
 
             // 4) Pick a random room from the list of all created rooms.
             // 5) Pick a random wall tile from the selected room.
-            var branchPos = this.getBranchPosition(grid, rooms),
+            var branchPos = this.getBranchPosition(rand, grid, rooms),
                 direction = branchPos.dir;
 
             // 6) Generate a new random sized room.
-            var room = this.generateRoom(minRoomSize, maxRoomSize);
+            var room = this.generateRoom(rand, minRoomSize, maxRoomSize);
 
             roomPos.x = 0;
             roomPos.y = 0;
@@ -90,10 +90,10 @@ var dungeon = {
         return [grid, rooms];
     },
 
-    generateRoom: function(minSize, maxSize) {
+    generateRoom: function(rand, minSize, maxSize) {
         var room = new helpers.Room(),
-            sx = room.size.x = helpers.randInt(minSize.x, maxSize.x),
-            sy = room.size.y = helpers.randInt(minSize.y, maxSize.y),
+            sx = room.size.x = rand.intBetween(minSize.x, maxSize.x),
+            sy = room.size.y = rand.intBetween(minSize.y, maxSize.y),
             tiles = room.tiles,
             walls = room.walls,
             col,
@@ -165,9 +165,9 @@ var dungeon = {
             ty = 0;
         }
     },
-    getBranchPosition: function(grid, rooms) {
-        var room = helpers.randElm(rooms),
-            wall = helpers.randElm(room.walls.filter(function(v) { return !v.corner; }));
+    getBranchPosition: function(rand, grid, rooms) {
+        var room = helpers.randElm(rand, rooms),
+            wall = helpers.randElm(rand, room.walls.filter(function(v) { return !v.corner; }));
 
         return { x: wall.x + room.position.x, y: wall.y + room.position.y, dir: wall.dir };
     },

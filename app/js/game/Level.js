@@ -1,20 +1,12 @@
-import Colyseus from 'colyseus.js'
+import EventEmitter from 'tiny-emitter'
 
+import Colyseus from 'colyseus.js'
 import Generator from './level/Generator'
 
 import TileSelectionPreview from '../entities/TileSelectionPreview'
 
 import CharacterController from '../behaviors/CharacterController'
 import HUDController from '../behaviors/HUDController'
-
-import Character from '../entities/Character'
-import Enemy from '../entities/Enemy'
-import Item from '../entities/Item'
-import Chest from '../entities/Chest'
-import LightPole from '../entities/LightPole'
-import Portal from '../entities/Portal'
-import Door from '../entities/Door'
-import EventEmitter from 'tiny-emitter'
 
 export default class Level extends EventEmitter {
 
@@ -25,96 +17,43 @@ export default class Level extends EventEmitter {
     this.hud = hud
     this.camera = camera
 
+    // this.colyseus = new Colyseus('ws://192.168.0.2:3553')
     this.colyseus = new Colyseus('ws://localhost:3553')
-    this.room = this.colyseus.join('grass')
-    this.room.on('update', this.onRoomUpdate.bind(this))
-    this.room.on('error', (err) => console.error(err))
+    this.room = this.enterRoom('grass')
+
     this.patchId = 0
 
     this.entities = {}
 
     this.selectionLight = new THREE.SpotLight(0xffffff, 0.5, 30);
     this.selection = new TileSelectionPreview(this.selectionLight, this.hud.selectionText)
-    this.scene.add(this.selectionLight)
 
     this.generator = new Generator(this, this.scene, this.colyseus)
+  }
 
-    // this.entities = this.generator.createEntities()
-
-    // var lightPole = new LightPole()
-    // lightPole.position.copy(character.position)
-    // lightPole.position.z -= 10
-    // lightPole.position.x -= 10
-    // this.scene.add(lightPole)
-    //
-    // var lightPole = new LightPole()
-    // lightPole.position.copy(character.position)
-    // lightPole.position.z -= 30
-    // lightPole.position.x = 5
-    // this.scene.add(lightPole)
-    //
-    // var enemy = new Enemy('rat')
-    // enemy.position.x = -6
-    // this.scene.add(enemy)
-    //
-    // var enemy = new Enemy('bat')
-    // enemy.position.x = -10
-    // this.scene.add(enemy)
-    //
-    // // var enemy = new Enemy('demon')
-    // // enemy.position.x = -12
-    // // this.scene.add(enemy)
-    //
-    // var enemy = new Enemy('green-snake')
-    // enemy.position.x = -8
-    // this.scene.add(enemy)
-    //
-    // var item = new Item('sword')
-    // item.position.x = 3
-    // this.scene.add(item)
-    //
-    // var item = new Item('gold')
-    // item.position.z = 3
-    // item.position.x = 3
-    // this.scene.add(item)
-    //
-    // var item = new Item('life-potion')
-    // item.position.z = 3
-    // item.position.x = 6
-    // this.scene.add(item)
-    //
-    // var item = new Item('mana-potion')
-    // item.position.z = 3
-    // this.scene.add(item)
-    //
-    // var item = new Item('elixir-potion')
-    // item.position.x = -3
-    // item.position.z = 3
-    // this.scene.add(item)
-    //
-    // var item = new Item('mana-heal')
-    // item.position.x = -6
-    // item.position.z = 3
-    // this.scene.add(item)
-    //
-    // var item = new Item('life-heal')
-    // item.position.x = -9
-    // item.position.z = 3
-    // this.scene.add(item)
-    //
-    // var item = new Item('shield-metal')
-    // item.position.x = 6
-    // this.scene.add(item)
-    //
-    // var chest = new Chest()
-    // chest.position.x = -3
-    // this.scene.add(chest)
+  enterRoom (name, options = {}) {
+    this.room = this.colyseus.join(name, options)
+    this.room.on('update', this.onRoomUpdate.bind(this))
+    this.room.on('error', (err) => console.error(arguments))
+    this.room.on('data', (payload) => {
+      let [ event, data ] = payload
+      if (event === "goto") {
+        this.room.on('leave', (err) => {
+          this.cleanup();
+          this.room = this.enterRoom(data.identifier, data)
+        })
+        this.room.leave()
+      }
+    })
+    return this.room
   }
 
   createPlayerBehaviour (entity) {
     entity.addBehaviour(new CharacterController, this.camera, this.room)
+
+    this.hud.getEntity().detachAll()
     this.hud.addBehaviour(new HUDController, entity)
-    this.playerEntity = entity.getEntity()
+    // this.playerEntity = entity.getEntity()
   }
 
   onRoomUpdate (state, patches) {
@@ -157,7 +96,6 @@ export default class Level extends EventEmitter {
 
   setInitialState (state) {
     console.log("setInitialState", state)
-
     window.IS_DAY = state.daylight
 
     if (state.daylight) {
@@ -165,6 +103,9 @@ export default class Level extends EventEmitter {
       var light = new THREE.AmbientLight( 0xffffff ); // soft white light
       this.scene.add( light );
     }
+
+    this.scene.add(this.camera)
+    this.scene.add(this.selectionLight)
 
     this.generator.setGrid(state.grid)
     this.generator.createTiles(state.mapkind)
@@ -227,6 +168,30 @@ export default class Level extends EventEmitter {
       x: this.targetPosition.x,
       y: this.targetPosition.y
     }])
+  }
+
+  cleanup () {
+    this.generator.cleanup()
+
+    // remove 'selection' from scene
+    this.scene.remove(this.selection)
+    this.scene.remove(this.camera)
+
+    for (var id in this.entities) {
+      this.entities[ id ].getEntity().destroy() // destroy from entity-component system
+      if (this.entities[ id ].parent) {
+        // remove from display list
+        this.entities[ id ].parent.remove(this.entities[ id ])
+      }
+      delete this.entities[ id ] // remove from memory
+    }
+
+    var i = this.scene.children.length;
+    while (i--) {
+      let object = this.scene.children[i]
+      if (object.__ENTITY__) object.getEntity().destroy()
+      this.scene.remove(object)
+    }
   }
 
 }

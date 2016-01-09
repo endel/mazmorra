@@ -50,7 +50,7 @@ export default class Item extends THREE.Object3D {
   }
 
   get label () {
-    return this.userData.type
+    return this.userData.type.replace('-', ' ')
   }
 
 }

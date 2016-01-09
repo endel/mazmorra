@@ -6,8 +6,8 @@ import HasLifebar from './HasLifebar'
 export default class DangerousThing extends Behaviour {
 
   onAttach (amount = 0.05, duration) {
-    this.object.addBehaviour(new HasLifebar)
     this.object.addBehaviour(new Shadow)
+    this.object.addBehaviour(new HasLifebar)
 
     this.initY = this.object.position.y
     this.destY = this.initY + amount
