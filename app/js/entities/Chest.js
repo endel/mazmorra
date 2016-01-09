@@ -1,6 +1,6 @@
 'use strict';
 
-import { Behaviour } from 'behaviour.js'
+import Openable from '../behaviors/Openable'
 
 export default class Chest extends THREE.Object3D {
 
@@ -25,32 +25,11 @@ export default class Chest extends THREE.Object3D {
     this.add(this.body)
 
     this.scale.set(3, 3, 3)
-    this.addBehaviour(new ChestBehaviour)
+    this.addBehaviour(new Openable)
   }
 
-}
-
-class ChestBehaviour extends Behaviour {
-
-  onAttach () {
-    this.isOpen = false;
-    this.closedY = this.object.head.position.y;
-    this.openedY = this.closedY + 0.2;
-    this.object.head.position.y = (this.isOpen) ? this.openedY : this.closedY
-    window.chest = this
-  }
-
-  open() {
-    this.isOpen = true
-
-    tweener.add(this.object.head.position).
-      to({ y: this.openedY }, 500, Tweener.ease.quartOut)
-  }
-
-  close () {
-    this.isOpen = false
-    tweener.add(this.object.head.position).
-      to({ y: this.closedY }, 500, Tweener.ease.quartOut)
+  get label () {
+    return "Chest"
   }
 
 }

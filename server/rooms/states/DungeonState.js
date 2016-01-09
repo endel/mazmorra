@@ -17,6 +17,7 @@ var gen = require('random-seed')
   , Entity  = require('../../entities/Entity')
   , Item  = require('../../entities/Item')
   , SwitchEntity  = require('../../entities/SwitchEntity')
+  , Openable  = require('../../entities/Openable')
 
 
 class DungeonState extends EventEmitter {
@@ -137,6 +138,13 @@ class DungeonState extends EventEmitter {
         }
         this.addEntity(entity)
 
+        var entity = new Openable(helpers.ENTITIES.CHEST)
+        entity.position = {
+          x: room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4),
+          y: room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
+        }
+        this.addEntity(entity)
+
         // var enemy = new Enemy('rabbit')
         // enemy.type = helpers.ENTITIES.ENEMY
         // enemy.position.on('move', this.onEntityMove.bind(this))
@@ -218,6 +226,9 @@ class DungeonState extends EventEmitter {
           player.mp.current += heal
           this.addTextEvent("+" + heal, player.position, 'blue', 100)
           this.removeEntity( entity )
+
+        } else if (entity.type === helpers.ENTITIES.CHEST) {
+          entity.action = {type: 'open'}
 
         } else if (entity.type === helpers.ENTITIES.DOOR) {
           console.log("ENTER DOOR!")
