@@ -23,7 +23,6 @@ export default class Item extends THREE.Object3D {
       fog: true
     }))
     this.item.position.y = 0.5
-    this.item.addBehaviour(new Pickable)
     this.add(this.item)
 
     // only highlight important items
@@ -47,6 +46,7 @@ export default class Item extends THREE.Object3D {
 
     var scale = SCALES[ texture.image.width ]
     this.item.scale.set(scale, scale, scale)
+    this.item.addBehaviour(new Pickable)
   }
 
   get label () {

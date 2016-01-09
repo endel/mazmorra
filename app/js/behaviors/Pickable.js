@@ -13,7 +13,19 @@ export default class Pickable extends Behaviour {
     this.destY = this.initY + 0.2
     this.duration = 1700 + (Math.random() * 300)
 
-    setTimeout(() => this.goUp(), Math.random() * 1500)
+    this.object.position.y = this.initY - 1
+
+    tweener.
+      add(this.object.scale).
+      from({x: 0.1, y: 0.1, z: 0.1}, 600, Tweener.ease.quartOut)
+
+    tweener.
+      add(this.object.position).
+      to({ y: this.initY + 1 }, 800, Tweener.ease.quartOut).
+      to({ y: this.initY }, 2000, Tweener.ease.quartInOut).
+      then(() => {
+        this.initTimeout = setTimeout(() => this.goUp(), Math.random() * 1500)
+      })
   }
 
   goUp () {
@@ -31,6 +43,7 @@ export default class Pickable extends Behaviour {
   }
 
   onDetach () {
+    clearTimeout(this.initTimeout)
     if (this.tween) this.tween.dispose()
   }
 

@@ -15,10 +15,17 @@ var gen = require('random-seed')
   , Enemy  = require('../../entities/Enemy')
   , Unit  = require('../../entities/Unit')
   , Entity  = require('../../entities/Entity')
-  , Item  = require('../../entities/Item')
-  , SwitchEntity  = require('../../entities/SwitchEntity')
-  , Openable  = require('../../entities/Openable')
 
+  // entity types
+  , Item  = require('../../entities/Item')
+  , Interactive  = require('../../entities/Interactive')
+
+  // items
+  , Gold  = require('../../entities/items/Gold')
+
+  // interactive
+  , Door  = require('../../entities/interactive/Door')
+  , Chest  = require('../../entities/interactive/Chest')
 
 class DungeonState extends EventEmitter {
 
@@ -75,17 +82,21 @@ class DungeonState extends EventEmitter {
   }
 
   dropItemFrom (unit) {
-    let dropped = new Item(helpers.ENTITIES.GOLD, unit.position)
+    let dropped = new Gold(unit.position)
     this.addEntity(dropped)
   }
 
   createEntities () {
-    // entrance door door
-    var entranceDoor = new SwitchEntity(helpers.ENTITIES.DOOR)
-    entranceDoor.position.x = this.startPosition.y
-    entranceDoor.position.y = this.startPosition.x
-    entranceDoor.goto = { identifier: 'grass', mapkind: 'grass', difficulty: 1, progress: 1 }
-    this.addEntity(entranceDoor)
+    var entrance = new Door({
+      x: this.startPosition.y,
+      y: this.startPosition.x
+    }, {
+      identifier: 'grass',
+      mapkind: 'grass',
+      difficulty: 1,
+      progress: 1
+    })
+    this.addEntity(entrance)
 
     this.rooms.forEach(room => {
       // if (this.rand.intBetween(0, 3) === 3) {
@@ -138,11 +149,10 @@ class DungeonState extends EventEmitter {
         }
         this.addEntity(entity)
 
-        var entity = new Openable(helpers.ENTITIES.CHEST)
-        entity.position = {
+        var entity = new Chest({
           x: room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4),
           y: room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
-        }
+        })
         this.addEntity(entity)
 
         // var enemy = new Enemy('rabbit')
@@ -192,7 +202,7 @@ class DungeonState extends EventEmitter {
 
       // check if player picked up some item
       if (moveEvent.target instanceof Player) {
-        this.checkOverlapingEntities(moveEvent.target, currentX, currentY)
+        this.checkOverlapingEntities(moveEvent, currentX, currentY)
       }
     }
 
@@ -201,40 +211,19 @@ class DungeonState extends EventEmitter {
     // this.pathgrid.setWalkableAt(currentX, currentY, false)
   }
 
-  checkOverlapingEntities (player, x, y) {
+  checkOverlapingEntities (moveEvent, x, y) {
     var entities = this.gridUtils.getAllEntitiesAt(y, x)
+      , player = moveEvent.target
 
     for (var i=0; i<entities.length; i++) {
       let entity = entities[i]
-      if (!(entity instanceof Unit)) {
 
-        // TODO: refactor me!
-        if (entity.type === helpers.ENTITIES.GOLD) {
-          let gold = Math.floor(Math.random() * 5)+1
-          player.gold += gold
-          this.addTextEvent("+" + gold, player.position, 'yellow', 100)
-          this.removeEntity( entity )
+      if (entity instanceof Item) {
+        entity.pick(player, this)
+      }
 
-        } else if (entity.type === helpers.ENTITIES.LIFE_HEAL) {
-          let heal = Math.floor(Math.random() * 10)+10
-          player.hp.current += heal
-          this.addTextEvent("+" + heal, player.position, 'red', 100)
-          this.removeEntity( entity )
-
-        } else if (entity.type === helpers.ENTITIES.MANA_HEAL) {
-          let heal = Math.floor(Math.random() * 10)+10
-          player.mp.current += heal
-          this.addTextEvent("+" + heal, player.position, 'blue', 100)
-          this.removeEntity( entity )
-
-        } else if (entity.type === helpers.ENTITIES.CHEST) {
-          entity.action = {type: 'open'}
-
-        } else if (entity.type === helpers.ENTITIES.DOOR) {
-          console.log("ENTER DOOR!")
-          this.emit('goto', player, entity.goto)
-        }
-
+      if (entity instanceof Interactive) {
+        entity.interact(moveEvent, player, this)
       }
     }
   }

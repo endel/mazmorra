@@ -8,7 +8,11 @@ class ItemEntity extends Entity {
     super()
 
     this.type = type
-    this.position = position || {x: null, y: null}
+    this.position = { x: position.x, y: position.y }
+  }
+
+  pick (player, state) {
+    throw new Error(`${this.constructor.name} should implement pick(player, state) method`)
   }
 
 }

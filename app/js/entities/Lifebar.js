@@ -17,7 +17,7 @@ export default class Lifebar extends THREE.Object3D {
     this.add(this.bar)
 
     this.background = new THREE.Sprite(new THREE.SpriteMaterial({ color: 0xffffffff }))
-    // this.add(this.background)
+    this.add(this.background)
 
     this.color = 'green'
     this.position.y = 1
