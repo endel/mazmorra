@@ -20,7 +20,7 @@ export default class Enemy extends THREE.Object3D {
 
     this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: this.textures[ this._direction ],
-      // color: 0xffffff,
+      // color: COLOR_RED,
       fog: true
     }))
 

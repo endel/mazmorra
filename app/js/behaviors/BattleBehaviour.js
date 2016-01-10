@@ -41,6 +41,9 @@ export default class BattleBehaviour extends Behaviour {
     if (data.missed) {
       kind = 'warn'
       text = 'miss'
+
+    } else {
+      this.defender.getEntity().emit('damage')
     }
 
     // create label entity

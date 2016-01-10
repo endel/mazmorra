@@ -6,6 +6,8 @@ import LevelUp from '../effects/LevelUp'
 import lerp from 'lerp'
 import helpers from '../../../shared/helpers'
 
+import throttle from 'throttle.js'
+
 export default class GameObject extends Behaviour {
 
   onAttach (generator) {
@@ -80,6 +82,8 @@ export default class GameObject extends Behaviour {
       // console.log(patchId > this.lastPatchId, state.action)
       // if (patchId > this.lastPatchId) {
         // attack
+
+      // TODO: ITS CALLING MANY TIMES HERE
         let actionType = state.action.type || this.lastActionType
         if (actionType) {
           this.entity.emit(actionType, state.action)

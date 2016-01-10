@@ -18,7 +18,8 @@ export default class Level extends EventEmitter {
     this.camera = camera
 
     // this.colyseus = new Colyseus('ws://192.168.0.2:3553')
-    this.colyseus = new Colyseus('ws://localhost:3553')
+    // this.colyseus = new Colyseus('ws://localhost:3553')
+    this.colyseus = new Colyseus(`ws://${ window.location.hostname }:3553`)
     this.room = this.enterRoom('grass')
 
     this.patchId = 0

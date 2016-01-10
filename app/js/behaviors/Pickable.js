@@ -21,8 +21,8 @@ export default class Pickable extends Behaviour {
 
     tweener.
       add(this.object.position).
-      to({ y: this.initY + 1 }, 800, Tweener.ease.quartOut).
-      to({ y: this.initY }, 2000, Tweener.ease.quartInOut).
+      to({ y: this.initY + 1 }, 700, Tweener.ease.quartOut).
+      to({ y: this.initY }, 1600, Tweener.ease.quartInOut).
       then(() => {
         this.initTimeout = setTimeout(() => this.goUp(), Math.random() * 1500)
       })

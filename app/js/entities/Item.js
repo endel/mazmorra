@@ -13,7 +13,6 @@ export default class Item extends THREE.Object3D {
   constructor (data) {
     super()
 
-    console.log("Item!", data)
     this.userData = data
 
     var texture = ResourceManager.get( "items-" + data.type )
