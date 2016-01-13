@@ -8,6 +8,7 @@ import Character from '../../entities/Character'
 import Enemy from '../../entities/Enemy'
 import Item from '../../entities/Item'
 import Chest from '../../entities/Chest'
+import Fountain from '../../entities/Fountain'
 import Rock from '../../entities/Rock'
 import Aesthetic from '../../entities/Aesthetic'
 import TileSelectionPreview from '../../entities/TileSelectionPreview'
@@ -64,6 +65,10 @@ export default class LevelGenerator {
 
       case helpers.ENTITIES.CHEST:
         element = new Chest(data)
+        break;
+
+      case helpers.ENTITIES.FOUNTAIN:
+        element = new Fountain(data)
         break;
 
       case helpers.ENTITIES.TEXT_EVENT:

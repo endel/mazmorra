@@ -9,6 +9,7 @@ var gen = require('random-seed')
   , PF = require('pathfinding')
 
   , GridUtils  = require('../../utils/GridUtils')
+  , RoomUtils  = require('../../utils/RoomUtils')
 
   // entities
   , Player  = require('../../entities/Player')
@@ -22,10 +23,12 @@ var gen = require('random-seed')
 
   // items
   , Gold  = require('../../entities/items/Gold')
+  , LifeHeal  = require('../../entities/items/LifeHeal')
 
   // interactive
   , Door  = require('../../entities/interactive/Door')
   , Chest  = require('../../entities/interactive/Chest')
+  , Fountain  = require('../../entities/interactive/Fountain')
 
 class DungeonState extends EventEmitter {
 
@@ -36,8 +39,8 @@ class DungeonState extends EventEmitter {
     this.rand = gen.create()
 
     // (gridSize, minRoomSize, maxRoomSize, maxRooms) {
-    // var data = dungeon.generate({x: 16, y: 16}, {x: 4, y: 4}, {x: 8, y: 8}, 24)
-    var data = dungeon.generate(this.rand, {x: 24, y: 24}, {x: 6, y: 6}, {x: 12, y: 12}, 3)
+    var data = dungeon.generate(this.rand, {x: 16, y: 16}, {x: 4, y: 4}, {x: 8, y: 8}, 24)
+    // var data = dungeon.generate(this.rand, {x: 24, y: 24}, {x: 6, y: 6}, {x: 12, y: 12}, 3)
 
     this.mapkind = mapkind
     this.daylight = daylight
@@ -49,6 +52,7 @@ class DungeonState extends EventEmitter {
     this.players = {}
 
     this.gridUtils = new GridUtils(this.entities)
+    this.roomUtils = new RoomUtils(this.rand, this.gridUtils)
 
     // 0 = walkable, 1 = blocked
     this.pathgrid = new PF.Grid(this.grid.map(line => { return line.map(type => (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1) }))
@@ -82,7 +86,14 @@ class DungeonState extends EventEmitter {
   }
 
   dropItemFrom (unit) {
-    let dropped = new Gold(unit.position)
+    let dropped = null
+
+    if (Math.random() > 0.5) {
+      dropped = new Gold(unit.position)
+    } else {
+      dropped = new LifeHeal(unit.position)
+    }
+
     this.addEntity(dropped)
   }
 
@@ -99,6 +110,9 @@ class DungeonState extends EventEmitter {
     this.addEntity(entrance)
 
     this.rooms.forEach(room => {
+      let entitiesToGenerate = this.roomUtils.getMaxEntities(room)
+      var position = this.roomUtils.getNextAvailablePosition(room)
+
       // if (this.rand.intBetween(0, 3) === 3) {
         // var enemy = new Enemy('skeleton')
         var enemy = new Enemy('rabbit')
@@ -150,6 +164,12 @@ class DungeonState extends EventEmitter {
         this.addEntity(entity)
 
         var entity = new Chest({
+          x: room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4),
+          y: room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
+        })
+        this.addEntity(entity)
+
+        var entity = new Fountain({
           x: room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4),
           y: room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
         })

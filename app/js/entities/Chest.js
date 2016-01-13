@@ -29,11 +29,13 @@ export default class Chest extends THREE.Object3D {
     this.head.scale.set(scale, scale, scale)
 
     // this.scale.set(3, 3, 3)
-    this.addBehaviour(new Openable)
+    this.openableBehaviour = new Openable
+    this.addBehaviour(this.openableBehaviour)
   }
 
   get label () {
-    return "Chest"
+    let status = (this.openableBehaviour.isOpen) ?  "Open" : ""
+    return `${status} Chest`
   }
 
 }

@@ -5,6 +5,7 @@ export default class BattleBehaviour extends Behaviour {
 
   onAttach (generator) {
     this.togglePosition = false
+    this.togglePositionTimeout = { active: false }
 
     this.isAttacking = false
     this.attackingPoint = { x: 0, z: 0 }
@@ -12,7 +13,10 @@ export default class BattleBehaviour extends Behaviour {
 
     this.generator = generator
 
+    this.originalColor = this.object.sprite.material.color.getHex()
+
     this.on('attack', this.onAttack.bind(this))
+    this.on('damage', this.onTakeDamage.bind(this))
     this.on('died', this.onDied.bind(this))
   }
 
@@ -22,10 +26,14 @@ export default class BattleBehaviour extends Behaviour {
   }
 
   onAttack (data) {
-    this.togglePosition = true
-    clock.setTimeout(() => { this.togglePosition = false }, 100)
-
     if (!data.type) { return this.disable(); }
+
+    // TODO: this shouldn't be necessary
+    // GameObject's patch method is triggering 'attack' event multiple times
+    if (this.togglePositionTimeout.active) { return; }
+
+    this.togglePosition = true
+    this.togglePositionTimeout = clock.setTimeout(() => { this.togglePosition = false }, 100)
 
     if (!this.isAttacking) {
       this.defender = this.generator.level.getEntityAt(data.position)
@@ -63,6 +71,18 @@ export default class BattleBehaviour extends Behaviour {
     this.isAttacking = true
     this.togglePosition = true
     this.attackingPoint = attackingPoint
+  }
+
+  onTakeDamage () {
+    if (this.object.sprite && (!this.lastTimeout || !this.lastTimeout.active)) {
+      // red blink on enemies
+      this.object.sprite.material.color.setHex(COLOR_RED.getHex())
+      if (this.lastTimeout) this.lastTimeout.clear()
+
+      this.lastTimeout = clock.setTimeout(() => {
+        this.object.sprite.material.color.setHex(this.originalColor)
+      }, 50)
+    }
   }
 
   onDied () {

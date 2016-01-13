@@ -112,6 +112,7 @@ var helpers = {
 
       // Interactive
       ROCK: 'rock',
+      FOUNTAIN: 'fountain',
 
       // non-interactive / aesthetics
       AESTHETICS: 'aesthetics',

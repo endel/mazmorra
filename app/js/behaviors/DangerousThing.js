@@ -16,22 +16,7 @@ export default class DangerousThing extends Behaviour {
     this.tween = null
     setTimeout(() => this.goUp(), Math.random() * 1500)
 
-    this.originalColor = this.object.sprite.material.color.getHex()
-    this.on('damage', this.onTakeDamage.bind(this))
-
     this.on('died', this.detach.bind(this))
-  }
-
-  onTakeDamage () {
-    if (this.object.sprite && (!this.lastTimeout || !this.lastTimeout.active)) {
-      // red blink on enemies
-      this.object.sprite.material.color.setHex(COLOR_RED.getHex())
-      if (this.lastTimeout) this.lastTimeout.clear()
-
-      this.lastTimeout = clock.setTimeout(() => {
-        this.object.sprite.material.color.setHex(this.originalColor)
-      }, 50)
-    }
   }
 
   goUp () {

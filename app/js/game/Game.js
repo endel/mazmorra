@@ -17,7 +17,8 @@ window.CLEAR_COLOR = new THREE.Color(0x002a0d) // green / forest
 // window.CLEAR_COLOR = 0x000c4c // blue / ice
 
 window.clock = new Clock();
-window.ZOOM = 23
+// window.ZOOM = 23
+window.ZOOM = 28
 window.IS_DAY = true
 
 // sprite scales based on the texture size
