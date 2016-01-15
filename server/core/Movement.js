@@ -26,6 +26,11 @@ class Movement extends EventEmitter {
   set y (y) { this.position.y = y }
 
   set (x, y) {
+    if (!y && typeof(x) === "object") {
+      y = x.y
+      x = x.x
+    }
+
     var event = new MoveEvent(this.unit)
     this.emit('move', event, this.position.x, this.position.y, x, y)
 

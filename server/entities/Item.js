@@ -2,6 +2,8 @@
 
 var Entity = require('./Entity')
 
+  , helpers  = require('../../shared/helpers')
+
 class ItemEntity extends Entity {
 
   constructor (type, position) {

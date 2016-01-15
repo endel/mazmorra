@@ -5,10 +5,13 @@ var Unit = require('./Unit')
 // Actions
 var BattleAction = require('../actions/BattleAction')
 
+var helpers  = require('../../shared/helpers')
+
 class Enemy extends Unit {
 
   constructor (kind) {
     super()
+    this.type = helpers.ENTITIES.ENEMY
 
     this.kind = kind
     this.lvl = 1

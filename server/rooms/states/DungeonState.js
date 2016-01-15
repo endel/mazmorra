@@ -50,15 +50,15 @@ class DungeonState extends EventEmitter {
 
     this.entities = {}
     this.players = {}
+    this.startPosition = this.getStartPosition()
 
     this.gridUtils = new GridUtils(this.entities)
-    this.roomUtils = new RoomUtils(this.rand, this.gridUtils)
+    this.roomUtils = new RoomUtils(this.rand, this, this.rooms)
 
     // 0 = walkable, 1 = blocked
     this.pathgrid = new PF.Grid(this.grid.map(line => { return line.map(type => (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1) }))
     this.finder = new PF.AStarFinder(); // { allowDiagonal: true, dontCrossCorners: true }
 
-    this.startPosition = this.getStartPosition()
     this.createEntities()
   }
 
@@ -69,7 +69,7 @@ class DungeonState extends EventEmitter {
     var player = new Player(client.id)
     player.type = helpers.ENTITIES.PLAYER
     player.position.on('move', this.onEntityMove.bind(this))
-    player.position.set(this.startPosition.y, this.startPosition.x)
+    player.position.set(this.startPosition.x, this.startPosition.y)
 
     this.addEntity(player)
     this.players[ player.id ] = player
@@ -99,8 +99,8 @@ class DungeonState extends EventEmitter {
 
   createEntities () {
     var entrance = new Door({
-      x: this.startPosition.y,
-      y: this.startPosition.x
+      x: this.startPosition.x,
+      y: this.startPosition.y
     }, {
       identifier: 'grass',
       mapkind: 'grass',
@@ -109,81 +109,75 @@ class DungeonState extends EventEmitter {
     })
     this.addEntity(entrance)
 
+    var i =0
     this.rooms.forEach(room => {
-      let entitiesToGenerate = this.roomUtils.getMaxEntities(room)
-      var position = this.roomUtils.getNextAvailablePosition(room)
-
-      // if (this.rand.intBetween(0, 3) === 3) {
-        // var enemy = new Enemy('skeleton')
+      var entities = Math.floor(Math.max(0, this.roomUtils.getNumPositionsRemaining(room) / 3))
+      while (entities--) {
         var enemy = new Enemy('rabbit')
-        enemy.type = helpers.ENTITIES.ENEMY
+        enemy.position.set(this.roomUtils.getNextAvailablePosition(room))
         enemy.position.on('move', this.onEntityMove.bind(this))
-        enemy.position.set(
-          room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4), // ( isn't -3 to prevent enemies to be behide walls  )
-          room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
-        )
         enemy.state = this
         this.addEntity(enemy)
-      // }
+      }
 
-        var enemy = new Enemy('skeleton')
-        enemy.type = helpers.ENTITIES.ENEMY
-        enemy.position.on('move', this.onEntityMove.bind(this))
-        enemy.position.set(
-          room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4), // ( isn't -3 to prevent enemies to be behide walls  )
-          room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
-        )
-        enemy.state = this
-        this.addEntity(enemy)
-
-        var enemy = new Enemy('rat')
-        enemy.type = helpers.ENTITIES.ENEMY
-        enemy.position.on('move', this.onEntityMove.bind(this))
-        enemy.position.set(
-          room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4), // ( isn't -3 to prevent enemies to be behide walls  )
-          room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
-        )
-        enemy.state = this
-        this.addEntity(enemy)
-
-        var entity = new Entity()
-        entity.type = helpers.ENTITIES.ROCK
-        entity.position = {
-          x: room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4),
-          y: room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
-        }
-        this.addEntity(entity)
-        this.pathgrid.setWalkableAt(entity.position.x, entity.position.y, false)
-
+      if (this.roomUtils.hasPositionsRemaining(room)) {
         var entity = new Entity()
         entity.type = helpers.ENTITIES.AESTHETICS
-        entity.position = {
-          x: room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4),
-          y: room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
-        }
+        entity.position = this.roomUtils.getNextAvailablePosition(room)
         this.addEntity(entity)
+      }
 
-        var entity = new Chest({
-          x: room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4),
-          y: room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
-        })
+      if (this.roomUtils.hasPositionsRemaining(room)) {
+        var entity = new Entity()
+        entity.type = helpers.ENTITIES.AESTHETICS
+        entity.position = this.roomUtils.getNextAvailablePosition(room)
         this.addEntity(entity)
+      }
 
-        var entity = new Fountain({
-          x: room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4),
-          y: room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
-        })
+      if (this.roomUtils.hasPositionsRemaining(room)) {
+        var entity = new Entity()
+        entity.type = helpers.ENTITIES.AESTHETICS
+        entity.position = this.roomUtils.getNextAvailablePosition(room)
         this.addEntity(entity)
+      }
+
+      if (this.roomUtils.hasPositionsRemaining(room)) {
+        var entity = new Entity()
+        entity.type = helpers.ENTITIES.ROCK
+        entity.position = this.roomUtils.getNextAvailablePosition(room)
+        this.addEntity(entity)
+        this.pathgrid.setWalkableAt(entity.position.x, entity.position.y, false)
+      }
 
         // var enemy = new Enemy('rabbit')
-        // enemy.type = helpers.ENTITIES.ENEMY
         // enemy.position.on('move', this.onEntityMove.bind(this))
-        // enemy.position.set(
-        //   room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4), // ( isn't -3 to prevent enemies to be behide walls  )
-        //   room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
-        // )
+        // enemy.position.set(this.roomUtils.getNextAvailablePosition(room))
         // enemy.state = this
         // this.addEntity(enemy)
+
+        // var enemy = new Enemy('skeleton')
+        // enemy.position.on('move', this.onEntityMove.bind(this))
+        // enemy.position.set(this.roomUtils.getNextAvailablePosition(room))
+        // enemy.state = this
+        // this.addEntity(enemy)
+
+        // var enemy = new Enemy('rat')
+        // enemy.position.on('move', this.onEntityMove.bind(this))
+        // enemy.position.set(this.roomUtils.getNextAvailablePosition(room))
+        // enemy.state = this
+        // this.addEntity(enemy)
+
+        // var entity = new Entity()
+        // entity.type = helpers.ENTITIES.ROCK
+        // entity.position = this.roomUtils.getNextAvailablePosition(room)
+        // this.addEntity(entity)
+        // this.pathgrid.setWalkableAt(entity.position.x, entity.position.y, false)
+
+        // var entity = new Chest(this.roomUtils.getNextAvailablePosition(room))
+        // this.addEntity(entity)
+
+        // var entity = new Fountain(this.roomUtils.getNextAvailablePosition(room))
+        // this.addEntity(entity)
 
         // var heal = new Item(helpers.ENTITIES.LIFE_HEAL, {
         //   x: room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4), // ( isn't -3 to prevent enemies to be behide walls  )
@@ -311,7 +305,7 @@ class DungeonState extends EventEmitter {
     }
 
     var rand = this.rand.intBetween(0, likelyTiles.length-1)
-    return { x: likelyTiles[ rand ], y: firstRoom.position.y + 1 }
+    return { x: firstRoom.position.y + 1, y: likelyTiles[ rand ]}
   }
 
   toJSON () {

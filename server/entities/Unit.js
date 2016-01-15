@@ -1,7 +1,5 @@
 'use strict';
 
-var helpers  = require('../../shared/helpers')
-
 var Entity = require('./Entity')
 var Bar = require('../core/Bar')
 var Movement = require('../core/Movement')
