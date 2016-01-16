@@ -8,6 +8,15 @@ class Fountain extends Interactive {
   constructor (position) {
     super(helpers.ENTITIES.FOUNTAIN, position)
     this.active = (Math.random() > 0.5 )
+
+    this.activationTime = Date.now()
+    this.fillTimeout = 20000 // 20 seconds to fill
+  }
+
+  update (currentTime) {
+    if (currentTime > this.activationTime + this.fillTimeout) {
+      this.active = true
+    }
   }
 
   interact (moveEvent, player, state) {
@@ -22,8 +31,9 @@ class Fountain extends Interactive {
     ) {
       player.hp.current = player.hp.max
       player.mp.current = player.mp.max
-      console.log("activate!")
+
       this.active = false
+      this.activationTime = Date.now()
     }
   }
 

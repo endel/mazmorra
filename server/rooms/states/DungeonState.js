@@ -21,15 +21,6 @@ var gen = require('random-seed')
   , Item  = require('../../entities/Item')
   , Interactive  = require('../../entities/Interactive')
 
-  // items
-  , Gold  = require('../../entities/items/Gold')
-  , LifeHeal  = require('../../entities/items/LifeHeal')
-
-  // interactive
-  , Door  = require('../../entities/interactive/Door')
-  , Chest  = require('../../entities/interactive/Chest')
-  , Fountain  = require('../../entities/interactive/Fountain')
-
 class DungeonState extends EventEmitter {
 
   constructor (mapkind, difficulty, daylight) {
@@ -50,16 +41,15 @@ class DungeonState extends EventEmitter {
 
     this.entities = {}
     this.players = {}
-    this.startPosition = this.getStartPosition()
 
     this.gridUtils = new GridUtils(this.entities)
-    this.roomUtils = new RoomUtils(this.rand, this, this.rooms)
 
     // 0 = walkable, 1 = blocked
     this.pathgrid = new PF.Grid(this.grid.map(line => { return line.map(type => (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1) }))
     this.finder = new PF.AStarFinder(); // { allowDiagonal: true, dontCrossCorners: true }
 
-    this.createEntities()
+    this.roomUtils = new RoomUtils(this.rand, this, this.rooms)
+    this.roomUtils.createEntities()
   }
 
   addEntity (entity) { this.entities[ entity.id ] = entity }
@@ -69,7 +59,7 @@ class DungeonState extends EventEmitter {
     var player = new Player(client.id)
     player.type = helpers.ENTITIES.PLAYER
     player.position.on('move', this.onEntityMove.bind(this))
-    player.position.set(this.startPosition.x, this.startPosition.y)
+    player.position.set(this.roomUtils.startPosition)
 
     this.addEntity(player)
     this.players[ player.id ] = player
@@ -86,106 +76,10 @@ class DungeonState extends EventEmitter {
   }
 
   dropItemFrom (unit) {
-    let dropped = null
-
-    if (Math.random() > 0.5) {
-      dropped = new Gold(unit.position)
-    } else {
-      dropped = new LifeHeal(unit.position)
+    let dropped = this.roomUtils.dropItemFrom(unit)
+    if (dropped) {
+      this.addEntity(dropped)
     }
-
-    this.addEntity(dropped)
-  }
-
-  createEntities () {
-    var entrance = new Door({
-      x: this.startPosition.x,
-      y: this.startPosition.y
-    }, {
-      identifier: 'grass',
-      mapkind: 'grass',
-      difficulty: 1,
-      progress: 1
-    })
-    this.addEntity(entrance)
-
-    var i =0
-    this.rooms.forEach(room => {
-      var entities = Math.floor(Math.max(0, this.roomUtils.getNumPositionsRemaining(room) / 3))
-      while (entities--) {
-        var enemy = new Enemy('rabbit')
-        enemy.position.set(this.roomUtils.getNextAvailablePosition(room))
-        enemy.position.on('move', this.onEntityMove.bind(this))
-        enemy.state = this
-        this.addEntity(enemy)
-      }
-
-      if (this.roomUtils.hasPositionsRemaining(room)) {
-        var entity = new Entity()
-        entity.type = helpers.ENTITIES.AESTHETICS
-        entity.position = this.roomUtils.getNextAvailablePosition(room)
-        this.addEntity(entity)
-      }
-
-      if (this.roomUtils.hasPositionsRemaining(room)) {
-        var entity = new Entity()
-        entity.type = helpers.ENTITIES.AESTHETICS
-        entity.position = this.roomUtils.getNextAvailablePosition(room)
-        this.addEntity(entity)
-      }
-
-      if (this.roomUtils.hasPositionsRemaining(room)) {
-        var entity = new Entity()
-        entity.type = helpers.ENTITIES.AESTHETICS
-        entity.position = this.roomUtils.getNextAvailablePosition(room)
-        this.addEntity(entity)
-      }
-
-      if (this.roomUtils.hasPositionsRemaining(room)) {
-        var entity = new Entity()
-        entity.type = helpers.ENTITIES.ROCK
-        entity.position = this.roomUtils.getNextAvailablePosition(room)
-        this.addEntity(entity)
-        this.pathgrid.setWalkableAt(entity.position.x, entity.position.y, false)
-      }
-
-        // var enemy = new Enemy('rabbit')
-        // enemy.position.on('move', this.onEntityMove.bind(this))
-        // enemy.position.set(this.roomUtils.getNextAvailablePosition(room))
-        // enemy.state = this
-        // this.addEntity(enemy)
-
-        // var enemy = new Enemy('skeleton')
-        // enemy.position.on('move', this.onEntityMove.bind(this))
-        // enemy.position.set(this.roomUtils.getNextAvailablePosition(room))
-        // enemy.state = this
-        // this.addEntity(enemy)
-
-        // var enemy = new Enemy('rat')
-        // enemy.position.on('move', this.onEntityMove.bind(this))
-        // enemy.position.set(this.roomUtils.getNextAvailablePosition(room))
-        // enemy.state = this
-        // this.addEntity(enemy)
-
-        // var entity = new Entity()
-        // entity.type = helpers.ENTITIES.ROCK
-        // entity.position = this.roomUtils.getNextAvailablePosition(room)
-        // this.addEntity(entity)
-        // this.pathgrid.setWalkableAt(entity.position.x, entity.position.y, false)
-
-        // var entity = new Chest(this.roomUtils.getNextAvailablePosition(room))
-        // this.addEntity(entity)
-
-        // var entity = new Fountain(this.roomUtils.getNextAvailablePosition(room))
-        // this.addEntity(entity)
-
-        // var heal = new Item(helpers.ENTITIES.LIFE_HEAL, {
-        //   x: room.position.y + 1 + this.rand.intBetween(0, room.size.y - 4), // ( isn't -3 to prevent enemies to be behide walls  )
-        //   y: room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
-        // })
-        // this.addEntity(heal)
-    })
-
   }
 
   onEntityMove (moveEvent, prevX, prevY, currentX, currentY) {
@@ -292,20 +186,6 @@ class DungeonState extends EventEmitter {
     for (var id in this.entities) {
       this.entities[id].update(currentTime)
     }
-  }
-
-  getStartPosition () {
-    var firstRoom = this.rooms[0]
-      , likelyTiles = []
-
-    for (var i=1, l=firstRoom.size.x-2; i<=l; i++) {
-      if (this.grid[firstRoom.position.x + i][firstRoom.position.y] & helpers.TILE_TYPE.WALL) {
-        likelyTiles.push( firstRoom.position.x + i )
-      }
-    }
-
-    var rand = this.rand.intBetween(0, likelyTiles.length-1)
-    return { x: firstRoom.position.y + 1, y: likelyTiles[ rand ]}
   }
 
   toJSON () {

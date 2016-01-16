@@ -50,6 +50,9 @@ export default class Game {
     this.mouse = new THREE.Vector2();
 
     // this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 20000 );
+    // this.camera.zoom = ZOOM / 10
+    // this.camera.updateProjectionMatrix()
+
     this.camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -1, 100 );
     this.camera.zoom = ZOOM
     this.camera.updateProjectionMatrix()
