@@ -5,6 +5,10 @@ var Room = require('colyseus').Room
 
   , DungeonState = require('./states/DungeonState')
 
+  , utils = require('colyseus').utils
+  , protocol = require('colyseus').protocol
+  , msgpack = require('msgpack-lite')
+
 const TICK_RATE = 30
 
 class DungeonRoom extends Room {
@@ -21,14 +25,16 @@ class DungeonRoom extends Room {
     // this.mapkind = 'rock'
 
     // this.mapkind = options.mapkind || "grass"
-    this.level = options.level || 1
+    this.progress = options.progress || 1
+    this.difficulty = options.difficulty || 1
 
     this.players = new WeakMap()
     this.clientMap = new WeakMap()
 
     this.setState(new DungeonState(
       this.mapkind,
-      this.level,
+      this.progress,
+      this.difficulty,
       (['grass', 'ice', 'castle'].indexOf(this.mapkind) !== -1) // is daylight? // Math.random() > 0.5
     ))
 
@@ -39,11 +45,13 @@ class DungeonRoom extends Room {
   }
 
   requestJoin (options) {
-    console.log("requestJoin", options)
-    return (
-      // (options.mapkind && options.mapkind === this.mapkind) &&
-      this.clients.length < 10
-    )
+    var success = true;
+
+    if (options.mapkind) success = (success && options.mapkind === this.mapkind)
+    if (options.progress) success = (success && options.progress === this.progress)
+    if (options.difficulty) success = (success && options.difficulty === this.difficulty)
+
+    return ( success && this.clients.length < 10 )
   }
 
   onJoin (client, options) {
@@ -90,6 +98,25 @@ class DungeonRoom extends Room {
   dispose () {
     clearInterval(this.tickInterval)
     console.log("dispose MatchRoom", this.roomId)
+  }
+
+  _onLeave (client, isDisconnect) {
+    // remove client from client list
+    utils.spliceOne(this.clients, this.clients.indexOf(client))
+
+    if (this.onLeave) this.onLeave(client)
+    this.emit('leave', client, isDisconnect)
+
+    if (!isDisconnect) {
+      client.send( msgpack.encode( [protocol.LEAVE_ROOM, this.roomId] ), { binary: true }, utils.logError.bind(this) )
+    }
+
+    // // custom cleanup method & clear intervals
+    // if (this.clients.length == 0) {
+    //   if (this.dispose) this.dispose();
+    //   clearInterval(this._patchInterval)
+    //   this.emit('dispose')
+    // }
   }
 
 }

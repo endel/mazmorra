@@ -1,4 +1,5 @@
 var shortid = require('shortid')
+  , state = new WeakMap()
 
 class Entity {
 
@@ -7,6 +8,9 @@ class Entity {
   }
 
   update () { /* does nothing */ }
+
+  set state (value) { state.set(this, value) }
+  get state () { return state.get(this) }
 
 }
 

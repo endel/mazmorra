@@ -19,11 +19,12 @@ var gen = require('random-seed')
 
   // entity types
   , Item  = require('../../entities/Item')
+  , TextEvent  = require('../../entities/ephemeral/TextEvent')
   , Interactive  = require('../../entities/Interactive')
 
 class DungeonState extends EventEmitter {
 
-  constructor (mapkind, difficulty, daylight) {
+  constructor (mapkind, progress, difficulty, daylight) {
     super()
 
     // predicatble random generator
@@ -34,6 +35,8 @@ class DungeonState extends EventEmitter {
     // var data = dungeon.generate(this.rand, {x: 24, y: 24}, {x: 6, y: 6}, {x: 12, y: 12}, 3)
 
     this.mapkind = mapkind
+    this.progress = progress
+    this.difficulty = difficulty
     this.daylight = daylight
 
     this.grid = data[0]
@@ -57,15 +60,23 @@ class DungeonState extends EventEmitter {
 
   createPlayer (client) {
     var player = new Player(client.id)
+      , currentProgress = (client.currentProgress || -1)
+
     player.type = helpers.ENTITIES.PLAYER
     player.position.on('move', this.onEntityMove.bind(this))
-    player.position.set(this.roomUtils.startPosition)
+
+    if (currentProgress < this.progress) {
+      player.position.set(this.roomUtils.startPosition)
+    } else {
+      player.position.set(this.roomUtils.endPosition)
+    }
 
     this.addEntity(player)
     this.players[ player.id ] = player
 
-    // TODO: remove me!
+    // TODO: refactor me!
     client.player = player
+    client.currentProgress = this.progress
 
     return player
   }
@@ -167,17 +178,12 @@ class DungeonState extends EventEmitter {
   }
 
   addMessage (player, message) {
-    return this.addTextEvent(message, player.position, false, false, true)
+    return this.createTextEvent(message, player.position, false, false, true)
   }
 
-  addTextEvent (text, position, kind, ttl, small) {
-    var textEvent = new Entity()
-    if (kind) { textEvent.kind = kind }
-    if (ttl) { textEvent.ttl = ttl }
-    if (small) { textEvent.small = true }
-    textEvent.type = helpers.ENTITIES.TEXT_EVENT
-    textEvent.text = text
-    textEvent.position = position
+  createTextEvent (text, position, kind, ttl, small) {
+    var textEvent = new TextEvent(text, position, kind, ttl, small)
+    textEvent.state = this
     this.addEntity(textEvent)
     return textEvent
   }

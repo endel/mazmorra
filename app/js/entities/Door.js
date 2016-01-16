@@ -2,8 +2,12 @@
 
 export default class Door extends THREE.Object3D {
 
-  constructor (type = 'door-night') { // door-day
+  constructor (data) {
     super()
+
+    this.userData = data
+
+    var type = 'door-night' // door-day
 
     var material = new THREE.MeshPhongMaterial( {
         shading: THREE.FlatShading,
@@ -22,7 +26,6 @@ export default class Door extends THREE.Object3D {
     mesh.scale.set(1, 1, 1)
     this.add(mesh)
 
-
     var lightColor = 0xfcfcfc
       , light = new THREE.PointLight(lightColor, 1.5, 5); // Spotlight would be better here
 
@@ -34,7 +37,7 @@ export default class Door extends THREE.Object3D {
   }
 
   get label () {
-    return "Door"
+    return "Door to #" + this.userData.destiny.progress;
   }
 
   onMouseOver (tileSelection) {

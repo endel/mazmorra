@@ -7,8 +7,6 @@ var Movement = require('../core/Movement')
 // Actions
 var BattleAction = require('../actions/BattleAction')
 
-var state = new WeakMap()
-
 class Unit extends Entity {
 
   constructor (id) {
@@ -42,9 +40,6 @@ class Unit extends Entity {
     this.attackDistance = 1
     this.attackSpeed = 2000
   }
-
-  set state (value) { state.set(this, value) }
-  get state () { return state.get(this) }
 
   get isAlive () { return this.hp.current > 0 }
 

@@ -37,7 +37,7 @@ export default class LevelGenerator {
 
     switch (data.type) {
       case helpers.ENTITIES.DOOR:
-        element = new Door()
+        element = new Door(data)
         break;
 
       case helpers.ENTITIES.ENEMY:

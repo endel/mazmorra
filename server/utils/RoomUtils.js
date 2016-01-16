@@ -29,7 +29,9 @@ class RoomUtils {
     this.data = new WeakMap()
 
     this.cacheRoomData()
+
     this.startPosition = this.getRandomDoorPosition(this.rooms[0]);
+    this.endPosition = this.getRandomDoorPosition(this.rooms[ this.rooms.length-1 ])
   }
 
   getRandomDoorPosition (room) {
@@ -85,23 +87,24 @@ class RoomUtils {
       identifier: 'grass',
       mapkind: 'grass',
       difficulty: 1,
-      progress: 1
+      progress: this.state.progress - 1
     }))
 
     // out
-    this.state.addEntity(new Door(this.getRandomDoorPosition(this.rooms[ this.rooms.length-1 ]), {
+    this.state.addEntity(new Door(this.endPosition, {
       identifier: 'grass',
       mapkind: 'grass',
       difficulty: 1,
-      progress: 1
+      progress: this.state.progress + 1
     }))
 
     this.rooms.forEach(room => this.populateRoom(room))
   }
 
   populateRoom (room) {
-    var entities = Math.floor(Math.max(0, this.getNumPositionsRemaining(room) / 3))
-    while (entities--) {
+    var enemies = Math.floor(this.rand.intBetween(0, this.state.difficulty * 2))
+
+    while (enemies--) {
       this.addEntity(room, (position) => {
         var enemy = new Enemy('rabbit')
         enemy.position.set(position)
