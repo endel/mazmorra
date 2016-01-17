@@ -30,14 +30,15 @@ class DungeonState extends EventEmitter {
     // predicatble random generator
     this.rand = gen.create()
 
-    // (gridSize, minRoomSize, maxRoomSize, maxRooms) {
-    var data = dungeon.generate(this.rand, {x: 16, y: 16}, {x: 4, y: 4}, {x: 8, y: 8}, 24)
-    // var data = dungeon.generate(this.rand, {x: 24, y: 24}, {x: 6, y: 6}, {x: 12, y: 12}, 3)
-
     this.mapkind = mapkind
     this.progress = progress
     this.difficulty = difficulty
     this.daylight = daylight
+
+    // (gridSize, minRoomSize, maxRoomSize, maxRooms) {
+    // var data = dungeon.generate(this.rand, {x: 16, y: 16}, {x: 4, y: 4}, {x: 8, y: 8}, 24)
+    // var data = dungeon.generate(this.rand, {x: 48, y: 48}, {x: 5, y: 5}, {x: 10, y: 10}, 32)
+    var data = dungeon.generate(this.rand, {x: 24, y: 24}, {x: 6, y: 6}, {x: 12, y: 12}, 3)
 
     this.grid = data[0]
     this.rooms = data[1]
@@ -62,8 +63,8 @@ class DungeonState extends EventEmitter {
     var player = new Player(client.id)
       , currentProgress = (client.currentProgress || -1)
 
-    player.type = helpers.ENTITIES.PLAYER
-    player.position.on('move', this.onEntityMove.bind(this))
+    player.state = this
+    // player.position.on('move', this.onEntityMove.bind(this))
 
     if (currentProgress < this.progress) {
       player.position.set(this.roomUtils.startPosition)
@@ -93,49 +94,16 @@ class DungeonState extends EventEmitter {
     }
   }
 
-  onEntityMove (moveEvent, prevX, prevY, currentX, currentY) {
-    var entity = moveEvent.target
-
-    // check if target position has been changed
-    if (entity.position.target) {
-
-      // TODO: improve me
-      if (entity.position.target instanceof Unit &&
-          entity.position.target.isAlive &&
-          currentX === entity.position.target.position.x &&
-          currentY === entity.position.target.position.y) {
-        moveEvent.cancel()
-        return
-      }
-
-      if (
-          entity.position.destiny && (
-            entity.position.destiny.x !== entity.position.target.position.x ||
-            entity.position.destiny.y !== entity.position.target.position.y
-          )
-      ) {
-        entity.position.x = currentX
-        entity.position.y = currentY
-        this.move(entity, { x: entity.position.target.position.y, y: entity.position.target.position.x }, false)
-      }
-
-      // check if player picked up some item
-      if (moveEvent.target instanceof Player) {
-        this.checkOverlapingEntities(moveEvent, currentX, currentY)
-      }
-    }
-
-    // if (prevX && prevY) this.pathgrid.setWalkableAt(prevX, prevY, true)
-    // console.log(entity, currentX, currentY)
-    // this.pathgrid.setWalkableAt(currentX, currentY, false)
-  }
-
   checkOverlapingEntities (moveEvent, x, y) {
     var entities = this.gridUtils.getAllEntitiesAt(y, x)
       , player = moveEvent.target
 
     for (var i=0; i<entities.length; i++) {
       let entity = entities[i]
+
+      if (entity instanceof Enemy && entity.isAlive) {
+        moveEvent.cancel()
+      }
 
       if (entity instanceof Item) {
         entity.pick(player, this)
@@ -147,8 +115,8 @@ class DungeonState extends EventEmitter {
     }
   }
 
-  move (player, destiny, allowChangeTarget) {
-    if (destiny.x == player.position.y && destiny.y == player.position.x) {
+  move (unit, destiny, allowChangeTarget) {
+    if (destiny.x == unit.position.y && destiny.y == unit.position.x) {
       return false;
     }
 
@@ -157,7 +125,7 @@ class DungeonState extends EventEmitter {
     }
 
     var moves = this.finder.findPath(
-      player.position.x, player.position.y,
+      unit.position.x, unit.position.y,
       destiny.y, destiny.x, // TODO: why need to invert x/y here?
       this.pathgrid.clone() // FIXME: we shouldn't create leaks that way!
     );
@@ -165,16 +133,18 @@ class DungeonState extends EventEmitter {
     moves.shift() // first block is always the starting point, we don't need it
 
     if (allowChangeTarget) {
-      player.position.target = this.gridUtils.getEntityAt(destiny.x, destiny.y)
+      unit.position.target = this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit)
+        || this.gridUtils.getEntityAt(destiny.x, destiny.y)
+
       // TODO: refactor me
-      if (player.position.target instanceof Unit && player.position.target.isAlive) {
-        player.attack(player.position.target)
+      if (unit.position.target instanceof Unit && unit.position.target.isAlive) {
+        unit.attack(unit.position.target)
       } else {
-        player.attack(null)
+        unit.attack(null)
       }
     }
 
-    player.position.moveTo(moves)
+    unit.position.moveTo(moves)
   }
 
   addMessage (player, message) {

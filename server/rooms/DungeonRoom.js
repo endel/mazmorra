@@ -36,6 +36,7 @@ class DungeonRoom extends Room {
       this.progress,
       this.difficulty,
       (['grass', 'ice', 'castle'].indexOf(this.mapkind) !== -1) // is daylight? // Math.random() > 0.5
+      // false
     ))
 
     this.state.on('goto', this.onGoTo.bind(this))

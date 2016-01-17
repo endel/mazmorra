@@ -2,6 +2,8 @@
 
 import { Behaviour } from 'behaviour.js'
 
+import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
+
 export default class Aesthetic extends THREE.Object3D {
 
   constructor () {
@@ -20,6 +22,8 @@ export default class Aesthetic extends THREE.Object3D {
 
     var scale = SCALES[ this.sprite.material.map.image.width ]
     this.sprite.scale.set(scale, scale, scale)
+
+    this.addBehaviour(new NearPlayerOpacity)
   }
 
 }

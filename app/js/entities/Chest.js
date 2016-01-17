@@ -34,8 +34,8 @@ export default class Chest extends THREE.Object3D {
   }
 
   get label () {
-    let status = (this.openableBehaviour.isOpen) ?  "Open" : ""
-    return `${status} Chest`
+    let status = (this.openableBehaviour.isOpen) ?  "Open " : ""
+    return `${status}Chest`
   }
 
 }

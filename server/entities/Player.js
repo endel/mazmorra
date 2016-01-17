@@ -1,11 +1,13 @@
 'use strict';
 
 var Unit = require('./Unit')
+  , helpers  = require('../../shared/helpers')
 
 class Player extends Unit {
 
   constructor (id) {
     super(id)
+    this.type = helpers.ENTITIES.PLAYER
 
     var genders = ['man', 'man-2', 'woman']
 
@@ -38,6 +40,13 @@ class Player extends Unit {
     this.attackSpeed = 1000
   }
 
+  onMove (moveEvent, prevX, prevY, currentX, currentY) {
+    super.onMove(moveEvent, prevX, prevY, currentX, currentY)
+
+    if (this.position.target) {
+      this.state.checkOverlapingEntities(moveEvent, currentX, currentY)
+    }
+  }
 }
 
 module.exports = Player

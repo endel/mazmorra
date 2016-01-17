@@ -17,7 +17,7 @@ class BattleAction extends EventEmitter {
     this.damage = null
     this.critical = null
 
-    this.lastUpdateTime = null
+    this.lastUpdateTime = 0
 
     this.active = false;
   }
@@ -35,12 +35,13 @@ class BattleAction extends EventEmitter {
     if (!this.missed) {
       this.damage = d20 + this.attacker.damage + this.attacker.attributes[ this.attacker.damageAttribute ]
       if (this.critical) {
-        this.damage *= this.attacker.criticalBonus
+        this.damage *= Math.floor(this.attacker.criticalBonus)
       }
 
       let damageTaken = this.defender.takeDamage(this)
 
       if (!this.defender.isAlive) {
+        this.defender.onDie()
         this.attacker.onKill(this.defender)
       }
       //

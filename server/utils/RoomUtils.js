@@ -107,14 +107,13 @@ class RoomUtils {
     while (enemies--) {
       this.addEntity(room, (position) => {
         var enemy = new Enemy('rabbit')
-        enemy.position.set(position)
-        enemy.position.on('move', this.state.onEntityMove.bind(this.state))
         enemy.state = this.state
+        enemy.position.set(position)
         return enemy
       })
     }
 
-    this.populateAesthetics(room, 3)
+    this.populateAesthetics(room, Math.max(room.size.x, room.size.y) / 2)
 
     if (this.rand.intBetween(0, 12) === 12) {
       this.addEntity(room, (position) => {

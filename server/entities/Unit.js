@@ -39,6 +39,35 @@ class Unit extends Entity {
     // attack attributes
     this.attackDistance = 1
     this.attackSpeed = 2000
+
+    this.position.on('move', this.onMove.bind(this))
+  }
+
+  onMove (moveEvent, prevX, prevY, currentX, currentY) {
+
+    // check if target position has been changed
+    if (this.position.target) {
+
+      // // TODO: improve me
+      // if (this.position.target instanceof Unit &&
+      //     this.position.target.isAlive &&
+      //     currentX === this.position.target.position.x &&
+      //     currentY === this.position.target.position.y) {
+      //   moveEvent.cancel()
+      //   return
+      // }
+
+      if (
+          this.position.destiny && (
+            this.position.destiny.x !== this.position.target.position.x ||
+            this.position.destiny.y !== this.position.target.position.y
+          )
+      ) {
+        this.position.x = currentX
+        this.position.y = currentY
+        this.state.move(this, { x: this.position.target.position.x, y: this.position.target.position.y }, false)
+      }
+    }
   }
 
   get isAlive () { return this.hp.current > 0 }
@@ -67,6 +96,7 @@ class Unit extends Entity {
       this.action = null
 
     } else if (!this.isBattlingAgainst(defender)) {
+      console.log("new battle action agasint", defender.constructor.name)
       this.action = new BattleAction(this, defender)
     }
   }
@@ -83,6 +113,8 @@ class Unit extends Entity {
 
     return damageTaken
   }
+
+  onDie () {}
 
   onKill (unit) {
     // compute experience this unit received by killing another one

@@ -1,11 +1,13 @@
 'use strict';
 
-var Unit = require('./Unit')
-
-// Actions
-var BattleAction = require('../actions/BattleAction')
-
 var helpers  = require('../../shared/helpers')
+
+  // Entities
+  , Unit = require('./Unit')
+  , Player = require('./Player')
+
+  // Actions
+  , BattleAction = require('../actions/BattleAction')
 
 class Enemy extends Unit {
 
@@ -23,12 +25,26 @@ class Enemy extends Unit {
     // this.attackSpeed = 1000
   }
 
-  takeDamage (battleAction ) {
-    if (!this.isBattlingAgainst(battleAction.attacker)) {
-      // enemies attack back and follow whoever attacked him
-      this.action = new BattleAction(this, battleAction.attacker)
-    }
+  update (currentTime) {
+    super.update(currentTime)
 
+    if (!this.action) {
+      var closePlayer = this.state.gridUtils.getEntityAt(this.position.y - 1, this.position.x, Player)
+           || this.state.gridUtils.getEntityAt(this.position.y + 1, this.position.x, Player)
+           || this.state.gridUtils.getEntityAt(this.position.y, this.position.x + 1, Player)
+           || this.state.gridUtils.getEntityAt(this.position.y, this.position.x - 1, Player)
+
+      if (closePlayer) {
+        this.state.move(this, { x: closePlayer.position.y, y: closePlayer.position.x })
+      }
+    }
+  }
+
+  onDie () {
+    // this.state.pathgrid.setWalkableAt(this.position.x, this.position.y, true)
+  }
+
+  takeDamage (battleAction ) {
     this.state.move(this, { x: battleAction.attacker.position.y, y: battleAction.attacker.position.x }) // , false
     return super.takeDamage(battleAction)
   }
@@ -36,4 +52,5 @@ class Enemy extends Unit {
 
 
 }
+
 module.exports = Enemy

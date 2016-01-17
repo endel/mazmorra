@@ -10,7 +10,7 @@ class Fountain extends Interactive {
     this.active = (Math.random() > 0.5 )
 
     this.activationTime = Date.now()
-    this.fillTimeout = 20000 // 20 seconds to fill
+    this.fillTimeout = 60000 // 60 seconds to fill
   }
 
   update (currentTime) {
