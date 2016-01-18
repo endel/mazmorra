@@ -1,6 +1,9 @@
 import Clock from 'clock-timer.js'
-import Level from './Level'
 import HUD from './HUD'
+import Device from '../engine/device'
+
+import Level from './level/Level'
+import CharacterBuilder from './character_builder/Builder'
 
 import { createComponentSystem } from 'behaviour.js'
 
@@ -18,7 +21,7 @@ window.CLEAR_COLOR = new THREE.Color(0x002a0d) // green / forest
 
 window.clock = new Clock();
 // window.ZOOM = 23
-window.ZOOM = 28
+window.ZOOM = 32 / window.devicePixelRatio
 window.IS_DAY = true
 
 // sprite scales based on the texture size
@@ -70,16 +73,18 @@ export default class Game {
     window.camera = this.camera
 
     this.hud = new HUD()
+    // this.level = new Level(this.scene, this.hud, this.camera)
+    // this.level.on('setup', this.onSetupLevel.bind(this))
 
-    this.level = new Level(this.scene, this.hud, this.camera)
-    this.level.on('setup', this.onSetupLevel.bind(this))
+    this.characterBuilder = new CharacterBuilder(this.scene, this.hud,this.camera)
+    this.onSetupLevel({ mapkind: 'castle', daylight: true })
 
     this.updateInterval = setInterval(this.update.bind(this), 1000 / 60)
     this.container.appendChild( this.renderer.domElement );
 
-    window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false )
-    window.addEventListener( 'touchstart', this.onTouchStart.bind(this), false )
-    window.addEventListener( 'click', this.onClick.bind(this), false )
+    // window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false )
+    // window.addEventListener( 'touchstart', this.onTouchStart.bind(this), false )
+    // window.addEventListener( 'click', this.onClick.bind(this), false )
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
 
     // stats
@@ -106,7 +111,7 @@ export default class Game {
   }
 
   onWindowResize () {
-    this.hud.resize()
+    if (this.hud) this.hud.resize()
 
     // // update camera aspect ratio / projection matrix
     // this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -128,6 +133,9 @@ export default class Game {
     if (e.touches && e.touches[0]) {
       let touch = e.touches[0]
       this.onMouseMove(touch)
+
+      this.raycast()
+
       if (this.lastTargetPosition === this.level.targetPosition) {
         this.onClick(e)
       }
@@ -159,7 +167,7 @@ export default class Game {
   render () {
     requestAnimationFrame( this.render.bind(this) );
 
-    if (this.level)
+    if (this.level && !Device.isMobile())
       this.raycast()
 
     this.renderer.clear()

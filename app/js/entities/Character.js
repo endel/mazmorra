@@ -5,13 +5,7 @@ export default class Character extends THREE.Object3D {
 
     this.userData = data
 
-    this.textures = {
-      top: ResourceManager.get( 'character-' + this.userData.gender + '-top' ),
-      bottom: ResourceManager.get( 'character-' + this.userData.gender + '-bottom' ),
-      left: ResourceManager.get( 'character-' + this.userData.gender + '-left' ),
-      right: ResourceManager.get( 'character-' + this.userData.gender + '-right' )
-    }
-
+    this.gender = data.gender
     this._direction = "bottom"
 
     this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -29,9 +23,19 @@ export default class Character extends THREE.Object3D {
     return `${ this.userData.name } - LVL ${ this.userData.lvl }`
   }
 
+  set gender (gender) {
+    this.textures = {
+      top: ResourceManager.get( 'character-' + gender + '-top' ),
+      bottom: ResourceManager.get( 'character-' + gender + '-bottom' ),
+      left: ResourceManager.get( 'character-' + gender + '-left' ),
+      right: ResourceManager.get( 'character-' + gender + '-right' )
+    }
+  }
+
   set direction (direction) {
     this._direction = direction
     var texture = this.textures[ this._direction ]
+    debugger
 
     this.sprite.material.map = texture
 

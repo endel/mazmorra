@@ -32,7 +32,7 @@ psd.tree.descendant_layers.each do |layer|
     power_of_two.set_pixel(x,y,color)
   end
 
-  filename = "images/#{layer.path.gsub('/', '-')}.png"
+  filename = "images/sprites/#{layer.path.gsub('/', '-')}.png"
   power_of_two.save("app/#{filename}")
   file_list << filename
 end

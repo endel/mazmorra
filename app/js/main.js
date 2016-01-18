@@ -5,7 +5,6 @@ import Game from './game/Game'
 
 window.ResourceManager = ResourceManager
 window.Tweener = Tweener
-
 window.tweener = new Tweener()
 
 ResourceManager.load(() => {

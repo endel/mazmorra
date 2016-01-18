@@ -16,7 +16,7 @@ export default class Character extends THREE.Object3D {
 
     this.levelText = new Text2D("1", {
       align: textAlign.left,
-      font: "50px primary",
+      font: DEFAULT_FONT,
       fillStyle: '#d0c01c',
       antialias: false
     })
@@ -30,6 +30,10 @@ export default class Character extends THREE.Object3D {
     //   window.lifebar = this
     //   setInterval(() => { }, 1000)
     // }
+  }
+
+  set gender (gender) {
+    this.sprite.material.map = ResourceManager.get( 'character-'+gender+'-hud-face' )
   }
 
 }

@@ -6,7 +6,8 @@ import LevelUpButton from '../hud/LevelUpButton'
 import { Text2D, textAlign } from 'three-text2d'
 
 window.HUD_MARGIN = 2.5
-window.HUD_SCALE = 9
+window.HUD_SCALE = 9 / window.devicePixelRatio
+window.DEFAULT_FONT = (Math.floor(50 / window.devicePixelRatio)) + "px primary"
 
 export default class HUD extends THREE.Scene {
 
@@ -30,7 +31,7 @@ export default class HUD extends THREE.Scene {
 
     //
     // Label
-    this.selectionText = new Text2D("WELCOME", { font: "50px primary", fillStyle: '#fff', antialias: false })
+    this.selectionText = new Text2D("WELCOME", { font: DEFAULT_FONT, fillStyle: '#fff', antialias: false })
     this.add(this.selectionText)
 
     // Resources

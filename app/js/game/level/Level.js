@@ -1,12 +1,12 @@
 import EventEmitter from 'tiny-emitter'
 
 import Colyseus from 'colyseus.js'
-import Generator from './level/Generator'
+import Generator from './Generator'
 
-import TileSelectionPreview from '../entities/TileSelectionPreview'
+import TileSelectionPreview from '../../entities/TileSelectionPreview'
 
-import CharacterController from '../behaviors/CharacterController'
-import HUDController from '../behaviors/HUDController'
+import CharacterController from '../../behaviors/CharacterController'
+import HUDController from '../../behaviors/HUDController'
 
 export default class Level extends EventEmitter {
 
@@ -26,6 +26,7 @@ export default class Level extends EventEmitter {
 
     this.entities = {}
 
+    this.clickedTileLight = new THREE.SpotLight(COLOR_RED, 0.5, 30);
     this.selectionLight = new THREE.SpotLight(0xffffff, 0.5, 30);
     this.selection = new TileSelectionPreview(this.selectionLight, this.hud.selectionText)
 
@@ -108,6 +109,7 @@ export default class Level extends EventEmitter {
 
     this.scene.add(this.camera)
     this.scene.add(this.selectionLight)
+    this.scene.add(this.clickedTileLight)
 
     this.generator.setGrid(state.grid)
     this.generator.createTiles(state.mapkind)
@@ -165,6 +167,10 @@ export default class Level extends EventEmitter {
 
   playerAction () {
     if (!this.targetPosition) return false;
+
+    this.clickedTileLight.intensity = 1
+    this.clickedTileLight.position.copy(this.selectionLight.position)
+    this.clickedTileLight.target = this.selectionLight.target
 
     this.room.send(['pos', {
       x: this.targetPosition.x,
