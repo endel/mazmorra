@@ -26,7 +26,7 @@ export default class Fountain extends THREE.Object3D {
     this.activateable = new Activatable()
     this.addBehaviour(this.activateable)
 
-    var scale = SCALES[ this.activeSprite.material.map.image.width ]
+    var scale = SCALES[ this.activeSprite.material.map.frame.w ]
     this.activeSprite.scale.set(scale, scale, scale)
     this.inactiveSprite.scale.set(scale, scale, scale)
   }

@@ -1,5 +1,4 @@
-// var data = require('./data.json')
-
+var data = require('./data.json')
 var spritesheet = require('../../images/spritesheet.json')
 
 // allow to clone textures without duplicating it in memory
@@ -35,16 +34,17 @@ export default class ResourceManager {
     this.geometries = {}
 
     this.texturesLoaded = 0
+    this.texturesTotal = 101
 
     loader.load('images/spritesheet.png', (texture) => {
       this.atlas = texture
-      console.log(spritesheet)
 
       for (var filename in spritesheet.frames) {
-        let texture = this.atlas.createInstance()
-          , name = filename.match(/(.*)\.png$/)[1]
-          // , data = spritesheet.frames[filename]
-          , frame = spritesheet.frames[filename].frame
+        let name = filename.match(/(.*)\.png$/)[1]
+        if (name.match(/^tile/)) { continue; }
+
+        let frame = spritesheet.frames[filename].frame
+          , texture = this.atlas.createInstance()
 
         texture.frame = frame
 
@@ -52,19 +52,35 @@ export default class ResourceManager {
         texture.repeat.y = frame.h / spritesheet.meta.size.h
 
         texture.offset.x = frame.x / spritesheet.meta.size.w
-        texture.offset.y = 1 - (frame.y / spritesheet.meta.size.h)
+        texture.offset.y = 1 - ((frame.y + frame.h) / spritesheet.meta.size.h)
 
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        // texture.needsUpdate = true
-
-        // console.log(name, "offset:",   texture.offset.x, texture.offset.y, "repeat:", texture.repeat.x, texture.repeat.y)
 
         texture.magFilter = THREE.NearestFilter
         texture.minFilter = THREE.LinearMipMapLinearFilter
 
+        this.textures[ name ] = texture
+
+      }
+      this.texturesLoaded ++
+      this.checkLoadComplete(callback)
+    })
+
+    for (var i=0; i<data.length; i++) {
+      let name = data[i].match(/sprites\/(.*)\.png$/)[1]
+      if (!name.match(/^tile/)) continue;
+
+      this.texturesTotal++
+
+      loader.load(data[i], (texture) => {
+        texture = texture
+        texture.magFilter = THREE.NearestFilter
+        texture.minFilter = THREE.LinearMipMapLinearFilter
+
+        // set repeat and create material / geometry for level tiles
         if (name.match(/^tile/)) {
           texture.repeat.set(3, 3)
-          // texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 
           this.materials[ name ] = new THREE.MeshPhongMaterial({
             // color: 0xa0adaf,
@@ -74,50 +90,27 @@ export default class ResourceManager {
             map: texture,
             side: THREE.DoubleSide
           })
-
           this.geometries[ name ] = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE)
         }
 
         this.textures[ name ] = texture
-      }
+        this.texturesLoaded ++
 
-      callback()
-    })
+        this.checkLoadComplete(callback)
+      })
 
-    // for (var i=0; i<data.length; i++) {
-    //   let name = data[i].match(/\/(.*)\.png$/)[1]
-    //   loader.load(data[i], (texture) => {
-    //     this.textures[ name ] = texture
-    //     this.textures[ name ].magFilter = THREE.NearestFilter
-    //     this.textures[ name ].minFilter = THREE.LinearMipMapLinearFilter
-    //
-    //     // set repeat and create material / geometry for level tiles
-    //     if (name.match(/^tile/)) {
-    //       this.textures[ name ].repeat.set(3, 3)
-    //       this.textures[ name ].wrapS = this.textures[ name ].wrapT = THREE.RepeatWrapping;
-    //
-    //       this.materials[ name ] = new THREE.MeshPhongMaterial({
-    //         // color: 0xa0adaf,
-    //         // specular: 0x111111,
-    //         // shininess: 60,
-    //         shading: THREE.FlatShading,
-    //         map: this.textures[ name ],
-    //         side: THREE.DoubleSide
-    //       })
-    //       this.geometries[ name ] = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE)
-    //     }
-    //
-    //     this.texturesLoaded ++
-    //
-    //     // all textures loaded successfully, call finished callback
-    //     if (this.texturesLoaded == data.length) {
-    //       callback()
-    //     }
-    //
-    //   })
-    //
-    // }
+    }
+
+    this.texturesTotal -= 100
   }
+
+  static checkLoadComplete (callback) {
+    // all textures loaded successfully, call finished callback
+    if (this.texturesLoaded == this.texturesTotal) {
+      callback()
+    }
+  }
+
 
 }
 

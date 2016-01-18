@@ -73,18 +73,18 @@ export default class Game {
     window.camera = this.camera
 
     this.hud = new HUD()
-    // this.level = new Level(this.scene, this.hud, this.camera)
-    // this.level.on('setup', this.onSetupLevel.bind(this))
+    this.level = new Level(this.scene, this.hud, this.camera)
+    this.level.on('setup', this.onSetupLevel.bind(this))
 
-    this.characterBuilder = new CharacterBuilder(this.scene, this.hud,this.camera)
-    this.onSetupLevel({ mapkind: 'castle', daylight: true })
+    // this.characterBuilder = new CharacterBuilder(this.scene, this.hud,this.camera)
+    // this.onSetupLevel({ mapkind: 'castle', daylight: true })
 
     this.updateInterval = setInterval(this.update.bind(this), 1000 / 60)
     this.container.appendChild( this.renderer.domElement );
 
-    // window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false )
-    // window.addEventListener( 'touchstart', this.onTouchStart.bind(this), false )
-    // window.addEventListener( 'click', this.onClick.bind(this), false )
+    window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false )
+    window.addEventListener( 'touchstart', this.onTouchStart.bind(this), false )
+    window.addEventListener( 'click', this.onClick.bind(this), false )
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
 
     // stats

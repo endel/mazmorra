@@ -15,7 +15,7 @@ export default class Shadow extends Behaviour {
       geometry = new THREE.PlaneGeometry(1, 1)
     }
 
-    this.scale = SCALES[ material.map.image.width ]
+    this.scale = SCALES[ material.map.frame.w ]
     this.initialY = this.object.position.y
 
     this.shadow = new THREE.Mesh(geometry, material)

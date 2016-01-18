@@ -19,7 +19,7 @@ export default class Chest extends THREE.Object3D {
     this.sprite.position.y = 0.099
     this.add(this.sprite)
 
-    var scale = SCALES[ this.sprite.material.map.image.width ]
+    var scale = SCALES[ this.sprite.material.map.frame.w ]
     this.sprite.scale.set(scale, scale, scale)
   }
 

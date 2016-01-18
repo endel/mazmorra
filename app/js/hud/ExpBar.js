@@ -20,10 +20,10 @@ export default class ExpBar extends THREE.Object3D {
     this.bg.material.opacity = 0.5
     this.add(this.bg)
 
-    this.scale.set(this.bg.material.map.image.width * HUD_SCALE, this.bg.material.map.image.height * HUD_SCALE, 1)
+    this.scale.set(this.bg.material.map.frame.w * HUD_SCALE, this.bg.material.map.frame.h * HUD_SCALE, 1)
 
-    this.width = (this.bg.material.map.image.width * HUD_SCALE) / 2
-    this.height = (this.bg.material.map.image.height * HUD_SCALE) / 2
+    this.width = (this.bg.material.map.frame.w * HUD_SCALE) / 2
+    this.height = (this.bg.material.map.frame.h * HUD_SCALE) / 2
 
     this.set(0)
   }

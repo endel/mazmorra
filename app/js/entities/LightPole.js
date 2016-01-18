@@ -18,7 +18,7 @@ export default class LightPole extends THREE.Object3D {
     this.sprite.position.y = 0.55
     this.add(this.sprite)
 
-    var scale = SCALES[ texture.image.width ]
+    var scale = SCALES[ texture.frame.w ]
     this.sprite.scale.set(scale, scale, scale)
 
     var light = new THREE.PointLight(this.colors[0], 0.3, 50);

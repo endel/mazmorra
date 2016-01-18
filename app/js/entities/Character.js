@@ -35,11 +35,10 @@ export default class Character extends THREE.Object3D {
   set direction (direction) {
     this._direction = direction
     var texture = this.textures[ this._direction ]
-    debugger
 
     this.sprite.material.map = texture
 
-    var scale = SCALES[ texture.image.width ]
+    var scale = SCALES[ texture.frame.w ]
     this.sprite.scale.set(scale, scale, scale)
   }
 
