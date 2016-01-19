@@ -133,7 +133,7 @@ class DungeonState extends EventEmitter {
     moves.shift() // first block is always the starting point, we don't need it
 
     if (allowChangeTarget) {
-      unit.position.target = this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit)
+      unit.position.target = this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit, 'isAlive')
         || this.gridUtils.getEntityAt(destiny.x, destiny.y)
 
       // TODO: refactor me
