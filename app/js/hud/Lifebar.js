@@ -25,6 +25,8 @@ export default class Lifebar extends THREE.Object3D {
     this.width = (this.bg.material.map.frame.w * HUD_SCALE) / 2
     this.height = (this.bg.material.map.frame.h * HUD_SCALE) / 2
 
+    this.initialOffset = this.fg.material.map.offset.y
+
     this.set(0)
   }
 
@@ -36,8 +38,7 @@ export default class Lifebar extends THREE.Object3D {
 
     // (1 - %)
     var finalPercentage = (unusableHeight/totalHeight) + (usableRatio - (percentage * usableRatio)) // (unusableHeight/totalHeight) // - (0.6*usableRatio)
-
-    this.fg.material.map.offset.y = -finalPercentage
+    this.fg.material.map.offset.y = this.initialOffset-((totalHeight/512)*finalPercentage)
     this.fg.position.y = -finalPercentage
   }
 

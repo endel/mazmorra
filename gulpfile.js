@@ -39,7 +39,7 @@ gulp.task('sprites', function() {
     format: 'json',
     path: 'app/images',
     powerOfTwo: true,
-    padding: 1
+    padding: 8
   }, function (err) {
     if (err) throw err;
     console.log('spritesheet successfully generated', arguments);

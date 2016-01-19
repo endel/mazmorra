@@ -25,19 +25,20 @@ export default class ExpBar extends THREE.Object3D {
     this.width = (this.bg.material.map.frame.w * HUD_SCALE) / 2
     this.height = (this.bg.material.map.frame.h * HUD_SCALE) / 2
 
+    this.initialOffset = this.fg.material.map.offset.x
+
     this.set(0)
   }
 
   set (percentage) {
-    var totalHeight = this.bg.material.map.image.height
+    var totalHeight = this.bg.material.map.frame.w
       , unusableHeight = this.blankPixelArea
       , usableHeight = totalHeight - unusableHeight
       , usableRatio = ((totalHeight - unusableHeight * 2)/totalHeight)
 
     var finalPercentage = (unusableHeight/totalHeight) + (usableRatio - (percentage * usableRatio)) // (unusableHeight/totalHeight) // - (0.6*usableRatio)
-    var randWaitTime = 1000 + (Math.random() * 1000)
 
-    this.fg.material.map.offset.x = -finalPercentage
+    this.fg.material.map.offset.x = this.initialOffset-((totalHeight/512)*finalPercentage)
     this.fg.position.x = -finalPercentage
   }
 
