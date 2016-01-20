@@ -23,7 +23,7 @@ gulp.task('stylesheet', function () {
       errors: true
     }))
     .on('error', function (error) {
-      console.log(error.stack);
+      console.log(error, error.stack);
       this.emit('end');
     })
     .pipe($.postcss([
@@ -61,7 +61,7 @@ gulp.task('javascript', function () {
       });
     }))
     .on('error', function (error) {
-      console.log(error.stack);
+      console.log(error, error.stack);
       this.emit('end');
     })
     .pipe(gulp.dest('dist/js'))

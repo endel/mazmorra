@@ -1,7 +1,8 @@
 import EventEmitter from 'tiny-emitter'
 import Keycode from 'keycode.js'
 
-import Character from '../../entities/Character'
+// import Character from '../../entities/Character'
+import Composition from '../../entities/character/Composition'
 
 export default class Builder extends EventEmitter {
 
@@ -15,7 +16,7 @@ export default class Builder extends EventEmitter {
     this.currentGenderIndex = 0
     this.availableGenders = ['man', 'man-2', 'woman']
 
-    this.character = new Character({ gender: 'man' })
+    this.character = new Composition()
     this.character.position.set(0, 0, 0)
     this.character.scale.set(2, 2, 2)
 
@@ -33,10 +34,10 @@ export default class Builder extends EventEmitter {
     if (direction<0) direction = direction+this.availableGenders.length
 
     this.currentGenderIndex =  (this.currentGenderIndex + direction) % this.availableGenders.length
-    this.character.gender = this.availableGenders[ this.currentGenderIndex ]
-    this.character.direction = this.character._direction
+    // this.character.gender = this.availableGenders[ this.currentGenderIndex ]
+    // this.character.direction = this.character._direction
 
-    this.hud.character.gender = this.availableGenders[ this.currentGenderIndex ]
+    // this.hud.character.gender = this.availableGenders[ this.currentGenderIndex ]
     this.hud.selectionText.text = this.availableGenders[ this.currentGenderIndex ]
   }
 
