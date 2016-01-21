@@ -15,11 +15,10 @@ export default class Shadow extends Behaviour {
       geometry = new THREE.PlaneGeometry(1, 1)
     }
 
-    this.scale = SCALES[ material.map.frame.w ]
     this.initialY = this.object.position.y
 
     this.shadow = new THREE.Mesh(geometry, material)
-    this.shadow.scale.set(this.scale, this.scale, this.scale)
+    this.shadow.scale.normalizeWithTexture(material.map)
     this.shadow.rotateX(-Math.PI / 2)
     this.shadow.position.y = -0.4999
     // this.object.add(this.shadow)

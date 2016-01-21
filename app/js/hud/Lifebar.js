@@ -4,8 +4,6 @@ export default class Lifebar extends THREE.Object3D {
   constructor (type = 'life') {
     super()
 
-    this.blankPixelArea = 4 // 4 blank pixels
-
     this.fg = new THREE.Sprite(new THREE.SpriteMaterial({
       map: ResourceManager.get("hud-" + type + "-bar-fill"),
       transparent: true
@@ -22,8 +20,8 @@ export default class Lifebar extends THREE.Object3D {
 
     this.scale.set(this.bg.material.map.frame.w * HUD_SCALE, this.bg.material.map.frame.h * HUD_SCALE, 1)
 
-    this.width = (this.bg.material.map.frame.w * HUD_SCALE) / 2
-    this.height = (this.bg.material.map.frame.h * HUD_SCALE) / 2
+    this.width = this.bg.material.map.frame.w * HUD_SCALE
+    this.height = this.bg.material.map.frame.h * HUD_SCALE
 
     this.initialOffset = this.fg.material.map.offset.y
 
@@ -32,7 +30,7 @@ export default class Lifebar extends THREE.Object3D {
 
   set (percentage) {
     var totalHeight = this.bg.material.map.frame.h
-      , unusableHeight = this.blankPixelArea
+      , unusableHeight = 0
       , usableHeight = totalHeight - unusableHeight
       , usableRatio = ((totalHeight - unusableHeight * 2)/totalHeight)
 

@@ -24,9 +24,8 @@ export default class Chest extends THREE.Object3D {
     this.body.position.y = 0
     this.add(this.body)
 
-    var scale = SCALES[ this.body.material.map.frame.w ]
-    this.body.scale.set(scale, scale, scale)
-    this.head.scale.set(scale, scale, scale)
+    this.body.scale.normalizeWithTexture(this.body.material.map)
+    this.head.scale.normalizeWithTexture(this.head.material.map)
 
     // this.scale.set(3, 3, 3)
     this.openableBehaviour = new Openable

@@ -24,14 +24,6 @@ window.clock = new Clock();
 window.ZOOM = 32 / window.devicePixelRatio
 window.IS_DAY = true
 
-// sprite scales based on the texture size
-window.SCALES = {
-  32: 6,
-  16: 3,
-  8: 1.5,
-  4: 0.75
-}
-
 export default class Game {
 
   constructor (container) {

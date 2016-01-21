@@ -50,8 +50,7 @@ export default class HUD extends THREE.Scene {
   }
 
   resize() {
-    var characterMarginRatio = 8 // "magic number" due blank spaces on all sprites (they're all centered power-of-two)
-    this.character.position.set(- window.innerWidth / 2 + this.character.width + HUD_MARGIN * characterMarginRatio, window.innerHeight / 2 - this.character.height - HUD_MARGIN * characterMarginRatio, 0)
+    this.character.position.set(- window.innerWidth / 2 + this.character.width + HUD_MARGIN, window.innerHeight / 2 - this.character.height - HUD_MARGIN, 0)
     this.levelUpButton.position.set(this.character.position.x + HUD_MARGIN * HUD_SCALE, this.character.position.y - this.levelUpButton.height + (HUD_SCALE/3 * HUD_SCALE), 1)
 
     // selection text
@@ -59,7 +58,7 @@ export default class HUD extends THREE.Scene {
 
     this.lifebar.position.set(-this.lifebar.width - HUD_SCALE * (HUD_MARGIN * 3), - window.innerHeight / 2 + this.lifebar.height, 0)
     this.manabar.position.set(this.manabar.width + HUD_SCALE * (HUD_MARGIN * 3), - window.innerHeight / 2 + this.lifebar.height, 0)
-    this.expbar.position.set(-HUD_SCALE/2, - window.innerHeight / 2 + this.expbar.height - (HUD_SCALE * HUD_MARGIN), 0)
+    this.expbar.position.set(-HUD_SCALE/2, - window.innerHeight / 2 + this.expbar.height + (HUD_MARGIN * 3), 0)
 
     this.resources.position.set(window.innerWidth / 2 - this.resources.width * HUD_MARGIN, window.innerHeight / 2 - this.resources.height * HUD_MARGIN, 0)
 

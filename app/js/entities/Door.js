@@ -23,7 +23,7 @@ export default class Door extends THREE.Object3D {
     // TODO: automate a good-looking position based on door direction
     mesh.position.z -= 1.499
 
-    mesh.scale.set(1, 1, 1)
+    mesh.scale.normalizeWithTexture(material.map, true)
     this.add(mesh)
 
     var lightColor = 0xfcfcfc

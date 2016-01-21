@@ -24,8 +24,7 @@ export default class Enemy extends THREE.Object3D {
       fog: true
     }))
 
-    var scale = SCALES[ this.sprite.material.map.frame.w ]
-    this.sprite.scale.set(scale, scale, scale)
+    this.sprite.scale.normalizeWithTexture(this.sprite.material.map)
     // this.sprite.position.y = scale/2 // - this.sprite.material.map.frame.h
     this.sprite.position.y = 0.1
 
@@ -56,8 +55,7 @@ export default class Enemy extends THREE.Object3D {
     var texture = this.textures[ this._direction ]
     this.sprite.material.map = texture
 
-    var scale = SCALES[ texture.frame.w ]
-    this.sprite.scale.set(scale, scale, scale)
+    this.sprite.scale.normalizeWithTexture(texture)
   }
 
 }

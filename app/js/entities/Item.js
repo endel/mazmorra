@@ -43,8 +43,7 @@ export default class Item extends THREE.Object3D {
       this.addBehaviour(new NearPlayerOpacity)
     }
 
-    var scale = SCALES[ texture.frame.w ]
-    this.item.scale.set(scale, scale, scale)
+    this.item.scale.normalizeWithTexture(this.item.material.map)
     this.item.addBehaviour(new Pickable)
   }
 

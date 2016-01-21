@@ -43,7 +43,7 @@ export default class Composition extends THREE.Object3D {
     this.items = [ ResourceManager.get( 'character-items-0' ) ]
 
     this.cape = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: this.capes[0],
+      map: this.capes[2],
       color: 0xffffff,
       fog: true,
     }))
@@ -53,7 +53,7 @@ export default class Composition extends THREE.Object3D {
     this.add(this.cape)
 
     this.hair = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: this.hairs[0],
+      map: this.hairs[3],
       color: 0xffffff,
       fog: true,
     }))
@@ -65,7 +65,7 @@ export default class Composition extends THREE.Object3D {
     this.add(this.hair)
 
     this.eye = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: this.eyes[0],
+      map: this.eyes[2],
       color: 0xffffff,
       fog: true,
     }))
@@ -75,7 +75,7 @@ export default class Composition extends THREE.Object3D {
     this.hair.add(this.eye)
 
     this.cloth = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: this.clothes[0],
+      map: this.clothes[2],
       color: 0xffffff,
       fog: true,
     }))

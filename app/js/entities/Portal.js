@@ -21,8 +21,7 @@ export default class Portal extends THREE.Object3D {
     this.sprite.position.y = 0.55
     this.add(this.sprite)
 
-    var scale = SCALES[ frames[0].frame.w ]
-    this.sprite.scale.set(scale, scale, scale)
+    this.sprite.scale.normalizeWithTexture(frames[0])
 
     var light = new THREE.PointLight(0x1c80e4, 1, 50);
     light.addBehaviour(new LightOscillator, 0.8, 1.2)

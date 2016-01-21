@@ -11,6 +11,12 @@ THREE.Texture.prototype.createInstance = function() {
   return inst;
 }
 
+var scaleRatio = 5.5
+THREE.Vector3.prototype.normalizeWithTexture = function(texture, isMesh = false) {
+  let ratio = (!isMesh) ? scaleRatio : Math.max(texture.frame.w, texture.frame.h)
+  this.set(texture.frame.w / ratio, texture.frame.h / ratio, 1)
+}
+
 export default class ResourceManager {
 
   static clone(identifier) {

@@ -11,8 +11,8 @@ export default class Character extends THREE.Object3D {
 
     this.sprite.scale.set(this.sprite.material.map.frame.w * HUD_SCALE, this.sprite.material.map.frame.h * HUD_SCALE, 1)
 
-    this.width = (this.sprite.material.map.frame.w * HUD_SCALE) / 2
-    this.height = (this.sprite.material.map.frame.h * HUD_SCALE) / 2
+    this.width = (this.sprite.material.map.frame.w * HUD_SCALE)
+    this.height = (this.sprite.material.map.frame.h * HUD_SCALE)
 
     this.levelText = new Text2D("1", {
       align: textAlign.left,

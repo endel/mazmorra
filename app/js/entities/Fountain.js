@@ -26,9 +26,8 @@ export default class Fountain extends THREE.Object3D {
     this.activateable = new Activatable()
     this.addBehaviour(this.activateable)
 
-    var scale = SCALES[ this.activeSprite.material.map.frame.w ]
-    this.activeSprite.scale.set(scale, scale, scale)
-    this.inactiveSprite.scale.set(scale, scale, scale)
+    this.activeSprite.scale.normalizeWithTexture(this.activeSprite.material.map)
+    this.inactiveSprite.scale.normalizeWithTexture(this.inactiveSprite.material.map)
   }
 
   get label () {

@@ -16,7 +16,7 @@ export default class Character extends THREE.Object3D {
     this.add(this.sprite)
     this.sprite.position.y = 0.5
 
-    this.sprite.scale.set(3, 3, 3)
+    this.sprite.scale.normalizeWithTexture(this.sprite.material.map)
   }
 
   get label () {
@@ -38,8 +38,7 @@ export default class Character extends THREE.Object3D {
 
     this.sprite.material.map = texture
 
-    var scale = SCALES[ texture.frame.w ]
-    this.sprite.scale.set(scale, scale, scale)
+    this.sprite.scale.normalizeWithTexture(texture)
   }
 
 }

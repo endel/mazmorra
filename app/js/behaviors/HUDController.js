@@ -19,11 +19,11 @@ export default class HUDController extends Behaviour {
 
   setPercentage (object, percentage, attr) {
     var totalArea = object.bg.material.map.frame[ (attr === 'y') ? 'h' : 'w' ]
-      , unusableArea = object.blankPixelArea
+      , unusableArea = 0
       , usableRatio = ((totalArea - unusableArea * 2)/totalArea)
 
     // (1 - %)
-    var finalPercentage = (unusableArea/totalArea) + (usableRatio - (percentage * usableRatio)) // (unusableArea/totalArea) // - (0.6*usableRatio)
+    var finalPercentage = (usableRatio - (percentage * usableRatio)) // (unusableArea/totalArea) // - (0.6*usableRatio)
 
     object.fg.material.map.offset[attr] = lerp(object.fg.material.map.offset[attr], object.initialOffset-((totalArea/512)*finalPercentage), 0.1)
     object.fg.position[attr] = lerp(object.fg.position[attr], -finalPercentage, 0.1)
