@@ -32,6 +32,8 @@ export default class SelectBox extends THREE.Object3D {
     this.add(this.labelBackground)
     this.add(this.rightButton)
     this.add(this.label)
+
+    this.interactive = [ this.leftButton, this.rightButton ]
   }
 
   get height () {

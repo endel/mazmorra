@@ -65,6 +65,7 @@ export default class Game {
     window.camera = this.camera
 
     this.hud = new HUD()
+    this.hudCurrentControl = null
     // this.level = new Level(this.scene, this.hud, this.camera)
     // this.level.on('setup', this.onSetupLevel.bind(this))
 
@@ -74,9 +75,9 @@ export default class Game {
     this.updateInterval = setInterval(this.update.bind(this), 1000 / 60)
     this.container.appendChild( this.renderer.domElement );
 
-    // window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false )
-    // window.addEventListener( 'touchstart', this.onTouchStart.bind(this), false )
-    // window.addEventListener( 'click', this.onClick.bind(this), false )
+    window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false )
+    window.addEventListener( 'touchstart', this.onTouchStart.bind(this), false )
+    window.addEventListener( 'click', this.onClick.bind(this), false )
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
 
     // stats
@@ -144,7 +145,11 @@ export default class Game {
 
   onClick (e) {
     e.preventDefault()
-    this.level.playerAction()
+    if (this.hudCurrentControl) {
+      this.hudCurrentControl.dispatchEvent({ type: 'click' })
+    } else {
+      this.level.playerAction()
+    }
   }
 
   update () {
@@ -192,11 +197,23 @@ export default class Game {
   raycastHUD () {
     this.raycaster.setFromCamera( this.mouse, this.hud.camera );
 
-    var intersects = this.raycaster.intersectObjects( this.hud.interactiveChildren );
-    if (intersects.length > 0) {
-      console.log(intersects)
-      return true;
+    var intersects = this.raycaster.intersectObjects( this.hud.interactiveChildren, true )
+      , nextControl = (intersects.length > 0) && intersects[0].object.parent
+
+    if (this.hudCurrentControl !== nextControl) {
+      // mouseout
+      if (this.hudCurrentControl) {
+        this.hudCurrentControl.dispatchEvent({ type: 'mouseout' })
+      }
+
+      // mouseover
+      if (nextControl) {
+        nextControl.dispatchEvent({ type: 'mouseover' })
+      }
     }
+
+    this.hudCurrentControl = nextControl
+    return this.hudCurrentControl;
   }
 
 }

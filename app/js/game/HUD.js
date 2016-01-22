@@ -52,7 +52,7 @@ export default class HUD extends THREE.Scene {
   }
 
   addInteractiveControl (control) {
-    this.interactiveChildren.push(control)
+    this.interactiveChildren = this.interactiveChildren.concat(control.interactive)
     this.add(control)
   }
 
