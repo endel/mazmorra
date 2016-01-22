@@ -4,6 +4,8 @@ import Keycode from 'keycode.js'
 // import Character from '../../entities/Character'
 import Composition from '../../entities/character/Composition'
 
+import SelectBox from '../../hud/controls/SelectBox'
+
 export default class Builder extends EventEmitter {
 
   constructor (scene, hud, camera) {
@@ -14,10 +16,9 @@ export default class Builder extends EventEmitter {
     this.camera = camera
 
     this.currentGenderIndex = 0
-    this.availableGenders = ['man', 'man-2', 'woman']
 
     this.character = new Composition()
-    this.character.position.set(0, 0, 0)
+    this.character.position.set(0, -HUD_MARGIN*2, 0)
     this.character.scale.set(2, 2, 2)
 
     this.scene.add(this.character)
@@ -26,19 +27,37 @@ export default class Builder extends EventEmitter {
     this.goUp(1500)
     this.turnInterval = this.infiniteTurnInterval(4000)
 
+    this.buildHUD()
+
     window.addEventListener('click', this.onClick.bind(this))
     window.addEventListener('keydown', this.onKeyDown.bind(this))
   }
 
+  buildHUD () {
+    this.bodySelection = new SelectBox([], "BODY")
+    this.bodySelection.position.set(0, - window.innerHeight / 2 + this.bodySelection.height + HUD_MARGIN, 0)
+    this.hud.addInteractiveControl(this.bodySelection)
+
+    this.hairSelection = new SelectBox([], "HAIR")
+    this.hairSelection.position.set(0, this.bodySelection.position.y + this.hairSelection.height + HUD_MARGIN, 0)
+    this.hud.addInteractiveControl(this.hairSelection)
+
+    this.eyeSelection = new SelectBox([], "EYES")
+    this.eyeSelection.position.set(0, this.hairSelection.position.y + this.eyeSelection.height + HUD_MARGIN, 0)
+    this.hud.addInteractiveControl(this.eyeSelection)
+
+    this.classSelection = new SelectBox([], "CLASS")
+    this.classSelection.position.set(0, this.eyeSelection.position.y + this.classSelection.height + HUD_MARGIN, 0)
+    this.hud.addInteractiveControl(this.classSelection)
+  }
+
   changeGender (direction) {
-    if (direction<0) direction = direction+this.availableGenders.length
-
-    this.currentGenderIndex =  (this.currentGenderIndex + direction) % this.availableGenders.length
-    // this.character.gender = this.availableGenders[ this.currentGenderIndex ]
-    // this.character.direction = this.character._direction
-
-    // this.hud.character.gender = this.availableGenders[ this.currentGenderIndex ]
-    this.hud.selectionText.text = this.availableGenders[ this.currentGenderIndex ]
+    // this.currentGenderIndex =  (this.currentGenderIndex + direction) % this.availableGenders.length
+    // // this.character.gender = this.availableGenders[ this.currentGenderIndex ]
+    // // this.character.direction = this.character._direction
+    //
+    // // this.hud.character.gender = this.availableGenders[ this.currentGenderIndex ]
+    // this.hud.selectionText.text = this.availableGenders[ this.currentGenderIndex ]
   }
 
   onClick (e) {

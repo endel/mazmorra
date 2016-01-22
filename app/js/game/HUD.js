@@ -46,7 +46,14 @@ export default class HUD extends THREE.Scene {
     this.levelUpButton = new LevelUpButton()
     // this.add(this.levelUpButton)
 
+    this.interactiveChildren = []
+
     this.resize()
+  }
+
+  addInteractiveControl (control) {
+    this.interactiveChildren.push(control)
+    this.add(control)
   }
 
   resize() {

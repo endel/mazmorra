@@ -36,7 +36,6 @@ export default class Game {
     this.renderer.setPixelRatio( window.devicePixelRatio );
     this.renderer.setSize( window.innerWidth, window.innerHeight );
     this.renderer.autoClear = false;
-    // this.renderer.sortObjects = false;
 
     this.scene = new THREE.Scene();
     this.scene.rotateY(-0.4)
@@ -160,7 +159,7 @@ export default class Game {
   render () {
     requestAnimationFrame( this.render.bind(this) );
 
-    if (this.level && !Device.isMobile())
+    if (!Device.isMobile())
       this.raycast()
 
     this.renderer.clear()
@@ -172,6 +171,14 @@ export default class Game {
   }
 
   raycast () {
+    if (!this.raycastHUD()) {
+      this.raycastScene();
+    }
+  }
+
+  raycastScene () {
+    if (!this.level) return false;
+
     this.raycaster.setFromCamera( this.mouse, this.camera );
 
     var intersects = this.raycaster.intersectObjects( this.level.generator.ground );
@@ -179,6 +186,16 @@ export default class Game {
       this.level.setTileSelection(null)
     } else {
       this.level.setTileSelection(intersects[0].object)
+    }
+  }
+
+  raycastHUD () {
+    this.raycaster.setFromCamera( this.mouse, this.hud.camera );
+
+    var intersects = this.raycaster.intersectObjects( this.hud.interactiveChildren );
+    if (intersects.length > 0) {
+      console.log(intersects)
+      return true;
     }
   }
 

@@ -139,7 +139,7 @@ gulp.task('serve', ['stylesheet', 'javascript', 'fonts', 'sprites'], function ()
   gulp.watch(['app/css/**/*.styl'], ['stylesheet']);
   gulp.watch('app/js/**/*.{js,jsx}', ['javascript']);
   gulp.watch('app/fonts/**/*', ['fonts']);
-  gulp.watch('app/images/sprites/*.png', ['sprites', 'images']);
+  // gulp.watch('app/images/sprites#<{(|.png', ['sprites', 'images']);
   gulp.watch('bower.json', ['wiredep', 'fonts']);
 });
 

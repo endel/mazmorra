@@ -17,6 +17,11 @@ THREE.Vector3.prototype.normalizeWithTexture = function(texture, isMesh = false)
   this.set(texture.frame.w / ratio, texture.frame.h / ratio, 1)
 }
 
+THREE.Vector3.prototype.normalizeWithHUDTexture = function(texture) {
+  let ratio = HUD_SCALE
+  this.set(texture.frame.w * ratio, texture.frame.h * ratio, 1)
+}
+
 export default class ResourceManager {
 
   static clone(identifier) {
