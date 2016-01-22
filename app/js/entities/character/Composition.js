@@ -1,3 +1,4 @@
+import match from 'rust-match'
 import DangerousThing from '../../behaviors/DangerousThing'
 
 export default class Composition extends THREE.Object3D {
@@ -7,13 +8,15 @@ export default class Composition extends THREE.Object3D {
 
     this.bodies = [
       ResourceManager.get('character-body-0-bottom'),
-      ResourceManager.get('character-body-1-bottom')
+      ResourceManager.get('character-body-1-bottom'),
+      ResourceManager.get('character-body-2-bottom')
     ]
 
     this.eyes = [
       ResourceManager.get( 'character-eyes-0-bottom' ),
       ResourceManager.get( 'character-eyes-1-bottom' ),
-      ResourceManager.get( 'character-eyes-2-bottom' )
+      ResourceManager.get( 'character-eyes-2-bottom' ),
+      ResourceManager.get( 'character-eyes-3-bottom' )
     ]
 
     this.hairs = [
@@ -102,6 +105,18 @@ export default class Composition extends THREE.Object3D {
 
     setTimeout(() => this.moveUp(this.hair, 1300), Math.random() * 1500)
     setTimeout(() => this.moveUp(this.cape, 800), Math.random() * 1000)
+  }
+
+  setProperty(property, value) {
+    var options = match(property, {
+      hair: () => this.hairs,
+      eye: () => this.eyes,
+      body: () => this.bodies,
+      klass: () => this.clothes
+    })
+
+    this[property].material.map = options[value]
+    this[property].scale.normalizeWithTexture(this[property].material.map)
   }
 
   // HAIR MOVING => REFACTOR ME

@@ -70,7 +70,7 @@ export default class Game {
     // this.level.on('setup', this.onSetupLevel.bind(this))
 
     this.characterBuilder = new CharacterBuilder(this.scene, this.hud,this.camera)
-    this.onSetupLevel({ mapkind: 'castle', daylight: true })
+    this.onSetupLevel({ mapkind: 'rock', daylight: true })
 
     this.updateInterval = setInterval(this.update.bind(this), 1000 / 60)
     this.container.appendChild( this.renderer.domElement );

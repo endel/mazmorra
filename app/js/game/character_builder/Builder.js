@@ -15,7 +15,33 @@ export default class Builder extends EventEmitter {
     this.hud = hud
     this.camera = camera
 
-    this.currentGenderIndex = 0
+    this.options = {
+      classes: ['warrior', 'archer', 'mage'],
+      bodies: [{
+        text: 'brown',
+        value: 0
+      }, {
+        text: 'white',
+        value: 1
+      }, {
+        text: 'black',
+        value: 2
+      }],
+      hairs: ['0', '1', '2', '3', '4', '5', '6', '7'],
+      eyes: [{
+        text: 'blue',
+        value: 0
+      }, {
+        text: 'brown',
+        value: 1
+      }, {
+        text: 'green',
+        value: 2
+      }, {
+        text: 'black',
+        value: 3
+      }]
+    }
 
     this.character = new Composition()
     this.character.position.set(0, -HUD_MARGIN*2, 0)
@@ -27,54 +53,33 @@ export default class Builder extends EventEmitter {
     this.goUp(1500)
     this.turnInterval = this.infiniteTurnInterval(4000)
 
-    this.buildHUD()
-
-    window.addEventListener('click', this.onClick.bind(this))
-    window.addEventListener('keydown', this.onKeyDown.bind(this))
+    this.buildHUDControls()
   }
 
-  buildHUD () {
-    this.bodySelection = new SelectBox([], "BODY")
+  buildHUDControls () {
+    this.bodySelection = new SelectBox(this.options.bodies, "BODY")
     this.bodySelection.position.set(0, - window.innerHeight / 2 + this.bodySelection.height + HUD_MARGIN, 0)
+    this.bodySelection.addEventListener('change', this.onChangeProperty.bind(this, 'body'))
     this.hud.addInteractiveControl(this.bodySelection)
 
-    this.hairSelection = new SelectBox([], "HAIR")
+    this.hairSelection = new SelectBox(this.options.hairs, "HAIR")
     this.hairSelection.position.set(0, this.bodySelection.position.y + this.hairSelection.height + HUD_MARGIN, 0)
+    this.hairSelection.addEventListener('change', this.onChangeProperty.bind(this, 'hair'))
     this.hud.addInteractiveControl(this.hairSelection)
 
-    this.eyeSelection = new SelectBox([], "EYES")
+    this.eyeSelection = new SelectBox(this.options.eyes, "EYES")
     this.eyeSelection.position.set(0, this.hairSelection.position.y + this.eyeSelection.height + HUD_MARGIN, 0)
+    this.eyeSelection.addEventListener('change', this.onChangeProperty.bind(this, 'eye'))
     this.hud.addInteractiveControl(this.eyeSelection)
 
-    this.classSelection = new SelectBox([], "CLASS")
+    this.classSelection = new SelectBox(this.options.classes, "CLASS")
     this.classSelection.position.set(0, this.eyeSelection.position.y + this.classSelection.height + HUD_MARGIN, 0)
+    this.classSelection.addEventListener('change', this.onChangeProperty.bind(this, 'klass'))
     this.hud.addInteractiveControl(this.classSelection)
   }
 
-  changeGender (direction) {
-    // this.currentGenderIndex =  (this.currentGenderIndex + direction) % this.availableGenders.length
-    // // this.character.gender = this.availableGenders[ this.currentGenderIndex ]
-    // // this.character.direction = this.character._direction
-    //
-    // // this.hud.character.gender = this.availableGenders[ this.currentGenderIndex ]
-    // this.hud.selectionText.text = this.availableGenders[ this.currentGenderIndex ]
-  }
-
-  onClick (e) {
-    var isForward = e.clientX > window.innerWidth / 2
-    this.changeGender((isForward) ? 1 : -1)
-  }
-
-  onKeyDown (e) {
-    if (e.which == Keycode.ENTER) {
-      console.log("SELECT!")
-
-    } else if (e.which == Keycode.RIGHT) {
-      this.changeGender(1)
-
-    } else if (e.which == Keycode.LEFT) {
-      this.changeGender(-1)
-    }
+  onChangeProperty (property, e) {
+    this.character.setProperty(property, e.value)
   }
 
   goUp (duration) {
