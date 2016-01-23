@@ -115,8 +115,25 @@ export default class Composition extends THREE.Object3D {
       klass: () => this.clothes
     })
 
-    this[property].material.map = options[value]
-    this[property].scale.normalizeWithTexture(this[property].material.map)
+    if (property === "klass") {
+      this.cloth.material.map = this.clothes[value]
+      this.cloth.scale.normalizeWithTexture(this.cloth.material.map)
+
+      this.cape.material.map = this.capes[value]
+      this.cape.scale.normalizeWithTexture(this.cape.material.map)
+
+    } else {
+      this[property].material.map = options[value]
+
+      if (property==="hair") {
+      }
+
+      // don't scale eyes again
+      if (property!=="eye") {
+        this[property].scale.normalizeWithTexture(this[property].material.map)
+      }
+    }
+
   }
 
   // HAIR MOVING => REFACTOR ME

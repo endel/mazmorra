@@ -21,26 +21,18 @@ export default class HUD extends THREE.Scene {
 
     // Life / Mana / Expr
     this.manabar = new Lifebar('mana')
-    this.add(this.manabar)
-
     this.lifebar = new Lifebar('life')
-    this.add(this.lifebar)
-
     this.expbar = new ExpBar()
-    this.add(this.expbar)
 
     //
     // Label
     this.selectionText = new Text2D("WELCOME", { font: DEFAULT_FONT, fillStyle: '#fff', antialias: false })
-    this.add(this.selectionText)
 
     // Resources
     this.resources = new Resources()
-    this.add(this.resources)
 
     // Character
     this.character = new Character()
-    this.add(this.character)
 
     // Level Up Button
     this.levelUpButton = new LevelUpButton()
@@ -49,6 +41,15 @@ export default class HUD extends THREE.Scene {
     this.interactiveChildren = []
 
     this.resize()
+  }
+
+  init () {
+    this.add(this.manabar)
+    this.add(this.lifebar)
+    this.add(this.expbar)
+    this.add(this.selectionText)
+    this.add(this.resources)
+    this.add(this.character)
   }
 
   addInteractiveControl (control) {

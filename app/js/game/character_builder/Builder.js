@@ -16,7 +16,17 @@ export default class Builder extends EventEmitter {
     this.camera = camera
 
     this.options = {
-      classes: ['warrior', 'archer', 'mage'],
+      classes: [{
+        text: 'warrior',
+        value: 0
+      }, {
+        text: 'archer',
+        value: 2
+      }, {
+        text: 'mage',
+        value: 1
+      }],
+
       bodies: [{
         text: 'brown',
         value: 0

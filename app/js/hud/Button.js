@@ -17,7 +17,7 @@ export default class Button extends THREE.Object3D {
       transparent: true
     }))
     this.over.scale.normalizeWithHUDTexture(this.over.material.map)
-    this.add(this.over)
+    // this.add(this.over)
 
     this.width = this.standby.material.map.frame.w * HUD_SCALE
     this.height = this.standby.material.map.frame.h * HUD_SCALE
