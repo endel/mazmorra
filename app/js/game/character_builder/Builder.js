@@ -41,7 +41,21 @@ export default class Builder extends EventEmitter {
         value: 3
       }],
 
-      hairs: ['0', '1', '2', '3', '4', '5', '6', '7'],
+      hairs: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+      hairColors: [{
+        text: "Yellow",
+        value: 0
+      }, {
+        text: "Brown 1",
+        value: 1
+      }, {
+        text: "Brown 2",
+        value: 2
+      }, {
+        text: "Gray",
+        value: 3
+      }],
+
       eyes: [{
         text: 'blue',
         value: 0
@@ -58,7 +72,7 @@ export default class Builder extends EventEmitter {
     }
 
     this.character = new Composition()
-    this.character.position.set(0, -HUD_MARGIN*2, 0)
+    this.character.position.set(0, -HUD_MARGIN*3, 0)
     this.character.scale.set(2, 2, 2)
 
     this.scene.add(this.character)
@@ -76,8 +90,13 @@ export default class Builder extends EventEmitter {
     this.bodySelection.addEventListener('change', this.onChangeProperty.bind(this, 'body'))
     this.hud.addInteractiveControl(this.bodySelection)
 
+    this.hairColorSelection = new SelectBox(this.options.hairColors, "HAIR COLOR")
+    this.hairColorSelection.position.set(0, this.bodySelection.position.y + this.hairColorSelection.height + HUD_MARGIN, 0)
+    this.hairColorSelection.addEventListener('change', this.onChangeProperty.bind(this, 'hairColor'))
+    this.hud.addInteractiveControl(this.hairColorSelection)
+
     this.hairSelection = new SelectBox(this.options.hairs, "HAIR")
-    this.hairSelection.position.set(0, this.bodySelection.position.y + this.hairSelection.height + HUD_MARGIN, 0)
+    this.hairSelection.position.set(0, this.hairColorSelection.position.y + this.hairSelection.height + HUD_MARGIN, 0)
     this.hairSelection.addEventListener('change', this.onChangeProperty.bind(this, 'hair'))
     this.hud.addInteractiveControl(this.hairSelection)
 

@@ -31,6 +31,14 @@ export default class Composition extends THREE.Object3D {
       ResourceManager.get( 'character-hair-6-bottom' ),
       ResourceManager.get( 'character-hair-7-bottom' ),
       ResourceManager.get( 'character-hair-8-bottom' ),
+      ResourceManager.get( 'character-hair-9-bottom' ),
+    ]
+
+    this.hairColors = [
+      new THREE.Color(0xd0c01c), // yellow
+      new THREE.Color(0x443434), // brown-1
+      new THREE.Color(0x503008), // brown-2
+      new THREE.Color(0xc0c0c0)  // grey
     ]
 
     this.clothes = [
@@ -62,7 +70,7 @@ export default class Composition extends THREE.Object3D {
 
     this.hair = new THREE.Sprite(new THREE.SpriteMaterial({
       map: this.hairs[3],
-      color: 0xffffff,
+      color: 0xd0c01c,
       fog: true,
       depthTest: false
     }))
@@ -82,7 +90,7 @@ export default class Composition extends THREE.Object3D {
     // head (hair + eyes)
     this.head = new THREE.Object3D()
     // this.head.position.set(0, 0.5, 0)
-    this.head.position.set(0, 1.35, 0)
+    this.head.position.set(0, 1.377, 0)
     this.head.initY = this.head.position.y
     this.head.destY = this.head.position.y - 0.09
     this.head.add(this.eye)
@@ -123,6 +131,7 @@ export default class Composition extends THREE.Object3D {
   setProperty(property, value) {
     var options = match(property, {
       hair: () => this.hairs,
+      hairColor: () => this.hairColors,
       eye: () => this.eyes,
       body: () => this.bodies,
       klass: () => this.clothes
@@ -138,6 +147,11 @@ export default class Composition extends THREE.Object3D {
     } else {
       if (property==="hair") {
         this.hair.visible = !!options[value]
+      }
+
+      if (property === "hairColor") {
+        this.hair.material.color = options[value]
+        return true;
       }
 
       // change texture only if it has a valid value
