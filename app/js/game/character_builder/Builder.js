@@ -28,15 +28,19 @@ export default class Builder extends EventEmitter {
       }],
 
       bodies: [{
-        text: 'brown',
+        text: 'pale',
         value: 0
       }, {
         text: 'white',
         value: 1
       }, {
-        text: 'black',
+        text: 'brownish',
         value: 2
+      }, {
+        text: 'brown',
+        value: 3
       }],
+
       hairs: ['0', '1', '2', '3', '4', '5', '6', '7'],
       eyes: [{
         text: 'blue',

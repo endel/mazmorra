@@ -55,6 +55,6 @@
     "three-text2d": "^0.2.2",
     "throttle.js": "^1.0.0",
     "tiny-emitter": "^1.0.2",
-    "tweener": "^0.1.28"
+    "tweener": "^0.1.3"
   }
 }

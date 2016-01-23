@@ -77,6 +77,7 @@ export default class Game {
 
     window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false )
     window.addEventListener( 'touchstart', this.onTouchStart.bind(this), false )
+    window.addEventListener( 'touchend', this.onClick.bind(this), false )
     window.addEventListener( 'click', this.onClick.bind(this), false )
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
 
@@ -129,10 +130,12 @@ export default class Game {
 
       this.raycast()
 
-      if (this.lastTargetPosition === this.level.targetPosition) {
-        this.onClick(e)
+      if (this.level) {
+        if (this.lastTargetPosition === this.level.targetPosition) {
+          this.onClick(e)
+        }
+        this.lastTargetPosition = this.level.targetPosition;
       }
-      this.lastTargetPosition = this.level.targetPosition;
     }
   }
 
