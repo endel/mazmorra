@@ -41,7 +41,44 @@ export default class Builder extends EventEmitter {
         value: 3
       }],
 
-      hairs: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+      hairs: [{
+        text: "None",
+        value: 0
+      }, {
+        text: "Barbudao",
+        value: 1
+      }, {
+        text: "Coque",
+        value: 2
+      }, {
+        text: "Curto",
+        value: 3
+      }, {
+        text: "Ancient",
+        value: 4
+      }, {
+        text: "Barbudo",
+        value: 5
+      }, {
+        text: "Longo",
+        value: 6
+      }, {
+        text: "Longo 2",
+        value: 7
+      }, {
+        text: "Longuinho",
+        value: 8
+      }, {
+        text: "Longo duplo",
+        value: 9
+      }, {
+        text: "Badboy",
+        value: 10
+      }, {
+        text: "Punk",
+        value: 11
+      }],
+
       hairColors: [{
         text: "Yellow",
         value: 0
@@ -54,9 +91,12 @@ export default class Builder extends EventEmitter {
       }, {
         text: "Gray",
         value: 3
+      }, {
+        text: "Redhead",
+        value: 4
       }],
 
-      eyes: [{
+      eyeColors: [{
         text: 'blue',
         value: 0
       }, {
@@ -87,12 +127,12 @@ export default class Builder extends EventEmitter {
   buildHUDControls () {
     this.bodySelection = new SelectBox(this.options.bodies, "BODY")
     this.bodySelection.position.set(0, - window.innerHeight / 2 + this.bodySelection.height + HUD_MARGIN, 0)
-    this.bodySelection.addEventListener('change', this.onChangeProperty.bind(this, 'body'))
+    this.bodySelection.addEventListener('change', this.onChangeColor.bind(this, 'body'))
     this.hud.addInteractiveControl(this.bodySelection)
 
     this.hairColorSelection = new SelectBox(this.options.hairColors, "HAIR COLOR")
     this.hairColorSelection.position.set(0, this.bodySelection.position.y + this.hairColorSelection.height + HUD_MARGIN, 0)
-    this.hairColorSelection.addEventListener('change', this.onChangeProperty.bind(this, 'hairColor'))
+    this.hairColorSelection.addEventListener('change', this.onChangeColor.bind(this, 'hair'))
     this.hud.addInteractiveControl(this.hairColorSelection)
 
     this.hairSelection = new SelectBox(this.options.hairs, "HAIR")
@@ -100,19 +140,27 @@ export default class Builder extends EventEmitter {
     this.hairSelection.addEventListener('change', this.onChangeProperty.bind(this, 'hair'))
     this.hud.addInteractiveControl(this.hairSelection)
 
-    this.eyeSelection = new SelectBox(this.options.eyes, "EYES")
+    this.eyeSelection = new SelectBox(this.options.eyeColors, "EYES")
     this.eyeSelection.position.set(0, this.hairSelection.position.y + this.eyeSelection.height + HUD_MARGIN, 0)
-    this.eyeSelection.addEventListener('change', this.onChangeProperty.bind(this, 'eye'))
+    this.eyeSelection.addEventListener('change', this.onChangeColor.bind(this, 'eye'))
     this.hud.addInteractiveControl(this.eyeSelection)
 
     this.classSelection = new SelectBox(this.options.classes, "CLASS")
     this.classSelection.position.set(0, this.eyeSelection.position.y + this.classSelection.height + HUD_MARGIN, 0)
-    this.classSelection.addEventListener('change', this.onChangeProperty.bind(this, 'klass'))
+    this.classSelection.addEventListener('change', this.onChangeClass.bind(this))
     this.hud.addInteractiveControl(this.classSelection)
   }
 
   onChangeProperty (property, e) {
-    this.character.setProperty(property, e.value)
+    this.character.updateProperty(property, e.value)
+  }
+
+  onChangeColor (property, e) {
+    this.character.updateColor(property, e.value)
+  }
+
+  onChangeClass (e) {
+    this.character.updateClass(e.value)
   }
 
   goUp (duration) {
@@ -142,7 +190,7 @@ export default class Builder extends EventEmitter {
           if (i === 4) {
             timeout.clear()
           }
-        }, 180)
+        }, 500)
   }
 
 }

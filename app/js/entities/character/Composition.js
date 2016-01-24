@@ -1,90 +1,47 @@
-import match from 'rust-match'
-import DangerousThing from '../../behaviors/DangerousThing'
+import Resources from './Resources'
 
 export default class Composition extends THREE.Object3D {
 
   constructor () {
     super()
 
-    this.bodies = [
-      ResourceManager.get('character-body-0-bottom'),
-      ResourceManager.get('character-body-1-bottom'),
-      ResourceManager.get('character-body-2-bottom'),
-      ResourceManager.get('character-body-3-bottom')
-    ]
+    this.properties = {
+      cape: 0,
+      hair: null,
+      eye: 0,
+      cloth: 0,
+      body: null
+    }
 
-    this.eyes = [
-      ResourceManager.get( 'character-eyes-0-bottom' ),
-      ResourceManager.get( 'character-eyes-1-bottom' ),
-      ResourceManager.get( 'character-eyes-2-bottom' ),
-      ResourceManager.get( 'character-eyes-3-bottom' )
-    ]
-
-    this.hairs = [
-      null,
-      ResourceManager.get( 'character-hair-0-bottom' ),
-      ResourceManager.get( 'character-hair-1-bottom' ),
-      ResourceManager.get( 'character-hair-2-bottom' ),
-      ResourceManager.get( 'character-hair-3-bottom' ),
-      ResourceManager.get( 'character-hair-4-bottom' ),
-      ResourceManager.get( 'character-hair-5-bottom' ),
-      ResourceManager.get( 'character-hair-6-bottom' ),
-      ResourceManager.get( 'character-hair-7-bottom' ),
-      ResourceManager.get( 'character-hair-8-bottom' ),
-      ResourceManager.get( 'character-hair-9-bottom' ),
-    ]
-
-    this.hairColors = [
-      new THREE.Color(0xd0c01c), // yellow
-      new THREE.Color(0x443434), // brown-1
-      new THREE.Color(0x503008), // brown-2
-      new THREE.Color(0xc0c0c0)  // grey
-    ]
-
-    this.clothes = [
-      ResourceManager.get( 'character-clothes-0-bottom' ),
-      ResourceManager.get( 'character-clothes-1-bottom' ),
-      ResourceManager.get( 'character-clothes-2-bottom' ),
-    ]
-
-    this.capes = [
-      ResourceManager.get('character-cape-0-bottom'),
-      ResourceManager.get('character-cape-1-bottom'),
-      ResourceManager.get('character-cape-2-bottom')
-    ]
-
-    this.items = [ ResourceManager.get( 'character-items-0' ) ]
+    this._direction = 'bottom'
+    Resources.init()
 
     this.cape = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: this.capes[1],
+      map: Resources.get('cape', this.properties.cape)[this._direction],
       color: 0xffffff,
       fog: true,
       depthTest: false
     }))
-    this.cape.scale.normalizeWithTexture(this.capes[2])
     this.cape.position.set(0, -0.72, 0)
     this.cape.position.y += 0.1
     this.cape.initY = this.cape.position.y
     this.cape.destY = this.cape.position.y - 0.09
-    // this.add(this.cape)
 
     this.hair = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: this.hairs[3],
+      map: Resources.get('hair', this.properties.hair)[this._direction],
       color: 0xd0c01c,
       fog: true,
       depthTest: false
     }))
-    this.hair.scale.normalizeWithTexture(this.hairs[3])
     this.hair.renderOrder = 3
 
     this.eye = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: this.eyes[0],
+      map: Resources.get('eye', this.properties.eye)[this._direction],
       color: 0xffffff,
       fog: true,
       depthTest: false
     }))
     this.eye.renderOrder = 4
-    this.eye.scale.normalizeWithTexture(this.eyes[0])
     this.eye.position.set(0, -0.62, 0)
 
     // head (hair + eyes)
@@ -98,77 +55,90 @@ export default class Composition extends THREE.Object3D {
     this.add(this.head)
 
     this.cloth = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: this.clothes[1],
+      map: Resources.get('cloth', this.properties.cloth)[this._direction],
       color: 0xffffff,
       fog: true,
       depthTest: false
     }))
-    this.cloth.scale.normalizeWithTexture(this.clothes[1])
     this.cloth.position.y -= 0.125
     this.cloth.renderOrder = 1
     this.add(this.cloth)
 
     this.body = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: this.bodies[0],
+      map: Resources.get('body', this.properties.body),
       color: 0xffffff,
       fog: true,
       depthTest: false
     }))
-    this.body.scale.normalizeWithTexture(this.bodies[0])
     this.body.renderOrder = 0
     this.add(this.body)
 
     // default configuration
-    this.setProperty('hair', 0)
-    this.setProperty('eye', 0)
-    this.setProperty('body', 0)
-    this.setProperty('klass', 0)
+    // this.setProperty('hair', 0)
+    // this.setProperty('body')
+    // this.setProperty('eye', 0)
+    // this.setProperty('klass', 0)
+    this.updateColor('hair', 0)
+    this.updateColor('eye', 0)
+    this.updateColor('body', 0)
+
+    this.updateDirection()
 
     // setTimeout(() => this.moveUp(this.head, 1300), Math.random() * 1500)
     setTimeout(() => this.moveUp(this.cape, 800), Math.random() * 1000)
   }
 
-  setProperty(property, value) {
-    var options = match(property, {
-      hair: () => this.hairs,
-      hairColor: () => this.hairColors,
-      eye: () => this.eyes,
-      body: () => this.bodies,
-      klass: () => this.clothes
-    })
+  updateClass (value) {
+    this.updateProperty('cloth', value)
+    this.updateProperty('cape', value)
+  }
 
-    if (property === "klass") {
-      this.cloth.material.map = this.clothes[value]
-      this.cloth.scale.normalizeWithTexture(this.cloth.material.map)
+  updateProperty(property, value = null) {
+    this.properties[property] = value
+    var texture = this.getTexture(property, value)
 
-      this.cape.material.map = this.capes[value]
-      this.cape.scale.normalizeWithTexture(this.cape.material.map)
-
-    } else {
-      if (property==="hair") {
-        this.hair.visible = !!options[value]
-      }
-
-      if (property === "hairColor") {
-        this.hair.material.color = options[value]
-        return true;
-      }
-
-      // change texture only if it has a valid value
-      if (options[value]) this[property].material.map = options[value]
-
-
-      // don't scale eyes again
-      if (property!=="eye") {
-        this[property].scale.normalizeWithTexture(this[property].material.map)
-      }
-
-      if (property === "hair") {
-        this[property].position.y = -(this[property].material.map.frame.h * 0.5) / 4// -this[property].scale.y/2 // * (this[property].material.map.frame.h / 2)
-      }
-
+    if (property==="hair") {
+      this.hair.visible = !!texture
     }
 
+    // change texture only if its valid
+    if (texture) {
+      this[property].material.map = texture
+      this[property].scale.normalizeWithTexture(texture)
+
+      if (property === "hair") {
+        this[property].position.y = -(texture.frame.h * 0.5) / 4
+      }
+    }
+  }
+
+  updateColor (property, value) {
+    this[ property ].material.color = this.getColor(property, value)
+  }
+
+  getTexture (type, index) {
+    var texture = Resources.get(type, index)
+    return (texture && texture[this._direction])
+  }
+
+  getColor (type, index) {
+    return Resources.getColor(type, index)
+  }
+
+  set direction (direction) {
+    this._direction = direction
+    this.updateDirection()
+  }
+
+  updateDirection () {
+    for (let prop in this.properties) {
+      let texture = this.getTexture(prop, this.properties[prop])
+      this[prop].visible = !!texture
+      if (texture) {
+        this[prop].material.map = texture
+        this[prop].scale.normalizeWithTexture(texture)
+      }
+    }
   }
 
   // HAIR MOVING => REFACTOR ME
