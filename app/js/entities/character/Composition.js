@@ -7,13 +7,15 @@ export default class Composition extends THREE.Object3D {
 
     this.properties = {
       cape: 0,
-      hair: null,
+      hair: 6,
       eye: 0,
       cloth: 0,
       body: null
     }
 
     this._direction = 'bottom'
+    // this._direction = 'right'
+    // this._direction = 'top'
     Resources.init()
 
     this.cape = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -76,8 +78,10 @@ export default class Composition extends THREE.Object3D {
     // default configuration
     // this.setProperty('hair', 0)
     // this.setProperty('body')
-    // this.setProperty('eye', 0)
     // this.setProperty('klass', 0)
+    this.updateProperty('eye', 0)
+    this.updateProperty('hair', this.properties.hair)
+
     this.updateColor('hair', 0)
     this.updateColor('eye', 0)
     this.updateColor('body', 0)
@@ -105,10 +109,6 @@ export default class Composition extends THREE.Object3D {
     if (texture) {
       this[property].material.map = texture
       this[property].scale.normalizeWithTexture(texture)
-
-      if (property === "hair") {
-        this[property].position.y = -(texture.frame.h * 0.5) / 4
-      }
     }
   }
 
@@ -137,6 +137,10 @@ export default class Composition extends THREE.Object3D {
       if (texture) {
         this[prop].material.map = texture
         this[prop].scale.normalizeWithTexture(texture)
+
+        if (prop === "hair") {
+          this[prop].position.y = -(texture.frame.h * 0.5) / 4
+        }
       }
     }
   }

@@ -5,11 +5,6 @@ export default class Resources {
   static init () {
     if (initialized) return true;
 
-    //
-    // TODO:
-    // use a single sprite for eyes and bodies, with multiple colors
-    //
-
     this.body = this.withDirections('body-0')
     this.eye = [this.withDirections('eyes-0')]
 

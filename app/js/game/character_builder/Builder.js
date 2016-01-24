@@ -153,6 +153,7 @@ export default class Builder extends EventEmitter {
 
   onChangeProperty (property, e) {
     this.character.updateProperty(property, e.value)
+    this.character.updateDirection()
   }
 
   onChangeColor (property, e) {
@@ -190,7 +191,7 @@ export default class Builder extends EventEmitter {
           if (i === 4) {
             timeout.clear()
           }
-        }, 500)
+        }, 180)
   }
 
 }
