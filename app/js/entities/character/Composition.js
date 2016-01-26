@@ -2,14 +2,14 @@ import Resources from './Resources'
 
 export default class Composition extends THREE.Object3D {
 
-  constructor () {
+  constructor (props = {}) {
     super()
 
     this.properties = {
-      cape: 0,
-      hair: 6,
+      cape: props.klass,
+      cloth: props.klass,
+      hair: props.hair || 1,
       eye: 0,
-      cloth: 0,
       body: null
     }
 
@@ -81,8 +81,8 @@ export default class Composition extends THREE.Object3D {
     this.updateProperty('hair', this.properties.hair)
 
     this.updateColor('hair', Resources.colors.hair[0])
-    this.updateColor('eye', Resources.colors.eye[0])
-    this.updateColor('body', Resources.colors.body[0])
+    this.updateColor('eye', Resources.colors.eye[props.eye || 0])
+    this.updateColor('body', Resources.colors.body[props.body || 0])
 
     this.updateDirection()
 

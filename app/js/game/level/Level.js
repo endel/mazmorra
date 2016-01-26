@@ -8,6 +8,8 @@ import TileSelectionPreview from '../../entities/TileSelectionPreview'
 import CharacterController from '../../behaviors/CharacterController'
 import HUDController from '../../behaviors/HUDController'
 
+import credentials from '../../web/credentials'
+
 export default class Level extends EventEmitter {
 
   constructor (scene, hud, camera) {
@@ -34,6 +36,7 @@ export default class Level extends EventEmitter {
   }
 
   enterRoom (name, options = {}) {
+    options.token = credentials.token
     this.room = this.colyseus.join(name, options)
     this.room.on('update', this.onRoomUpdate.bind(this))
     this.room.on('error', (err) => console.error(arguments))

@@ -5,6 +5,9 @@ var Room = require('colyseus').Room
 
   , DungeonState = require('./states/DungeonState')
 
+  , User = require('../db/models').User
+  , Hero = require('../db/models').Hero
+
   , utils = require('colyseus').utils
   , protocol = require('colyseus').protocol
   , msgpack = require('msgpack-lite')
@@ -57,11 +60,17 @@ class DungeonRoom extends Room {
 
   onJoin (client, options) {
     console.log(client.id, 'joined')
-    this.sendState(client)
 
-    let player = this.state.createPlayer(client)
-    this.players.set(client, player)
-    this.clientMap.set(player, client)
+    User.findOne({
+      where: { token: options.token },
+      include: [ Hero ]
+    }).then(user => {
+      let player = this.state.createPlayer(client, user.heros[0])
+      this.players.set(client, player)
+      this.clientMap.set(player, client)
+    })
+
+    this.sendState(client)
   }
 
   onMessage (client, data) {

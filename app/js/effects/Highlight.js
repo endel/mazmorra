@@ -9,11 +9,14 @@ export default class Highlight extends THREE.Sprite {
       fog: true,
       transparent: true
     }))
+    this.scale.normalizeWithTexture(this.material.map)
+    this.scale.x /= 2
+    this.scale.y /= 2
+    this.scale.z /= 2
 
     this.material.opacity = 0.8
 
     this.name = name
-    this.scale.set(5, 4, 5)
   }
 
 }

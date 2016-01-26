@@ -5,7 +5,7 @@ export default class Character extends THREE.Object3D {
 
     this.userData = data
 
-    this.gender = data.gender
+    this.gender = 'man'
     this._direction = "bottom"
 
     this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({

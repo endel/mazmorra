@@ -59,8 +59,8 @@ class DungeonState extends EventEmitter {
   addEntity (entity) { this.entities[ entity.id ] = entity }
   removeEntity (entity) { delete this.entities[ entity.id ] }
 
-  createPlayer (client) {
-    var player = new Player(client.id)
+  createPlayer (client, hero) {
+    var player = new Player(client.id, hero)
       , currentProgress = (client.currentProgress || -1)
 
     player.state = this

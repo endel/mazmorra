@@ -5,29 +5,36 @@ var Unit = require('./Unit')
 
 class Player extends Unit {
 
-  constructor (id) {
+  constructor (id, hero) {
     super(id)
     this.type = helpers.ENTITIES.PLAYER
 
     var genders = ['man', 'man-2', 'woman']
 
-    this.gender = genders[ Math.floor(Math.random()*genders.length) ]
-    this.name = this.gender
+    this.name = `Hero ${ hero.id }`
     this.lvl = 1
 
-    // hit | mana | experience points
-    this.hp.set(100, 100)
-    this.mp.set(100, 100)
-    this.xp.set(0, 10)
+    this.properties = {
+      klass: hero.klass,
+      hair: hero.hair,
+      hairColor: hero.hairColor,
+      eye: hero.eye,
+      body: hero.body
+    }
 
-    this.gold = 0
-    this.diamond = 0
+    // hit | mana | experience points
+    this.hp.set(hero.hp || 100, 100)
+    this.mp.set(hero.mp || 100, 100)
+    this.xp.set(hero.xp || 0, 10)
+
+    this.gold = hero.gold
+    this.diamond = hero.diamond
 
     this.attributes = {
-      strenght: 5,
-      dexterity: 5,
-      intelligence: 5,
-      vitality: 5
+      strenght: hero.strenght,
+      dexterity: hero.dexterity,
+      intelligence: hero.intelligence,
+      vitality: hero.vitality
     }
 
     this.armor = 0

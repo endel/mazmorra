@@ -20,9 +20,9 @@ export default class Enemy extends THREE.Object3D {
 
     this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: this.textures[ this._direction ],
-      // color: COLOR_RED,
       fog: true
     }))
+    this.originalColor = this.sprite.material.color.getHex()
 
     this.sprite.scale.normalizeWithTexture(this.sprite.material.map)
     // this.sprite.position.y = scale/2 // - this.sprite.material.map.frame.h
@@ -35,6 +35,10 @@ export default class Enemy extends THREE.Object3D {
       this.addBehaviour(new DangerousThing)
     }
     this.addBehaviour(new NearPlayerOpacity)
+  }
+
+  blinkRed () {
+
   }
 
   get label () {
