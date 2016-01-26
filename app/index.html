@@ -39,9 +39,22 @@
       ga('create','UA-XXXXX-X');ga('send','pageview');
     </script>
 
-    <section class="speak-modal">
-      <form>
+    <section class="modal speak-modal">
+      <form action="/">
         <input type="text" placeholder="Chat" maxlength="100" />
+      </form>
+    </section>
+
+    <section id="credentials" class="modal">
+      <form action="/auth" class="login" method="post">
+        <h1>PLAY NOW</h1>
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <input type="submit" class="visible-register" value="Register" />
+        <input type="submit" class="visible-login" value="Login" />
+        <p class="visible-register"><a href="#">I'm already registered</a></p>
+        <p class="visible-login"><a href="#">I'm not registered yet</a></p>
+        <p class="message"></p>
       </form>
     </section>
 

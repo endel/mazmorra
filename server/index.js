@@ -1,8 +1,12 @@
 "use strict";
 
-var colyseus = require('colyseus')
+var _ = require('dotenv').config()
+  , db = require('./db/connection')
+  , colyseus = require('colyseus')
   , http = require('http')
+
   , express = require('express')
+  , bodyParser = require('body-parser')
   , cors = require('cors')
 
   , port = process.env.PORT || 3553
@@ -11,6 +15,9 @@ var colyseus = require('colyseus')
   , gameServer = new colyseus.Server({server: server})
 
   , DungeonRoom = require('./rooms/DungeonRoom')
+
+// migrate the database on startup, if needed
+db.sync()
 
 gameServer.register('castle', DungeonRoom, { mapkind: 'castle' })
 gameServer.register('grass', DungeonRoom, { mapkind: 'grass' })
@@ -29,7 +36,12 @@ if (process.env.ENVIRONMENT !== "production") {
     }
   }))
 }
+
+// to support URL-encoded bodies
+app.use(bodyParser.json());
+
 app.use(express.static( __dirname + '/public' ))
+app.use('/auth', require('./controllers/auth'))
 
 server.listen(port);
 

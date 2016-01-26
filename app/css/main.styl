@@ -1,8 +1,33 @@
 @import fonts
 
+*
+  margin 0
+  padding 0
+  box-sizing border-box
+
+canvas
+  width 100vw
+  height 100vh
+
 body
   overflow hidden
   font 16px primary
+  color #fff
+
+h1
+  margin 24px
+  font-size 42px
+
+a
+  color #fcf458
+  text-decoration none
+  padding 8px
+  &:hover
+    color #d0c01c
+    text-decoration underline
+
+p
+  margin 12px
 
 // main#game
 //   cursor url(../images/cursor-pointer.png), pointer
@@ -12,45 +37,29 @@ body
 input
   font 24px primary
   width 50vw
-  padding 12px
+  padding 14px
+  margin 4px 0
+  border 4px solid #482c04
+  transition border 0.4s
 
-*
-  margin 0
-  padding 0
+  &:focus:invalid
+    border 4px solid #d00000
 
-canvas
-  width 100vw
-  height 100vh
+  &:focus, &:active
+    padding 14px !important
+    border 4px solid #785004
+    outline none
+    outline-width 0
 
-.speak-modal
-  pointer-events none
-  position absolute
-  text-align center
-  width 100vw
-  height 100vh
-  top 0
-  bottom 0
-  right 0
-  left 0
-  margin auto
-  transition opacity 0.2s
-  z-index -100
+input[type="submit"]
+  cursor pointer
+  font 24px primary
+  display inline-block
+  background #5c3000
+  color #fff
+  transition background 0.2s
+  &:hover
+    background #482c04
 
-  form
-    position absolute
-    top 0
-    bottom 0
-    right 0
-    left 0
-    margin auto
-    height 60px
-
-  opacity 0
-  background rgba(0, 0, 0, 0.5)
-
-  // display none
-  &.active
-    pointer-events all
-    display block
-    opacity 1
-    z-index 100
+@import credentials
+@import modal

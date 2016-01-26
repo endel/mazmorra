@@ -14,8 +14,6 @@ export default class Composition extends THREE.Object3D {
     }
 
     this._direction = 'bottom'
-    // this._direction = 'right'
-    // this._direction = 'top'
     Resources.init()
 
     this.cape = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -82,9 +80,9 @@ export default class Composition extends THREE.Object3D {
     this.updateProperty('eye', 0)
     this.updateProperty('hair', this.properties.hair)
 
-    this.updateColor('hair', 0)
-    this.updateColor('eye', 0)
-    this.updateColor('body', 0)
+    this.updateColor('hair', Resources.colors.hair[0])
+    this.updateColor('eye', Resources.colors.eye[0])
+    this.updateColor('body', Resources.colors.body[0])
 
     this.updateDirection()
 
@@ -112,8 +110,8 @@ export default class Composition extends THREE.Object3D {
     }
   }
 
-  updateColor (property, value) {
-    this[ property ].material.color = this.getColor(property, value)
+  updateColor (property, color) {
+    this[ property ].material.color = color
   }
 
   getTexture (type, index) {

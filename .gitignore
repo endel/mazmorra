@@ -6,3 +6,4 @@ bower_components
 test/bower_components
 npm-debug.log
 app/images/sprites/*.png
+db.sqlite3

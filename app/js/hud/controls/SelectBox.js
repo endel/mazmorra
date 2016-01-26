@@ -1,5 +1,4 @@
-import LeftButton from '../buttons/LeftButton'
-import RightButton from '../buttons/RightButton'
+import Button from './Button'
 import { SpriteText2D, textAlign } from 'three-text2d'
 
 export default class SelectBox extends THREE.Object3D {
@@ -9,7 +8,7 @@ export default class SelectBox extends THREE.Object3D {
 
     this.placeholder = placeholder
     this.options = options
-    this.selectedIndex = -1
+    this._selectedIndex = -1
 
     this.labelBackground = new THREE.Sprite(new THREE.SpriteMaterial({
       map: ResourceManager.get('gui-label-background'),
@@ -19,11 +18,11 @@ export default class SelectBox extends THREE.Object3D {
     this.labelBackground.width = this.labelBackground.material.map.frame.w * HUD_SCALE
     this.labelBackground.scale.normalizeWithHUDTexture(this.labelBackground.material.map)
 
-    this.leftButton = new LeftButton()
+    this.leftButton = new Button('button-left')
     this.leftButton.position.x -= this.labelBackground.width / 2 + this.leftButton.width / 2
     this.leftButton.addEventListener('click', this.onLeft.bind(this))
 
-    this.rightButton = new RightButton()
+    this.rightButton = new Button('button-right')
     this.rightButton.position.x += this.labelBackground.width / 2 + this.leftButton.width / 2
     this.rightButton.addEventListener('click', this.onRight.bind(this))
 
@@ -39,33 +38,37 @@ export default class SelectBox extends THREE.Object3D {
     this.interactive = [ this.leftButton, this.rightButton ]
   }
 
+  set selectedIndex (index) {
+    this._selectedIndex = index
+    this.onChange()
+  }
+  get selectedIndex () { return this._selectedIndex }
+
   get height () {
     return this.labelBackground.material.map.frame.h * HUD_SCALE
   }
 
   onLeft () {
-    if (this.selectedIndex - 1 < 0) this.selectedIndex = this.options.length;
-    this.selectedIndex = (this.selectedIndex-1) % this.options.length
-
+    if (this._selectedIndex - 1 < 0) this._selectedIndex = this.options.length;
+    this._selectedIndex = (this._selectedIndex-1) % this.options.length
     this.onChange()
   }
 
   onRight () {
-    this.selectedIndex = (this.selectedIndex+1) % this.options.length
-
+    this._selectedIndex = (this._selectedIndex+1) % this.options.length
     this.onChange()
   }
 
   onChange () {
     let text, value;
 
-    if (typeof(this.options[this.selectedIndex]) === "string") {
-      text = this.options[this.selectedIndex]
-      value = this.options[this.selectedIndex]
+    if (typeof(this.options[this._selectedIndex]) === "string") {
+      text = this.options[this._selectedIndex]
+      value = this.options[this._selectedIndex]
 
     } else {
-      text = this.options[this.selectedIndex].text
-      value = this.options[this.selectedIndex].value
+      text = this.options[this._selectedIndex].text
+      value = this.options[this._selectedIndex].value
     }
 
     this.label.text = text;

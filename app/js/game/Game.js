@@ -3,7 +3,7 @@ import HUD from './HUD'
 import Device from '../engine/device'
 
 import Level from './level/Level'
-import CharacterBuilder from './character_builder/Builder'
+import CharacterBuilder from './character/Builder'
 
 import { createComponentSystem } from 'behaviour.js'
 
@@ -70,6 +70,10 @@ export default class Game {
     // this.level.on('setup', this.onSetupLevel.bind(this))
 
     this.characterBuilder = new CharacterBuilder(this.scene, this.hud,this.camera)
+    this.characterBuilder.on('complete', () => {
+      this.level = new Level(this.scene, this.hud, this.camera)
+      this.level.on('setup', this.onSetupLevel.bind(this))
+    })
     this.onSetupLevel({ mapkind: 'rock', daylight: true })
 
     this.updateInterval = setInterval(this.update.bind(this), 1000 / 60)
@@ -147,11 +151,13 @@ export default class Game {
   }
 
   onClick (e) {
-    e.preventDefault()
     if (this.hudCurrentControl) {
       this.hudCurrentControl.dispatchEvent({ type: 'click' })
-    } else {
+      e.preventDefault()
+
+    } else if (this.level) {
       this.level.playerAction()
+      e.preventDefault()
     }
   }
 

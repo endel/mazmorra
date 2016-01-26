@@ -2,9 +2,12 @@ import EventEmitter from 'tiny-emitter'
 import Keycode from 'keycode.js'
 
 // import Character from '../../entities/Character'
+import Resources from '../../entities/character/Resources'
 import Composition from '../../entities/character/Composition'
 
+import Button from '../../hud/controls/Button'
 import SelectBox from '../../hud/controls/SelectBox'
+import ColorPicker from '../../hud/controls/ColorPicker'
 
 export default class Builder extends EventEmitter {
 
@@ -25,20 +28,6 @@ export default class Builder extends EventEmitter {
       }, {
         text: 'mage',
         value: 1
-      }],
-
-      bodies: [{
-        text: 'pale',
-        value: 0
-      }, {
-        text: 'white',
-        value: 1
-      }, {
-        text: 'brownish',
-        value: 2
-      }, {
-        text: 'brown',
-        value: 3
       }],
 
       hairs: [{
@@ -77,37 +66,6 @@ export default class Builder extends EventEmitter {
       }, {
         text: "Punk",
         value: 11
-      }],
-
-      hairColors: [{
-        text: "Yellow",
-        value: 0
-      }, {
-        text: "Brown 1",
-        value: 1
-      }, {
-        text: "Brown 2",
-        value: 2
-      }, {
-        text: "Gray",
-        value: 3
-      }, {
-        text: "Redhead",
-        value: 4
-      }],
-
-      eyeColors: [{
-        text: 'blue',
-        value: 0
-      }, {
-        text: 'brown',
-        value: 1
-      }, {
-        text: 'green',
-        value: 2
-      }, {
-        text: 'black',
-        value: 3
       }]
     }
 
@@ -119,36 +77,75 @@ export default class Builder extends EventEmitter {
     this.camera.lookAt(this.character.position)
 
     this.goUp(1500)
-    this.turnInterval = this.infiniteTurnInterval(4000)
+    this.turnInterval = this.infiniteTurnInterval(3100)
 
     this.buildHUDControls()
   }
 
-  buildHUDControls () {
-    this.bodySelection = new SelectBox(this.options.bodies, "BODY")
-    this.bodySelection.position.set(0, - window.innerHeight / 2 + this.bodySelection.height + HUD_MARGIN, 0)
-    this.bodySelection.addEventListener('change', this.onChangeColor.bind(this, 'body'))
-    this.hud.addInteractiveControl(this.bodySelection)
+  setHero (hero) {
+    this.hairColorPicker.selectedIndex = hero.hairColor
+    this.eyeColorPicker.selectedIndex = hero.eye
+    this.bodyColorPicker.selectedIndex = hero.body
+    this.hairSelection.selectedIndex = hero.hair
+    this.classSelection.selectedIndex = hero.klass
+  }
 
-    this.hairColorSelection = new SelectBox(this.options.hairColors, "HAIR COLOR")
-    this.hairColorSelection.position.set(0, this.bodySelection.position.y + this.hairColorSelection.height + HUD_MARGIN, 0)
-    this.hairColorSelection.addEventListener('change', this.onChangeColor.bind(this, 'hair'))
-    this.hud.addInteractiveControl(this.hairColorSelection)
+  getHero () {
+    return {
+      klass: this.classSelection.selectedIndex,
+      hair: this.hairSelection.selectedIndex,
+      hairColor: this.hairColorPicker.selectedIndex,
+      eye: this.eyeColorPicker.selectedIndex,
+      body: this.bodyColorPicker.selectedIndex
+    }
+  }
+
+  buildHUDControls () {
+    this.hairColorPicker = new ColorPicker(Resources.colors.hair)
+    this.hairColorPicker.position.set(0, - window.innerHeight / 2 + this.hairColorPicker.height + HUD_MARGIN, 0)
+    this.hairColorPicker.addEventListener('change', this.onChangeColor.bind(this, 'hair'))
+    this.hud.addInteractiveControl(this.hairColorPicker)
 
     this.hairSelection = new SelectBox(this.options.hairs, "HAIR")
-    this.hairSelection.position.set(0, this.hairColorSelection.position.y + this.hairSelection.height + HUD_MARGIN, 0)
+    this.hairSelection.position.set(0, this.hairColorPicker.position.y + this.hairSelection.height + HUD_MARGIN, 0)
     this.hairSelection.addEventListener('change', this.onChangeProperty.bind(this, 'hair'))
     this.hud.addInteractiveControl(this.hairSelection)
 
-    this.eyeSelection = new SelectBox(this.options.eyeColors, "EYES")
-    this.eyeSelection.position.set(0, this.hairSelection.position.y + this.eyeSelection.height + HUD_MARGIN, 0)
-    this.eyeSelection.addEventListener('change', this.onChangeColor.bind(this, 'eye'))
-    this.hud.addInteractiveControl(this.eyeSelection)
+    this.eyeColorPicker = new ColorPicker(Resources.colors.eye, "Eyes")
+    this.eyeColorPicker.position.set(-this.eyeColorPicker.width, this.hairSelection.position.y + this.eyeColorPicker.height + HUD_MARGIN, 0)
+    this.eyeColorPicker.addEventListener('change', this.onChangeColor.bind(this, 'eye'))
+    this.hud.addInteractiveControl(this.eyeColorPicker)
+
+    this.bodyColorPicker = new ColorPicker(Resources.colors.body, "Body")
+    this.bodyColorPicker.position.set(this.eyeColorPicker.width, this.hairSelection.position.y + this.bodyColorPicker.height + HUD_MARGIN, 0)
+    this.bodyColorPicker.addEventListener('change', this.onChangeColor.bind(this, 'body'))
+    this.hud.addInteractiveControl(this.bodyColorPicker)
 
     this.classSelection = new SelectBox(this.options.classes, "CLASS")
-    this.classSelection.position.set(0, this.eyeSelection.position.y + this.classSelection.height + HUD_MARGIN, 0)
+    this.classSelection.position.set(0, this.bodyColorPicker.position.y + this.classSelection.height + HUD_MARGIN, 0)
     this.classSelection.addEventListener('change', this.onChangeClass.bind(this))
     this.hud.addInteractiveControl(this.classSelection)
+
+    // complete button
+    this.completeButton = new Button('button-right')
+    this.completeButton.position.set(window.innerWidth / 3, window.innerHeight / 3, 0)
+    this.completeButton.addEventListener('click', this.onComplete.bind(this))
+    this.hud.addInteractiveControl(this.completeButton)
+  }
+
+  onComplete () {
+    this.scene.remove(this.character)
+
+    this.hud.remove(this.hairColorPicker)
+    this.hud.remove(this.hairSelection)
+    this.hud.remove(this.eyeColorPicker)
+    this.hud.remove(this.bodyColorPicker)
+    this.hud.remove(this.classSelection)
+    this.hud.remove(this.completeButton)
+
+    this.hud.clearInteractiveControls()
+
+    this.emit('complete')
   }
 
   onChangeProperty (property, e) {
