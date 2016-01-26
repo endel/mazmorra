@@ -73,6 +73,7 @@ export default class Game {
     this.characterBuilder.on('complete', () => {
       this.level = new Level(this.scene, this.hud, this.camera)
       this.level.on('setup', this.onSetupLevel.bind(this))
+      this.hud.init()
     })
     this.onSetupLevel({ mapkind: 'rock', daylight: true })
 
