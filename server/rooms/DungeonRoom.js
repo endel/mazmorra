@@ -32,6 +32,7 @@ class DungeonRoom extends Room {
     this.difficulty = options.difficulty || 1
 
     this.players = new WeakMap()
+    this.heroes = new WeakMap()
     this.clientMap = new WeakMap()
 
     this.setState(new DungeonState(
@@ -65,7 +66,12 @@ class DungeonRoom extends Room {
       where: { token: options.token },
       include: [ Hero ]
     }).then(user => {
+      if (!user) {
+        console.log("WARNING: invalid token '"+ options.token +"'")
+        return
+      }
       let player = this.state.createPlayer(client, user.heros[0])
+      this.heroes.set(client, user.heros[0].id)
       this.players.set(client, player)
       this.clientMap.set(player, client)
     })
@@ -96,7 +102,28 @@ class DungeonRoom extends Room {
 
   onLeave (client) {
     console.log(client.id, "leaved")
-    this.state.removePlayer(this.players.get(client))
+
+    var heroId = this.heroes.get(client)
+      , player = this.players.get(client)
+
+    if (!heroId) return;
+
+    // sync
+    Hero.update({
+      lvl: player.lvl,
+      gold: player.gold,
+      diamond: player.diamond,
+      hp: player.hp.current,
+      mp: player.mp.current,
+      xp: player.xp.current
+    }, {
+      where: { id: heroId }
+    }).then(() => {
+      this.players.delete(client)
+      this.clientMap.delete(player)
+      this.heroes.delete(client)
+      this.state.removePlayer(player)
+    })
   }
 
   tick () {

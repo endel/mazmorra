@@ -12,7 +12,7 @@ class Player extends Unit {
     var genders = ['man', 'man-2', 'woman']
 
     this.name = `Hero ${ hero.id }`
-    this.lvl = 1
+    this.lvl = hero.lvl || 1
 
     this.properties = {
       klass: hero.klass,
@@ -37,7 +37,7 @@ class Player extends Unit {
       vitality: hero.vitality
     }
 
-    this.armor = 0
+    this.armor = 1
     this.damage = 1
 
     this.attackDistance = 1

@@ -10,6 +10,7 @@ export default class HUDController extends Behaviour {
   update () {
     this.object.resources.goldAmount.text = this.player.userData.gold
     this.object.resources.diamondAmount.text = this.player.userData.diamond
+    this.object.character.levelText.text = this.player.userData.lvl
 
     this.setPercentage( this.object.lifebar, this.player.userData.hp.current / this.player.userData.hp.max, 'y'  )
     this.setPercentage( this.object.manabar, this.player.userData.mp.current / this.player.userData.mp.max, 'y'  )
