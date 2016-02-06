@@ -68,7 +68,11 @@ router.post('/login', function(req, res) {
 router.post('/register', function(req, res) {
   var password = digest(req.body.password)
 
-  User.findOne({ email: req.body.email }).then(user => {
+  User.findOne({
+    where: {
+      email: req.body.email
+    }
+  }).then(user => {
     if (!user) {
       return User.create({
         email: req.body.email,

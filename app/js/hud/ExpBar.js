@@ -4,10 +4,13 @@ export default class ExpBar extends THREE.Object3D {
   constructor () {
     super()
 
+    this.offsetMultiplier = 3
+
     this.fg = new THREE.Sprite(new THREE.SpriteMaterial({
       map: ResourceManager.get("hud-exp-bar-fill"),
       transparent: true
     }))
+    this.fg.scale.set(3, 1, 1)
     this.fg.material.opacity = 0.85
     this.add(this.fg)
 
@@ -29,15 +32,12 @@ export default class ExpBar extends THREE.Object3D {
   }
 
   set (percentage) {
-    var totalHeight = this.bg.material.map.frame.w
-      , unusableHeight = 0
-      , usableHeight = totalHeight - unusableHeight
-      , usableRatio = ((totalHeight - unusableHeight * 2)/totalHeight)
+    var totalWidth = this.bg.material.map.frame.w
+      , imgWidth = this.bg.material.map.image.width
 
-    var finalPercentage = (unusableHeight/totalHeight) + (usableRatio - (percentage * usableRatio)) // (unusableHeight/totalHeight) // - (0.6*usableRatio)
-
-    this.fg.material.map.offset.x = this.initialOffset-((totalHeight/512)*finalPercentage)
-    this.fg.position.x = -finalPercentage
+    var finalPercentage = 1 - percentage
+    this.fg.material.map.offset.x = this.initialOffset-((totalWidth/imgWidth)*finalPercentage)
+    this.fg.position.x = -finalPercentage - ((this.bg.material.map.frame.w/this.fg.material.map.frame.w)*3)
   }
 
 }

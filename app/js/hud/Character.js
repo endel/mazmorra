@@ -5,7 +5,7 @@ export default class Character extends THREE.Object3D {
   constructor (gender = 'man') {
     super()
 
-    this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: ResourceManager.get("character-" + gender + "-hud-face") }))
+    this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: ResourceManager.get("character-body-0-hud-face") }))
     this.sprite.material.opacity = 0.85
     this.add(this.sprite)
 

@@ -1,6 +1,6 @@
 'use strict';
 
-import { Text2D, textAlign } from 'three-text2d'
+import { SpriteText2D, textAlign } from 'three-text2d'
 
 export default class TextEvent extends THREE.Object3D {
 
@@ -24,7 +24,7 @@ export default class TextEvent extends THREE.Object3D {
 
     this.userData = data
 
-    this.text = new Text2D(data.text, { font: "50px primary", fillStyle: `#${ color.getHexString() }`, antialias: false })
+    this.text = new SpriteText2D(data.text, { font: "50px primary", fillStyle: `#${ color.getHexString() }`, antialias: false })
     this.text.material.alphaTest = 0.5
     this.text.material.opacity = 0
     this.add(this.text)

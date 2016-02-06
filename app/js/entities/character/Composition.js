@@ -1,8 +1,11 @@
 import Resources from './Resources'
 
+const MAX_CHAR_WIDTH = 7
+    , MAX_CHAR_HEIGHT = 10
+
 export default class Composition extends THREE.Object3D {
 
-  constructor (props = {}) {
+  constructor (props = {}, move = true) {
     super()
 
     this.properties = {
@@ -16,11 +19,18 @@ export default class Composition extends THREE.Object3D {
     this._direction = 'bottom'
     Resources.init()
 
+    this.textureCanvas = document.createElement('canvas')
+    this.textureCanvas.height = MAX_CHAR_HEIGHT
+    this.textureCanvas.width = MAX_CHAR_WIDTH * 5 // (top, left, right, bottom, HUD head)
+
+    this.tempCanvas = document.createElement('canvas')
+    this.tempCanvas.height = MAX_CHAR_HEIGHT
+    this.tempCanvas.width = MAX_CHAR_WIDTH
+
     this.cape = new THREE.Sprite(new THREE.SpriteMaterial({
       map: Resources.get('cape', this.properties.cape)[this._direction],
       color: 0xffffff,
       fog: true,
-      depthTest: false
     }))
     this.cape.position.set(0, -0.72, 0)
     this.cape.position.y += 0.1
@@ -31,23 +41,18 @@ export default class Composition extends THREE.Object3D {
       map: Resources.get('hair', this.properties.hair)[this._direction],
       color: 0xd0c01c,
       fog: true,
-      depthTest: false
     }))
-    this.hair.renderOrder = 3
 
     this.eye = new THREE.Sprite(new THREE.SpriteMaterial({
       map: Resources.get('eye', this.properties.eye)[this._direction],
       color: 0xffffff,
       fog: true,
-      depthTest: false
     }))
-    this.eye.renderOrder = 4
     this.eye.position.set(0, -0.62, 0)
 
     // head (hair + eyes)
     this.head = new THREE.Object3D()
-    // this.head.position.set(0, 0.5, 0)
-    this.head.position.set(0, 1.377, 0)
+    this.head.position.set(0, 1.275, 0)
     this.head.initY = this.head.position.y
     this.head.destY = this.head.position.y - 0.09
     this.head.add(this.eye)
@@ -58,19 +63,14 @@ export default class Composition extends THREE.Object3D {
       map: Resources.get('cloth', this.properties.cloth)[this._direction],
       color: 0xffffff,
       fog: true,
-      depthTest: false
     }))
-    this.cloth.position.y -= 0.125
-    this.cloth.renderOrder = 1
     this.add(this.cloth)
 
     this.body = new THREE.Sprite(new THREE.SpriteMaterial({
       map: Resources.get('body', this.properties.body),
       color: 0xffffff,
       fog: true,
-      depthTest: false
     }))
-    this.body.renderOrder = 0
     this.add(this.body)
 
     // default configuration
@@ -86,8 +86,10 @@ export default class Composition extends THREE.Object3D {
 
     this.updateDirection()
 
-    // setTimeout(() => this.moveUp(this.head, 1300), Math.random() * 1500)
-    setTimeout(() => this.moveUp(this.cape, 800), Math.random() * 1000)
+    if (move) {
+      // setTimeout(() => this.moveUp(this.head, 1300), Math.random() * 1500)
+      setTimeout(() => this.moveUp(this.cape, 800), Math.random() * 1000)
+    }
   }
 
   updateClass (value) {

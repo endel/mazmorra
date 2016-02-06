@@ -33,7 +33,9 @@ psd.tree.descendant_layers.each do |layer|
   #   power_of_two.set_pixel(x,y,color)
   # end
 
-  next if original.width == 0 || original.height == 0
+  puts "#{layer.path} => #{layer.path.index('ignore')}"
+
+  next if layer.path.index('ignore') == 0 || original.width == 0 || original.height == 0
 
   filename = "images/sprites/#{layer.path.gsub('/', '-')}.png"
   # power_of_two.save("app/#{filename}")

@@ -4,10 +4,13 @@ export default class Lifebar extends THREE.Object3D {
   constructor (type = 'life') {
     super()
 
+    this.offsetMultiplier = 1
+
     this.fg = new THREE.Sprite(new THREE.SpriteMaterial({
       map: ResourceManager.get("hud-" + type + "-bar-fill"),
       transparent: true
     }))
+    this.fg.scale.set(1, 2, 1)
     this.fg.material.opacity = 0.85
     this.add(this.fg)
 
@@ -30,14 +33,12 @@ export default class Lifebar extends THREE.Object3D {
 
   set (percentage) {
     var totalHeight = this.bg.material.map.frame.h
-      , unusableHeight = 0
-      , usableHeight = totalHeight - unusableHeight
-      , usableRatio = ((totalHeight - unusableHeight * 2)/totalHeight)
+      , imgHeight = this.fg.material.map.image.height
 
     // (1 - %)
-    var finalPercentage = (unusableHeight/totalHeight) + (usableRatio - (percentage * usableRatio)) // (unusableHeight/totalHeight) // - (0.6*usableRatio)
-    this.fg.material.map.offset.y = this.initialOffset-((totalHeight/512)*finalPercentage)
-    this.fg.position.y = -finalPercentage
+    var finalPercentage = 1 - percentage
+    this.fg.material.map.offset.y = this.initialOffset-((totalHeight/imgHeight)*finalPercentage)
+    this.fg.position.y = -finalPercentage - (this.bg.material.map.frame.h/this.fg.material.map.frame.h)
   }
 
 }

@@ -43,7 +43,7 @@
     "wiredep": "^2.2.2"
   },
   "dependencies": {
-    "behaviour.js": "^0.2.1",
+    "behaviour.js": "^0.2.4",
     "clock-timer.js": "^1.0.0",
     "colyseus.js": "file:../colyseus.js",
     "fullscreen": "^1.0.2",

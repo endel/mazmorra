@@ -13,7 +13,8 @@ export default class BattleBehaviour extends Behaviour {
 
     this.generator = generator
 
-    this.originalColor = this.object.sprite.material.color.getHex()
+    if (this.object.sprite)
+      this.originalColor = this.object.sprite.material.color.getHex()
 
     this.on('attack', this.onAttack.bind(this))
     this.on('damage', this.onTakeDamage.bind(this))
