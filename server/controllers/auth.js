@@ -3,6 +3,9 @@ var express = require('express')
   , User = require('../db/models').User
   , Hero = require('../db/models').Hero
 
+  // middlewares
+  , validUser = require('../middlewares/valid-user')
+
   , crypto = require('crypto')
   , salt = "wow, such security, very safe"
 
@@ -18,21 +21,13 @@ function generateToken (cb) {
   });
 }
 
-router.get('/', function(req, res) {
-  var token = req.query.token
-  if (!token) {
-    return res.send(JSON.stringify({valid: false}))
-  } else {
-    User.findOne({
-      where: { token: token },
-      include: [ Hero ]
-    }).then(user => {
-      res.send(JSON.stringify({
-        heros: user && user.heros,
-        valid: (!!user)
-      }))
-    })
-  }
+router.get('/', validUser, function(req, res) {
+  var user = req.user
+
+  res.send(JSON.stringify({
+    heros: user && user.heros,
+    valid: (!!user)
+  }))
 })
 
 router.post('/login', function(req, res) {

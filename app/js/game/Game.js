@@ -70,11 +70,8 @@ export default class Game {
     // this.level.on('setup', this.onSetupLevel.bind(this))
 
     this.characterBuilder = new CharacterBuilder(this.scene, this.hud,this.camera)
-    this.characterBuilder.on('complete', () => {
-      this.level = new Level(this.scene, this.hud, this.camera)
-      this.level.on('setup', this.onSetupLevel.bind(this))
-      this.hud.init()
-    })
+    this.characterBuilder.on('complete', this.init.bind(this))
+    // set background for character builder
     this.onSetupLevel({ mapkind: 'rock', daylight: true })
 
     this.updateInterval = setInterval(this.update.bind(this), 1000 / 60)
@@ -91,6 +88,12 @@ export default class Game {
     this.stats.domElement.style.position = 'absolute';
     this.stats.domElement.style.top = '0px';
     // this.container.appendChild( this.stats.domElement );
+  }
+
+  init () {
+    this.level = new Level(this.scene, this.hud, this.camera)
+    this.level.on('setup', this.onSetupLevel.bind(this))
+    this.hud.init()
   }
 
   onSetupLevel (state) {

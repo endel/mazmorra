@@ -10,8 +10,14 @@ export default class Character extends THREE.Object3D {
     this.gender = 'man'
     this._direction = "bottom"
 
-    this.composition = new Composition({}, false)
+    this.composition = new Composition(data.properties)
     this.add(this.composition)
+
+    this.position.y = 0.5
+  }
+
+  get sprite () {
+    return this.composition.sprite;
   }
 
   get label () {
@@ -20,6 +26,10 @@ export default class Character extends THREE.Object3D {
 
   set direction (direction) {
     this.composition.direction = direction
+  }
+
+  destroy () {
+     this.composition.destroy()
   }
 
 }

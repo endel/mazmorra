@@ -36,6 +36,10 @@ export default class ResourceManager {
     return new THREE.Mesh(this.geometries[ identifier ], this.materials[ identifier ])
   }
 
+  static getFrameData (filename) {
+    return spritesheet.frames[filename].frame
+  }
+
   static load (callback = null) {
     var loader = new THREE.TextureLoader();
 

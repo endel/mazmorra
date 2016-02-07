@@ -17,6 +17,17 @@ class Credentials extends EventEmitter {
     }).then(this.onAuth.bind(this))
   }
 
+  update (properties) {
+    return fetch(`${ BACKEND_ENDPOINT }/hero?token=${ this.token }`, {
+      method: 'post',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(properties)
+    })
+  }
+
   onAuth (data) {
     this.credentials = document.querySelector('#credentials')
 

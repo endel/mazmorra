@@ -191,6 +191,11 @@ export default class Level extends EventEmitter {
     for (var id in this.entities) {
       this.entities[ id ].getEntity().destroy() // destroy from entity-component system
       if (this.entities[ id ].parent) {
+        // call destroy method if it's implemented
+        if (this.entities[ id ].destroy) {
+          this.entities[ id ].destroy()
+        }
+
         // remove from display list
         this.entities[ id ].parent.remove(this.entities[ id ])
       }

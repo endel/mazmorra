@@ -64,7 +64,7 @@ export default class SelectBox extends THREE.Object3D {
 
     if (typeof(this.options[this._selectedIndex]) === "string") {
       text = this.options[this._selectedIndex]
-      value = this.options[this._selectedIndex]
+      value = this._selectedIndex
 
     } else {
       text = this.options[this._selectedIndex].text

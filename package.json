@@ -50,6 +50,7 @@
     "is-mobile": "^0.2.2",
     "keycode.js": "0.0.1",
     "lerp": "^1.0.3",
+    "precedence": "^0.1.0",
     "random-seed": "^0.3.0",
     "rust-match": "^0.1.7",
     "three-text2d": "^0.2.2",

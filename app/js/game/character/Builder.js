@@ -1,6 +1,8 @@
 import EventEmitter from 'tiny-emitter'
 import Keycode from 'keycode.js'
 
+import credentials from '../../web/credentials'
+
 // import Character from '../../entities/Character'
 import Resources from '../../entities/character/Resources'
 import Composition from '../../entities/character/Composition'
@@ -19,54 +21,8 @@ export default class Builder extends EventEmitter {
     this.camera = camera
 
     this.options = {
-      classes: [{
-        text: 'warrior',
-        value: 0
-      }, {
-        text: 'archer',
-        value: 2
-      }, {
-        text: 'mage',
-        value: 1
-      }],
-
-      hairs: [{
-        text: "None",
-        value: 0
-      }, {
-        text: "Barbudao",
-        value: 1
-      }, {
-        text: "Coque",
-        value: 2
-      }, {
-        text: "Curto",
-        value: 3
-      }, {
-        text: "Ancient",
-        value: 4
-      }, {
-        text: "Barbudo",
-        value: 5
-      }, {
-        text: "Longo",
-        value: 6
-      }, {
-        text: "Longo 2",
-        value: 7
-      }, {
-        text: "Longuinho",
-        value: 8
-      }, {
-        text: "Longo duplo",
-        value: 9
-      }, {
-        text: "Badboy",
-        value: 10
-      }, {
-        text: "Punk",
-        value: 11
-      }]
+      classes: ['warrior', 'mage', 'archer'],
+      hairs: ["Barbudao", "Coque", "Curto", "Ancient", "Barbudo", "Longo", "Longo 2", "Longuinho", "Longo duplo", "Badboy", "Punk", "None"]
     }
 
     this.character = new Composition()
@@ -83,11 +39,11 @@ export default class Builder extends EventEmitter {
   }
 
   setHero (hero) {
-    this.hairColorPicker.selectedIndex = hero.hairColor
-    this.eyeColorPicker.selectedIndex = hero.eye
-    this.bodyColorPicker.selectedIndex = hero.body
-    this.hairSelection.selectedIndex = hero.hair
-    this.classSelection.selectedIndex = hero.klass
+    this.hairColorPicker.selectedIndex = hero.hairColor || 0
+    this.eyeColorPicker.selectedIndex = hero.eye || 0
+    this.bodyColorPicker.selectedIndex = hero.body || 0
+    this.hairSelection.selectedIndex = hero.hair || 0
+    this.classSelection.selectedIndex = hero.klass || 0
   }
 
   getHero () {
@@ -134,31 +90,29 @@ export default class Builder extends EventEmitter {
   }
 
   onComplete () {
-    this.scene.remove(this.character)
-
-    this.hud.remove(this.hairColorPicker)
-    this.hud.remove(this.hairSelection)
-    this.hud.remove(this.eyeColorPicker)
-    this.hud.remove(this.bodyColorPicker)
-    this.hud.remove(this.classSelection)
-    this.hud.remove(this.completeButton)
-
-    this.hud.clearInteractiveControls()
-
-    this.emit('complete')
+    // loading!
+    credentials.update(this.getHero()).then(() => {
+      this.destroy()
+      this.emit('complete')
+    })
   }
 
   onChangeProperty (property, e) {
+    console.log("onchange:", property, e)
     this.character.updateProperty(property, e.value)
+    this.character.updateTexture()
     this.character.updateDirection()
   }
 
   onChangeColor (property, e) {
     this.character.updateColor(property, e.value)
+    this.character.updateTexture()
   }
 
   onChangeClass (e) {
+    console.log("onchange:", 'class', e)
     this.character.updateClass(e.value)
+    this.character.updateTexture()
   }
 
   goUp (duration) {
@@ -189,6 +143,21 @@ export default class Builder extends EventEmitter {
             timeout.clear()
           }
         }, 180)
+  }
+
+  destroy () {
+    this.scene.remove(this.character)
+    this.character.destroy()
+
+    this.hud.remove(this.hairColorPicker)
+    this.hud.remove(this.hairSelection)
+    this.hud.remove(this.eyeColorPicker)
+    this.hud.remove(this.bodyColorPicker)
+    this.hud.remove(this.classSelection)
+    this.hud.remove(this.completeButton)
+
+    this.hud.clearInteractiveControls()
+    this.turnInterval.clear()
   }
 
 }

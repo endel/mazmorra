@@ -16,10 +16,8 @@ ResourceManager.load(() => {
   game.render()
 
   credentials.on('login', (data) => {
-    console.log('login success:', data)
     game.characterBuilder.setHero(data.heros[0])
-    // game.
-    console.log("Hey", data)
   })
+
   credentials.init()
 })

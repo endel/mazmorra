@@ -1,28 +1,21 @@
 var initialized = false
+  , characters = {}
+
+const MAX_CHAR_WIDTH = 7
+    , MAX_CHAR_HEIGHT = 10
+    , TOTAL_CHAR_WIDTH = 7 * 5
+
+    , TEXTURE_SIZE = 256
+
+import { or } from 'precedence'
 
 export default class Resources {
 
   static init () {
-    if (initialized) return true;
+    this.offset = 0
+    this.availableOffsets = []
 
-    this.body = this.withDirections('body-0')
-    this.eye = [this.withDirections('eyes-0')]
-
-    this.hair = [
-      null,
-      this.withDirections('hair-0'),
-      this.withDirections('hair-1'),
-      this.withDirections('hair-2'),
-      this.withDirections('hair-3'),
-      this.withDirections('hair-4'),
-      this.withDirections('hair-5'),
-      this.withDirections('hair-6'),
-      this.withDirections('hair-7'),
-      this.withDirections('hair-8'),
-      this.withDirections('hair-9'),
-      this.withDirections('hair-10'),
-    ]
-
+    // available colors to pick
     this.colors = {
       body: [
         new THREE.Color(0xe8c498), // white
@@ -44,39 +37,149 @@ export default class Resources {
         new THREE.Color(0x3c8008), // green
       ]
     }
+    this.directions = ['bottom', 'left', 'top', 'right']
 
-    this.cloth = [
-      this.withDirections('clothes-0'),
-      this.withDirections('clothes-1'),
-      this.withDirections('clothes-2'),
-    ]
+    this.textureImage = document.createElement('img')
+    this.texture = new THREE.Texture(this.textureImage)
 
-    this.cape = [
-      this.withDirections('cape-0'),
-      this.withDirections('cape-1'),
-      this.withDirections('cape-2'),
-    ]
+    // montage canvas
+    this.textureCanvas = document.createElement('canvas')
+    this.textureCanvas.height = TEXTURE_SIZE
+    this.textureCanvas.width = TEXTURE_SIZE
+    this.textureCanvasCtx = this.textureCanvas.getContext('2d')
 
-    this.item = [ this.withDirections('items-0') ]
+    this.montage = document.createElement('canvas')
+    this.montage.height = MAX_CHAR_HEIGHT
+    this.montage.width = MAX_CHAR_WIDTH
+
+    this.buffer = document.createElement('canvas')
+    this.buffer.height = MAX_CHAR_HEIGHT
+    this.buffer.width = MAX_CHAR_WIDTH
 
     initialized = true
   }
 
-  static get (type, index = null) {
-    return (index == null) ? this[type] : (this[type] && this[type][index])
+  static getCurrentOffset () {
+    if (!initialized) { this.init() }
+    return or( this.availableOffsets.shift(), this.offset++ )
   }
 
-  static getColor (type, index) {
-    return this.colors[type][index]
+  static get (character) {
+    var di = this.directions.indexOf(character._direction)
+    return characters[character][di]
   }
 
-  static withDirections (identifier) {
-    return {
-      top: ResourceManager.get('character-'+identifier+'-top'),
-      bottom: ResourceManager.get('character-'+identifier+'-bottom'),
-      left: ResourceManager.get('character-'+identifier+'-left'),
-      right: ResourceManager.get('character-'+identifier+'-right'),
+  static deleteTexture (character) {
+    // flag deleted offset as avaialble for reuse
+    this.availableOffsets.push(character.textureOffset)
+
+    delete characters[character]
+  }
+
+  static updateTexture (character) {
+    var layers = ['body', 'cloth', 'cape', 'hair', 'eye']
+      , layersToColorize = ['hair', 'body', 'eye']
+
+      , currentLayer = 0
+      , montageCtx = this.montage.getContext('2d')
+      , bufferCtx = this.buffer.getContext('2d')
+
+    // clear only this character on global texture canvas
+    this.textureCanvasCtx.clearRect(character.textureOffset * TOTAL_CHAR_WIDTH, 0, TOTAL_CHAR_WIDTH, MAX_CHAR_HEIGHT)
+
+    for (var di = 0; di < this.directions.length; di++) {
+      let direction = this.directions[ di ]
+      montageCtx.clearRect(0, 0, MAX_CHAR_WIDTH, MAX_CHAR_HEIGHT)
+
+      for (var i = 0; i < layers.length; i++) {
+        let layer = layers[i]
+          , texture = ResourceManager.get(`character-${ layer }-${ character.properties[layer] }-${direction}`)
+          , frame = null
+          , destX = 0
+          , destY = 0
+          , buffer = null
+
+        if (texture) {
+          frame = ResourceManager.getFrameData(`character-${ layer }-${ character.properties[layer] }-${direction}.png`)
+        } else {
+          continue;
+        }
+
+        destX = Math.floor(MAX_CHAR_WIDTH/2 - frame.w/2)
+
+        if (layer === 'body') {
+          destY = MAX_CHAR_HEIGHT - frame.h
+        } else if (layer === 'eye') {
+          destY = 2
+        } else if (layer === 'cloth') {
+          destY = 3
+        } else if (layer === 'cape') {
+          destY = MAX_CHAR_HEIGHT - frame.h - 1
+          if (direction === 'left') {
+            destX += 2
+          } else if (direction === 'right') {
+            destX -= 2
+          }
+        }
+
+        bufferCtx.clearRect(0, 0, MAX_CHAR_WIDTH, MAX_CHAR_HEIGHT)
+        bufferCtx.drawImage(texture.image, frame.x, frame.y, frame.w, frame.h, destX, destY, frame.w, frame.h)
+
+        buffer = bufferCtx.getImageData(0, 0, MAX_CHAR_WIDTH, MAX_CHAR_HEIGHT)
+
+        if (layersToColorize.indexOf(layer) !== -1) {
+          let color = character.colors[ layer ]
+
+          for (var j=0; j<buffer.data.length; j+=4) {
+            let intensity = buffer.data[j]
+
+            if (intensity > 1) {
+              buffer.data[j] = color.r * intensity
+              buffer.data[j + 1] = color.g * intensity
+              buffer.data[j + 2] = color.b * intensity
+            }
+          }
+        }
+
+        bufferCtx.putImageData(buffer, 0, 0)
+        montageCtx.drawImage(this.buffer, 0, 0)
+      }
+
+      this.textureCanvasCtx.drawImage(this.montage, di * MAX_CHAR_WIDTH, 0)
     }
+
+    this.textureImage.src = this.textureCanvas.toDataURL()
+    this.texture.image = this.textureImage
+    this.texture.needsUpdate = true
+
+    // this.texture = new THREE.Texture(this.textureCanvas)
+
+    characters[character] = {}
+    for (var di = 0; di < this.directions.length; di++) {
+      let texture = this.texture.createInstance()
+        , frame = {
+            x: (character.textureOffset * TOTAL_CHAR_WIDTH) + (di * MAX_CHAR_WIDTH),
+            y: 0,
+            w: MAX_CHAR_WIDTH,
+            h: MAX_CHAR_HEIGHT
+          }
+
+      texture.frame = frame
+
+      texture.repeat.x = frame.w / TEXTURE_SIZE
+      texture.repeat.y = frame.h / TEXTURE_SIZE
+
+      texture.offset.x = frame.x / TEXTURE_SIZE
+      texture.offset.y = 1 - ((frame.y + frame.h) / TEXTURE_SIZE)
+
+      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+
+      texture.magFilter = THREE.NearestFilter
+      texture.minFilter = THREE.LinearMipMapLinearFilter
+
+      characters[character][di] = texture
+    }
+
   }
 
 }

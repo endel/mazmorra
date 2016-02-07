@@ -42,6 +42,7 @@ app.use(bodyParser.json());
 
 app.use(express.static( __dirname + '/public' ))
 app.use('/auth', require('./controllers/auth'))
+app.use('/hero', require('./controllers/hero'))
 
 server.listen(port);
 
