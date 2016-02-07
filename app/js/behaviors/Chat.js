@@ -12,8 +12,11 @@ export default class Chat extends Behaviour {
 
     this.lastMessage = null
 
-    this.form.addEventListener('submit', this.onSubmit.bind(this))
-    document.addEventListener('keyup', this.onKeyUp.bind(this))
+    this.onSubmitCallback = this.onSubmit.bind(this)
+    this.onKeyUpCallback = this.onKeyUp.bind(this)
+
+    this.form.addEventListener('submit', this.onSubmitCallback)
+    document.addEventListener('keyup', this.onKeyUpCallback)
   }
 
   onKeyUp (e) {
@@ -37,7 +40,8 @@ export default class Chat extends Behaviour {
   }
 
   onDetach () {
-    // if (this.tween) this.tween.dispose()
+    this.form.removeEventListener('submit', this.onSubmitCallback)
+    document.removeEventListener('keyup', this.onKeyUpCallback)
   }
 
 }

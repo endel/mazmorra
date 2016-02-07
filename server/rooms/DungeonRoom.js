@@ -82,12 +82,18 @@ class DungeonRoom extends Room {
   onMessage (client, data) {
     let key = data[0]
       , value = data[1]
+      , player = this.players.get(client)
+
+    if (!player) {
+      console.log("ERROR: message comming from invalid player.")
+      return
+    }
 
     if (key == 'pos') {
-      this.state.move(this.players.get(client), value, true)
+      this.state.move(player, value, true)
     } else if (key == 'msg') {
       // remove message after 3 seconds
-      let entity = this.state.addMessage(this.players.get(client), value)
+      let entity = this.state.addMessage(player, value)
       this.clock.setTimeout(this.removeEntity.bind(this, entity), 3000)
     }
   }
