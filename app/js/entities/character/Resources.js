@@ -1,15 +1,15 @@
 var initialized = false
   , characters = {}
 
-const MAX_CHAR_WIDTH = 7
-    , MAX_CHAR_HEIGHT = 10
-    , TOTAL_CHAR_WIDTH = 7 * 5
-
-    , TEXTURE_SIZE = 256
+export const MAX_CHAR_WIDTH = 7
+export const MAX_CHAR_HEIGHT = 10
+// export const TOTAL_CHAR_WIDTH = 7 * 4
+export const TOTAL_CHAR_WIDTH = 7 * 5 // with head
+export const TEXTURE_SIZE = 256
 
 import { or } from 'precedence'
 
-export default class Resources {
+export class Resources {
 
   static init () {
     this.offset = 0
@@ -37,7 +37,7 @@ export default class Resources {
         new THREE.Color(0x3c8008), // green
       ]
     }
-    this.directions = ['bottom', 'left', 'top', 'right']
+    this.directions = ['bottom', 'left', 'top', 'right', 'hud-face']
 
     this.textureImage = document.createElement('img')
     this.texture = new THREE.Texture(this.textureImage)
@@ -61,23 +61,25 @@ export default class Resources {
 
   static getCurrentOffset () {
     if (!initialized) { this.init() }
-    return or( this.availableOffsets.shift(), this.offset++ )
+    var value = this.availableOffsets.shift()
+    return (typeof(value)==='number') ? value : this.offset++
   }
 
-  static get (character) {
-    var di = this.directions.indexOf(character._direction)
-    return characters[character][di]
+  static get (character, direction = null) {
+    var di = this.directions.indexOf(direction || character._direction)
+    return characters[character.textureOffset][di]
   }
 
   static deleteTexture (character) {
     // flag deleted offset as avaialble for reuse
     this.availableOffsets.push(character.textureOffset)
 
-    delete characters[character]
+    delete characters[character.textureOffset]
   }
 
   static updateTexture (character) {
     var layers = ['body', 'cloth', 'cape', 'hair', 'eye']
+      , faceLayers = ['body', 'hair', 'eye']
       , layersToColorize = ['hair', 'body', 'eye']
 
       , currentLayer = 0
@@ -85,19 +87,32 @@ export default class Resources {
       , bufferCtx = this.buffer.getContext('2d')
 
     // clear only this character on global texture canvas
+    console.log("updateTexture: offset =>", character.textureOffset)
     this.textureCanvasCtx.clearRect(character.textureOffset * TOTAL_CHAR_WIDTH, 0, TOTAL_CHAR_WIDTH, MAX_CHAR_HEIGHT)
 
     for (var di = 0; di < this.directions.length; di++) {
       let direction = this.directions[ di ]
-      montageCtx.clearRect(0, 0, MAX_CHAR_WIDTH, MAX_CHAR_HEIGHT)
+        , layerOrder = (direction == 'hud-face') ? faceLayers : layers
 
-      for (var i = 0; i < layers.length; i++) {
-        let layer = layers[i]
+      montageCtx.clearRect(0, 0, MAX_CHAR_WIDTH, MAX_CHAR_HEIGHT)
+      console.log('layer', layerOrder)
+
+      for (var i = 0; i < layerOrder.length; i++) {
+        let layer = layerOrder[i]
           , texture = ResourceManager.get(`character-${ layer }-${ character.properties[layer] }-${direction}`)
           , frame = null
           , destX = 0
           , destY = 0
           , buffer = null
+
+        // fallback texture for 'hud-face' is 'bottom'
+        if (direction === 'hud-face' && !texture) {
+          direction = 'bottom'
+          if (!character.properties[layer]) {
+            character.properties[layer] = 0
+          }
+          texture = ResourceManager.get(`character-${ layer }-${character.properties[layer]}-${direction}`)
+        }
 
         if (texture) {
           frame = ResourceManager.getFrameData(`character-${ layer }-${ character.properties[layer] }-${direction}.png`)
@@ -108,7 +123,7 @@ export default class Resources {
         destX = Math.floor(MAX_CHAR_WIDTH/2 - frame.w/2)
 
         if (layer === 'body') {
-          destY = MAX_CHAR_HEIGHT - frame.h
+          destY = (direction === 'hud-face') ? 1 : MAX_CHAR_HEIGHT - frame.h
         } else if (layer === 'eye') {
           destY = 2
         } else if (layer === 'cloth') {
@@ -145,7 +160,7 @@ export default class Resources {
         montageCtx.drawImage(this.buffer, 0, 0)
       }
 
-      this.textureCanvasCtx.drawImage(this.montage, di * MAX_CHAR_WIDTH, 0)
+      this.textureCanvasCtx.drawImage(this.montage, (character.textureOffset * TOTAL_CHAR_WIDTH) + di * MAX_CHAR_WIDTH, 0)
     }
 
     this.textureImage.src = this.textureCanvas.toDataURL()
@@ -154,7 +169,7 @@ export default class Resources {
 
     // this.texture = new THREE.Texture(this.textureCanvas)
 
-    characters[character] = {}
+    characters[character.textureOffset] = {}
     for (var di = 0; di < this.directions.length; di++) {
       let texture = this.texture.createInstance()
         , frame = {
@@ -177,7 +192,7 @@ export default class Resources {
       texture.magFilter = THREE.NearestFilter
       texture.minFilter = THREE.LinearMipMapLinearFilter
 
-      characters[character][di] = texture
+      characters[character.textureOffset][di] = texture
     }
 
   }

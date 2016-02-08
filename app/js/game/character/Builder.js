@@ -4,7 +4,7 @@ import Keycode from 'keycode.js'
 import credentials from '../../web/credentials'
 
 // import Character from '../../entities/Character'
-import Resources from '../../entities/character/Resources'
+import { Resources } from '../../entities/character/Resources'
 import Composition from '../../entities/character/Composition'
 
 import Button from '../../hud/controls/Button'

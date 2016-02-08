@@ -8,12 +8,11 @@ export default class Character extends THREE.Object3D {
     this.userData = data
 
     this.gender = 'man'
-    this._direction = "bottom"
 
     this.composition = new Composition(data.properties)
-    this.add(this.composition)
+    this.composition.position.y = 0.5
 
-    this.position.y = 0.5
+    this.add(this.composition)
   }
 
   get sprite () {

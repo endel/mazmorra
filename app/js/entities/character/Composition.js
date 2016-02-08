@@ -1,4 +1,4 @@
-import Resources from './Resources'
+import { Resources } from './Resources'
 
 export default class Composition extends THREE.Object3D {
 

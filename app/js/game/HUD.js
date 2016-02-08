@@ -66,7 +66,7 @@ export default class HUD extends THREE.Scene {
   }
 
   resize() {
-    this.character.position.set(- window.innerWidth / 2 + this.character.width + HUD_MARGIN, window.innerHeight / 2 - this.character.height - HUD_MARGIN, 0)
+    this.character.position.set(- window.innerWidth / 2 + this.character.width, window.innerHeight / 2 - this.character.height, 0)
     this.levelUpButton.position.set(this.character.position.x + HUD_MARGIN * HUD_SCALE, this.character.position.y - this.levelUpButton.height + (HUD_SCALE/3 * HUD_SCALE), 1)
 
     // selection text

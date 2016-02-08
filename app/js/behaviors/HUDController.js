@@ -5,6 +5,7 @@ export default class HUDController extends Behaviour {
 
   onAttach (player) {
     this.player = player
+    this.object.character.composition = player.composition
   }
 
   update () {

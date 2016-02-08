@@ -12,7 +12,7 @@ export default class LevelUp extends Highlight {
 
     tweener.
       add(this.scale).
-      to({ x: this.scale.x + 3, y: this.scale.y + 1.15 }, 1100, Tweener.ease.cubicOut);
+      to({ x: this.scale.x + 3, y: this.scale.y + 1.1 }, 1100, Tweener.ease.cubicOut);
 
     tweener.
       add(this.material).
