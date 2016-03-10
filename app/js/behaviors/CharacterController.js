@@ -16,10 +16,10 @@ export default class CharacterController extends Behaviour {
 
     this.object.addBehaviour(new Chat, room)
 
-    this.light = new THREE.SpotLight(0xffffff, 1, 300, 10);
+    // this.light = new THREE.SpotLight(0xffffff, 1, 300, 10);
+    this.light = new THREE.SpotLight(0xffffff);
     this.light.target = this.object
-    // this.light.position.set(0, 5, 0)
-    this.light.position.set(0, 30, 0)
+    this.light.position.set(0, 14, 0)
     this.object.add(this.light)
 
     window.player = this.object

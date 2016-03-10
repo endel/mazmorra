@@ -87,7 +87,6 @@ export class Resources {
       , bufferCtx = this.buffer.getContext('2d')
 
     // clear only this character on global texture canvas
-    console.log("updateTexture: offset =>", character.textureOffset)
     this.textureCanvasCtx.clearRect(character.textureOffset * TOTAL_CHAR_WIDTH, 0, TOTAL_CHAR_WIDTH, MAX_CHAR_HEIGHT)
 
     for (var di = 0; di < this.directions.length; di++) {
@@ -95,7 +94,6 @@ export class Resources {
         , layerOrder = (direction == 'hud-face') ? faceLayers : layers
 
       montageCtx.clearRect(0, 0, MAX_CHAR_WIDTH, MAX_CHAR_HEIGHT)
-      console.log('layer', layerOrder)
 
       for (var i = 0; i < layerOrder.length; i++) {
         let layer = layerOrder[i]

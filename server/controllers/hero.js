@@ -17,12 +17,17 @@ router.get('/', validUser, function(req, res) {
 })
 
 router.post('/', validUser, function(req, res) {
+  console.log(req.user)
   var hero = req.user.heros[0]
-  if (hero) {
-    Hero.update(req.body, { where: { id: hero.id } }).then(() => {
-      res.send(JSON.stringify({success: true}))
-    })
+
+  if (!hero) {
+    res.status(500).send('hero not found')
+    return
   }
+
+  Hero.find({ _id: hero._id }).update(req.body).then(() => {
+    res.send(JSON.stringify({success: true}))
+  })
 })
 
 module.exports = router

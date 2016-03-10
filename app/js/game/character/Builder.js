@@ -98,7 +98,6 @@ export default class Builder extends EventEmitter {
   }
 
   onChangeProperty (property, e) {
-    console.log("onchange:", property, e)
     this.character.updateProperty(property, e.value)
     this.character.updateTexture()
     this.character.updateDirection()
@@ -110,7 +109,6 @@ export default class Builder extends EventEmitter {
   }
 
   onChangeClass (e) {
-    console.log("onchange:", 'class', e)
     this.character.updateClass(e.value)
     this.character.updateTexture()
   }

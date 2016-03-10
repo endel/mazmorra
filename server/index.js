@@ -1,7 +1,7 @@
 "use strict";
 
 var _ = require('dotenv').config()
-  , db = require('./db/connection')
+
   , colyseus = require('colyseus')
   , http = require('http')
 
@@ -15,9 +15,6 @@ var _ = require('dotenv').config()
   , gameServer = new colyseus.Server({server: server})
 
   , DungeonRoom = require('./rooms/DungeonRoom')
-
-// migrate the database on startup, if needed
-db.sync()
 
 gameServer.register('castle', DungeonRoom, { mapkind: 'castle' })
 gameServer.register('grass', DungeonRoom, { mapkind: 'grass' })

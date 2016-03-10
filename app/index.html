@@ -48,8 +48,10 @@
     <section id="credentials" class="modal">
       <form action="/auth" class="login" method="post">
         <h1>PLAY NOW</h1>
+        <input type="text" name="name" class="visible-register" placeholder="NICKNAME" required />
         <input type="email" name="email" placeholder="Email" required />
         <input type="password" name="password" placeholder="Password" required />
+
         <input type="submit" class="visible-register" value="Register" />
         <input type="submit" class="visible-login" value="Login" />
         <p class="visible-register"><a href="#">I'm already registered</a></p>
@@ -62,7 +64,7 @@
 
     <!-- build:js js/vendor.js -->
     <!-- bower:js -->
-    <script src="/bower_components/three.js/three.js"></script>
+    <script src="/bower_components/three.js/three.min.js"></script>
     <script src="/bower_components/stats.js/build/stats.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->

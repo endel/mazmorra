@@ -60,23 +60,18 @@ class DungeonRoom extends Room {
   }
 
   onJoin (client, options) {
-    console.log(client.id, 'joined')
+    console.log(client.id, 'joined', options)
 
-    User.findOne({
-      where: { token: options.token },
-      include: [ Hero ]
-    }).then(user => {
+    User.findOne({ token: options.token }).populate('heros').then(user => {
       if (!user) {
         console.log("WARNING: invalid token '"+ options.token +"'")
         return
       }
       let player = this.state.createPlayer(client, user.heros[0])
-      this.heroes.set(client, user.heros[0].id)
+      this.heroes.set(client, user.heros[0]._id)
       this.players.set(client, player)
       this.clientMap.set(player, client)
     })
-
-    this.sendState(client)
   }
 
   onMessage (client, data) {
@@ -107,7 +102,7 @@ class DungeonRoom extends Room {
   }
 
   onLeave (client) {
-    console.log(client.id, "leaved")
+    console.log(client.id, "left")
 
     var heroId = this.heroes.get(client)
       , player = this.players.get(client)
@@ -115,15 +110,15 @@ class DungeonRoom extends Room {
     if (!heroId) return;
 
     // sync
-    Hero.update({
-      lvl: player.lvl,
-      gold: player.gold,
-      diamond: player.diamond,
-      hp: player.hp.current,
-      mp: player.mp.current,
-      xp: player.xp.current
-    }, {
-      where: { id: heroId }
+    Hero.update({ _id: heroId }, {
+      $set: {
+        lvl: player.lvl,
+        gold: player.gold,
+        diamond: player.diamond,
+        hp: player.hp.current,
+        mp: player.mp.current,
+        xp: player.xp.current
+      }
     }).then(() => {
       this.players.delete(client)
       this.clientMap.delete(player)

@@ -1,5 +1,6 @@
 var express = require('express')
   , router = express.Router()
+
   , User = require('../db/models').User
   , Hero = require('../db/models').Hero
 
@@ -33,11 +34,8 @@ router.get('/', validUser, function(req, res) {
 router.post('/login', function(req, res) {
   var password = digest(req.body.password)
 
-  User.findOne({
-    where: { email: req.body.email },
-    include: [ Hero ]
-  }).then(user => {
-    if (user.password === password) {
+  User.findOne({ email: req.body.email }).populate('heros').then(user => {
+    if (doc.password === password) {
       return user;
     } else {
       throw new Error("invalid credentials")
@@ -45,7 +43,11 @@ router.post('/login', function(req, res) {
 
   }).then(user => {
     generateToken(token => {
-      User.update({token: token}, { where: { id: user.id }}).then(() => {
+      User.update({ _id: user._id }, {
+        $set: {
+          token: token
+        }
+      }).then(() => {
         res.send(JSON.stringify({
           heros: user.heros,
           token: token
@@ -63,11 +65,7 @@ router.post('/login', function(req, res) {
 router.post('/register', function(req, res) {
   var password = digest(req.body.password)
 
-  User.findOne({
-    where: {
-      email: req.body.email
-    }
-  }).then(user => {
+  User.findOne({ email: req.body.email }).then(user => {
     if (!user) {
       return User.create({
         email: req.body.email,
@@ -80,12 +78,26 @@ router.post('/register', function(req, res) {
     }
 
   }).then(user => {
+
     generateToken(token => {
-      User.update({token: token}, { where: {id: user.id}}).then(() => {
-        Hero.findOrCreate({ userId: user.id, where: { userId: user.id } }).then(hero => {
-          res.send(JSON.stringify({ heros: hero, token: token }))
+      Hero.create({
+        _user: user,
+        name: req.body.name
+      }).then(hero => {
+        User.update({ _id: user._id }, {
+          $set: { token: token },
+          $push: { heros: hero._id }
+
+        }).then(() => {
+          res.send(JSON.stringify({
+            heros: [ hero ],
+            token: token
+          }))
+
         })
+
       })
+
     })
 
   }).catch(error => {

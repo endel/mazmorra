@@ -9,9 +9,8 @@ class Player extends Unit {
     super(id)
     this.type = helpers.ENTITIES.PLAYER
 
-    var genders = ['man', 'man-2', 'woman']
-
-    this.name = `Hero ${ hero.id }`
+    console.log("Player:", hero)
+    this.name = hero.name
     this.lvl = hero.lvl || 1
 
     this.properties = {
@@ -30,11 +29,13 @@ class Player extends Unit {
     this.gold = hero.gold
     this.diamond = hero.diamond
 
+    // TODO: calculate this based on
+    // player klass + lvl
     this.attributes = {
-      strenght: hero.strenght,
-      dexterity: hero.dexterity,
-      intelligence: hero.intelligence,
-      vitality: hero.vitality
+      strenght: 1,
+      dexterity: 1,
+      intelligence: 1,
+      vitality: 1
     }
 
     this.armor = 1

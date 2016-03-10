@@ -92,6 +92,7 @@ class Unit extends Entity {
   }
 
   attack (defender) {
+    console.log()
     if (defender === null || !defender.isAlive) {
       this.action = null
 

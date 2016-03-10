@@ -62,6 +62,7 @@ export default class Level extends EventEmitter {
   }
 
   onRoomUpdate (state, patches) {
+    console.log('onRoomUpdate, patches?', patches)
     if (!patches) {
       this.emit('setup', state)
 
