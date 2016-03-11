@@ -4,6 +4,8 @@ var Entity = require('./Entity')
 var Bar = require('../core/Bar')
 var Movement = require('../core/Movement')
 
+var ClockTimer = require('clock-timer.js')
+
 // Actions
 var BattleAction = require('../actions/BattleAction')
 
@@ -39,6 +41,11 @@ class Unit extends Entity {
     // attack attributes
     this.attackDistance = 1
     this.attackSpeed = 2000
+
+    // hp regeneration
+    this.lastHpRegenerationTime = 0
+    this.hpRegeneration = 0
+    this.hpRegenerationInterval = 3000
 
     this.position.on('move', this.onMove.bind(this))
   }
@@ -76,6 +83,11 @@ class Unit extends Entity {
     // a dead unit can't do much, I guess
     if (!this.isAlive) return
 
+    if (currentTime > this.lastHpRegenerationTime + this.hpRegenerationInterval) {
+      this.hp.set( this.hp.current + this.hpRegeneration )
+      this.lastHpRegenerationTime = currentTime
+    }
+
     if (this.action && this.action.isEligible)  {
       this.action.update(currentTime)
       this.position.touch(currentTime)
@@ -92,7 +104,6 @@ class Unit extends Entity {
   }
 
   attack (defender) {
-    console.log()
     if (defender === null || !defender.isAlive) {
       this.action = null
 

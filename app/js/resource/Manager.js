@@ -36,6 +36,17 @@ export default class ResourceManager {
     return new THREE.Mesh(this.geometries[ identifier ], this.materials[ identifier ])
   }
 
+  static getHUDElement(identifier) {
+    let tex = ResourceManager.get(identifier)
+      , element = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true }))
+
+    element.height = tex.frame.h * HUD_SCALE
+    element.width = tex.frame.w * HUD_SCALE
+    element.scale.set(element.width, element.height, 1)
+
+    return element
+  }
+
   static getFrameData (filename) {
     return spritesheet.frames[filename].frame
   }

@@ -46,6 +46,8 @@ class Player extends Unit {
     // this.walkSpeed = 600
     this.walkSpeed = 300
     this.attackSpeed = 1000
+
+    this.hpRegeneration = 1
   }
 
   onMove (moveEvent, prevX, prevY, currentX, currentY) {

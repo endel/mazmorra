@@ -1,8 +1,14 @@
-import Lifebar from '../hud/Lifebar'
-import ExpBar from '../hud/ExpBar'
 import Resources from '../hud/Resources'
+
 import Character from '../hud/Character'
 import LevelUpButton from '../hud/LevelUpButton'
+import Lifebar from '../hud/Lifebar'
+import ExpBar from '../hud/ExpBar'
+
+// Inventory
+import OpenInventoryButton from '../hud/inventory/OpenButton'
+import Inventory from '../hud/inventory/Inventory'
+
 import { Text2D, textAlign } from 'three-text2d'
 
 window.HUD_MARGIN = 2.5
@@ -23,6 +29,14 @@ export default class HUD extends THREE.Scene {
     this.manabar = new Lifebar('mana')
     this.lifebar = new Lifebar('life')
     this.expbar = new ExpBar()
+
+    // Miscelaneous
+    this.openInventoryButton = new OpenInventoryButton()
+    this.openInventoryButton.addEventListener('click', this.onOpenInventory.bind(this))
+
+    this.inventory = new Inventory()
+    this.inventory.visible = false
+    this.add(this.inventory)
 
     //
     // Label
@@ -50,6 +64,9 @@ export default class HUD extends THREE.Scene {
     this.add(this.selectionText)
     this.add(this.resources)
     this.add(this.character)
+
+    // this.add(this.openInventoryButton)
+    this.addInteractiveControl(this.openInventoryButton)
   }
 
   addInteractiveControl (control) {
@@ -66,8 +83,12 @@ export default class HUD extends THREE.Scene {
   }
 
   resize() {
-    this.character.position.set(- window.innerWidth / 2 + this.character.width, window.innerHeight / 2 - this.character.height, 0)
-    this.levelUpButton.position.set(this.character.position.x + HUD_MARGIN * HUD_SCALE, this.character.position.y - this.levelUpButton.height + (HUD_SCALE/3 * HUD_SCALE), 1)
+    this.character.position.set(
+      - window.innerWidth / 2 + this.character.width,
+      window.innerHeight / 2 - this.character.height,
+      0
+    )
+    this.levelUpButton.position.set( this.character.position.x + HUD_MARGIN * HUD_SCALE, this.character.position.y - this.levelUpButton.height + (HUD_SCALE/3 * HUD_SCALE), 1)
 
     // selection text
     this.selectionText.position.set(0, window.innerHeight / 2 - (HUD_MARGIN * 2 * HUD_SCALE), 0)
@@ -76,7 +97,16 @@ export default class HUD extends THREE.Scene {
     this.manabar.position.set(this.manabar.width + HUD_SCALE * (HUD_MARGIN * 3), - window.innerHeight / 2 + this.lifebar.height, 0)
     this.expbar.position.set(-HUD_SCALE/2, - window.innerHeight / 2 + this.expbar.height + (HUD_MARGIN * 3), 0)
 
-    this.resources.position.set(window.innerWidth / 2 - this.resources.width * HUD_MARGIN, window.innerHeight / 2 - this.resources.height * HUD_MARGIN, 0)
+    this.resources.position.set(
+      window.innerWidth / 2 - this.resources.width * HUD_MARGIN,
+      window.innerHeight / 2 - this.resources.height * HUD_MARGIN,
+      0
+    )
+    this.openInventoryButton.position.set(
+      this.resources.position.x,
+      this.resources.position.y - this.resources.height - this.openInventoryButton.height - HUD_MARGIN - HUD_SCALE,
+      0
+    )
 
     // update orthogonal camera aspect ratio / projection matrix
     this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -85,6 +115,10 @@ export default class HUD extends THREE.Scene {
     this.camera.top = window.innerHeight / 2;
     this.camera.bottom = - window.innerHeight / 2;
     this.camera.updateProjectionMatrix();
+  }
+
+  onOpenInventory () {
+    this.inventory.visible = !this.inventory.visible
   }
 
 }

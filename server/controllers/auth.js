@@ -22,6 +22,17 @@ function generateToken (cb) {
   });
 }
 
+/**
+ * Return an unique id
+ */
+router.get('/deviceid', function(req, res) {
+  generateToken(token => res.send(JSON.stringify({ id: token })))
+})
+
+/**
+ * Auth check:
+ * Check if user is logged in, given an auth token
+ */
 router.get('/', validUser, function(req, res) {
   var user = req.user
 
@@ -31,6 +42,10 @@ router.get('/', validUser, function(req, res) {
   }))
 })
 
+/**
+ * Login:
+ * Return heroes and data for given user
+ */
 router.post('/login', function(req, res) {
   var password = digest(req.body.password)
 
@@ -62,6 +77,10 @@ router.post('/login', function(req, res) {
   })
 })
 
+/**
+ * Register:
+ * Create a new user and a hero
+ */
 router.post('/register', function(req, res) {
   var password = digest(req.body.password)
 
