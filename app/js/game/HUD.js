@@ -8,12 +8,13 @@ import ExpBar from '../hud/ExpBar'
 // Inventory
 import OpenInventoryButton from '../hud/inventory/OpenButton'
 import Inventory from '../hud/inventory/Inventory'
+import SlotStrip from '../hud/inventory/SlotStrip'
 
 import { Text2D, textAlign } from 'three-text2d'
 
 window.HUD_MARGIN = 2.5
-window.HUD_SCALE = 9 / window.devicePixelRatio
-window.DEFAULT_FONT = (Math.floor(50 / window.devicePixelRatio)) + "px primary"
+window.HUD_SCALE = 7.5 / window.devicePixelRatio
+window.DEFAULT_FONT = (Math.floor(HUD_SCALE * 5)) + "px primary"
 
 export default class HUD extends THREE.Scene {
 
@@ -37,6 +38,10 @@ export default class HUD extends THREE.Scene {
     this.inventory = new Inventory()
     this.inventory.visible = false
     this.add(this.inventory)
+
+    // Usable skills / items
+    this.usableItems = new SlotStrip({ columns: 1, slots: 3 })
+    this.usableSkills = new SlotStrip({ columns: 1, slots: 3 })
 
     //
     // Label
@@ -65,6 +70,9 @@ export default class HUD extends THREE.Scene {
     this.add(this.resources)
     this.add(this.character)
 
+    this.add(this.usableItems)
+    this.add(this.usableSkills)
+
     // this.add(this.openInventoryButton)
     this.addInteractiveControl(this.openInventoryButton)
   }
@@ -83,6 +91,14 @@ export default class HUD extends THREE.Scene {
   }
 
   resize() {
+    //
+    // TOP
+    //
+    this.selectionText.position.set(0, window.innerHeight / 2 - (HUD_MARGIN * 2 * HUD_SCALE), 0)
+
+    //
+    // LEFT SIDE
+    //
     this.character.position.set(
       - window.innerWidth / 2 + this.character.width,
       window.innerHeight / 2 - this.character.height,
@@ -90,13 +106,12 @@ export default class HUD extends THREE.Scene {
     )
     this.levelUpButton.position.set( this.character.position.x + HUD_MARGIN * HUD_SCALE, this.character.position.y - this.levelUpButton.height + (HUD_SCALE/3 * HUD_SCALE), 1)
 
-    // selection text
-    this.selectionText.position.set(0, window.innerHeight / 2 - (HUD_MARGIN * 2 * HUD_SCALE), 0)
+    this.usableSkills.position.x = - window.innerWidth / 2 + this.character.width + (HUD_MARGIN * HUD_SCALE)
+    this.usableSkills.position.y = -this.usableSkills.height/2 + this.usableSkills.singleSlotSize/2
 
-    this.lifebar.position.set(-this.lifebar.width - HUD_SCALE * (HUD_MARGIN * 3), - window.innerHeight / 2 + this.lifebar.height, 0)
-    this.manabar.position.set(this.manabar.width + HUD_SCALE * (HUD_MARGIN * 3), - window.innerHeight / 2 + this.lifebar.height, 0)
-    this.expbar.position.set(-HUD_SCALE/2, - window.innerHeight / 2 + this.expbar.height + (HUD_MARGIN * 3), 0)
-
+    //
+    // RIGHT SIDE
+    //
     this.resources.position.set(
       window.innerWidth / 2 - this.resources.width * HUD_MARGIN,
       window.innerHeight / 2 - this.resources.height * HUD_MARGIN,
@@ -107,6 +122,15 @@ export default class HUD extends THREE.Scene {
       this.resources.position.y - this.resources.height - this.openInventoryButton.height - HUD_MARGIN - HUD_SCALE,
       0
     )
+    this.usableItems.position.x = window.innerWidth / 2 - this.usableItems.width // - (HUD_MARGIN * HUD_SCALE)
+    this.usableItems.position.y = -this.usableItems.height/2 + this.usableSkills.singleSlotSize/2
+
+    //
+    // BOTTOM
+    //
+    this.lifebar.position.set(-this.lifebar.width - HUD_SCALE * (HUD_MARGIN * 3), - window.innerHeight / 2 + this.lifebar.height, 0)
+    this.manabar.position.set(this.manabar.width + HUD_SCALE * (HUD_MARGIN * 3), - window.innerHeight / 2 + this.lifebar.height, 0)
+    this.expbar.position.set(-HUD_SCALE/2, - window.innerHeight / 2 + this.expbar.height + (HUD_MARGIN * 3), 0)
 
     // update orthogonal camera aspect ratio / projection matrix
     this.camera.aspect = window.innerWidth / window.innerHeight;

@@ -26,21 +26,21 @@ export default class Character extends THREE.Object3D {
     this.levelText.position.y = this.levelText.height / 2
     this.add(this.levelText)
 
-    // life / mana / exp bar
-    this.lifebar = new Minibar('red')
-    this.lifebar.position.x = HUD_SCALE
-    this.lifebar.position.y = - this.sprite.height
-    this.add(this.lifebar)
-
-    this.manabar = new Minibar('blue')
-    this.manabar.position.x = HUD_SCALE
-    this.manabar.position.y = this.lifebar.position.y - (2 * HUD_SCALE)
-    this.add(this.manabar)
-
-    this.expbar = new Minibar('gray')
-    this.expbar.position.x = HUD_SCALE
-    this.expbar.position.y = this.manabar.position.y - (2 * HUD_SCALE)
-    this.add(this.expbar)
+    // // life / mana / exp bar
+    // this.lifebar = new Minibar('red')
+    // this.lifebar.position.x = HUD_SCALE
+    // this.lifebar.position.y = - this.sprite.height
+    // this.add(this.lifebar)
+    //
+    // this.manabar = new Minibar('blue')
+    // this.manabar.position.x = HUD_SCALE
+    // this.manabar.position.y = this.lifebar.position.y - (2 * HUD_SCALE)
+    // this.add(this.manabar)
+    //
+    // this.expbar = new Minibar('gray')
+    // this.expbar.position.x = HUD_SCALE
+    // this.expbar.position.y = this.manabar.position.y - (2 * HUD_SCALE)
+    // this.add(this.expbar)
   }
 
   set composition (instance) {

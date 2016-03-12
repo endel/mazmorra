@@ -7,9 +7,9 @@ export default class HasLifebar extends Behaviour {
   onAttach () {
     // lifebar
     this.lifebar = new Lifebar()
-    this.lifebar.position.x = 0.5
-    this.lifebar.position.y = 2.5
-    this.lifebar.position.z = 1
+    this.lifebar.position.x = 0
+    this.lifebar.position.y = 1.5
+    this.lifebar.position.z = 0
     this.lifebar.visible = false
     this.object.add(this.lifebar)
 

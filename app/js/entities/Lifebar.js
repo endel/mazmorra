@@ -20,7 +20,6 @@ export default class Lifebar extends THREE.Object3D {
     this.add(this.background)
 
     this.color = 'green'
-    this.position.y = 1
 
     this.scale.set(2, 0.2, 1)
   }
