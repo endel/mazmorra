@@ -30,14 +30,14 @@ export default class InventoryIcon extends THREE.Object3D {
     if (this.isOpen) {
       this.add(this.closed)
       this.remove(this.open)
-      tweener.add(this.closed.position).to({ y: this.closed.position.y + (this.openYOffset * HUD_SCALE) }, 200, Tweener.ease.quintOut)
+      tweener.add(this.closed.position).to({ y: 0 }, 200, Tweener.ease.quintOut)
 
     } else {
       clock.setTimeout(() => {
         this.add(this.open)
         this.remove(this.closed)
       }, 80)
-      tweener.add(this.closed.position).to({ y: this.closed.position.y - (this.openYOffset * HUD_SCALE) }, 150, Tweener.ease.quintOut)
+      tweener.add(this.closed.position).to({ y: -this.openYOffset * HUD_SCALE }, 150, Tweener.ease.quintOut)
     }
 
     this.isOpen = !this.isOpen

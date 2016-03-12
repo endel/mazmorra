@@ -23,6 +23,10 @@ export default class ItemSlot extends THREE.Object3D {
     // this.addEventListener('click', this.onClick.bind(this))
   }
 
+  get material () {
+    return this.free.material
+  }
+
 
 }
 

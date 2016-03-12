@@ -6,6 +6,8 @@ export default class Inventory extends THREE.Object3D {
   constructor () {
     super()
 
+    this.isOpen = false
+
     this.characterItems = new CharacterItems()
     this.slots = new SlotStrip({ slots: 4 })
     this.exchangeSlots = new SlotStrip({ slots: 1, allowRemove: true })
@@ -27,6 +29,34 @@ export default class Inventory extends THREE.Object3D {
 
     this.width = this.characterItems.width + this.slots.position.x + this.slots.width
     this.height = this.characterItems.height
+  }
+
+  toggleOpen () {
+    this.isOpen = !this.isOpen
+
+    let targetOpacity = ((this.isOpen) ? 1 : 0)
+      , scaleFrom = ((this.isOpen) ? 0.5 : 1)
+      , scaleTo = ((this.isOpen) ? 1 : 0.5)
+
+    this.scale.set(scaleFrom, scaleFrom, scaleFrom)
+    if (this.isOpen) this.visible = true
+
+    let elementsToFade = this.characterItems.children
+                          .concat(this.slots.children)
+                          .concat(this.exchangeSlots.children)
+                          .concat(this.exchangeSymbol)
+
+    elementsToFade.map((el, i) => {
+      tweener.remove(el.material)
+      tweener.add(el.material)
+        .wait(i * 15)
+        .to({ opacity: targetOpacity }, 500, Tweener.ease.quintOut)
+    })
+
+    tweener.remove(this.scale)
+    tweener.add(this.scale).to({ x: scaleTo, y: scaleTo, z: scaleTo }, 500, Tweener.ease.quintOut).then(() => {
+      if (!this.isOpen) this.visible = false
+    })
   }
 
 }

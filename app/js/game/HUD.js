@@ -33,11 +33,11 @@ export default class HUD extends THREE.Scene {
 
     // Miscelaneous
     this.openInventoryButton = new OpenInventoryButton()
-    this.openInventoryButton.addEventListener('click', this.onOpenInventory.bind(this))
-
     this.inventory = new Inventory()
     this.inventory.visible = false
+
     this.add(this.inventory)
+    this.openInventoryButton.addEventListener('click', this.inventory.toggleOpen.bind(this.inventory))
 
     // Usable skills / items
     this.usableItems = new SlotStrip({ columns: 1, slots: 3 })
@@ -139,10 +139,6 @@ export default class HUD extends THREE.Scene {
     this.camera.top = window.innerHeight / 2;
     this.camera.bottom = - window.innerHeight / 2;
     this.camera.updateProjectionMatrix();
-  }
-
-  onOpenInventory () {
-    this.inventory.visible = !this.inventory.visible
   }
 
 }
