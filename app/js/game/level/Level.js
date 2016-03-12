@@ -62,7 +62,6 @@ export default class Level extends EventEmitter {
   }
 
   onRoomUpdate (state, patches) {
-    console.log('onRoomUpdate, patches?', patches)
     if (!patches) {
       this.emit('setup', state)
 
@@ -72,7 +71,8 @@ export default class Level extends EventEmitter {
     } else {
       this.patchId++
       patches.map(patch => {
-        console.log(patch, patch.path.match(/\/entities\/([a-zA-Z0-9_-]+)$/))
+        console.log(patch)
+
         if (patch.op === "remove" && patch.path.indexOf("/entities") !== -1 && patch.path.indexOf("/action") === -1) {
           let [ _, index ] = patch.path.match(/entities\/([a-zA-Z0-9_-]+)/)
           this.removeEntity(this.entities[ index ])

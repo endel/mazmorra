@@ -10,9 +10,10 @@ export default class Highlight extends THREE.Sprite {
       transparent: true
     }))
     this.scale.normalizeWithTexture(this.material.map)
-    this.scale.x /= 2
-    this.scale.y /= 2
-    this.scale.z /= 2
+
+    this.scale.x /= 1.5
+    this.scale.y /= 1.5
+    this.scale.z /= 1.5
 
     this.material.opacity = 0.8
 

@@ -3,6 +3,7 @@
 var Entity = require('./Entity')
 var Bar = require('../core/Bar')
 var Movement = require('../core/Movement')
+var Inventory = require('../core/Inventory')
 
 var ClockTimer = require('clock-timer.js')
 
@@ -15,6 +16,8 @@ class Unit extends Entity {
     super(id)
 
     this.position = new Movement(this)
+    this.inventory = new Inventory()
+
     this.direction = 'bottom'
 
     this.action = null

@@ -8,16 +8,10 @@ export default class Fountain extends THREE.Object3D {
     super()
     this.userData = data
 
-    this.activeSprite = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: ResourceManager.get( `interactive-fountain` ),
-      fog: true
-    }))
+    this.activeSprite = ResourceManager.getSprite( `interactive-fountain` )
     this.add(this.activeSprite)
 
-    this.inactiveSprite = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: ResourceManager.get( `interactive-fountain-dry` ),
-      fog: true
-    }))
+    this.inactiveSprite = ResourceManager.getSprite( `interactive-fountain-dry` )
     this.add(this.inactiveSprite)
 
     this.activeSprite.position.y += 0.1
@@ -25,9 +19,6 @@ export default class Fountain extends THREE.Object3D {
 
     this.activateable = new Activatable()
     this.addBehaviour(this.activateable)
-
-    this.activeSprite.scale.normalizeWithTexture(this.activeSprite.material.map)
-    this.inactiveSprite.scale.normalizeWithTexture(this.inactiveSprite.material.map)
   }
 
   get label () {

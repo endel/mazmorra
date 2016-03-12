@@ -9,9 +9,10 @@ class Player extends Unit {
     super(id)
     this.type = helpers.ENTITIES.PLAYER
 
-    console.log("Player:", hero)
     this.name = hero.name
     this.lvl = hero.lvl || 1
+
+    this.inventory.set(hero.inventory)
 
     this.properties = {
       klass: hero.klass,

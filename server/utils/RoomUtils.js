@@ -98,13 +98,18 @@ class RoomUtils {
       progress: this.state.progress + 1
     }))
 
+    this.state.addEntity(new Item(helpers.ENTITIES.SHIELD_WOOD, {
+      x: this.startPosition.x,
+      y: this.startPosition.y + 1
+    }))
+
     this.rooms.forEach(room => this.populateRoom(room))
   }
 
   populateRoom (room) {
-    var enemies = Math.floor(this.rand.intBetween(0, this.state.difficulty * 2))
+    var numEnemies = Math.floor(this.rand.intBetween(0, this.state.difficulty * 2))
 
-    while (enemies--) {
+    while (numEnemies--) {
       this.addEntity(room, (position) => {
         var enemyList = ['rabbit', 'rat', 'skeleton', 'green-snake']
         var enemy = new Enemy(enemyList[Math.floor((Math.random() * enemyList.length))])

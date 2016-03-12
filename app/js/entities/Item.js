@@ -15,21 +15,14 @@ export default class Item extends THREE.Object3D {
 
     this.userData = data
 
-    var texture = ResourceManager.get( "items-" + data.type )
-    this.item = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: texture,
-      color: 0xffffff,
-      fog: true
-    }))
+    this.item = ResourceManager.getSprite( "items-" + data.type )
     this.item.position.y = 0.5
     this.add(this.item)
 
     // only highlight important items
     if (unimportantItems.indexOf(data.type) === -1) {
       this.highlight = new Highlight()
-      this.highlight.position.y = 0.7
-      this.highlight.position.x -= 0.28
-      this.highlight.position.z = -0.4
+      this.highlight.position.y = 0.9
       this.highlight.addBehaviour(new Stretchable)
       this.add(this.highlight)
 
@@ -43,7 +36,6 @@ export default class Item extends THREE.Object3D {
       this.addBehaviour(new NearPlayerOpacity)
     }
 
-    this.item.scale.normalizeWithTexture(this.item.material.map)
     this.item.addBehaviour(new Pickable)
   }
 

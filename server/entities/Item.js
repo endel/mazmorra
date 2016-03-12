@@ -14,7 +14,7 @@ class ItemEntity extends Entity {
   }
 
   pick (player, state) {
-    throw new Error(`${this.constructor.name} should implement pick(player, state) method`)
+    return player.inventory.add(this)
   }
 
 }

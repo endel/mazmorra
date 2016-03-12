@@ -105,8 +105,8 @@ class DungeonState extends EventEmitter {
         moveEvent.cancel()
       }
 
-      if (entity instanceof Item) {
-        entity.pick(player, this)
+      if (entity instanceof Item && entity.pick(player, this)) {
+        this.removeEntity(entity)
       }
 
       if (entity instanceof Interactive) {

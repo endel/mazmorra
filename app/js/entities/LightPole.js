@@ -8,17 +8,10 @@ export default class LightPole extends THREE.Object3D {
     super()
 
     this.colors = [0xfcb438, 0xfc6018] // , 0xd00000
-    var texture = ResourceManager.get("billboards-light-pole")
 
-    this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: texture,
-      color: 0xffffff,
-      fog: true
-    }))
+    this.sprite = ResourceManager.getSprite("billboards-light-pole")
     this.sprite.position.y = 0.55
     this.add(this.sprite)
-
-    this.sprite.scale.normalizeWithTexture(this.sprite.material.map)
 
     var light = new THREE.PointLight(this.colors[0], 0.3, 50);
     light.addBehaviour(new LightOscillator, 0.2, 0.4)

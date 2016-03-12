@@ -6,8 +6,6 @@ import LevelUp from '../effects/LevelUp'
 import lerp from 'lerp'
 import helpers from '../../../shared/helpers'
 
-import throttle from 'throttle.js'
-
 export default class GameObject extends Behaviour {
 
   onAttach (generator) {
@@ -90,6 +88,9 @@ export default class GameObject extends Behaviour {
         }
         this.lastActionType = state.action.type
       // }
+
+    } else if (patch.path.indexOf('inventory') !== -1) {
+      // TODO: do something with inventory
     }
   }
 
