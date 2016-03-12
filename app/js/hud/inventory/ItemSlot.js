@@ -1,4 +1,5 @@
 export default class ItemSlot extends THREE.Object3D {
+  static DEFAULT_OPACITY = 0.8;
 
   constructor () {
     super()
@@ -12,8 +13,8 @@ export default class ItemSlot extends THREE.Object3D {
     this.use = new THREE.Sprite(new THREE.SpriteMaterial({ map: useTex, transparent: true }))
     this.use.scale.set(useTex.frame.w * HUD_SCALE, useTex.frame.h * HUD_SCALE, 1)
 
-    this.free.material.opacity = 0.8
-    this.use.material.opacity = 0.8
+    this.free.material.opacity = ItemSlot.DEFAULT_OPACITY
+    this.use.material.opacity = ItemSlot.DEFAULT_OPACITY
 
     this.width = useTex.frame.w * HUD_SCALE
     this.height = useTex.frame.h * HUD_SCALE

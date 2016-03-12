@@ -43,6 +43,7 @@
     "wiredep": "^2.2.2"
   },
   "dependencies": {
+    "babel-plugin-transform-class-properties": "^6.6.0",
     "behaviour.js": "^0.2.4",
     "clock-timer.js": "^1.0.0",
     "colyseus.js": "file:../colyseus.js",
@@ -57,5 +58,13 @@
     "throttle.js": "^1.0.0",
     "tiny-emitter": "^1.0.2",
     "tweener": "0.1.28"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ],
+    "plugins": [
+      "transform-class-properties"
+    ]
   }
 }

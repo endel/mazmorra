@@ -1,5 +1,6 @@
 import CharacterItems from './CharacterItems'
 import SlotStrip from './SlotStrip'
+import ItemSlot from './ItemSlot'
 
 export default class Inventory extends THREE.Object3D {
 
@@ -34,7 +35,7 @@ export default class Inventory extends THREE.Object3D {
   toggleOpen () {
     this.isOpen = !this.isOpen
 
-    let targetOpacity = ((this.isOpen) ? 1 : 0)
+    let targetOpacity = ((this.isOpen) ? ItemSlot.DEFAULT_OPACITY : 0)
       , scaleFrom = ((this.isOpen) ? 0.5 : 1)
       , scaleTo = ((this.isOpen) ? 1 : 0.5)
 
