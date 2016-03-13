@@ -2,7 +2,7 @@
 
 export default class TileSelectionPreview extends THREE.Object3D {
 
-  constructor (light, labelText) {
+  constructor (light, hud) {
     super()
 
     this._target = null
@@ -10,7 +10,9 @@ export default class TileSelectionPreview extends THREE.Object3D {
     this.light = light
     this.lightColors = {}
 
-    this.labelText = labelText
+    // TODO: decouple cursor reference
+    this.cursor = hud.cursor
+    this.selectionText = hud.selectionText
 
     this.material = new THREE.MeshPhongMaterial( {
       shading: THREE.FlatShading,
@@ -54,6 +56,15 @@ export default class TileSelectionPreview extends THREE.Object3D {
   }
 
   setColor (hex = 0xffffff) {
+
+    // TODO: refactor
+    // decouple Cursor reference from here.
+    if (hex === COLOR_RED) {
+      this.cursor.getEntity().emit('update', 'attack')
+    } else {
+      this.cursor.getEntity().emit('update', 'pointer')
+    }
+
     if (hex instanceof THREE.Color) this.lightColors[hex] = hex
 
     if (!this.lightColors[hex]) {
@@ -65,10 +76,10 @@ export default class TileSelectionPreview extends THREE.Object3D {
   }
 
   setLabel (label) {
-    this.labelText.visible = !!label
+    this.selectionText.visible = !!label
 
-    if (label !== this.labelText.text) {
-      this.labelText.text = label
+    if (label !== this.selectionText.text) {
+      this.selectionText.text = label
     }
   }
 

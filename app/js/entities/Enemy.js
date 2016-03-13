@@ -37,10 +37,6 @@ export default class Enemy extends THREE.Object3D {
     this.addBehaviour(new NearPlayerOpacity)
   }
 
-  blinkRed () {
-
-  }
-
   get label () {
     var text = this.userData.kind
 

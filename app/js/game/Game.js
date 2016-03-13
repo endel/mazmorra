@@ -65,11 +65,12 @@ export default class Game {
     window.camera = this.camera
 
     this.hud = new HUD()
+    this.hud.cursor.mouse = this.mouse // TODO: refactor me
     this.hudCurrentControl = null
     // this.level = new Level(this.scene, this.hud, this.camera)
     // this.level.on('setup', this.onSetupLevel.bind(this))
 
-    this.characterBuilder = new CharacterBuilder(this.scene, this.hud,this.camera)
+    this.characterBuilder = new CharacterBuilder(this.scene, this.hud, this.camera)
     this.characterBuilder.on('complete', this.init.bind(this))
     // set background for character builder
     this.onSetupLevel({ mapkind: 'rock', daylight: true })
@@ -220,7 +221,6 @@ export default class Game {
       , nextControl = (intersects.length > 0) && intersects[0].object.parent
 
     if (this.hudCurrentControl !== nextControl) {
-      console.log(intersects)
       // mouseout
       if (this.hudCurrentControl) {
         this.hudCurrentControl.dispatchEvent({ type: 'mouseout' })

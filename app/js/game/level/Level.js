@@ -29,7 +29,7 @@ export default class Level extends EventEmitter {
 
     this.clickedTileLight = new THREE.SpotLight(COLOR_RED, 0.5, 30);
     this.selectionLight = new THREE.SpotLight(0xffffff, 0.5, 30);
-    this.selection = new TileSelectionPreview(this.selectionLight, this.hud.selectionText)
+    this.selection = new TileSelectionPreview(this.selectionLight, this.hud)
 
     this.generator = new Generator(this, this.scene, this.colyseus)
   }

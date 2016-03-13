@@ -4,6 +4,7 @@ import Character from '../hud/Character'
 import LevelUpButton from '../hud/LevelUpButton'
 import Lifebar from '../hud/Lifebar'
 import ExpBar from '../hud/ExpBar'
+import Cursor from '../hud/Cursor'
 
 import HUDController from '../behaviors/HUDController'
 import InventoryBehaviour from '../behaviors/InventoryBehaviour'
@@ -26,6 +27,10 @@ export default class HUD extends THREE.Scene {
 
     this.camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, - 1, 10 );
     this.camera.position.z = 10
+
+    this.cursor = new Cursor
+    this.cursor.position.z = 10
+    this.add(this.cursor)
 
     // Life / Mana / Expr
     this.manabar = new Lifebar('mana')
