@@ -5,6 +5,9 @@ import LevelUpButton from '../hud/LevelUpButton'
 import Lifebar from '../hud/Lifebar'
 import ExpBar from '../hud/ExpBar'
 
+import HUDController from '../behaviors/HUDController'
+import InventoryBehaviour from '../behaviors/InventoryBehaviour'
+
 // Inventory
 import OpenInventoryButton from '../hud/inventory/OpenButton'
 import Inventory from '../hud/inventory/Inventory'
@@ -21,8 +24,6 @@ export default class HUD extends THREE.Scene {
   constructor () {
     super()
 
-    this.playerEntity = null
-
     this.camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, - 1, 10 );
     this.camera.position.z = 10
 
@@ -36,7 +37,6 @@ export default class HUD extends THREE.Scene {
     this.inventory = new Inventory()
     this.inventory.visible = false
 
-    this.add(this.inventory)
     this.openInventoryButton.addEventListener('click', this.inventory.toggleOpen.bind(this.inventory))
 
     // Usable skills / items
@@ -70,11 +70,22 @@ export default class HUD extends THREE.Scene {
     this.add(this.resources)
     this.add(this.character)
 
+    this.addInteractiveControl(this.inventory)
     this.add(this.usableItems)
     this.add(this.usableSkills)
 
     // this.add(this.openInventoryButton)
     this.addInteractiveControl(this.openInventoryButton)
+  }
+
+  setPlayerObject (playerObject) {
+    this.character.composition = playerObject.composition
+
+    this.getEntity().detachAll()
+    this.addBehaviour(new HUDController, playerObject)
+
+    this.inventory.getEntity().detachAll()
+    this.inventory.addBehaviour(new InventoryBehaviour, playerObject)
   }
 
   addInteractiveControl (control) {
@@ -107,7 +118,7 @@ export default class HUD extends THREE.Scene {
     this.levelUpButton.position.set( this.character.position.x + HUD_MARGIN * HUD_SCALE, this.character.position.y - this.levelUpButton.height + (HUD_SCALE/3 * HUD_SCALE), 1)
 
     this.usableSkills.position.x = - window.innerWidth / 2 + this.character.width + (HUD_MARGIN * HUD_SCALE)
-    this.usableSkills.position.y = -this.usableSkills.height/2 + this.usableSkills.singleSlotSize/2
+    this.usableSkills.position.y = -this.usableSkills.height/2 + this.usableSkills.slotSize/2
 
     //
     // RIGHT SIDE
@@ -123,7 +134,7 @@ export default class HUD extends THREE.Scene {
       0
     )
     this.usableItems.position.x = window.innerWidth / 2 - this.usableItems.width // - (HUD_MARGIN * HUD_SCALE)
-    this.usableItems.position.y = -this.usableItems.height/2 + this.usableSkills.singleSlotSize/2
+    this.usableItems.position.y = -this.usableItems.height/2 + this.usableSkills.slotSize/2
 
     //
     // BOTTOM

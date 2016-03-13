@@ -1,5 +1,5 @@
 import ItemSlot from './ItemSlot'
-
+import DraggableItem from './components/DraggableItem'
 
 export default class SlotStrip extends THREE.Object3D {
 
@@ -10,9 +10,37 @@ export default class SlotStrip extends THREE.Object3D {
     this.columns = options.columns || 4
     this.allowRemove = options.allowRemove || false
 
+    this.lastItemsRef = null
+
     if (options.slots) {
       this.numSlots = options.slots
     }
+  }
+
+  clearItems () {
+    for (let i=0; i<this.slots.length; i++) {
+      if (this.slots[i].item) {
+        this.slots[i].item.getEntity().detachAll()
+        this.slots[i].item = null
+      }
+    }
+  }
+
+  updateItems (items) {
+    // same items, do nothing
+    if (items === this.lastItemsRef) {
+      return
+    }
+
+    this.clearItems()
+
+    let i = 0
+    for (let itemId in items) {
+      this.slots[i].item = ResourceManager.getHUDElement(`items-${ items[itemId].type }`)
+      i++
+    }
+
+    this.lastItemsRef = items
   }
 
   set numSlots (total) {
@@ -59,7 +87,7 @@ export default class SlotStrip extends THREE.Object3D {
     this.height = (slot.height + HUD_SCALE) * (row+1)
   }
 
-  get singleSlotSize () {
+  get slotSize () {
     return this.slots[0].width
   }
 

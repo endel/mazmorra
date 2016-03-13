@@ -4,6 +4,7 @@ var Entity = require('./Entity')
 var Bar = require('../core/Bar')
 var Movement = require('../core/Movement')
 var Inventory = require('../core/Inventory')
+var EquipedItems = require('../core/EquipedItems')
 
 var ClockTimer = require('clock-timer.js')
 
@@ -12,12 +13,23 @@ var BattleAction = require('../actions/BattleAction')
 
 class Unit extends Entity {
 
-  constructor (id) {
+  constructor (id, options) {
     super(id)
 
-    this.position = new Movement(this)
-    this.inventory = new Inventory()
+    if (!options) options = {}
 
+    // Items / Inventory
+    this.inventory = new Inventory()
+    // this.inventory.set(options.inventory || [])
+    this.inventory.set([{type: 'shield-wood'}])
+
+    this.equipedItems = new EquipedItems()
+    this.equipedItems.set(options.equipedItems || [])
+
+    this.quickInventory = new Inventory({ capacity: 3 })
+    this.quickInventory.set(options.quickInventory || [])
+
+    this.position = new Movement(this)
     this.direction = 'bottom'
 
     this.action = null

@@ -3,20 +3,19 @@ import lerp from 'lerp'
 
 export default class HUDController extends Behaviour {
 
-  onAttach (player) {
-    this.player = player
-    this.object.character.composition = player.composition
+  onAttach (playerObject) {
+    this.playerObject = playerObject
   }
 
   update () {
-    this.object.resources.goldAmount.text = this.player.userData.gold
-    this.object.resources.diamondAmount.text = this.player.userData.diamond
-    this.object.character.levelText.text = this.player.userData.lvl
+    this.object.resources.goldAmount.text = this.playerObject.userData.gold
+    this.object.resources.diamondAmount.text = this.playerObject.userData.diamond
+    this.object.character.levelText.text = this.playerObject.userData.lvl
 
-    this.setPercentage( this.object.lifebar, this.player.userData.hp.current / this.player.userData.hp.max, 'y'  )
-    this.setPercentage( this.object.manabar, this.player.userData.mp.current / this.player.userData.mp.max, 'y'  )
-    this.setPercentage( this.object.expbar, this.player.userData.xp.current / this.player.userData.xp.max, 'x' )
-    this.object.character.levelText.text = this.player.userData.lvl
+    this.setPercentage( this.object.lifebar, this.playerObject.userData.hp.current / this.playerObject.userData.hp.max, 'y'  )
+    this.setPercentage( this.object.manabar, this.playerObject.userData.mp.current / this.playerObject.userData.mp.max, 'y'  )
+    this.setPercentage( this.object.expbar, this.playerObject.userData.xp.current / this.playerObject.userData.xp.max, 'x' )
+    this.object.character.levelText.text = this.playerObject.userData.lvl
   }
 
   setPercentage (object, percentage, attr) {

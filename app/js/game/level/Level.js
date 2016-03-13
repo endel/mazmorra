@@ -6,7 +6,6 @@ import Generator from './Generator'
 import TileSelectionPreview from '../../entities/TileSelectionPreview'
 
 import CharacterController from '../../behaviors/CharacterController'
-import HUDController from '../../behaviors/HUDController'
 
 import credentials from '../../web/credentials'
 
@@ -55,10 +54,7 @@ export default class Level extends EventEmitter {
 
   createPlayerBehaviour (entity) {
     entity.addBehaviour(new CharacterController, this.camera, this.room)
-
-    this.hud.getEntity().detachAll()
-    this.hud.addBehaviour(new HUDController, entity)
-    // this.playerEntity = entity.getEntity()
+    this.hud.setPlayerObject(entity)
   }
 
   onRoomUpdate (state, patches) {
@@ -71,7 +67,7 @@ export default class Level extends EventEmitter {
     } else {
       this.patchId++
       patches.map(patch => {
-        console.log(patch)
+        // console.log(patch)
 
         if (patch.op === "remove" && patch.path.indexOf("/entities") !== -1 && patch.path.indexOf("/action") === -1) {
           let [ _, index ] = patch.path.match(/entities\/([a-zA-Z0-9_-]+)/)

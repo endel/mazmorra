@@ -4,6 +4,8 @@ export default class ItemSlot extends THREE.Object3D {
   constructor () {
     super()
 
+    this._item = null
+
     var freeTex = ResourceManager.get("hud-item-slot-free")
     this.free = new THREE.Sprite(new THREE.SpriteMaterial({ map: freeTex, transparent: true }))
     this.free.scale.set(freeTex.frame.w * HUD_SCALE, freeTex.frame.h * HUD_SCALE, 1)
@@ -19,13 +21,46 @@ export default class ItemSlot extends THREE.Object3D {
     this.width = useTex.frame.w * HUD_SCALE
     this.height = useTex.frame.h * HUD_SCALE
 
-    // this.addEventListener('mouseover', this.onMouseOver.bind(this))
-    // this.addEventListener('mouseout', this.onMouseOut.bind(this))
+    this.addEventListener('mouseover', this.onMouseOver.bind(this))
+    this.addEventListener('mouseout', this.onMouseOut.bind(this))
     // this.addEventListener('click', this.onClick.bind(this))
   }
 
+  onMouseOver () {
+    if (this._item) {
+      tweener.remove(this.scale)
+      tweener.add(this.scale).to({ x: 1.1, y: 1.1 }, 200, Tweener.ease.quadOut)
+    }
+  }
+
+  onMouseOut () {
+    tweener.remove(this.scale)
+    tweener.add(this.scale).to({ x: 1, y: 1 }, 200, Tweener.ease.quadOut)
+  }
+
+  set item (item) {
+    if (item) {
+      this.add(this.use)
+      this.remove(this.free)
+
+      item.position.z = 1
+      this.add(item)
+
+    } else {
+      if (this._item) {
+        this.remove(this._item)
+      }
+      this.remove(this.use)
+      this.add(this.free)
+    }
+
+    this._item = item
+  }
+
+  get item () { return this._item }
+
   get material () {
-    return this.free.material
+    return this._item ? this.use.material : this.free.material
   }
 
 

@@ -38,5 +38,9 @@ module.exports.Hero = mongoose.model('Hero', new Schema({
   eye: { type: Number, default: 0 },
   body: { type: Number, default: 0 },
 
-  inventory: { type: Array, default: [] }
+  inventory: { type: Array, default: [] },
+  equipedItems: { type: Array, default: [] },
+  quickInventory: { type: Array, default: [] },
+
+  skills: { type: Schema.Types.Mixed, default: {} }
 }))

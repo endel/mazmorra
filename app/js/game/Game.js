@@ -79,7 +79,7 @@ export default class Game {
 
     window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false )
     window.addEventListener( 'touchstart', this.onTouchStart.bind(this), false )
-    window.addEventListener( 'touchend', this.onClick.bind(this), false )
+    window.addEventListener( 'touchend', this.onTouchEnd.bind(this), false )
     window.addEventListener( 'click', this.onClick.bind(this), false )
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
 
@@ -144,6 +144,12 @@ export default class Game {
         }
         this.lastTargetPosition = this.level.targetPosition;
       }
+    }
+  }
+
+  onTouchEnd (e) {
+    if (e.touches && e.touches[0] && this.hudCurrentControl) {
+      this.hudCurrentControl.dispatchEvent({ type: 'touchend' })
     }
   }
 
@@ -214,6 +220,7 @@ export default class Game {
       , nextControl = (intersects.length > 0) && intersects[0].object.parent
 
     if (this.hudCurrentControl !== nextControl) {
+      console.log(intersects)
       // mouseout
       if (this.hudCurrentControl) {
         this.hudCurrentControl.dispatchEvent({ type: 'mouseout' })

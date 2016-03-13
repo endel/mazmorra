@@ -91,6 +91,7 @@ export default class GameObject extends Behaviour {
 
     } else if (patch.path.indexOf('inventory') !== -1) {
       // TODO: do something with inventory
+      // this.entity.emit('')
     }
   }
 

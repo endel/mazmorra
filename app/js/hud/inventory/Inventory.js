@@ -13,11 +13,11 @@ export default class Inventory extends THREE.Object3D {
     this.slots = new SlotStrip({ slots: 4 })
     this.exchangeSlots = new SlotStrip({ slots: 1, allowRemove: true })
 
-    this.characterItems.position.x -= this.characterItems.width/2 + this.slots.singleSlotSize/1.5
-    this.slots.position.x = this.characterItems.position.x + (this.characterItems.width/2 + this.slots.singleSlotSize / 2 + HUD_SCALE * 2)
+    this.characterItems.position.x -= this.characterItems.width/2 + this.slots.slotSize/1.5
+    this.slots.position.x = this.characterItems.position.x + (this.characterItems.width/2 + this.slots.slotSize / 2 + HUD_SCALE * 2)
     this.slots.position.y = this.slots.height
 
-    this.exchangeSlots.position.x = this.characterItems.position.x + (this.characterItems.width/2 + this.slots.singleSlotSize / 2 + HUD_SCALE * 2) + (this.exchangeSlots.width / 2)
+    this.exchangeSlots.position.x = this.characterItems.position.x + (this.characterItems.width/2 + this.slots.slotSize / 2 + HUD_SCALE * 2) + (this.exchangeSlots.width / 2)
     this.exchangeSlots.position.y = -this.exchangeSlots.height
 
     this.exchangeSymbol = ResourceManager.getHUDElement('hud-exchange-icon')
@@ -35,6 +35,9 @@ export default class Inventory extends THREE.Object3D {
   toggleOpen () {
     this.isOpen = !this.isOpen
 
+    // emit toggle event
+    this.getEntity().emit('toggle', this.isOpen)
+
     let targetOpacity = ((this.isOpen) ? ItemSlot.DEFAULT_OPACITY : 0)
       , scaleFrom = ((this.isOpen) ? 0.5 : 1)
       , scaleTo = ((this.isOpen) ? 1 : 0.5)
@@ -42,6 +45,10 @@ export default class Inventory extends THREE.Object3D {
     this.scale.set(scaleFrom, scaleFrom, scaleFrom)
     if (this.isOpen) this.visible = true
 
+    //
+    // fade all element materials separately
+    // (THREE.js can't change opacity of containers)
+    //
     let elementsToFade = this.characterItems.children
                           .concat(this.slots.children)
                           .concat(this.exchangeSlots.children)
@@ -49,11 +56,15 @@ export default class Inventory extends THREE.Object3D {
 
     elementsToFade.map((el, i) => {
       tweener.remove(el.material)
-      tweener.add(el.material)
-        .wait(i * 15)
-        .to({ opacity: targetOpacity }, 500, Tweener.ease.quintOut)
+      tweener.add(el.material).wait(i * 15).to({ opacity: targetOpacity }, 500, Tweener.ease.quintOut)
+
+      // fade item inside ItemSlot, in case there's any
+      if (el instanceof ItemSlot && el.item) {
+        tweener.add(el.item.material).wait(i * 15).to({ opacity: (targetOpacity > 0) ? 1 : 0 }, 500, Tweener.ease.quintOut)
+      }
     })
 
+    // scale container
     tweener.remove(this.scale)
     tweener.add(this.scale).to({ x: scaleTo, y: scaleTo, z: scaleTo }, 500, Tweener.ease.quintOut).then(() => {
       if (!this.isOpen) this.visible = false

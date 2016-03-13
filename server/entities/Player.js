@@ -1,18 +1,18 @@
 'use strict';
 
 var Unit = require('./Unit')
+  , Inventory = require('../core/Inventory')
+
   , helpers  = require('../../shared/helpers')
 
 class Player extends Unit {
 
   constructor (id, hero) {
-    super(id)
+    super(id, hero)
     this.type = helpers.ENTITIES.PLAYER
 
     this.name = hero.name
     this.lvl = hero.lvl || 1
-
-    this.inventory.set(hero.inventory)
 
     this.properties = {
       klass: hero.klass,
