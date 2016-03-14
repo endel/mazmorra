@@ -31,16 +31,21 @@ class CursorBehaviour extends Behaviour {
   }
 
   onUpdate (type) {
-    if (this.type) {
-      this.object.remove(this.object[ this.type ])
+    if (this.type) { this.object.remove(this.object[ this.type ]) }
+
+    if (type instanceof THREE.Object3D) {
+      this.object.add(type)
+
+    } else {
+      this.object.add(this.object[ type ])
     }
-    this.object.add(this.object[ type ])
+
     this.type = type
   }
 
   update () {
-    this.object.position.x = lerp(this.object.position.x, this.object.mouse.x * (window.innerWidth / 2), 0.8)
-    this.object.position.y = lerp(this.object.position.y, this.object.mouse.y * (window.innerHeight / 2), 0.8)
+    this.object.position.x = lerp(this.object.position.x, this.object.mouse.x * (window.innerWidth / 2), 0.9)
+    this.object.position.y = lerp(this.object.position.y, this.object.mouse.y * (window.innerHeight / 2), 0.9)
   }
 
 }

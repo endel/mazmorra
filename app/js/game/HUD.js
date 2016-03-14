@@ -40,13 +40,18 @@ export default class HUD extends THREE.Scene {
     // Miscelaneous
     this.openInventoryButton = new OpenInventoryButton()
     this.inventory = new Inventory()
+    this.inventory.addEventListener('dragstart', this.onDragStart.bind(this))
+    this.inventory.addEventListener('dragend', this.onDragEnd.bind(this))
     this.inventory.visible = false
 
     this.openInventoryButton.addEventListener('click', this.inventory.toggleOpen.bind(this.inventory))
 
     // Usable skills / items
-    this.usableItems = new SlotStrip({ columns: 1, slots: 3 })
     this.usableSkills = new SlotStrip({ columns: 1, slots: 3 })
+    this.usableItems = new SlotStrip({ columns: 1, slots: 3 })
+    // FIXME
+    this.usableItems.addEventListener('dragstart', this.onDragStart.bind(this))
+    this.usableItems.addEventListener('dragend', this.onDragEnd.bind(this))
 
     //
     // Label
@@ -76,8 +81,8 @@ export default class HUD extends THREE.Scene {
     this.add(this.character)
 
     this.addInteractiveControl(this.inventory)
-    this.add(this.usableItems)
-    this.add(this.usableSkills)
+    this.addInteractiveControl(this.usableItems)
+    this.addInteractiveControl(this.usableSkills)
 
     // this.add(this.openInventoryButton)
     this.addInteractiveControl(this.openInventoryButton)
@@ -156,6 +161,24 @@ export default class HUD extends THREE.Scene {
     this.camera.bottom = - window.innerHeight / 2;
     this.camera.updateProjectionMatrix();
   }
+
+  onDragStart (e) {
+    if (e.target.item) {
+      this.draggingItem = e.target.item
+      this.draggingFrom = e.target
+      this.cursor.getEntity().emit('update', this.draggingItem)
+      e.target.item = null
+    }
+  }
+
+  onDragEnd (e) {
+    if (!e.target.item) {
+      e.target.item = this.draggingItem
+      this.cursor.getEntity().emit('update', 'pointer')
+      console.log("drag end!", e.target)
+    }
+  }
+
 
 }
 

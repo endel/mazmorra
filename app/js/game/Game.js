@@ -82,6 +82,8 @@ export default class Game {
     window.addEventListener( 'touchstart', this.onTouchStart.bind(this), false )
     window.addEventListener( 'touchend', this.onTouchEnd.bind(this), false )
     window.addEventListener( 'click', this.onClick.bind(this), false )
+    window.addEventListener( 'mousedown', this.onMouseDown.bind(this), false )
+    window.addEventListener( 'mouseup', this.onMouseUp.bind(this), false )
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
 
     // stats
@@ -172,6 +174,14 @@ export default class Game {
     }
   }
 
+  onMouseDown () {
+    if (this.hudCurrentControl) { this.hudCurrentControl.dispatchEvent({ type: 'mousedown' }) }
+  }
+
+  onMouseUp () {
+    if (this.hudCurrentControl) { this.hudCurrentControl.dispatchEvent({ type: 'mouseup' }) }
+  }
+
   update () {
     clock.tick()
     tweener.update(clock.deltaTime)
@@ -220,6 +230,7 @@ export default class Game {
     var intersects = this.raycaster.intersectObjects( this.hud.interactiveChildren, true )
       , nextControl = (intersects.length > 0) && intersects[0].object.parent
 
+    console.log(nextControl)
     if (this.hudCurrentControl !== nextControl) {
       // mouseout
       if (this.hudCurrentControl) {

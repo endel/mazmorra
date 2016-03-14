@@ -23,7 +23,13 @@ export default class ItemSlot extends THREE.Object3D {
 
     this.addEventListener('mouseover', this.onMouseOver.bind(this))
     this.addEventListener('mouseout', this.onMouseOut.bind(this))
-    // this.addEventListener('click', this.onClick.bind(this))
+
+    // start / end drag
+    this.addEventListener('mousedown', this.startDrag.bind(this))
+    this.addEventListener('touchstart', this.startDrag.bind(this))
+
+    this.addEventListener('mouseup', this.endDrag.bind(this))
+    this.addEventListener('touchend', this.endDrag.bind(this))
   }
 
   onMouseOver () {
@@ -38,11 +44,21 @@ export default class ItemSlot extends THREE.Object3D {
     tweener.add(this.scale).to({ x: 1, y: 1 }, 200, Tweener.ease.quadOut)
   }
 
+  startDrag () {
+    this.dispatchEvent({type: 'dragstart', bubbles: true})
+  }
+
+  endDrag () {
+    this.dispatchEvent({type: 'dragend', bubbles: true})
+  }
+
   set item (item) {
     if (item) {
       this.add(this.use)
       this.remove(this.free)
 
+      item.position.x = 0
+      item.position.y = 0
       item.position.z = 1
       this.add(item)
 
