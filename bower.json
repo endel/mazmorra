@@ -1,8 +1,0 @@
-{
-  "name": "package",
-  "version": "0.0.0",
-  "dependencies": {
-    "three.js": "~0.74.0",
-    "stats.js": "*"
-  }
-}
