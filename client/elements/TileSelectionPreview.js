@@ -28,11 +28,14 @@ export default class TileSelectionPreview extends THREE.Object3D {
   }
 
   set target (target) {
+
     if (this._target !== target) {
+
       if (this._target) {
-        this.setLabel(null)
+        this.setLabel( null )
         this._target.forEach(e => e.__ENTITY__ && e.__ENTITY__.emit('mouseout', this))
       }
+
       if (target) {
         // apply HUD label
         let availableLabels = target.filter(t => t.label)
@@ -48,20 +51,19 @@ export default class TileSelectionPreview extends THREE.Object3D {
 
     // TODO: improve me
     // clear highlight color if there's nothing on target
-    if (target.length == 0) this.setColor()
+    if (target.length == 0) {
+
+      // set pointer cursor
+      App.cursor.dispatchEvent({ type: 'cursor', kind: 'pointer' })
+
+      this.setColor()
+
+    }
 
     this._target = target
   }
 
   setColor (hex = 0xffffff) {
-
-    // TODO: refactor
-    // decouple Cursor reference from here.
-    if (hex === config.COLOR_RED) {
-      this.cursor.getEntity().emit('update', 'attack')
-    } else {
-      this.cursor.getEntity().emit('update', 'pointer')
-    }
 
     if (hex instanceof THREE.Color) this.lightColors[hex] = hex
 

@@ -1,6 +1,6 @@
 import { Behaviour } from 'behaviour.js'
 
-import Lifebar from '../entities/Lifebar'
+import Lifebar from '../elements/Lifebar'
 
 export default class HasLifebar extends Behaviour {
 
@@ -24,14 +24,25 @@ export default class HasLifebar extends Behaviour {
   }
 
   onMouseOver (tileSelection) {
+
     this.lifebar.visible = true
+
     tileSelection.setColor(config.COLOR_RED)
+
+    // update cursor to 'attack'
+    App.cursor.dispatchEvent({ type: 'cursor', kind: 'attack' })
+
   }
 
   onMouseOut (tileSelection) {
+
     // only hide on mouseout if enemy didn't took any damage
-    if (this.lifebar.progress == 1) this.lifebar.visible = false
+    if (this.lifebar.progress == 1) {
+      this.lifebar.visible = false
+    }
+
     tileSelection.setColor()
+
   }
 
   onDetach () {

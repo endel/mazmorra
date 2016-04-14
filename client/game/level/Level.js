@@ -1,19 +1,17 @@
-import EventEmitter from 'tiny-emitter'
+import Factory from './Factory'
 
-import LevelGenerator from './Generator'
-
-import TileSelectionPreview from '../../entities/TileSelectionPreview'
+import TileSelectionPreview from '../../elements/TileSelectionPreview'
 
 import CharacterController from '../../behaviors/CharacterController'
 
 import { enterRoom, getClientId } from '../../core/network'
 
-export default class Level extends EventEmitter {
+export default class Level extends THREE.Object3D {
 
-  constructor (scene, hud, camera) {
+  constructor (hud, camera) {
+
     super()
 
-    this.scene = scene
     this.hud = hud
     this.camera = camera
 
@@ -30,7 +28,65 @@ export default class Level extends EventEmitter {
     this.selectionLight.penumbra = 0.8
     this.selection = new TileSelectionPreview(this.selectionLight, this.hud)
 
-    this.generator = new LevelGenerator(this, this.scene)
+    this.factory = new Factory(this)
+
+    this.addEventListener( "click", this.onClick.bind(this) )
+    this.addEventListener( "mouseover", this.onMouseOver.bind(this) )
+    this.addEventListener( "mouseout", this.onMouseOut.bind(this) )
+
+  }
+
+  onClick (e) {
+
+    this.playerAction()
+
+  }
+
+  onMouseOver (e) {
+
+    let walkableObject = null
+
+    if ( e.target.userData.type === "walkable" ) {
+
+      walkableObject = e.target
+
+    } else if ( e.target.userData.position ) {
+
+      walkableObject = this.factory.getTileAt( e.target.userData.position )
+
+    } else if ( e.target.parent.userData.position ) {
+
+      walkableObject = this.factory.getTileAt( e.target.parent.userData.position )
+
+    } else if ( e.path.length > 1 ) {
+
+      // TODO: this might be unecessary
+      // try to select over tile through intersection path
+
+      let intersection = e.path.filter(i => i.object.userData.type === "walkable" || i.object.userData.position)[0]
+
+      if ( ! intersection )  { return }
+
+      if ( intersection.object.userData.position ) {
+
+        walkableObject = this.factory.getTileAt( intersection.object.userData.position )
+
+      } else {
+
+        walkableObject = intersection.object
+
+      }
+
+    }
+
+    this.setTileSelection( walkableObject )
+
+  }
+
+  onMouseOut (e) {
+
+    this.setTileSelection( null )
+
   }
 
   enterRoom (name, options = {}) {
@@ -63,8 +119,10 @@ export default class Level extends EventEmitter {
   }
 
   onRoomUpdate (state, patches) {
+    // console.log(patches)
+
     if (!patches) {
-      this.emit('setup', state)
+      this.dispatchEvent( { type: 'setup', state: state } )
 
       // first level setup
       this.setInitialState(state)
@@ -72,7 +130,6 @@ export default class Level extends EventEmitter {
     } else {
       this.patchId++
       patches.map(patch => {
-        // console.log(patch)
 
         if (patch.op === "remove" && patch.path.indexOf("/entities") !== -1 && patch.path.indexOf("/action") === -1) {
           let [ _, index ] = patch.path.match(/entities\/([a-zA-Z0-9_-]+)/)
@@ -81,7 +138,7 @@ export default class Level extends EventEmitter {
 
         } else if (patch.op === "add" && patch.path.match(/\/entities\/([a-zA-Z0-9_-]+)$/)) {
           // create new player
-          let entity = this.generator.createEntity(patch.value)
+          let entity = this.factory.createEntity(patch.value)
           this.entities[ entity.userData.id ] = entity
 
           if (entity.userData.id === getClientId()) {
@@ -103,37 +160,43 @@ export default class Level extends EventEmitter {
   }
 
   setInitialState (state) {
-    console.log("setInitialState", state)
     window.IS_DAY = state.daylight
 
     if (state.daylight) {
       // ambient light
       var light = new THREE.AmbientLight( 0xffffff ); // soft white light
-      this.scene.add( light );
+      this.add( light );
     }
 
-    this.scene.add(this.camera)
-    this.scene.add(this.selectionLight)
-    this.scene.add(this.clickedTileLight)
+    this.add(this.camera)
+    this.add(this.selectionLight)
+    this.add(this.clickedTileLight)
 
-    this.generator.setGrid(state.grid)
-    this.generator.createTiles(state.mapkind)
+    this.factory.setGrid(state.grid)
+    this.factory.createTiles(state.mapkind)
 
     for (var id in state.entities) {
-      this.entities[ id ] = this.generator.createEntity(state.entities[ id ])
+      this.entities[ id ] = this.factory.createEntity(state.entities[ id ])
     }
   }
 
   setTileSelection (object) {
+
     if (!object) {
+
       if (this.selection.parent) {
+
+        this.selection.target = []
         this.selection.parent.remove(this.selection)
         this.selectionLight.intensity = 0
         this.targetPosition = null
+
       }
 
     } else {
+
       if (this.selection.parent !== object) {
+
         object.add(this.selection)
         this.targetPosition = object.userData
 
@@ -150,28 +213,35 @@ export default class Level extends EventEmitter {
         this.selectionLight.intensity = 0.5
         this.selectionLight.position.set(object.position.x, 1, object.position.z)
         this.selectionLight.target = object
+
       }
     }
+
   }
 
   getEntityAt (position) {
+
     for (var id in this.entities) {
       if (this.entities[ id ].userData.position.x == position.x &&
           this.entities[ id ].userData.position.y == position.y) {
         return this.entities[ id ]
       }
     }
+
   }
 
   removeEntity (object) {
+
     // entity may already be removed by this client somehow (text event?)
-    if (object.parent)
+    if (object.parent) {
       object.parent.remove(object)
+    }
+
     object.getEntity().destroy()
+
   }
 
-  playerAction () {
-    if (!this.targetPosition) return false;
+  playerAction (targetPosition) {
 
     this.clickedTileLight.intensity = 1
     this.clickedTileLight.position.copy(this.selectionLight.position)
@@ -181,14 +251,16 @@ export default class Level extends EventEmitter {
       x: this.targetPosition.x,
       y: this.targetPosition.y
     }])
+
   }
 
   cleanup () {
-    this.generator.cleanup()
+    this.factory.cleanup()
 
     // remove 'selection' from scene
-    this.scene.remove(this.selection)
-    this.scene.remove(this.camera)
+
+    this.remove(this.selection)
+    this.remove(this.camera)
 
     for (var id in this.entities) {
       this.entities[ id ].getEntity().destroy() // destroy from entity-component system
@@ -204,12 +276,13 @@ export default class Level extends EventEmitter {
       delete this.entities[ id ] // remove from memory
     }
 
-    var i = this.scene.children.length;
+    var i = this.children.length;
     while (i--) {
-      let object = this.scene.children[i]
+      let object = this.children[i]
       if (object.__ENTITY__) object.getEntity().destroy()
-      this.scene.remove(object)
+      this.remove(object)
     }
+
   }
 
 }

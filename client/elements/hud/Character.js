@@ -1,6 +1,6 @@
 import { Text2D, textAlign } from 'three-text2d'
 
-import { MAX_CHAR_WIDTH, MAX_CHAR_HEIGHT, Resources } from '../entities/character/Resources'
+import { MAX_CHAR_WIDTH, MAX_CHAR_HEIGHT, Resources } from '../character/Resources'
 
 import Minibar from './Minibar'
 

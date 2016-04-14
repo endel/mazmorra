@@ -4,25 +4,24 @@ import helpers from '../../../shared/helpers'
 import GameObject from '../../behaviors/GameObject'
 import HasLifebar from '../../behaviors/HasLifebar'
 
-import Character from '../../entities/Character'
-import Enemy from '../../entities/Enemy'
-import Item from '../../entities/Item'
-import Chest from '../../entities/Chest'
-import Fountain from '../../entities/Fountain'
-import Rock from '../../entities/Rock'
-import Aesthetic from '../../entities/Aesthetic'
-import TileSelectionPreview from '../../entities/TileSelectionPreview'
-import LightPole from '../../entities/LightPole'
-import Door from '../../entities/Door'
-import TextEvent from '../../entities/TextEvent'
+import Character from '../../elements/Character'
+import Enemy from '../../elements/Enemy'
+import Item from '../../elements/Item'
+import Chest from '../../elements/Chest'
+import Fountain from '../../elements/Fountain'
+import Rock from '../../elements/Rock'
+import Aesthetic from '../../elements/Aesthetic'
+import TileSelectionPreview from '../../elements/TileSelectionPreview'
+import LightPole from '../../elements/LightPole'
+import Door from '../../elements/Door'
+import TextEvent from '../../elements/TextEvent'
 
 import { getClientId } from '../../core/network'
 
-export default class LevelGenerator {
+export default class Factory {
 
-  constructor (level, container) {
+  constructor ( level ) {
     this.level = level
-    this.container = container
 
     // visual groups
     this.ground = []
@@ -137,7 +136,7 @@ export default class LevelGenerator {
     }
 
     this.fixTilePosition(element.position, data.position.y, data.position.x)
-    this.container.add(element)
+    this.level.add(element)
 
     element.addBehaviour(new GameObject, this)
     element.userData = data
@@ -187,6 +186,7 @@ export default class LevelGenerator {
       // keep tile x/y reference on Object3D
       tile.userData.x = x
       tile.userData.y = y
+      tile.userData.type = "walkable";
 
       tile.position.y = -0.5;
       tile.rotation.x = Math.PI / 2;
@@ -243,7 +243,7 @@ export default class LevelGenerator {
     }
 
     group.push(tile)
-    this.container.add(tile)
+    this.level.add(tile)
   }
 
   fixTilePosition(vec, x, y) {
@@ -254,6 +254,17 @@ export default class LevelGenerator {
     vec.z = (y - (ylen / 2)) * config.TILE_SIZE
 
     return vec
+  }
+
+  getTileAt ( x, y ) {
+
+    if ( 'x' in x && 'y' in x ) {
+      y = x.y
+      x = x.x
+    }
+
+    return this.ground.filter( tile => ( tile.userData.x === y && tile.userData.y === x ) )[0]
+
   }
 
   cleanup () {

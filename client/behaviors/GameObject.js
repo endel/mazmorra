@@ -1,18 +1,18 @@
 import { Behaviour } from 'behaviour.js'
 
 import BattleBehaviour from './BattleBehaviour'
-import LevelUp from '../entities/effects/LevelUp'
+import LevelUp from '../elements/effects/LevelUp'
 
 import lerp from 'lerp'
 import helpers from '../../shared/helpers'
 
 export default class GameObject extends Behaviour {
 
-  onAttach (generator) {
+  onAttach (factory) {
     this.lastPatchId = 0
 
     this.nextPoint = null
-    this.generator = generator
+    this.factory = factory
 
     if (typeof(this.object.userData.hp) !== "undefined") {
       this.actAsUnit()
@@ -22,13 +22,17 @@ export default class GameObject extends Behaviour {
   }
 
   actAsUnit () {
+
     if (this.object.userData.hp.current > 0) {
+
       this.battleBehaviour = new BattleBehaviour
-      this.object.addBehaviour(this.battleBehaviour, this.generator)
+      this.object.addBehaviour( this.battleBehaviour, this.factory )
+
     } else {
       // TODO: refactor me
       this.object.sprite.material.rotation = Math.PI
     }
+
   }
 
   update () {
@@ -51,7 +55,7 @@ export default class GameObject extends Behaviour {
   onPatch (state, patch, patchId) {
     if (patch.path.indexOf('position') !== -1) {
       // TODO: possible leak here
-      this.nextPoint = this.generator.fixTilePosition(this.object.position.clone(), state.position.y, state.position.x)
+      this.nextPoint = this.factory.fixTilePosition(this.object.position.clone(), state.position.y, state.position.x)
 
       this.object.userData.x = state.position.x
       this.object.userData.y = state.position.y
@@ -64,7 +68,7 @@ export default class GameObject extends Behaviour {
     } else if (patch.path.indexOf('lvl') !== -1) {
       this.object.add( new LevelUp() )
       // LEVEL UP text event
-      this.generator.createEntity({
+      this.factory.createEntity({
         type: helpers.ENTITIES.TEXT_EVENT,
         text: 'UP',
         kind: 'warn',

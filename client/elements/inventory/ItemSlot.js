@@ -21,18 +21,19 @@ export default class ItemSlot extends THREE.Object3D {
     this.use.scale.set(useTex.frame.w *  config.HUD_SCALE, useTex.frame.h *  config.HUD_SCALE, 1)
 
     this.free.material.opacity = ItemSlot.DEFAULT_OPACITY
-    // this.use.material.opacity = ItemSlot.DEFAULT_OPACITY
 
     this.width = useTex.frame.w *  config.HUD_SCALE
     this.height = useTex.frame.h *  config.HUD_SCALE
 
+    // mouse-over / mouse-out
     this.addEventListener('mouseover', this.onMouseOver.bind(this))
     this.addEventListener('mouseout', this.onMouseOut.bind(this))
 
-    // start / end drag
+    // drag start
     this.addEventListener('mousedown', this.onDragStart.bind(this))
     this.addEventListener('touchstart', this.onDragStart.bind(this))
 
+    // drag end
     this.addEventListener('mouseup', this.onDragEnd.bind(this))
     this.addEventListener('touchend', this.onDragEnd.bind(this))
   }
@@ -46,7 +47,7 @@ export default class ItemSlot extends THREE.Object3D {
 
   onMouseOver ( e ) {
 
-    if (this._item || e.cursor.isDragging) {
+    if (this._item || draggingItem) {
       App.tweens.remove(this.scale)
       App.tweens.add(this.scale).to({ x: 1.1, y: 1.1 }, 200, Tweener.ease.quadOut)
     }
@@ -61,6 +62,7 @@ export default class ItemSlot extends THREE.Object3D {
   }
 
   set item ( item ) {
+
     if ( item ) {
 
       this.add( this.use )
@@ -85,43 +87,71 @@ export default class ItemSlot extends THREE.Object3D {
     }
 
     this._item = item
+
   }
 
-  get item () { return this._item }
+  get item () {
+
+    return this._item
+
+  }
 
   get material () {
+
     return this._item ? this.use.material : this.free.material
+
   }
 
   onDragStart (e) {
 
-    if (e.target.item) {
+    let targetSlot = e.target.parent
 
-      draggingItem = e.target.item
-      draggingFrom = e.target
+    if ( targetSlot.item ) {
 
-      e.cursor.getEntity().emit('drag', draggingItem)
-      e.target.item = null
+      draggingItem = targetSlot.item
+      draggingFrom = targetSlot
 
-      e.cursor.dragging.initialScale = draggingItem.scale.clone()
+      // setup initialScale variable for the first time
+      if ( draggingItem.initialScale === undefined ) {
+        draggingItem.initialScale = draggingItem.scale.clone()
+      }
+
+      targetSlot.item = null
+
+      App.cursor.dispatchEvent({
+        type: "drag",
+        item: draggingItem
+      })
+
       App.tweens.add(draggingItem.scale).to({
-        x: e.cursor.dragging.initialScale.x + (2* config.HUD_SCALE),
-        y: e.cursor.dragging.initialScale.y + (2* config.HUD_SCALE)
+        x: draggingItem.initialScale.x + (2 * config.HUD_SCALE),
+        y: draggingItem.initialScale.y + (2 * config.HUD_SCALE)
       }, 300, Tweener.ease.quintOut)
+
     }
 
   }
 
   onDragEnd (e) {
 
-    if (!e.target.item) {
-      e.target.item = draggingItem
-      e.cursor.getEntity().emit('drag', false)
+    let targetSlot = e.target.parent
+
+    if ( !targetSlot.item ) {
+
+      targetSlot.item = draggingItem
+
+      App.cursor.dispatchEvent({
+        type: "drag",
+        item: false
+      })
 
       App.tweens.remove(draggingItem.scale)
-      App.tweens.add(draggingItem.scale).to(e.cursor.dragging.initialScale, 300, Tweener.ease.quintOut)
+      App.tweens.add(draggingItem.scale).to(draggingItem.initialScale, 300, Tweener.ease.quintOut)
+
       draggingItem = null
-      console.log("drag end!", e.target)
+
+      console.log("drag end!", targetSlot)
+
     }
 
   }

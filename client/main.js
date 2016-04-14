@@ -38,6 +38,8 @@ THREE.EventDispatcher.prototype.dispatchEvent = function (event) {
 
 		if ( listenerArray !== undefined ) {
 
+      event.currentTarget = this
+
 			var array = [];
 			var length = listenerArray.length;
 

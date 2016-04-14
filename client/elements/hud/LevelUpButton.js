@@ -1,5 +1,3 @@
-import DangerousThing from '../behaviors/DangerousThing'
-
 export default class LevelUpButton extends THREE.Object3D {
 
   constructor () {
@@ -17,5 +15,3 @@ export default class LevelUpButton extends THREE.Object3D {
   }
 
 }
-
-

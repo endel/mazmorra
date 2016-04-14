@@ -1,18 +1,18 @@
-import Resources from '../hud/Resources'
+import Resources from '../elements/hud/Resources'
 
-import Character from '../hud/Character'
-import LevelUpButton from '../hud/LevelUpButton'
-import BottleBar from '../hud/BottleBar'
-import ExpBar from '../hud/ExpBar'
-import Cursor from '../hud/Cursor'
+import Character from '../elements/hud/Character'
+import LevelUpButton from '../elements/hud/LevelUpButton'
+import BottleBar from '../elements/hud/BottleBar'
+import ExpBar from '../elements/hud/ExpBar'
+import Cursor from '../elements/hud/Cursor'
 
 import HUDController from '../behaviors/HUDController'
 import InventoryBehaviour from '../behaviors/InventoryBehaviour'
 
 // Inventory
-import OpenInventoryButton from '../hud/inventory/OpenButton'
-import Inventory from '../hud/inventory/Inventory'
-import SlotStrip from '../hud/inventory/SlotStrip'
+import OpenInventoryButton from '../elements/inventory/OpenButton'
+import Inventory from '../elements/inventory/Inventory'
+import SlotStrip from '../elements/inventory/SlotStrip'
 
 import { Text2D, textAlign } from 'three-text2d'
 
@@ -27,6 +27,9 @@ export default class HUD extends THREE.Scene {
     this.cursor = new Cursor
     this.cursor.position.z = 10
     this.add(this.cursor)
+
+    // Expose cursor globally on app
+    App.cursor = this.cursor
 
     // Life / Mana / Expr
     this.manabar = new BottleBar('mana')
@@ -72,8 +75,6 @@ export default class HUD extends THREE.Scene {
     this.levelUpButton = new LevelUpButton()
     // this.add(this.levelUpButton)
 
-    this.interactiveChildren = []
-
     this.resize()
   }
 
@@ -85,35 +86,32 @@ export default class HUD extends THREE.Scene {
     this.add(this.resources)
     this.add(this.character)
 
-    this.addInteractiveControl(this.inventory)
-    this.addInteractiveControl(this.usableItems)
-    this.addInteractiveControl(this.usableSkills)
+    this.add(this.inventory)
+    this.add(this.usableItems)
+    this.add(this.usableSkills)
 
-    // this.add(this.openInventoryButton)
-    this.addInteractiveControl(this.openInventoryButton)
+    this.add(this.openInventoryButton)
   }
 
   setPlayerObject (playerObject) {
+
     this.character.composition = playerObject.composition
 
-    this.getEntity().detachAll()
-    this.addBehaviour(new HUDController, playerObject)
+    if ( !this.controller ) {
+
+      this.controller = new HUDController
+
+      this.addBehaviour(this.controller, playerObject)
+
+    } else {
+
+      this.controller.playerObject = playerObject
+
+    }
 
     this.inventory.getEntity().detachAll()
     this.inventory.addBehaviour(new InventoryBehaviour, playerObject)
-  }
 
-  addInteractiveControl (control) {
-    if (control.interactive) {
-      this.interactiveChildren = this.interactiveChildren.concat(control.interactive)
-    } else {
-      this.interactiveChildren = this.interactiveChildren.concat(control)
-    }
-    this.add(control)
-  }
-
-  clearInteractiveControls () {
-    this.interactiveChildren = []
   }
 
   resize() {

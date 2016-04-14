@@ -32,19 +32,14 @@ export default class CharacterController extends Behaviour {
     this.camera.position.y = lerp(this.camera.position.y, this.originalY + 30, 0.1) // this.camera.position.y = lerp(this.camera.position.y, this.originalY + 15, 0.1)
     // this.camera.position.y = lerp(this.camera.position.y, this.originalY + 60, 0.1)
 
-    // // 1st person (not working)
-    // this.camera.position.x = lerp(this.camera.position.x, this.object.position.x, 0.1) // + (window.innerWidth / window.innerHeight)
-    // this.camera.position.z = lerp(this.camera.position.z, this.object.position.z -5, 0.1)
-    // this.camera.position.y = lerp(this.camera.position.y, this.originalY + 2, 0.1)
+    // // Perspective
+    // this.camera.position.x = lerp(this.camera.position.x, this.object.position.x + 20, 0.1)
+    // this.camera.position.z = lerp(this.camera.position.z, this.object.position.z + 20, 0.1)
+    // this.camera.position.y = lerp(this.camera.position.y, this.originalY + 20, 0.1)
 
     this.lookAtTarget.x = lerp(this.lookAtTarget.x, this.object.position.x, 0.1)
     this.lookAtTarget.y = lerp(this.lookAtTarget.y, this.object.position.y, 0.1)
     this.lookAtTarget.z = lerp(this.lookAtTarget.z, this.object.position.z, 0.1)
-
-    // // Perspective
-    // this.camera.position.x = this.object.position.x
-    // this.camera.position.z = this.object.position.z + 20
-    // this.camera.position.y = this.object.position.y + 20
 
     this.camera.lookAt(this.lookAtTarget)
   }

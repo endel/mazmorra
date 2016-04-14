@@ -1,35 +1,32 @@
-import EventEmitter from 'tiny-emitter'
 import Keycode from 'keycode.js'
 
 import credentials from '../../web/credentials'
 
-// import Character from '../../entities/Character'
-import { Resources } from '../../entities/character/Resources'
-import Composition from '../../entities/character/Composition'
+import { Resources } from '../../elements/character/Resources'
+import Composition from '../../elements/character/Composition'
 
-import Button from '../../hud/controls/Button'
-import SelectBox from '../../hud/controls/SelectBox'
-import ColorPicker from '../../hud/controls/ColorPicker'
+import Button from '../../elements/controls/Button'
+import SelectBox from '../../elements/controls/SelectBox'
+import ColorPicker from '../../elements/controls/ColorPicker'
 
-export default class Builder extends EventEmitter {
+export default class Builder extends THREE.Object3D {
 
-  constructor (scene, hud, camera) {
+  constructor (hud, camera) {
     super()
 
-    this.scene = scene
     this.hud = hud
     this.camera = camera
 
     this.options = {
-      classes: ['warrior', 'mage', 'archer'],
-      hairs: ["Barbudao", "Coque", "Curto", "Ancient", "Barbudo", "Longo", "Longo 2", "Longuinho", "Longo duplo", "Badboy", "Punk", "None"]
+      classes: config.classes,
+      hairs: config.hairs
     }
 
     this.character = new Composition()
     this.character.position.set(0, - config.HUD_MARGIN*3, 0)
     this.character.scale.set(2, 2, 2)
 
-    this.scene.add(this.character)
+    this.add(this.character)
     this.camera.lookAt(this.character.position)
 
     this.goUp(1500)
@@ -60,40 +57,40 @@ export default class Builder extends EventEmitter {
     this.hairColorPicker = new ColorPicker(Resources.colors.hair)
     this.hairColorPicker.position.set(0, - window.innerHeight / 2 + this.hairColorPicker.height +  config.HUD_MARGIN, 0)
     this.hairColorPicker.addEventListener('change', this.onChangeColor.bind(this, 'hair'))
-    this.hud.addInteractiveControl(this.hairColorPicker)
+    this.hud.add(this.hairColorPicker)
 
     this.hairSelection = new SelectBox(this.options.hairs, "HAIR")
     this.hairSelection.position.set(0, this.hairColorPicker.position.y + this.hairSelection.height +  config.HUD_MARGIN, 0)
     this.hairSelection.addEventListener('change', this.onChangeProperty.bind(this, 'hair'))
-    this.hud.addInteractiveControl(this.hairSelection)
+    this.hud.add(this.hairSelection)
 
     this.eyeColorPicker = new ColorPicker(Resources.colors.eye, "Eyes")
     this.eyeColorPicker.position.set(-this.eyeColorPicker.width, this.hairSelection.position.y + this.eyeColorPicker.height +  config.HUD_MARGIN, 0)
     this.eyeColorPicker.addEventListener('change', this.onChangeColor.bind(this, 'eye'))
-    this.hud.addInteractiveControl(this.eyeColorPicker)
+    this.hud.add(this.eyeColorPicker)
 
     this.bodyColorPicker = new ColorPicker(Resources.colors.body, "Body")
     this.bodyColorPicker.position.set(this.eyeColorPicker.width, this.hairSelection.position.y + this.bodyColorPicker.height +  config.HUD_MARGIN, 0)
     this.bodyColorPicker.addEventListener('change', this.onChangeColor.bind(this, 'body'))
-    this.hud.addInteractiveControl(this.bodyColorPicker)
+    this.hud.add(this.bodyColorPicker)
 
     this.classSelection = new SelectBox(this.options.classes, "CLASS")
     this.classSelection.position.set(0, this.bodyColorPicker.position.y + this.classSelection.height +  config.HUD_MARGIN, 0)
     this.classSelection.addEventListener('change', this.onChangeClass.bind(this))
-    this.hud.addInteractiveControl(this.classSelection)
+    this.hud.add(this.classSelection)
 
     // complete button
     this.completeButton = new Button('button-right')
     this.completeButton.position.set(window.innerWidth / 3, window.innerHeight / 3, 0)
     this.completeButton.addEventListener('click', this.onComplete.bind(this))
-    this.hud.addInteractiveControl(this.completeButton)
+    this.hud.add(this.completeButton)
   }
 
   onComplete () {
     // loading!
     credentials.update(this.getHero()).then(() => {
       this.destroy()
-      this.emit('complete')
+      this.dispatchEvent( { type: "complete" } )
     })
   }
 
@@ -144,7 +141,7 @@ export default class Builder extends EventEmitter {
   }
 
   destroy () {
-    this.scene.remove(this.character)
+    this.remove(this.character)
     this.character.destroy()
 
     this.hud.remove(this.hairColorPicker)
@@ -154,7 +151,6 @@ export default class Builder extends EventEmitter {
     this.hud.remove(this.classSelection)
     this.hud.remove(this.completeButton)
 
-    this.hud.clearInteractiveControls()
     this.turnInterval.clear()
   }
 

@@ -3,7 +3,10 @@ import helpers from '../../shared/helpers'
 
 export default class BattleBehaviour extends Behaviour {
 
-  onAttach (generator) {
+  onAttach ( factory ) {
+
+    this.factory = factory
+
     this.togglePosition = false
     this.togglePositionTimeout = { active: false }
 
@@ -11,14 +14,14 @@ export default class BattleBehaviour extends Behaviour {
     this.attackingPoint = { x: 0, z: 0 }
     this.defender = null
 
-    this.generator = generator
-
-    if (this.object.sprite)
+    if (this.object.sprite) {
       this.originalColor = this.object.sprite.material.color.getHex()
+    }
 
     this.on('attack', this.onAttack.bind(this))
     this.on('damage', this.onTakeDamage.bind(this))
     this.on('died', this.onDied.bind(this))
+
   }
 
   disable () {
@@ -34,12 +37,12 @@ export default class BattleBehaviour extends Behaviour {
     if (this.togglePositionTimeout.active) { return; }
 
     this.togglePosition = true
-    this.togglePositionTimeout = clock.setTimeout(() => { this.togglePosition = false }, 100)
+    this.togglePositionTimeout = App.clock.setTimeout(() => { this.togglePosition = false }, 100)
 
     if (!this.isAttacking) {
-      this.defender = this.generator.level.getEntityAt(data.position)
+      this.defender = this.factory.level.getEntityAt(data.position)
 
-      this.attackingPoint = this.generator.fixTilePosition(this.object.position.clone(), data.position.y, data.position.x)
+      this.attackingPoint = this.factory.fixTilePosition(this.object.position.clone(), data.position.y, data.position.x)
       this.onAttackStart(this.attackingPoint)
     }
 
@@ -56,7 +59,7 @@ export default class BattleBehaviour extends Behaviour {
     }
 
     // create label entity
-    this.generator.createEntity({
+    this.factory.createEntity({
       type: helpers.ENTITIES.TEXT_EVENT,
       text: text,
       kind: kind,
@@ -80,7 +83,7 @@ export default class BattleBehaviour extends Behaviour {
       this.object.sprite.material.color.setHex(config.COLOR_RED.getHex())
       if (this.lastTimeout) this.lastTimeout.clear()
 
-      this.lastTimeout = clock.setTimeout(() => {
+      this.lastTimeout = App.clock.setTimeout(() => {
         this.object.sprite.material.color.setHex(this.originalColor)
       }, 50)
     }
