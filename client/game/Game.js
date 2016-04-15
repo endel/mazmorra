@@ -13,17 +13,18 @@ export default class Game {
     this.container.innerHTML = "";
 
     this.renderer = new THREE.WebGLRenderer();
+    // this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio( window.devicePixelRatio );
     this.renderer.setSize( window.innerWidth, window.innerHeight );
     this.renderer.autoClear = false;
 
-    this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 20000 );
-    this.camera.zoom = config.ZOOM / 15
-    this.camera.updateProjectionMatrix()
-
-    // this.camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -1, 100 );
-    // this.camera.zoom = config.ZOOM
+    // this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 20000 );
+    // this.camera.zoom = config.ZOOM / 15
     // this.camera.updateProjectionMatrix()
+
+    this.camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -1, 1000 );
+    this.camera.zoom = config.ZOOM
+    this.camera.updateProjectionMatrix()
 
     // ORTOGRAPHIC
     // this.camera.position.y = 10;
@@ -40,7 +41,7 @@ export default class Game {
     this.hud.addBehaviour( hudRaycaster, this.hud.camera )
 
     this.scene = new THREE.Scene();
-    this.scene.rotateY(-0.4)
+    // this.scene.rotateY(-0.4)
     this.scene.addBehaviour( new Raycaster, this.camera, hudRaycaster )
 
     // this.level = new Level(this.scene, this.hud, this.camera)

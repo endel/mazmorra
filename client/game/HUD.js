@@ -115,10 +115,12 @@ export default class HUD extends THREE.Scene {
   }
 
   resize() {
+    let margin = config.HUD_MARGIN * config.HUD_SCALE
+
     //
     // TOP
     //
-    this.selectionText.position.set(0, window.innerHeight / 2 - ( config.HUD_MARGIN * 2 *  config.HUD_SCALE), 0)
+    this.selectionText.position.set(0, window.innerHeight / 2 - (margin * 2), 0)
 
     //
     // LEFT SIDE
@@ -128,32 +130,32 @@ export default class HUD extends THREE.Scene {
       window.innerHeight / 2 - this.character.height,
       0
     )
-    this.levelUpButton.position.set( this.character.position.x +  config.HUD_MARGIN *  config.HUD_SCALE, this.character.position.y - this.levelUpButton.height + ( config.HUD_SCALE/3 *  config.HUD_SCALE), 1)
+    this.levelUpButton.position.set( this.character.position.x + margin, this.character.position.y - this.levelUpButton.height + ( config.HUD_SCALE/3 * config.HUD_SCALE), 1)
 
-    this.usableSkills.position.x = - window.innerWidth / 2 + this.character.width + ( config.HUD_MARGIN *  config.HUD_SCALE)
-    this.usableSkills.position.y = -this.usableSkills.height/2 + this.usableSkills.slotSize/2
+    this.usableSkills.position.x = - window.innerWidth / 2 + this.usableSkills.width/2 + margin
+    this.usableSkills.position.y = - window.innerHeight / 2 + this.usableSkills.slotSize/2 + margin
 
     //
     // RIGHT SIDE
     //
     this.resources.position.set(
-      window.innerWidth / 2 - this.resources.width *  config.HUD_MARGIN,
-      window.innerHeight / 2 - this.resources.height *  config.HUD_MARGIN,
+      window.innerWidth / 2 - this.resources.width * config.HUD_MARGIN,
+      window.innerHeight / 2 - this.resources.height * config.HUD_MARGIN,
       0
     )
     this.openInventoryButton.position.set(
       this.resources.position.x,
-      this.resources.position.y - this.resources.height - this.openInventoryButton.height -  config.HUD_MARGIN -  config.HUD_SCALE,
+      this.resources.position.y - this.resources.height - this.openInventoryButton.height - config.HUD_MARGIN - config.HUD_SCALE,
       0
     )
-    this.usableItems.position.x = window.innerWidth / 2 - this.usableItems.width // - ( config.HUD_MARGIN *  config.HUD_SCALE)
-    this.usableItems.position.y = -this.usableItems.height/2 + this.usableSkills.slotSize/2
+    this.usableItems.position.x = window.innerWidth / 2 - this.usableItems.width/2 - margin
+    this.usableItems.position.y = - window.innerHeight / 2 + this.usableItems.slotSize/2 + margin
 
     //
     // BOTTOM
     //
-    this.lifebar.position.set(-this.lifebar.width -  config.HUD_SCALE * ( config.HUD_MARGIN * 3), - window.innerHeight / 2 + this.lifebar.height, 0)
-    this.manabar.position.set(this.manabar.width +  config.HUD_SCALE * ( config.HUD_MARGIN * 3), - window.innerHeight / 2 + this.lifebar.height, 0)
+    this.lifebar.position.set(-this.lifebar.width -  config.HUD_SCALE * ( config.HUD_MARGIN * 3 ), - window.innerHeight / 2 + this.lifebar.height, 0)
+    this.manabar.position.set(this.manabar.width +  config.HUD_SCALE * ( config.HUD_MARGIN * 3 ), - window.innerHeight / 2 + this.lifebar.height, 0)
     this.expbar.position.set(- config.HUD_SCALE/2, - window.innerHeight / 2 + this.expbar.height + ( config.HUD_MARGIN * 3), 0)
 
     // update orthogonal camera aspect ratio / projection matrix

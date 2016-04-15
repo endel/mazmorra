@@ -39,9 +39,8 @@ export default class Raycaster extends Behaviour {
 
   doRaycast () {
 
-    if ( this.isParentLayerActive ) {
-      return
-    }
+    // skip if parent layer (HUD) is active
+    if ( this.isParentLayerActive ) { return }
 
     this.raycaster.setFromCamera( App.mouse, this.camera )
 
@@ -50,8 +49,11 @@ export default class Raycaster extends Behaviour {
     let nextTargetObject = (this.path.length > 0) && this.path[0].object
 
     // get next object in case trying to select 'Cursor'
-    if ( nextTargetObject.parent instanceof Cursor ||
-        ( nextTargetObject.parent && nextTargetObject.parent.parent instanceof Cursor ) ) {
+    // TODO: improve me?
+    if (
+        nextTargetObject.parent instanceof Cursor ||
+        ( nextTargetObject.parent && nextTargetObject.parent.parent instanceof Cursor )
+    ) {
       nextTargetObject = ( this.path[1] ) ? this.path[1].object : null
     }
 
@@ -108,6 +110,8 @@ export default class Raycaster extends Behaviour {
   }
 
   onClick (e) {
+
+    this.doRaycast()
 
     if ( this.isTargetReachable ) {
 
