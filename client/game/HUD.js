@@ -43,7 +43,7 @@ export default class HUD extends THREE.Scene {
     this.inventory.visible = false
 
     this.openInventoryButton = new OpenInventoryButton()
-    this.openInventoryButton.addEventListener('click', this.inventory.toggleOpen.bind(this.inventory))
+    this.openInventoryButton.addEventListener('click', this.onOpenInventory.bind(this))
 
     // Usable skills / items
     this.usableSkills = new SlotStrip({
@@ -71,26 +71,52 @@ export default class HUD extends THREE.Scene {
     // Character
     this.character = new Character()
 
-    // Level Up Button
-    this.levelUpButton = new LevelUpButton()
+    // // Level Up Button
+    // this.levelUpButton = new LevelUpButton()
     // this.add(this.levelUpButton)
 
+    this.overlay = new THREE.Mesh( new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial( { color: 0x000000, side: THREE.DoubleSide } ) );
+    this.overlay.material.transparent = true
+    this.overlay.material.opacity = 0
+    this.overlay.visible = false
+
     this.resize()
+
   }
 
   init () {
-    this.add(this.manabar)
-    this.add(this.lifebar)
-    this.add(this.expbar)
-    this.add(this.selectionText)
-    this.add(this.resources)
-    this.add(this.character)
+    this.add( this.overlay )
+    this.add( this.manabar )
+    this.add( this.lifebar )
+    this.add( this.expbar )
+    this.add( this.selectionText )
+    this.add( this.resources )
+    this.add( this.character )
 
-    this.add(this.inventory)
-    this.add(this.usableItems)
-    this.add(this.usableSkills)
+    this.add( this.inventory )
+    this.add( this.usableItems )
+    this.add( this.usableSkills )
 
-    this.add(this.openInventoryButton)
+    this.add( this.openInventoryButton )
+  }
+
+  onOpenInventory () {
+
+    if ( this.inventory.isOpen ) {
+
+      App.tweens.add( this.overlay.material ).to({ opacity: 0 }, 200).then(() => {
+        this.overlay.visible = false
+      })
+
+    } else {
+
+      this.overlay.visible = true
+      App.tweens.add( this.overlay.material ).to({ opacity: 0.5 }, 200)
+
+    }
+
+    this.inventory.toggleOpen()
+
   }
 
   setPlayerObject (playerObject) {
@@ -117,6 +143,8 @@ export default class HUD extends THREE.Scene {
   resize() {
     let margin = config.HUD_MARGIN * config.HUD_SCALE
 
+    this.overlay.scale.set(window.innerWidth, window.innerHeight, 1)
+
     //
     // TOP
     //
@@ -130,7 +158,8 @@ export default class HUD extends THREE.Scene {
       window.innerHeight / 2 - this.character.height,
       0
     )
-    this.levelUpButton.position.set( this.character.position.x + margin, this.character.position.y - this.levelUpButton.height + ( config.HUD_SCALE/3 * config.HUD_SCALE), 1)
+
+    // this.levelUpButton.position.set( this.character.position.x + margin, this.character.position.y - this.levelUpButton.height + ( config.HUD_SCALE/3 * config.HUD_SCALE), 1)
 
     this.usableSkills.position.x = - window.innerWidth / 2 + this.usableSkills.width/2 + margin
     this.usableSkills.position.y = - window.innerHeight / 2 + this.usableSkills.slotSize/2 + margin

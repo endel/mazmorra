@@ -166,6 +166,7 @@ export default class Level extends THREE.Object3D {
       // ambient light
       var light = new THREE.AmbientLight( 0xffffff ); // soft white light
       this.add( light );
+      window.light = light
     }
 
     this.add(this.camera)
