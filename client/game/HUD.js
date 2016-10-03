@@ -14,7 +14,7 @@ import OpenInventoryButton from '../elements/inventory/OpenButton'
 import Inventory from '../elements/inventory/Inventory'
 import SlotStrip from '../elements/inventory/SlotStrip'
 
-import { Text2D, textAlign } from 'three-text2d'
+import { MeshText2D, textAlign } from 'three-text2d'
 
 export default class HUD extends THREE.Scene {
 
@@ -59,7 +59,7 @@ export default class HUD extends THREE.Scene {
     })
 
     // Label
-    this.selectionText = new Text2D("WELCOME", {
+    this.selectionText = new MeshText2D("WELCOME", {
       font: config.DEFAULT_FONT,
       fillStyle: '#fff',
       antialias: false

@@ -144,6 +144,8 @@ class DungeonState extends EventEmitter {
       }
     }
 
+    console.log("position.moveTo:", moves)
+
     unit.position.moveTo(moves)
   }
 

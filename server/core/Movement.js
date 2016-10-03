@@ -20,10 +20,20 @@ class Movement extends EventEmitter {
     return (lastIndex !== -1) ? { x: this.pending[ lastIndex ][ 0 ], y: this.pending[ lastIndex ][ 1 ] } : null
   }
 
-  get x () { return this.position.x }
-  set x (x) { this.position.x = x }
-  get y () { return this.position.y }
-  set y (y) { this.position.y = y }
+  get x () {
+    return this.position.x
+  }
+  set x (x) {
+    console.log("set x:", x)
+    this.position.x = x
+  }
+  get y () {
+    return this.position.y
+  }
+  set y (y) {
+    console.log("set y:", y)
+    this.position.y = y
+  }
 
   set (x, y) {
     if (!y && typeof(x) === "object") {
@@ -38,6 +48,7 @@ class Movement extends EventEmitter {
       this.position.x = x
       this.position.y = y
     }
+    console.log(event.valid(), this.position)
   }
 
   moveTo (pending) {
@@ -108,4 +119,5 @@ class MoveEvent {
   cancel () { this.isCancelled = true }
   valid () { return !this.isCancelled }
 }
+
 module.exports = Movement

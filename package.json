@@ -4,51 +4,43 @@
     "node": ">=0.12.0"
   },
   "scripts": {
-    "start": "webpack",
-    "dev": "webpack-dev-server",
+    "start": "./node_modules/.bin/webpack",
+    "dev": "npm start --prefix server & ./node_modules/.bin/webpack-dev-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
     "babel-core": "^6.7.2",
     "babel-loader": "^6.2.4",
     "babel-plugin-transform-class-properties": "^6.6.0",
-    "babel-preset-es2015": "^6.6.0",
+    "babel-preset-es2015-native-modules": "^6.6.0",
     "babel-preset-react": "^6.5.0",
     "css-loader": "^0.23.1",
-    "extract-text-webpack-plugin": "^1.0.1",
-    "file-loader": "^0.8.5",
+    "extract-text-webpack-plugin": "^2.0.0-beta.4",
+    "file-loader": "^0.9.0",
     "json-loader": "^0.5.4",
     "spritesheet-js": "^1.0.5",
     "style-loader": "^0.13.0",
-    "stylus-loader": "^1.5.1",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^2.1.1",
     "url-loader": "^0.5.7",
     "val-loader": "^0.5.0",
-    "webpack": "^1.12.14",
-    "webpack-dev-server": "^1.14.1"
+    "webpack": "^2.1.0-beta.8",
+    "webpack-dev-server": "^2.1.0-beta.0"
   },
   "dependencies": {
     "babel-plugin-transform-class-properties": "^6.6.0",
     "behaviour.js": "^0.2.4",
-    "clock-timer.js": "^1.0.0",
-    "colyseus.js": "file:../colyseus.js",
+    "clock-timer.js": "^1.1.4",
+    "colyseus.js": "^0.4.0",
     "fullscreen": "^1.0.2",
     "is-mobile": "^0.2.2",
     "keycode.js": "0.0.1",
     "lerp": "^1.0.3",
-    "precedence": "^0.1.0",
     "random-seed": "^0.3.0",
     "three": "^0.75.0",
-    "three-text2d": "^0.2.2",
+    "three-text2d": "^0.3.0-rc2",
     "throttle.js": "^1.0.0",
     "tiny-emitter": "^1.0.2",
     "tweener": "0.1.28"
-  },
-  "babel": {
-    "presets": [
-      "es2015"
-    ],
-    "plugins": [
-      "transform-class-properties"
-    ]
   }
 }

@@ -119,7 +119,7 @@ export default class Level extends THREE.Object3D {
   }
 
   onRoomUpdate (state, patches) {
-    // console.log(patches)
+    console.log(state, patches)
 
     if (!patches) {
       this.dispatchEvent( { type: 'setup', state: state } )

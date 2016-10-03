@@ -7,8 +7,6 @@ export const MAX_CHAR_HEIGHT = 10
 export const TOTAL_CHAR_WIDTH = 7 * 5 // with head
 export const TEXTURE_SIZE = 256
 
-import { or } from 'precedence'
-
 export class Resources {
 
   static init () {

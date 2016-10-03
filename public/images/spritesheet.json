@@ -5,6 +5,14 @@
 		"scale": "1"
 	},
 	"frames": {
+		"hud-exp-bar-fill.png":
+		{
+			"frame": {"x":1,"y":195,"w":42,"h":4},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":42,"h":4},
+			"sourceSize": {"w":42,"h":4}
+		},
 		"Layer 18.png":
 		{
 			"frame": {"x":1,"y":1,"w":267,"h":192},
@@ -12,14 +20,6 @@
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":267,"h":192},
 			"sourceSize": {"w":267,"h":192}
-		},
-		"character-eye-4-left.png":
-		{
-			"frame": {"x":286,"y":114,"w":1,"h":1},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {"x":0,"y":0,"w":1,"h":1},
-			"sourceSize": {"w":1,"h":1}
 		},
 		"gui-label-background.png":
 		{
@@ -1173,13 +1173,13 @@
 			"spriteSourceSize": {"x":0,"y":0,"w":4,"h":6},
 			"sourceSize": {"w":4,"h":6}
 		},
-		"hud-exp-bar-fill.png":
+		"character-eye-4-left.png":
 		{
-			"frame": {"x":1,"y":195,"w":42,"h":4},
+			"frame": {"x":286,"y":114,"w":1,"h":1},
 			"rotated": false,
 			"trimmed": false,
-			"spriteSourceSize": {"x":0,"y":0,"w":42,"h":4},
-			"sourceSize": {"w":42,"h":4}
+			"spriteSourceSize": {"x":0,"y":0,"w":1,"h":1},
+			"sourceSize": {"w":1,"h":1}
 		},
 		"items-book-regular.png":
 		{

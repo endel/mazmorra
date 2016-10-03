@@ -7,7 +7,7 @@ module.exports = function validUser(req, res, next) {
     return res.send(JSON.stringify({valid: false}))
   } else {
     User.findOne({ token: token }).populate('heros').then(user => {
-      console.log("validUser?", user)
+      // console.log("validUser?", user)
       // Hero.findOne({ userId: user._id }).then(hero => {
       //   user.heros = [ hero ]
       // })

@@ -4,7 +4,8 @@ var webpack = require('webpack')
 var SpritesheetPlugin = require('./webpack/SpritesheetPlugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-var stylusLoader = ExtractTextPlugin.extract("style-loader", "css-loader!stylus-loader");
+// var stylusLoader = ExtractTextPlugin.extract("style-loader", "css-loader!stylus-loader");
+var stylusLoader = ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: 'css-loader!stylus-loader' });
 
 module.exports = {
   entry: ["webpack-dev-server/client?http://localhost:8080", './client/main.js'],
@@ -22,20 +23,16 @@ module.exports = {
   },
 
   module: {
-    loaders: [
-      { test: path.join(__dirname, 'client'), loader: 'babel-loader' },
+    rules: [
+      {
+        test: /.*\.jsx?/,
+        exclude: /(node_modules|bower_components)/,
+        loader: 'babel',
+      },
       { test: /\.json$/, loader: 'json' },
       { test: /\.styl$/, loader: stylusLoader },
       { test: /\.(woff|woff2|eot|ttf|svg)$/, loader: 'file-loader?limit=1024&name=[name].[ext]' },
     ],
-
-    // allow requiring BRFS?
-    // postLoaders: [
-    //   {
-    //     include: path.resolve(__dirname, 'node_modules/pixi.js'),
-    //     loader: 'transform?brfs'
-    //   }
-    // ]
 
   },
 

@@ -1,4 +1,4 @@
-import { Text2D, textAlign } from 'three-text2d'
+import { MeshText2D, textAlign } from 'three-text2d'
 
 export default class Lifebar extends THREE.Object3D {
 
@@ -10,7 +10,7 @@ export default class Lifebar extends THREE.Object3D {
     this.gold.scale.set(this.gold.material.map.frame.w * config.HUD_SCALE, this.gold.material.map.frame.h * config.HUD_SCALE, 1)
     this.add(this.gold)
 
-    this.goldAmount = new Text2D("0", { font: config.DEFAULT_FONT, align: textAlign.right, fillStyle: '#fcf458', antialias: false })
+    this.goldAmount = new MeshText2D("0", { font: config.DEFAULT_FONT, align: textAlign.right, fillStyle: '#fcf458', antialias: false })
     this.goldAmount.position.y = config.HUD_SCALE * ( config.HUD_MARGIN / 1.5)
     this.goldAmount.position.x = - config.HUD_SCALE * ( config.HUD_MARGIN * 1.5)
     this.add(this.goldAmount)
@@ -21,7 +21,7 @@ export default class Lifebar extends THREE.Object3D {
     this.diamond.position.set(-config.HUD_SCALE/10, - this.diamond.material.map.frame.h * (config.HUD_SCALE +  config.HUD_MARGIN), 1)
     this.add(this.diamond)
 
-    this.diamondAmount = new Text2D("0", { font: config.DEFAULT_FONT, align: textAlign.right, fillStyle: '#4480b0', antialias: false })
+    this.diamondAmount = new MeshText2D("0", { font: config.DEFAULT_FONT, align: textAlign.right, fillStyle: '#4480b0', antialias: false })
     this.diamondAmount.position.x = - config.HUD_SCALE * ( config.HUD_MARGIN * 1.5)
     this.diamondAmount.position.y = this.diamond.position.y + (config.HUD_SCALE * ( config.HUD_MARGIN / 1.5))
     this.add(this.diamondAmount)

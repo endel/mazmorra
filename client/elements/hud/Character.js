@@ -1,4 +1,4 @@
-import { Text2D, textAlign } from 'three-text2d'
+import { MeshText2D, textAlign } from 'three-text2d'
 
 import { MAX_CHAR_WIDTH, MAX_CHAR_HEIGHT, Resources } from '../character/Resources'
 
@@ -16,7 +16,7 @@ export default class Character extends THREE.Object3D {
     this.width = (MAX_CHAR_WIDTH *  config.HUD_SCALE)
     this.height = (MAX_CHAR_HEIGHT *  config.HUD_SCALE)
 
-    this.levelText = new Text2D("1", {
+    this.levelText = new MeshText2D("1", {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: '#d0c01c',

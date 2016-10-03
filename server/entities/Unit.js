@@ -11,6 +11,8 @@ var ClockTimer = require('clock-timer.js')
 // Actions
 var BattleAction = require('../actions/BattleAction')
 
+var lastHpRegenerationTime = new WeakMap()
+
 class Unit extends Entity {
 
   constructor (id, options) {
@@ -58,7 +60,7 @@ class Unit extends Entity {
     this.attackSpeed = 2000
 
     // hp regeneration
-    this.lastHpRegenerationTime = 0
+    lastHpRegenerationTime.set(this, 0)
     this.hpRegeneration = 0
     this.hpRegenerationInterval = 3000
 
@@ -98,9 +100,9 @@ class Unit extends Entity {
     // a dead unit can't do much, I guess
     if (!this.isAlive) return
 
-    if (currentTime > this.lastHpRegenerationTime + this.hpRegenerationInterval) {
+    if (currentTime > lastHpRegenerationTime.get(this) + this.hpRegenerationInterval) {
       this.hp.set( this.hp.current + this.hpRegeneration )
-      this.lastHpRegenerationTime = currentTime
+      lastHpRegenerationTime.set(this, currentTime)
     }
 
     if (this.action && this.action.isEligible)  {
@@ -123,7 +125,6 @@ class Unit extends Entity {
       this.action = null
 
     } else if (!this.isBattlingAgainst(defender)) {
-      console.log("new battle action agasint", defender.constructor.name)
       this.action = new BattleAction(this, defender)
     }
   }

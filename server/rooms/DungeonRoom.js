@@ -1,7 +1,7 @@
 "use strict";
 
 var Room = require('colyseus').Room
-  , ClockTimer = require('clock-timer.js')
+  , ClockTimer = require('clock-timer.js').default
 
   , DungeonState = require('./states/DungeonState')
 
@@ -24,8 +24,9 @@ class DungeonRoom extends Room {
       , i = Math.floor(Math.random() * mapkind.length)
 
     this.mapkind = options.mapkind || mapkind[i]
-    console.log("Construct:", this.mapkind)
     // this.mapkind = 'rock'
+
+    this.clock = new ClockTimer();
 
     // this.mapkind = options.mapkind || "grass"
     this.progress = options.progress || 1
@@ -45,8 +46,9 @@ class DungeonRoom extends Room {
 
     this.state.on('goto', this.onGoTo.bind(this))
 
-    this.clock = new ClockTimer()
-    this.tickInterval = setInterval(this.tick.bind(this), 1000 / TICK_RATE)
+    setInterval( this.tick.bind(this), 1000 / TICK_RATE );
+
+    // this.setSimulationInterval( this.tick.bind(this), 1000 / TICK_RATE )
   }
 
   requestJoin (options) {
@@ -60,7 +62,6 @@ class DungeonRoom extends Room {
   }
 
   onJoin (client, options) {
-    console.log(client.id, 'joined', options)
 
     User.findOne({ token: options.token }).populate('heros').then(user => {
       if (!user) {
@@ -102,8 +103,6 @@ class DungeonRoom extends Room {
   }
 
   onLeave (client) {
-    console.log(client.id, "left")
-
     var heroId = this.heroes.get(client)
       , player = this.players.get(client)
 
@@ -133,10 +132,9 @@ class DungeonRoom extends Room {
     this.state.update(this.clock.currentTime)
   }
 
-  dispose () {
-    clearInterval(this.tickInterval)
-    console.log("dispose MatchRoom", this.roomId)
-  }
+  // dispose () {
+  //   console.log("dispose MatchRoom", this.roomId)
+  // }
 
   _onLeave (client, isDisconnect) {
     // remove client from client list

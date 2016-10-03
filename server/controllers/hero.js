@@ -17,7 +17,6 @@ router.get('/', validUser, function(req, res) {
 })
 
 router.post('/', validUser, function(req, res) {
-  console.log(req.user)
   var hero = req.user.heros[0]
 
   if (!hero) {
