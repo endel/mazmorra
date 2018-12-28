@@ -1,7 +1,6 @@
 "use strict";
 
 var Room = require('colyseus').Room
-  , ClockTimer = require('clock-timer.js').default
 
   , DungeonState = require('./states/DungeonState')
 
@@ -10,15 +9,12 @@ var Room = require('colyseus').Room
 
   , utils = require('colyseus').utils
   , protocol = require('colyseus').protocol
-  , msgpack = require('msgpack-lite')
 
 const TICK_RATE = 30
 
 class DungeonRoom extends Room {
 
-  constructor (options) {
-    super(options)
-
+  onInit (options) {
     var mapkind = ['grass', 'rock', 'ice', 'inferno', 'castle']
     // var mapkind = ['rock', 'inferno']
       , i = Math.floor(Math.random() * mapkind.length)
@@ -26,7 +22,7 @@ class DungeonRoom extends Room {
     this.mapkind = options.mapkind || mapkind[i]
     // this.mapkind = 'rock'
 
-    this.clock = new ClockTimer();
+    this.autoDispose = false;
 
     // this.mapkind = options.mapkind || "grass"
     this.progress = options.progress || 1
@@ -135,25 +131,6 @@ class DungeonRoom extends Room {
   // dispose () {
   //   console.log("dispose MatchRoom", this.roomId)
   // }
-
-  _onLeave (client, isDisconnect) {
-    // remove client from client list
-    utils.spliceOne(this.clients, this.clients.indexOf(client))
-
-    if (this.onLeave) this.onLeave(client)
-    this.emit('leave', client, isDisconnect)
-
-    if (!isDisconnect) {
-      client.send( msgpack.encode( [protocol.LEAVE_ROOM, this.roomId] ), { binary: true }, utils.logError.bind(this) )
-    }
-
-    // // custom cleanup method & clear intervals
-    // if (this.clients.length == 0) {
-    //   if (this.dispose) this.dispose();
-    //   clearInterval(this._patchInterval)
-    //   this.emit('dispose')
-    // }
-  }
 
 }
 

@@ -53,19 +53,19 @@ export default class GameObject extends Behaviour {
   }
 
   onPatch (state, patch, patchId) {
-    if (patch.path.indexOf('position') !== -1) {
+    if (patch.property === 'position') {
       // TODO: possible leak here
       this.nextPoint = this.factory.fixTilePosition(this.object.position.clone(), state.position.y, state.position.x)
 
       this.object.userData.x = state.position.x
       this.object.userData.y = state.position.y
 
-    } else if (patch.path.indexOf('hp') !== -1) {
+    } else if (patch.property === 'hp') {
       if (patch.value <= 0) {
         this.entity.emit('died')
       }
 
-    } else if (patch.path.indexOf('lvl') !== -1) {
+    } else if (patch.op === "replace" && patch.property === 'lvl') {
       this.object.add( new LevelUp() )
       // LEVEL UP text event
       this.factory.createEntity({
@@ -77,23 +77,23 @@ export default class GameObject extends Behaviour {
         position: this.object.userData.position
       })
 
-    } else if (patch.path.indexOf('direction') !== -1) {
+    } else if (patch.property === 'direction') {
       this.object.direction = patch.value
 
-    } else if (patch.path.indexOf('action') !== -1) {
+    } else if (patch.property === 'action') {
       // console.log(patchId > this.lastPatchId, state.action)
       // if (patchId > this.lastPatchId) {
         // attack
 
       // TODO: ITS CALLING MANY TIMES HERE
-        let actionType = state.action.type || this.lastActionType
+        let actionType = (state.action && state.action.type) || this.lastActionType
         if (actionType) {
           this.entity.emit(actionType, state.action)
+          this.lastActionType = actionType;
         }
-        this.lastActionType = state.action.type
       // }
 
-    } else if (patch.path.indexOf('inventory') !== -1) {
+    } else if (patch.property === 'inventory') {
       // TODO: do something with inventory
       // this.entity.emit('')
     }

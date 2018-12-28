@@ -5,11 +5,12 @@ var SpritesheetPlugin = require('./webpack/SpritesheetPlugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 // var stylusLoader = ExtractTextPlugin.extract("style-loader", "css-loader!stylus-loader");
-var stylusLoader = ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: 'css-loader!stylus-loader' });
+var stylusLoader = ExtractTextPlugin.extract({ fallback: "style-loader", use: ["css-loader", "stylus-loader"] })
+
 
 module.exports = {
-  entry: ["webpack-dev-server/client?http://localhost:8080", './client/main.js'],
-  // entry: './client/main.js',
+  mode: "development",
+  entry: './client/main.js',
 
   output: {
     path: path.join(__dirname, 'public'),
@@ -25,11 +26,10 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /.*\.jsx?/,
+        test: /.*\.jsx?$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'babel',
+        loader: 'babel-loader',
       },
-      { test: /\.json$/, loader: 'json' },
       { test: /\.styl$/, loader: stylusLoader },
       { test: /\.(woff|woff2|eot|ttf|svg)$/, loader: 'file-loader?limit=1024&name=[name].[ext]' },
     ],
@@ -53,6 +53,10 @@ module.exports = {
       powerOfTwo: true,
       padding: 1
     })
-  ]
+  ],
+
+  resolve: {
+    extensions: ['.js', '.jsx', '.json']
+  }
 
 }

@@ -92,71 +92,71 @@ export default class Level extends THREE.Object3D {
   enterRoom (name, options = {}) {
     this.room = enterRoom(name, options)
 
-    this.room.on('update', this.onRoomUpdate.bind(this))
+    this.room.onStateChange.addOnce((state) => this.setup(state));
+    this.room.onStateChange.add(() => this.patchId++);
 
-    this.room.on('error', (err) => console.error(arguments))
+    this.room.onError.add((err) => console.error(err));
 
-    this.room.on('data', (payload) => {
+    this.room.onMessage.add((payload) => {
       let [ evt, data ] = payload
-
       if (evt === "goto") {
-
-        this.room.on('leave', (err) => {
+        this.room.onLeave.addOnce(() => {
           this.cleanup();
           this.room = this.enterRoom(data.identifier, data)
         })
 
         this.room.leave()
       }
-    })
+    });
 
     return this.room
   }
 
-  createPlayerBehaviour (entity) {
-    entity.addBehaviour(new CharacterController, this.camera, this.room)
-    this.hud.setPlayerObject(entity)
-  }
+  setup (state) {
+    this.dispatchEvent({ type: 'setup', state: state })
 
-  onRoomUpdate (state, patches) {
-    console.log(state, patches)
+    // first level setup
+    this.setInitialState(state);
 
-    if (!patches) {
-      this.dispatchEvent( { type: 'setup', state: state } )
+    this.room.listen("entities/:id", (change) => {
+      if (change.operation === "remove") {
+          this.removeEntity(this.entities[ change.path.id ])
+          delete this.entities[ change.path.id ];
 
-      // first level setup
-      this.setInitialState(state)
-
-    } else {
-      this.patchId++
-      patches.map(patch => {
-
-        if (patch.op === "remove" && patch.path.indexOf("/entities") !== -1 && patch.path.indexOf("/action") === -1) {
-          let [ _, index ] = patch.path.match(/entities\/([a-zA-Z0-9_-]+)/)
-          this.removeEntity(this.entities[ index ])
-          delete this.entities[ index ]
-
-        } else if (patch.op === "add" && patch.path.match(/\/entities\/([a-zA-Z0-9_-]+)$/)) {
+      } else if (change.operation === "add") {
           // create new player
-          let entity = this.factory.createEntity(patch.value)
+          let entity = this.factory.createEntity(change.value)
           this.entities[ entity.userData.id ] = entity
 
           if (entity.userData.id === getClientId()) {
             this.createPlayerBehaviour(entity)
           }
+      }
+    }, true);
 
-        } else if (patch.path.indexOf("/entities/") !== -1) {
-          let [ _, id, attribute ] = patch.path.match(/entities\/([a-zA-Z0-9_-]+)\/(.*)/)
-          var entity = this.entities[ id ].getEntity()
-          entity.emit('patch', state.entities[ id ], {
-            op: patch.op,
-            path: attribute,
-            value: patch.value
-          }, this.patchId)
-        }
+    this.room.listen("entities/:id/:property", (change) => {
+      var entityId = change.path.id;
+      var entity = this.entities[entityId].getEntity()
+      entity.emit('patch', this.room.state.entities[entityId], {
+        op: change.operation,
+        property: change.path.property,
+        value: change.value
+      }, this.patchId);
+    }, true);
 
-      })
-    }
+    this.room.listen("entities/:id/:property/:deep", (change) => {
+      var entityId = change.path.id;
+      var entity = this.entities[entityId].getEntity()
+      entity.emit('patch', this.room.state.entities[entityId], {
+        property: change.path.property,
+        value: change.value
+      }, this.patchId);
+    }, true);
+  }
+
+  createPlayerBehaviour (entity) {
+    entity.addBehaviour(new CharacterController, this.camera, this.room)
+    this.hud.setPlayerObject(entity)
   }
 
   setInitialState (state) {
@@ -175,10 +175,6 @@ export default class Level extends THREE.Object3D {
 
     this.factory.setGrid(state.grid)
     this.factory.createTiles(state.mapkind)
-
-    for (var id in state.entities) {
-      this.entities[ id ] = this.factory.createEntity(state.entities[ id ])
-    }
   }
 
   setTileSelection (object) {

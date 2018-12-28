@@ -14,7 +14,10 @@ class Credentials extends EventEmitter {
   init () {
     fetch(`${ config.BACKEND_ENDPOINT }/auth?token=${ this.token }`).then((response) => {
       return response.json()
-    }).then(this.onAuth.bind(this))
+    }).then((data) => {
+      console.log("INIT:", data);
+      this.onAuth(data);
+    })
   }
 
   update (properties) {
@@ -32,9 +35,17 @@ class Credentials extends EventEmitter {
     this.credentials = document.querySelector('#credentials')
 
     this.registerForm = this.credentials.querySelector('form')
-    this.registerForm.addEventListener('submit', this.onSubmitCredentials.bind(this))
+    this.registerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      this.onSubmitCredentials(e);
+    });
+
     this.message = this.registerForm.querySelector('.message')
     this.action = "login"
+
+    Array.from(this.registerForm.querySelectorAll('input[type=submit]')).forEach(inputSubmit => {
+      inputSubmit.addEventListener("click", () => this.registerForm.dispatchEvent(new Event("submit")));
+    });
 
     this.registerForm.querySelector('p.visible-register a').addEventListener('click', (e) => {
       e.preventDefault()
@@ -59,6 +70,9 @@ class Credentials extends EventEmitter {
   }
 
   onSubmitCredentials (e) {
+    console.log("ON SUBMIT!");
+    console.log(`${config.BACKEND_ENDPOINT}/auth/${this.action}`);
+
     e.preventDefault()
 
     fetch(`${config.BACKEND_ENDPOINT}/auth/${this.action}`, {

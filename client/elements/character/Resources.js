@@ -80,7 +80,6 @@ export class Resources {
       , faceLayers = ['body', 'hair', 'eye']
       , layersToColorize = ['hair', 'body', 'eye']
 
-      , currentLayer = 0
       , montageCtx = this.montage.getContext('2d')
       , bufferCtx = this.buffer.getContext('2d')
 
@@ -190,7 +189,6 @@ export class Resources {
 
       characters[character.textureOffset][di] = texture
     }
-
   }
 
 }

@@ -1,6 +1,6 @@
-import Tweener from 'tweener'
-import Clock from 'clock-timer.js'
-import { createComponentSystem } from 'behaviour.js'
+const Tweener = require('tweener');
+const Clock = require('clock-timer.js').default
+const createComponentSystem = require('behaviour.js').createComponentSystem;
 
 class App {
 
@@ -38,4 +38,4 @@ class App {
 
 }
 
-module.exports = new App()
+module.exports = new App();
