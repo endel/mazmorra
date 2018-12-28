@@ -6,9 +6,9 @@ export default class NearPlayerOpacity extends Behaviour {
 
   update () {
     // no need to apply opacity on daylight
-    if (!IS_DAY && player) {
+    if (!IS_DAY && this.player) {
       var v1 = this.object.position
-        , v2 = player.position
+        , v2 = this.player.position
 
         , dx = v1.x - v2.x
         , dy = v1.y - v2.y
