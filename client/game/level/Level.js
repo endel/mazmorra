@@ -175,6 +175,7 @@ export default class Level extends THREE.Object3D {
           this.entities[ entity.userData.id ] = entity
 
           if (entity.userData.id === getClientId()) {
+            window.player = entity;
             this.createPlayerBehaviour(entity)
           }
       }
@@ -208,12 +209,19 @@ export default class Level extends THREE.Object3D {
     }, true);
 
 
+    this.room.listen("entities/:id/action", (change) => {
+      if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
+      if (change.operation !== "remove") {
+        entitiesToUpdate[change.path.id].action = true;
+      }
+    });
+
     this.room.listen("entities/:id/action/lastUpdateTime", (change) => {
       if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
       if (change.operation !== "remove") {
         entitiesToUpdate[change.path.id].action = true;
       }
-    }, true);
+    });
 
     // USE FOUNTAIONS / ITEMS
     this.room.listen("entities/:id/active", (change) => {
