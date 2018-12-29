@@ -15,14 +15,15 @@ const TICK_RATE = 30
 class DungeonRoom extends Room {
 
   onInit (options) {
+    this.autoDispose = false;
+    this.maxClients = 10;
+
     var mapkind = ['grass', 'rock', 'ice', 'inferno', 'castle']
     // var mapkind = ['rock', 'inferno']
       , i = Math.floor(Math.random() * mapkind.length)
 
     this.mapkind = options.mapkind || mapkind[i]
     // this.mapkind = 'rock'
-
-    this.autoDispose = false;
 
     // this.mapkind = options.mapkind || "grass"
     this.progress = options.progress || 1
@@ -68,7 +69,7 @@ class DungeonRoom extends Room {
     if (options.progress) success = (success && options.progress === this.progress)
     if (options.difficulty) success = (success && options.difficulty === this.difficulty)
 
-    return ( success && this.clients.length < 10 )
+    return success;
   }
 
   onJoin (client, options, user) {
@@ -79,13 +80,10 @@ class DungeonRoom extends Room {
     this.players.set(client, player)
     this.clientMap.set(player, client)
 
-    console.log("HERO PROGRESS:", hero.progress, "STATE PROGRESS:", this.state.progress)
 
     Hero.update({ _id: hero._id }, {
       $set: { progress: this.state.progress }
-    }).then((result) => {
-      console.log(result)
-    });
+    }).then(() => {});
   }
 
   onMessage (client, data) {

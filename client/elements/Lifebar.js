@@ -17,6 +17,7 @@ export default class Lifebar extends THREE.Object3D {
     this.add(this.bar)
 
     this.background = new THREE.Sprite(new THREE.SpriteMaterial({ color: 0xffffffff }))
+    this.background.scale.x = 1;
     this.add(this.background)
 
     this.color = 'green'
@@ -39,10 +40,10 @@ export default class Lifebar extends THREE.Object3D {
     }
 
     this.bar.scale.x = value
-    this.bar.position.x = value/2 - 0.5
+    // this.bar.position.x = value/2 - 0.5
 
-    this.background.scale.x = 1 - value
-    this.background.position.x = 0.5 + (value/2 - 0.5)
+    // this.background.scale.x = 1
+    // this.background.position.x = 0.5 + (value/2 - 0.5)
   }
 
   get progress () {

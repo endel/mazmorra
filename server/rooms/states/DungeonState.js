@@ -15,7 +15,7 @@ var gen = require('random-seed')
   , Player  = require('../../entities/Player')
   , Enemy  = require('../../entities/Enemy')
   , Unit  = require('../../entities/Unit')
-  , Entity  = require('../../entities/Entity')
+  , Fountain  = require('../../entities/interactive/Fountain')
 
   // entity types
   , Item  = require('../../entities/Item')
@@ -60,7 +60,12 @@ class DungeonState extends EventEmitter {
 
   addEntity (entity) {
     this.entities[entity.id] = entity
+
+    if (entity instanceof Fountain) {
+      // this.pathgrid.setWalkableAt(entity.position.x, entity.position.y, false);
+    }
   }
+
   removeEntity (entity) {
     delete this.entities[entity.id]
   }
