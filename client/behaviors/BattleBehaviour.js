@@ -39,11 +39,12 @@ export default class BattleBehaviour extends Behaviour {
     this.togglePosition = true
     this.togglePositionTimeout = App.clock.setTimeout(() => { this.togglePosition = false }, 100)
 
-    if (!this.isAttacking) {
-      this.defender = this.factory.level.getEntityAt(data.position)
+    this.defender = this.factory.level.getEntityAt(data.position)
+    this.attackingPoint = this.defender.position;
 
-      this.attackingPoint = this.factory.fixTilePosition(this.object.position.clone(), data.position.y, data.position.x)
-      this.onAttackStart(this.attackingPoint)
+    if (!this.isAttacking) {
+      this.isAttacking = true
+      this.togglePosition = true
     }
 
     // show damage / miss / critical
@@ -67,14 +68,6 @@ export default class BattleBehaviour extends Behaviour {
       special: data.critical,
       position: data.position
     })
-  }
-
-  onAttackStart (attackingPoint) {
-    if (this.isAttacking) return false;
-
-    this.isAttacking = true
-    this.togglePosition = true
-    this.attackingPoint = attackingPoint
   }
 
   onTakeDamage () {

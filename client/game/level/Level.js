@@ -211,16 +211,12 @@ export default class Level extends THREE.Object3D {
 
     this.room.listen("entities/:id/action", (change) => {
       if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
-      if (change.operation !== "remove") {
-        entitiesToUpdate[change.path.id].action = true;
-      }
+      entitiesToUpdate[change.path.id].action = true;
     });
 
     this.room.listen("entities/:id/action/lastUpdateTime", (change) => {
       if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
-      if (change.operation !== "remove") {
-        entitiesToUpdate[change.path.id].action = true;
-      }
+      entitiesToUpdate[change.path.id].action = true;
     });
 
     // USE FOUNTAIONS / ITEMS
