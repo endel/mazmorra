@@ -5,6 +5,7 @@ import TileSelectionPreview from '../../elements/TileSelectionPreview'
 import CharacterController from '../../behaviors/CharacterController'
 
 import { enterRoom, getClientId } from '../../core/network'
+import LevelUp from '../../elements/effects/LevelUp';
 
 export default class Level extends THREE.Object3D {
 
