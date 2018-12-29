@@ -1,5 +1,5 @@
-import Device from '../utils/device'
 import { Behaviour } from 'behaviour.js'
+import { MeshText2D } from 'three-text2d';
 
 import Cursor from '../elements/hud/Cursor'
 
@@ -52,6 +52,7 @@ export default class Raycaster extends Behaviour {
     // TODO: improve me?
     if (
         nextTargetObject.parent instanceof Cursor ||
+        nextTargetObject.parent instanceof MeshText2D ||
         ( nextTargetObject.parent && nextTargetObject.parent.parent instanceof Cursor )
     ) {
       nextTargetObject = ( this.path[1] ) ? this.path[1].object : null
@@ -112,6 +113,8 @@ export default class Raycaster extends Behaviour {
   onClick (e) {
 
     this.doRaycast()
+
+    console.log(this.targetObject);
 
     if ( this.isTargetReachable ) {
 

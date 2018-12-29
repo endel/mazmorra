@@ -54,7 +54,7 @@ export default class BattleBehaviour extends Behaviour {
       kind = 'warn'
       text = 'miss'
 
-    } else {
+    } else if (this.defender) {
       this.defender.getEntity().emit('damage')
     }
 

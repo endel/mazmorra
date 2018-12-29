@@ -58,7 +58,6 @@ class DungeonRoom extends Room {
   }
 
   onJoin (client, options) {
-
     User.findOne({ token: options.token }).populate('heros').then(user => {
       if (!user) {
         console.log("WARNING: invalid token '"+ options.token +"'")

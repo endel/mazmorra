@@ -13,7 +13,10 @@ class Chest extends Interactive {
 
   interact (moveEvent, player, state) {
     if (!this.action) {
-      this.action = { type: 'open' }
+      this.action = {
+        type: 'open',
+        lastUpdateTime: Date.now()
+      };
       state.dropItemFrom (this)
       moveEvent.cancel()
     }

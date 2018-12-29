@@ -49,15 +49,21 @@ class DungeonState extends EventEmitter {
     this.gridUtils = new GridUtils(this.entities)
 
     // 0 = walkable, 1 = blocked
-    this.pathgrid = new PF.Grid(this.grid.map(line => { return line.map(type => (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1) }))
+    this.pathgrid = new PF.Grid(
+      this.grid.map(line => line.map(type => (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1))
+    )
     this.finder = new PF.AStarFinder(); // { allowDiagonal: true, dontCrossCorners: true }
 
     this.roomUtils = new RoomUtils(this.rand, this, this.rooms)
     this.roomUtils.createEntities()
   }
 
-  addEntity (entity) { this.entities[ entity.id ] = entity }
-  removeEntity (entity) { delete this.entities[ entity.id ] }
+  addEntity (entity) {
+    this.entities[entity.id] = entity
+  }
+  removeEntity (entity) {
+    delete this.entities[entity.id]
+  }
 
   createPlayer (client, hero) {
     var player = new Player(client.id, hero)

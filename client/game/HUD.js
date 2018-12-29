@@ -1,7 +1,6 @@
 import Resources from '../elements/hud/Resources'
 
 import Character from '../elements/hud/Character'
-import LevelUpButton from '../elements/hud/LevelUpButton'
 import BottleBar from '../elements/hud/BottleBar'
 import ExpBar from '../elements/hud/ExpBar'
 import Cursor from '../elements/hud/Cursor'

@@ -17,8 +17,6 @@ export default class Level extends THREE.Object3D {
 
     this.room = this.enterRoom('grass')
 
-    this.patchId = 0
-
     this.entities = {}
 
     this.clickedTileLight = new THREE.SpotLight(config.COLOR_RED, 0.5, 30);
@@ -93,7 +91,6 @@ export default class Level extends THREE.Object3D {
     this.room = enterRoom(name, options)
 
     this.room.onStateChange.addOnce((state) => this.setup(state));
-    this.room.onStateChange.add(() => this.patchId++);
 
     this.room.onError.add((err) => console.error(err));
 
@@ -118,6 +115,52 @@ export default class Level extends THREE.Object3D {
     // first level setup
     this.setInitialState(state);
 
+    var entitiesToUpdate = {};
+    this.room.onStateChange.add((state) => {
+      for (var entityId in entitiesToUpdate) {
+        var object = this.entities[entityId];
+
+        if (!object) {
+          console.warn("entity", entityId, "is not on client. still receiving data from server.");
+          return;
+        }
+
+        var entityToUpdate = entitiesToUpdate[entityId];
+        object.userData = state.entities[entityId];
+        object.userData.x = state.entities[entityId].position.x;
+        object.userData.y = state.entities[entityId].position.y;
+
+        // TODO: possible leak here
+        if (
+          entityToUpdate.x !== undefined ||
+          entityToUpdate.y !== undefined
+        ) {
+          object.getEntity().emit('nextPoint', this.factory.fixTilePosition(object.position.clone(), object.userData.y, object.userData.x))
+        }
+
+        if (entityToUpdate.action) {
+          // TODO: ITS CALLING MANY TIMES HERE
+          let actionType = object.userData.action && object.userData.action.type;
+          console.log("ACTION:", actionType, object.userData.action);
+          object.getEntity().emit(actionType, object.userData.action)
+        }
+
+          // LEVEL UP text event
+        if (entityToUpdate.levelUp) {
+          object.add(new LevelUp())
+
+          this.factory.createEntity({
+            type: helpers.ENTITIES.TEXT_EVENT,
+            text: 'UP',
+            kind: 'warn',
+            ttl: 500,
+            special: true,
+            position: object.userData.position
+          });
+        }
+      }
+    });
+
     this.room.listen("entities/:id", (change) => {
       if (change.operation === "remove") {
           this.removeEntity(this.entities[ change.path.id ])
@@ -134,23 +177,42 @@ export default class Level extends THREE.Object3D {
       }
     }, true);
 
-    this.room.listen("entities/:id/:property", (change) => {
-      var entityId = change.path.id;
-      var entity = this.entities[entityId].getEntity()
-      entity.emit('patch', this.room.state.entities[entityId], {
-        op: change.operation,
-        property: change.path.property,
-        value: change.value
-      }, this.patchId);
+
+    this.room.listen("entities/:id/position/:axis", (change) => {
+      if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
+      entitiesToUpdate[change.path.id][change.path.axis] = change.value;
     }, true);
 
-    this.room.listen("entities/:id/:property/:deep", (change) => {
-      var entityId = change.path.id;
-      var entity = this.entities[entityId].getEntity()
-      entity.emit('patch', this.room.state.entities[entityId], {
-        property: change.path.property,
-        value: change.value
-      }, this.patchId);
+    this.room.listen("entities/:id/hp/current", (change) => {
+      if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
+
+      if (change.value <= 0) {
+        var object = this.entities[change.path.id];
+        object.getEntity().emit('died');
+      }
+    }, true);
+
+    this.room.listen("entities/:id/lvl", (change) => {
+      if (change.operation === "replace") {
+        if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
+        entitiesToUpdate[change.path.id].levelUp = true;
+      }
+    }, true);
+
+    this.room.listen("entities/:id/direction", (change) => {
+      var object = this.entities[change.path.id];
+      object.direction = change.value;
+    }, true);
+
+
+    this.room.listen("entities/:id/action/lastUpdateTime", (change) => {
+      if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
+      entitiesToUpdate[change.path.id].action = true;
+    }, true);
+
+    // USE FOUNTAIONS / ITEMS
+    this.room.listen("entities/:id/active", (change) => {
+      if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
     }, true);
   }
 
@@ -239,6 +301,7 @@ export default class Level extends THREE.Object3D {
   }
 
   playerAction (targetPosition) {
+    if (!this.targetPosition) return;
 
     this.clickedTileLight.intensity = 1
     this.clickedTileLight.position.copy(this.selectionLight.position)

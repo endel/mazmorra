@@ -11,7 +11,7 @@ export default class Lifebar extends THREE.Object3D {
     this.add(this.gold)
 
     this.goldAmount = new MeshText2D("0", { font: config.DEFAULT_FONT, align: textAlign.right, fillStyle: '#fcf458', antialias: false })
-    this.goldAmount.position.y = config.HUD_SCALE * ( config.HUD_MARGIN / 1.5)
+    this.goldAmount.position.y = config.HUD_SCALE * ( config.HUD_MARGIN * 1.3)
     this.goldAmount.position.x = - config.HUD_SCALE * ( config.HUD_MARGIN * 1.5)
     this.add(this.goldAmount)
 
@@ -23,7 +23,7 @@ export default class Lifebar extends THREE.Object3D {
 
     this.diamondAmount = new MeshText2D("0", { font: config.DEFAULT_FONT, align: textAlign.right, fillStyle: '#4480b0', antialias: false })
     this.diamondAmount.position.x = - config.HUD_SCALE * ( config.HUD_MARGIN * 1.5)
-    this.diamondAmount.position.y = this.diamond.position.y + (config.HUD_SCALE * ( config.HUD_MARGIN / 1.5))
+    this.diamondAmount.position.y = this.diamond.position.y + (config.HUD_SCALE * ( config.HUD_MARGIN * 1.3))
     this.add(this.diamondAmount)
 
     this.width = (this.gold.material.map.frame.w * config.HUD_SCALE) / 2

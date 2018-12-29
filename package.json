@@ -4,8 +4,9 @@
     "node": ">=0.12.0"
   },
   "scripts": {
-    "start": "./node_modules/.bin/webpack",
-    "dev": "npm start --prefix server & ./node_modules/.bin/webpack-dev-server",
+    "start": "./node_modules/.bin/webpack-dev-server",
+    "build": "./node_modules/.bin/webpack",
+    "dev": "npm start --prefix server & npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

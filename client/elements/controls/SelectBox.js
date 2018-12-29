@@ -27,7 +27,7 @@ export default class SelectBox extends THREE.Object3D {
     this.rightButton.addEventListener('click', this.onRight.bind(this))
 
     this.label = new SpriteText2D(this.placeholder, { align: textAlign.center, font: config.DEFAULT_FONT, fillStyle: '#fff', antialias: false })
-    this.label.position.y += this.label.height / 4
+    this.label.position.y += this.label.height / 1.7
     this.label.sprite.renderOrder = 1
 
     this.add(this.leftButton)

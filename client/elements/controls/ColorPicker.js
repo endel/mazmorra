@@ -25,7 +25,7 @@ export default class ColorPicker extends THREE.Object3D {
 
     if (title) {
       this.label = new SpriteText2D(title, { align: textAlign.center, font: config.DEFAULT_FONT, fillStyle: '#fff', antialias: false })
-      this.label.position.y += this.label.height / 4
+      this.label.position.y += this.label.height / 1.7
       this.label.sprite.renderOrder = 1
       this.add(this.label)
       container.position.y -= this.label.height

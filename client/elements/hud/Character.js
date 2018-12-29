@@ -23,7 +23,7 @@ export default class Character extends THREE.Object3D {
       antialias: false
     })
     this.levelText.position.x = ( config.HUD_MARGIN * 2) *  config.HUD_SCALE
-    this.levelText.position.y = this.levelText.height / 2
+    this.levelText.position.y = this.levelText.height
     this.add(this.levelText)
 
     // // life / mana / exp bar
