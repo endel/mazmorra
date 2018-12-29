@@ -47,6 +47,20 @@ class DungeonRoom extends Room {
     // this.setSimulationInterval( this.tick.bind(this), 1000 / TICK_RATE )
   }
 
+  onAuth (options) {
+    return new Promise((resolve, reject) => {
+      User.findOne({ token: options.token }).populate('heros').then(user => {
+        if (!user) {
+          console.log("WARNING: invalid token '" + options.token + "'")
+          reject();
+
+        } else {
+          resolve(user);
+        }
+      })
+    });
+  }
+
   requestJoin (options) {
     var success = true;
 
@@ -57,17 +71,21 @@ class DungeonRoom extends Room {
     return ( success && this.clients.length < 10 )
   }
 
-  onJoin (client, options) {
-    User.findOne({ token: options.token }).populate('heros').then(user => {
-      if (!user) {
-        console.log("WARNING: invalid token '"+ options.token +"'")
-        return
-      }
-      let player = this.state.createPlayer(client, user.heros[0])
-      this.heroes.set(client, user.heros[0]._id)
-      this.players.set(client, player)
-      this.clientMap.set(player, client)
-    })
+  onJoin (client, options, user) {
+    let hero = user.heros[0];
+    let player = this.state.createPlayer(client, hero);
+
+    this.heroes.set(client, hero._id)
+    this.players.set(client, player)
+    this.clientMap.set(player, client)
+
+    console.log("HERO PROGRESS:", hero.progress, "STATE PROGRESS:", this.state.progress)
+
+    Hero.update({ _id: hero._id }, {
+      $set: { progress: this.state.progress }
+    }).then((result) => {
+      console.log(result)
+    });
   }
 
   onMessage (client, data) {
@@ -104,7 +122,7 @@ class DungeonRoom extends Room {
     if (!heroId) return;
 
     // sync
-    Hero.update({ _id: heroId }, {
+    return Hero.update({ _id: heroId }, {
       $set: {
         lvl: player.lvl,
         gold: player.gold,
@@ -118,7 +136,7 @@ class DungeonRoom extends Room {
       this.clientMap.delete(player)
       this.heroes.delete(client)
       this.state.removePlayer(player)
-    })
+    });
   }
 
   tick () {

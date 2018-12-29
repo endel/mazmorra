@@ -19,6 +19,9 @@ module.exports.Hero = mongoose.model('Hero', new Schema({
   klass: { type: Number, default: 0 },
   lvl: { type: Number, default: 1 },
 
+  // how deep is the hero in the campaign?
+  progress: { type: Number, default: 1 },
+
   // store only current values
   // max values are computed by class / lvl + item modifiers
   hp: Number,

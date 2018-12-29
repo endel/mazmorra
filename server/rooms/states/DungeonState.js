@@ -67,12 +67,11 @@ class DungeonState extends EventEmitter {
 
   createPlayer (client, hero) {
     var player = new Player(client.id, hero)
-      , currentProgress = (client.currentProgress || -1)
 
     player.state = this
     // player.position.on('move', this.onEntityMove.bind(this))
 
-    if (currentProgress < this.progress) {
+    if (hero.progress <= this.progress) {
       player.position.set(this.roomUtils.startPosition)
     } else {
       player.position.set(this.roomUtils.endPosition)
@@ -83,7 +82,6 @@ class DungeonState extends EventEmitter {
 
     // TODO: refactor me!
     client.player = player
-    client.currentProgress = this.progress
 
     return player
   }
@@ -149,8 +147,6 @@ class DungeonState extends EventEmitter {
         unit.attack(null)
       }
     }
-
-    console.log("position.moveTo:", moves)
 
     unit.position.moveTo(moves)
   }

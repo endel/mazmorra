@@ -32,9 +32,9 @@ export default class BattleBehaviour extends Behaviour {
   onAttack (data) {
     if (!data.type) { return this.disable(); }
 
-    // TODO: this shouldn't be necessary
-    // GameObject's patch method is triggering 'attack' event multiple times
-    if (this.togglePositionTimeout.active) { return; }
+    // // TODO: this shouldn't be necessary
+    // // GameObject's patch method is triggering 'attack' event multiple times
+    // if (this.togglePositionTimeout.active) { return; }
 
     this.togglePosition = true
     this.togglePositionTimeout = App.clock.setTimeout(() => { this.togglePosition = false }, 100)

@@ -1,11 +1,12 @@
 import Factory from './Factory'
 
 import TileSelectionPreview from '../../elements/TileSelectionPreview'
+import LevelUp from '../../elements/effects/LevelUp';
 
 import CharacterController from '../../behaviors/CharacterController'
 
 import { enterRoom, getClientId } from '../../core/network'
-import LevelUp from '../../elements/effects/LevelUp';
+import helpers from "../../../shared/helpers"
 
 export default class Level extends THREE.Object3D {
 
@@ -119,6 +120,9 @@ export default class Level extends THREE.Object3D {
     var entitiesToUpdate = {};
     this.room.onStateChange.add((state) => {
       for (var entityId in entitiesToUpdate) {
+        var entityToUpdate = entitiesToUpdate[entityId];
+        delete entitiesToUpdate[entityId];
+
         var object = this.entities[entityId];
 
         if (!object) {
@@ -126,7 +130,6 @@ export default class Level extends THREE.Object3D {
           return;
         }
 
-        var entityToUpdate = entitiesToUpdate[entityId];
         object.userData = state.entities[entityId];
         object.userData.x = state.entities[entityId].position.x;
         object.userData.y = state.entities[entityId].position.y;
@@ -142,7 +145,6 @@ export default class Level extends THREE.Object3D {
         if (entityToUpdate.action) {
           // TODO: ITS CALLING MANY TIMES HERE
           let actionType = object.userData.action && object.userData.action.type;
-          console.log("ACTION:", actionType, object.userData.action);
           object.getEntity().emit(actionType, object.userData.action)
         }
 
@@ -208,7 +210,9 @@ export default class Level extends THREE.Object3D {
 
     this.room.listen("entities/:id/action/lastUpdateTime", (change) => {
       if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
-      entitiesToUpdate[change.path.id].action = true;
+      if (change.operation !== "remove") {
+        entitiesToUpdate[change.path.id].action = true;
+      }
     }, true);
 
     // USE FOUNTAIONS / ITEMS

@@ -6,8 +6,6 @@ var Movement = require('../core/Movement')
 var Inventory = require('../core/Inventory')
 var EquipedItems = require('../core/EquipedItems')
 
-var ClockTimer = require('clock-timer.js')
-
 // Actions
 var BattleAction = require('../actions/BattleAction')
 

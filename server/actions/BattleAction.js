@@ -27,6 +27,12 @@ class BattleAction extends EventEmitter {
   }
 
   attack () {
+    if(!this.isEligible) {
+      // clear BattleAction
+      this.attacker.action = null;
+      this.removeAllListeners();
+    }
+
     let d20 = Math.ceil(Math.random() * 20)
 
     this.missed = (d20 <= this.defender.armor)
@@ -43,6 +49,7 @@ class BattleAction extends EventEmitter {
       if (!this.defender.isAlive) {
         this.defender.onDie()
         this.attacker.onKill(this.defender)
+
       }
       //
       // TODO: use damageTaken for lifestealing or other modifiers

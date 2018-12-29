@@ -6,9 +6,6 @@ var helpers  = require('../../shared/helpers')
   , Unit = require('./Unit')
   , Player = require('./Player')
 
-  // Actions
-  , BattleAction = require('../actions/BattleAction')
-
 class Enemy extends Unit {
 
   constructor (kind) {

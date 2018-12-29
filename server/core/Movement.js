@@ -20,6 +20,13 @@ class Movement extends EventEmitter {
     return (lastIndex !== -1) ? { x: this.pending[ lastIndex ][ 0 ], y: this.pending[ lastIndex ][ 1 ] } : null
   }
 
+  equals (other) {
+    return (
+      this.position.x === other.x &&
+      this.position.y === other.y
+    );
+  }
+
   get x () {
     return this.position.x
   }
@@ -48,7 +55,8 @@ class Movement extends EventEmitter {
       this.position.x = x
       this.position.y = y
     }
-    console.log(event.valid(), this.position)
+
+    // console.log(event.valid(), this.position)
   }
 
   moveTo (pending) {
