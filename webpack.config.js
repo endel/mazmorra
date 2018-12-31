@@ -44,7 +44,7 @@ module.exports = {
 
     new webpack.ProvidePlugin({
       THREE: "three",
-      Tweener: "Tweener",
+      Tweener: "tweener",
       App: __dirname + "/client/core/App",
       ResourceManager: __dirname + '/client/resource/manager',
       config: __dirname + '/client/config'
