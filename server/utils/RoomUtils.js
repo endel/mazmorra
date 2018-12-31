@@ -141,6 +141,14 @@ class RoomUtils {
     rooms.forEach(room => {
       this.populateNPCs(room);
 
+      // add door
+      this.state.addEntity(new Door(this.endPosition, {
+        identifier: 'grass',
+        mapkind: 'grass',
+        difficulty: 1,
+        progress: this.state.progress + 1
+      }))
+
       // create 3 fountains
       for (let i=0; i<3; i++) {
         this.addEntity(room, (position) => new Fountain(position))
@@ -168,9 +176,9 @@ class RoomUtils {
     //   'woman', 'woman-2', 'woman-3'];
 
     const npcs = [
-      'man-2',
-      'village-old-man',
-      'village-woman',
+      'merchant',
+      'elder',
+      'lady',
       'guard',
       'guard',
       'guard',

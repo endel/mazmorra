@@ -7,7 +7,9 @@ export default class Door extends THREE.Object3D {
 
     this.userData = data
 
-    let type = 'door-night' // door-day
+    let type = (IS_DAY)
+     ? 'door-day'
+     : 'door-night';
 
     let material = new THREE.MeshPhongMaterial( {
         shading: THREE.FlatShading,

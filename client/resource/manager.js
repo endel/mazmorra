@@ -120,9 +120,10 @@ class ResourceManager {
             // color: 0xa0adaf,
             // specular: 0x111111,
             // shininess: 60,
-            shading: THREE.FlatShading,
+            shading: THREE.SmoothShading,
             map: texture,
-            side: THREE.DoubleSide
+            side: THREE.DoubleSide,
+            // depthWrite: false
           })
           this.geometries[ name ] = new THREE.PlaneGeometry(config.TILE_SIZE, config.TILE_SIZE)
         }

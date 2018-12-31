@@ -234,14 +234,19 @@ export default class Factory {
       } else if (type & helpers.DIRECTION.SOUTH) {
         tile.position.z -= config.TILE_SIZE / 2
 
+        // tile.material.transparent = true;
+        // tile.material.opacity = 0.4;
+
       } else if (type & helpers.DIRECTION.EAST) {
         tile.rotation.y = Math.PI / 2
         tile.position.x -= config.TILE_SIZE / 2
 
+        // tile.material.transparent = true;
+        // tile.material.opacity = 0.4;
+
       } else if (type & helpers.DIRECTION.WEST) {
         tile.rotation.y = Math.PI / 2
         tile.position.x += config.TILE_SIZE / 2
-
       }
     }
 
