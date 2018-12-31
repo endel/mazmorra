@@ -24,21 +24,30 @@ var gen = require('random-seed')
 
 class DungeonState extends EventEmitter {
 
-  constructor (mapkind, progress, difficulty, daylight) {
+  constructor (progress, difficulty, daylight) {
     super()
 
     // predicatble random generator
     this.rand = gen.create()
 
-    this.mapkind = mapkind
-    this.progress = progress
-    this.difficulty = difficulty
-    this.daylight = daylight
+    this.progress = progress;
+    this.difficulty = difficulty;
+    this.daylight = true;
 
-    // (gridSize, minRoomSize, maxRoomSize, maxRooms) {
-    // var data = dungeon.generate(this.rand, {x: 16, y: 16}, {x: 4, y: 4}, {x: 8, y: 8}, 24)
-    // var data = dungeon.generate(this.rand, {x: 48, y: 48}, {x: 5, y: 5}, {x: 10, y: 10}, 32)
-    var data = dungeon.generate(this.rand, {x: 24, y: 24}, {x: 6, y: 6}, {x: 12, y: 12}, 3)
+    var data;
+
+    if (progress === 1) {
+      this.mapkind = "castle";
+      data = dungeon.generate(this.rand, { x: 12, y: 12 }, { x: 12, y: 12}, { x: 12, y: 12 }, 1);
+
+    } else {
+      // ['grass', 'rock', 'ice', 'inferno', 'castle']
+      this.mapkind = 'grass';
+
+      // data = dungeon.generate(this.rand, {x: 16, y: 16}, {x: 4, y: 4}, {x: 8, y: 8}, 24)
+      // data = dungeon.generate(this.rand, {x: 48, y: 48}, {x: 5, y: 5}, {x: 10, y: 10}, 32)
+      data = dungeon.generate(this.rand, {x: 24, y: 24}, {x: 6, y: 6}, {x: 12, y: 12}, 3);
+    }
 
     this.grid = data[0]
     this.rooms = data[1]
@@ -55,7 +64,15 @@ class DungeonState extends EventEmitter {
     this.finder = new PF.AStarFinder(); // { allowDiagonal: true, dontCrossCorners: true }
 
     this.roomUtils = new RoomUtils(this.rand, this, this.rooms)
-    this.roomUtils.createEntities()
+
+    if (progress === 1) {
+      // lobby
+      this.roomUtils.populateLobby(this.rooms);
+
+    } else {
+      // regular room
+      this.roomUtils.createEntities()
+    }
   }
 
   addEntity (entity) {
@@ -168,6 +185,11 @@ class DungeonState extends EventEmitter {
   }
 
   update (currentTime) {
+    // skip update if no actual players are connected
+    if (Object.keys(this.players).length === 0) {
+      return;
+    }
+
     for (var id in this.entities) {
       this.entities[id].update(currentTime)
     }

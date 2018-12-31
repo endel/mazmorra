@@ -18,14 +18,6 @@ class DungeonRoom extends Room {
     this.autoDispose = false;
     this.maxClients = 10;
 
-    var mapkind = ['grass', 'rock', 'ice', 'inferno', 'castle']
-    // var mapkind = ['rock', 'inferno']
-      , i = Math.floor(Math.random() * mapkind.length)
-
-    this.mapkind = options.mapkind || mapkind[i]
-    // this.mapkind = 'rock'
-
-    // this.mapkind = options.mapkind || "grass"
     this.progress = options.progress || 1
     this.difficulty = options.difficulty || 1
 
@@ -33,13 +25,7 @@ class DungeonRoom extends Room {
     this.heroes = new WeakMap()
     this.clientMap = new WeakMap()
 
-    this.setState(new DungeonState(
-      this.mapkind,
-      this.progress,
-      this.difficulty,
-      (['grass', 'ice', 'castle'].indexOf(this.mapkind) !== -1) // is daylight? // Math.random() > 0.5
-      // false
-    ))
+    this.setState(new DungeonState(this.progress, this.difficulty))
 
     this.state.on('goto', this.onGoTo.bind(this))
 
@@ -65,7 +51,6 @@ class DungeonRoom extends Room {
   requestJoin (options) {
     var success = true;
 
-    if (options.mapkind) success = (success && options.mapkind === this.mapkind)
     if (options.progress) success = (success && options.progress === this.progress)
     if (options.difficulty) success = (success && options.difficulty === this.difficulty)
 

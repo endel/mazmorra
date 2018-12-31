@@ -16,11 +16,12 @@ var _ = require('dotenv').config()
 
   , DungeonRoom = require('./rooms/DungeonRoom')
 
-gameServer.register('castle', DungeonRoom, { mapkind: 'castle' })
-gameServer.register('grass', DungeonRoom, { mapkind: 'grass' })
-gameServer.register('rock', DungeonRoom, { mapkind: 'rock' })
-gameServer.register('ice', DungeonRoom, { mapkind: 'ice' })
-gameServer.register('inferno', DungeonRoom, { mapkind: 'inferno' })
+gameServer.register('dungeon', DungeonRoom)
+// gameServer.register('castle', DungeonRoom, { mapkind: 'castle' })
+// gameServer.register('grass', DungeonRoom, { mapkind: 'grass' })
+// gameServer.register('rock', DungeonRoom, { mapkind: 'rock' })
+// gameServer.register('ice', DungeonRoom, { mapkind: 'ice' })
+// gameServer.register('inferno', DungeonRoom, { mapkind: 'inferno' })
 
 if (process.env.ENVIRONMENT !== "production") {
   app.use(cors())

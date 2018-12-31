@@ -1,11 +1,9 @@
 // Enemy and and NPC share a lot
 
-import DangerousThing from '../behaviors/DangerousThing'
-import Shadow from '../behaviors/Shadow';
-import HasLifebar from '../behaviors/HasLifebar';
 import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
+import DangerousThing from '../behaviors/DangerousThing';
 
-export default class Enemy extends THREE.Object3D {
+export default class NPC extends THREE.Object3D {
 
   constructor (data) {
     super()
@@ -14,10 +12,10 @@ export default class Enemy extends THREE.Object3D {
     this._direction = 'bottom'
 
     this.textures = {
-      top: ResourceManager.get( 'enemies-' + this.userData.kind + '-top' ),
-      bottom: ResourceManager.get( 'enemies-' + this.userData.kind + '-bottom' ),
-      left: ResourceManager.get( 'enemies-' + this.userData.kind + '-left' ),
-      right: ResourceManager.get( 'enemies-' + this.userData.kind + '-right' )
+      top: ResourceManager.get( 'npc-' + this.userData.kind + '-top' ),
+      bottom: ResourceManager.get( 'npc-' + this.userData.kind + '-bottom' ),
+      left: ResourceManager.get( 'npc-' + this.userData.kind + '-left' ),
+      right: ResourceManager.get( 'npc-' + this.userData.kind + '-right' )
     }
 
     this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -27,23 +25,16 @@ export default class Enemy extends THREE.Object3D {
     this.originalColor = this.sprite.material.color.getHex()
 
     this.sprite.scale.normalizeWithTexture(this.sprite.material.map)
-    // this.sprite.position.y = scale/2 // - this.sprite.material.map.frame.h
     this.sprite.position.y = 0.1
 
     this.add(this.sprite)
 
-    // only attach lifebar if enemy is alive
-    if (data.hp.current > 0) {
-      this.addBehaviour(new DangerousThing)
-      this.addBehaviour(new Shadow)
-      this.addBehaviour(new HasLifebar)
-    }
-
+    this.addBehaviour(new DangerousThing)
     this.addBehaviour(new NearPlayerOpacity)
   }
 
   get label () {
-    var text = this.userData.kind + ` - LVL ${ this.userData.lvl }`
+    var text = this.userData.kind
 
     if (this.userData.hp.current <= 0) {
       text = `Dead ${ text }`

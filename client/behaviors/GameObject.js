@@ -1,6 +1,6 @@
 import { Behaviour } from 'behaviour.js'
 
-import BattleBehaviour from './BattleBehaviour'
+import BattleBehaviour, { DEAD_ENTITY_OPACITY } from './BattleBehaviour'
 import lerp from 'lerp'
 import { stepSounds, playRandom } from '../core/sound';
 
@@ -32,8 +32,11 @@ export default class GameObject extends Behaviour {
       this.object.addBehaviour( this.battleBehaviour, this.factory )
 
     } else {
+
+      this.dest
       // TODO: refactor me
       this.object.sprite.material.rotation = Math.PI
+      this.object.sprite.material.opacity = DEAD_ENTITY_OPACITY;
     }
 
   }

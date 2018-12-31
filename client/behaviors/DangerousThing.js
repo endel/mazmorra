@@ -1,14 +1,8 @@
 import { Behaviour } from 'behaviour.js'
 
-import Shadow from './Shadow'
-import HasLifebar from './HasLifebar'
-
 export default class DangerousThing extends Behaviour {
 
   onAttach (amount = 0.05, duration) {
-    this.object.addBehaviour(new Shadow)
-    this.object.addBehaviour(new HasLifebar)
-
     this.initY = this.object.position.y
     this.destY = this.initY + amount
     this.duration = (duration) ? duration : 400 + (Math.random() * 200)

@@ -7,7 +7,9 @@ class Entity {
     this.id = id || shortid.generate()
   }
 
-  update () { /* does nothing */ }
+  update() {
+    /* does nothing */
+  }
 
   set state (value) { state.set(this, value) }
   get state () { return state.get(this) }

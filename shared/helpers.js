@@ -45,14 +45,7 @@ var helpers = {
       PLAYER: 10,
       TEXT_EVENT: 11,
 
-      // Friendly units
-      VILLAGE_MAN: 'village-man',
-      VILLAGE_CHILD: 'village-child',
-      VILLAGE_MAN_2: 'village-man-2',
-      VILLAGE_CHILD_2: 'village-child-2',
-      VILLAGE_OLD_MAN: 'village-old-man',
-      VILLAGE_WOMAN: 'village-woman',
-      GUARD: 'guard',
+      NPC: 20,
 
       // items 100~400
       BOOK_BLUE: 'book-blue',

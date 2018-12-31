@@ -1,7 +1,8 @@
 var mongoose = require('mongoose')
   , Schema = mongoose.Schema
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose.Promise = global.Promise;
+mongoose.connect(process.env.MONGO_URI, { useMongoClient: true });
 
 module.exports.User = mongoose.model('User', new Schema({
   email: String,

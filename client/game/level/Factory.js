@@ -5,6 +5,7 @@ import HasLifebar from '../../behaviors/HasLifebar'
 
 import Character from '../../elements/Character'
 import Enemy from '../../elements/Enemy'
+import NPC from '../../elements/NPC';
 import Item from '../../elements/Item'
 import Chest from '../../elements/Chest'
 import Fountain from '../../elements/Fountain'
@@ -47,6 +48,10 @@ export default class Factory {
         if (data.id !== getClientId()) {
           element.addBehaviour(new HasLifebar, this)
         }
+        break;
+
+      case helpers.ENTITIES.NPC:
+        element = new NPC(data)
         break;
 
       case helpers.ENTITIES.LIGHT:

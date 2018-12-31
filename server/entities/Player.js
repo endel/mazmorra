@@ -1,8 +1,6 @@
 'use strict';
 
 var Unit = require('./Unit')
-  , Inventory = require('../core/Inventory')
-
   , helpers  = require('../../shared/helpers')
 
 class Player extends Unit {
@@ -27,8 +25,8 @@ class Player extends Unit {
     this.mp.set(hero.mp || 100, 100)
     this.xp.set(hero.xp || 0, 10)
 
-    this.gold = hero.gold
-    this.diamond = hero.diamond
+    this.gold = hero.gold || 0
+    this.diamond = hero.diamond || 0
 
     // TODO: calculate this based on
     // player klass + lvl

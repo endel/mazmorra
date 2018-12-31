@@ -1,7 +1,5 @@
 module.exports = {
-  BACKEND_ENDPOINT: (window.location.href.match(/(localhost|192.168)/gi))
-    ? `http://localhost:3553`
-    : window.location.protocol + "//" + window.location.hostname + ":3553",
+  BACKEND_ENDPOINT: window.location.protocol + "//" + window.location.hostname + ":3553",
 
   TILE_SIZE: 3,
 
@@ -24,7 +22,7 @@ module.exports = {
   IS_DAY: true,
 
   HUD_MARGIN: 2.5,
-  HUD_SCALE: 7.5 / window.devicePixelRatio,
+  HUD_SCALE: 6 / window.devicePixelRatio,
   DEFAULT_FONT: (Math.floor((7.5 / window.devicePixelRatio) * 5)) + "px primary",
 
   // player preferences

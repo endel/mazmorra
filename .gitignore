@@ -7,3 +7,5 @@ test/bower_components
 npm-debug.log
 app/images/sprites/*.png
 db.sqlite3
+/public
+/server/src

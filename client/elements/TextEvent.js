@@ -25,7 +25,12 @@ export default class TextEvent extends THREE.Object3D {
 
     this.userData = data
 
-    this.text = new SpriteText2D(data.text, { font: "50px primary", fillStyle: `#${ color.getHexString() }`, antialias: false })
+    this.text = new SpriteText2D(data.text, {
+      font: "30px primary",
+      fillStyle: `#${color.getHexString()}`,
+      align: textAlign.center,
+      antialias: false
+    })
     this.text.material.alphaTest = 0.5
     this.text.material.opacity = 0
     this.add(this.text)

@@ -4,6 +4,7 @@ import TileSelectionPreview from '../../elements/TileSelectionPreview'
 import LevelUp from '../../elements/effects/LevelUp';
 
 import CharacterController from '../../behaviors/CharacterController'
+import { Resources } from '../../elements/character/Resources';
 
 import { enterRoom, getClientId } from '../../core/network'
 import helpers from "../../../shared/helpers"
@@ -19,7 +20,8 @@ export default class Level extends THREE.Object3D {
     this.hud = hud
     this.camera = camera
 
-    this.room = this.enterRoom('grass')
+    // this.room = this.enterRoom('grass')
+    this.room = this.enterRoom('dungeon')
 
     this.entities = {}
 
@@ -103,7 +105,7 @@ export default class Level extends THREE.Object3D {
       if (evt === "goto") {
         this.room.onLeave.addOnce(() => {
           this.cleanup();
-          this.room = this.enterRoom(data.identifier, data)
+          this.room = this.enterRoom('dungeon', data)
         })
 
         this.room.leave()
@@ -248,6 +250,8 @@ export default class Level extends THREE.Object3D {
   }
 
   setInitialState (state) {
+    Resources.init();
+
     window.IS_DAY = state.daylight
 
     if (state.daylight) {
@@ -262,7 +266,13 @@ export default class Level extends THREE.Object3D {
     this.add(this.clickedTileLight)
 
     this.factory.setGrid(state.grid)
-    this.factory.createTiles(state.mapkind)
+
+    if (state.mapkind === "lobby") {
+      this.factory.createTiles('castle');
+
+    } else {
+      this.factory.createTiles(state.mapkind)
+    }
   }
 
   setTileSelection (object) {

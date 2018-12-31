@@ -4,6 +4,8 @@ import helpers from '../../shared/helpers'
 import { getClientId } from '../core/network';
 import { battleStartSound, wooshSound, hitSound, playRandom, deathSound, deathStingerSound } from '../core/sound';
 
+export const DEAD_ENTITY_OPACITY = 0.45;
+
 export default class BattleBehaviour extends Behaviour {
 
   onAttach ( factory ) {
@@ -113,7 +115,9 @@ export default class BattleBehaviour extends Behaviour {
       to({ rotation: Math.PI }, 150, Tweener.ease.cubicInOut).
       add(this.object.position).
       to({ y: initY }, 300, Tweener.ease.bounceOut).
-      then(this.detach.bind(this))
+      add(this.object.sprite.material).
+      to({ opacity: DEAD_ENTITY_OPACITY }, 100, Tweener.ease.cubicInOut).
+      then(this.detach.bind(this));
   }
 
   onDetach () {
