@@ -39,7 +39,7 @@ class ResourceManager {
 
   static getSprite (identifier) {
     let tex = ResourceManager.get( identifier )
-    let sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex }))
+    let sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex }));
     sprite.scale.normalizeWithTexture(tex)
     return sprite
   }

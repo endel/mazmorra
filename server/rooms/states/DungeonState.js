@@ -27,12 +27,14 @@ class DungeonState extends EventEmitter {
   constructor (progress, difficulty, daylight) {
     super()
 
+    const serverHour = (new Date()).getHours();
+
     // predicatble random generator
     this.rand = gen.create()
 
     this.progress = progress;
     this.difficulty = difficulty;
-    this.daylight = true;
+    this.daylight = (serverHour > 6 && serverHour < 19);
 
     var data;
 

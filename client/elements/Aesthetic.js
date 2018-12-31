@@ -1,7 +1,5 @@
 'use strict';
 
-import { Behaviour } from 'behaviour.js'
-
 import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
 
 export default class Aesthetic extends THREE.Object3D {
