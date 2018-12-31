@@ -1,3 +1,7 @@
+export function playRandom(soundOptions) {
+  soundOptions[Math.floor(Math.random() * soundOptions.length)].play();
+}
+
 export const doorSound = require('../resource/sounds/door.wav');
 
 export const wooshSound = [
@@ -37,3 +41,8 @@ export const stepSounds = [
 
 export const chestSound = require('../resource/sounds/chest.wav');
 export const coinSound = require('../resource/sounds/coin.mp3');
+
+/**
+ * Stingers
+ */
+export const deathStingerSound = require('../resource/sounds/stingers/death.mp3');

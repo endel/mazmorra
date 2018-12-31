@@ -7,7 +7,7 @@ export default class TextEvent extends THREE.Object3D {
   constructor (data) {
     super()
 
-    let offsetY = 2.5
+    let offsetY = 4
 
     let color = config.COLOR_WHITE
 

@@ -1,5 +1,5 @@
 import { Behaviour } from 'behaviour.js'
-import { MeshText2D } from 'three-text2d';
+import { MeshText2D, SpriteText2D } from 'three-text2d';
 
 import Cursor from '../elements/hud/Cursor'
 
@@ -16,6 +16,9 @@ export default class Raycaster extends Behaviour {
     this.targetObject = null
 
     this.path = null
+
+    // do raycast at every 200ms
+    setInterval(() => this.doRaycast(), 200);
 
     window.addEventListener( "mousemove", this.doRaycast.bind(this), false )
     window.addEventListener( "touchstart", this.onTouchStart.bind(this), false )
@@ -53,6 +56,7 @@ export default class Raycaster extends Behaviour {
     if (
         nextTargetObject.parent instanceof Cursor ||
         nextTargetObject.parent instanceof MeshText2D ||
+        nextTargetObject.parent instanceof SpriteText2D ||
         ( nextTargetObject.parent && nextTargetObject.parent.parent instanceof Cursor )
     ) {
       nextTargetObject = ( this.path[1] ) ? this.path[1].object : null

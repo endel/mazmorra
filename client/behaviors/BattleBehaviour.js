@@ -1,7 +1,8 @@
 import { Behaviour } from 'behaviour.js'
 import helpers from '../../shared/helpers'
 
-import { battleStartSound, wooshSound, hitSound } from '../core/sound';
+import { getClientId } from '../core/network';
+import { battleStartSound, wooshSound, hitSound, playRandom, deathSound, deathStingerSound } from '../core/sound';
 
 export default class BattleBehaviour extends Behaviour {
 
@@ -56,7 +57,7 @@ export default class BattleBehaviour extends Behaviour {
     }
 
     // play "woosh"
-    wooshSound[Math.floor(Math.random() * wooshSound.length)].play();
+    playRandom(wooshSound)
 
     // show damage / miss / critical
     let text = `-${ data.damage }`
@@ -83,20 +84,28 @@ export default class BattleBehaviour extends Behaviour {
 
   onTakeDamage () {
     if (this.object.sprite && (!this.lastTimeout || !this.lastTimeout.active)) {
+      // play damage taken sound!
+      playRandom(hitSound)
+
       // red blink on enemies
       this.object.sprite.material.color.setHex(config.COLOR_RED.getHex())
-      if (this.lastTimeout) this.lastTimeout.clear()
 
+      if (this.lastTimeout) { this.lastTimeout.clear(); }
       this.lastTimeout = App.clock.setTimeout(() => {
-        this.object.sprite.material.color.setHex(this.originalColor)
-
-        // play damage taken sound!
-        hitSound[Math.floor(Math.random() * hitSound.length)].play();
+        this.object.sprite.material.color.setHex(this.originalColor);
       }, 50)
     }
   }
 
   onDied () {
+    if (this.object.userData.type === helpers.ENTITIES.PLAYER) {
+      playRandom(deathSound);
+    }
+
+    if (this.object.userData.id === getClientId()) {
+      deathStingerSound.play();
+    }
+
     var initY = this.object.position.y
     App.tweens.add(this.object.position).
       to({ y: this.object.position.y + 1 }, 300, Tweener.ease.cubicOut).

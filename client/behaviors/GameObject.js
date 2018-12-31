@@ -2,7 +2,7 @@ import { Behaviour } from 'behaviour.js'
 
 import BattleBehaviour from './BattleBehaviour'
 import lerp from 'lerp'
-import { stepSounds } from '../core/sound';
+import { stepSounds, playRandom } from '../core/sound';
 
 export default class GameObject extends Behaviour {
 
@@ -19,7 +19,7 @@ export default class GameObject extends Behaviour {
 
       // play "step" sound for current player
       if (this.object === window.player) {
-        stepSounds[Math.floor(Math.random() * stepSounds.length)].play();
+        playRandom(stepSounds);
       }
     });
   }

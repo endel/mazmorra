@@ -36,7 +36,9 @@ class Credentials extends EventEmitter {
 
     this.registerForm = this.credentials.querySelector('form')
     this.registerForm.addEventListener("submit", (e) => {
+      debugger;
       e.preventDefault();
+      e.stopPropagation();
       this.onSubmitCredentials(e);
     });
 
@@ -48,14 +50,14 @@ class Credentials extends EventEmitter {
     });
 
     this.registerForm.querySelector('p.visible-register a').addEventListener('click', (e) => {
-      e.preventDefault()
+      e.preventDefault(); e.stopPropagation();
       this.registerForm.classList.remove('register')
       this.registerForm.classList.add('login')
       this.action = "login"
     })
 
     this.registerForm.querySelector('p.visible-login a').addEventListener('click', (e) => {
-      e.preventDefault()
+      e.preventDefault(); e.stopPropagation();
       this.action = "register"
       this.registerForm.classList.add('register')
       this.registerForm.classList.remove('login')
@@ -72,8 +74,6 @@ class Credentials extends EventEmitter {
   onSubmitCredentials (e) {
     console.log("ON SUBMIT!");
     console.log(`${config.BACKEND_ENDPOINT}/auth/${this.action}`);
-
-    e.preventDefault()
 
     fetch(`${config.BACKEND_ENDPOINT}/auth/${this.action}`, {
       method: 'post',
