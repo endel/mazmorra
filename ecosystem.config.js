@@ -17,7 +17,7 @@ module.exports = {
 	deploy : {
 		production : {
 			user : 'root',
-			host : ['138.197.97.91'],
+			host : ['159.203.137.180'],
 			ref  : 'origin/master',
 			repo : 'git@github.com:endel/mazmorra.git',
 			path : '/root/mazmorra',
