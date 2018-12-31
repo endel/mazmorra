@@ -1,7 +1,7 @@
 module.exports = {
   BACKEND_ENDPOINT: (window.location.href.match(/(localhost|192.168)/gi))
     ? `http://localhost:3553`
-    : window.location.protocol + "//" + window.location.hostname,
+    : window.location.protocol + "//" + window.location.hostname + ":3553",
 
   TILE_SIZE: 3,
 

@@ -21,7 +21,7 @@ module.exports = {
 			ref  : 'origin/master',
 			repo : 'git@github.com:endel/mazmorra.git',
 			path : '/root/mazmorra',
-			'post-deploy' : './node_modules/.bin/yarn install && ./node_modules/.bin/yarn build && pm2 startOrRestart ecosystem.config.js --env production'
+			'post-deploy' : './node_modules/.bin/yarn install && npm install --prefix server && ./node_modules/.bin/yarn build && pm2 startOrRestart ecosystem.config.js --env production'
 		}
 	}
 };
