@@ -20,6 +20,11 @@ export default class Cursor extends THREE.Object3D {
     this.attack.position.x += this.attack.height / 2
     this.attack.position.y -= this.attack.width / 2
 
+    this.activate = ResourceManager.getHUDElement('cursor-activate')
+    this.activate.material.alphaTest = 0.5
+    this.activate.position.x += this.activate.height / 2
+    this.activate.position.y -= this.activate.width / 2
+
     this.dragging = new THREE.Object3D()
     this.add(this.dragging)
 

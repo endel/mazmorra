@@ -1,6 +1,8 @@
 import { Behaviour } from 'behaviour.js'
 import helpers from '../../shared/helpers'
 
+import { battleStartSound, wooshSound } from '../core/sound';
+
 export default class BattleBehaviour extends Behaviour {
 
   onAttach ( factory ) {
@@ -45,7 +47,16 @@ export default class BattleBehaviour extends Behaviour {
     if (!this.isAttacking) {
       this.isAttacking = true
       this.togglePosition = true
+
+      // play battle start sound
+      if (this.object.userData.type !== helpers.ENTITIES.PLAYER) {
+        let enemyKindSound = battleStartSound[this.object.userData.kind] || battleStartSound.default;
+        enemyKindSound.play();
+      }
     }
+
+    // play "woosh"
+    wooshSound[Math.floor(Math.random() * wooshSound.length)].play();
 
     // show damage / miss / critical
     let text = `-${ data.damage }`
@@ -56,6 +67,7 @@ export default class BattleBehaviour extends Behaviour {
       text = 'miss'
 
     } else if (this.defender) {
+      // play damage taken sound!
       this.defender.getEntity().emit('damage')
     }
 

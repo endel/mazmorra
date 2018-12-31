@@ -59,7 +59,7 @@ export default class Builder extends THREE.Object3D {
     this.hairColorPicker.addEventListener('change', this.onChangeColor.bind(this, 'hair'))
     this.hud.add(this.hairColorPicker)
 
-    this.hairSelection = new SelectBox(this.options.hairs, "HAIR")
+    this.hairSelection = new SelectBox(this.options.hairs, "STYLE")
     this.hairSelection.position.set(0, this.hairColorPicker.position.y + this.hairSelection.height +  config.HUD_MARGIN, 0)
     this.hairSelection.addEventListener('change', this.onChangeProperty.bind(this, 'hair'))
     this.hud.add(this.hairSelection)
@@ -74,7 +74,7 @@ export default class Builder extends THREE.Object3D {
     this.bodyColorPicker.addEventListener('change', this.onChangeColor.bind(this, 'body'))
     this.hud.add(this.bodyColorPicker)
 
-    this.classSelection = new SelectBox(this.options.classes, "CLASS")
+    this.classSelection = new SelectBox(this.options.classes, "GUILD")
     this.classSelection.position.set(0, this.bodyColorPicker.position.y + this.classSelection.height +  config.HUD_MARGIN, 0)
     this.classSelection.addEventListener('change', this.onChangeClass.bind(this))
     this.hud.add(this.classSelection)

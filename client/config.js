@@ -26,7 +26,24 @@ module.exports = {
   DEFAULT_FONT: (Math.floor((7.5 / window.devicePixelRatio) * 5)) + "px primary",
 
   // player preferences
-  classes: ['warrior', 'mage', 'archer'],
-  hairs: ["Barbudao", "Coque", "Curto", "Ancient", "Barbudo", "Longo", "Longo 2", "Longuinho", "Longo duplo", "Badboy", "Punk", "None"]
+  classes: [
+    'red',
+    'blue',
+    'green'
+  ],
+  hairs: [
+    "Boy",
+    "Young",
+    "Ancient",
+    "Lumberman",
+    "Viking",
+    "Girl",
+    "Woman",
+    "Lady",
+    "Queen",
+    "Cowlick",
+    "Punk",
+    "Bald"
+  ]
 
 }

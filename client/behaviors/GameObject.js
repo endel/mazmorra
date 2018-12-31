@@ -1,10 +1,7 @@
 import { Behaviour } from 'behaviour.js'
 
 import BattleBehaviour from './BattleBehaviour'
-import LevelUp from '../elements/effects/LevelUp'
-
 import lerp from 'lerp'
-import helpers from '../../shared/helpers'
 
 export default class GameObject extends Behaviour {
 

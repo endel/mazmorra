@@ -8,6 +8,8 @@ import CharacterController from '../../behaviors/CharacterController'
 import { enterRoom, getClientId } from '../../core/network'
 import helpers from "../../../shared/helpers"
 
+import { doorSound } from '../../core/sound';
+
 export default class Level extends THREE.Object3D {
 
   constructor (hud, camera) {
@@ -105,6 +107,7 @@ export default class Level extends THREE.Object3D {
         })
 
         this.room.leave()
+        doorSound.play()
       }
     });
 
@@ -143,9 +146,12 @@ export default class Level extends THREE.Object3D {
         }
 
         if (entityToUpdate.action) {
-          // TODO: ITS CALLING MANY TIMES HERE
           let actionType = object.userData.action && object.userData.action.type;
           object.getEntity().emit(actionType, object.userData.action)
+        }
+
+        if (entityToUpdate.active !== undefined) {
+          object.getEntity().emit('active', entityToUpdate.active)
         }
 
           // LEVEL UP text event
@@ -222,7 +228,8 @@ export default class Level extends THREE.Object3D {
     // USE FOUNTAIONS / ITEMS
     this.room.listen("entities/:id/active", (change) => {
       if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
-    }, true);
+      entitiesToUpdate[change.path.id].active = change.value;
+    });
   }
 
   createPlayerBehaviour (entity) {
