@@ -6,6 +6,13 @@ export const wooshSound = [
   require('../resource/sounds/woosh3.wav'),
 ];
 
+export const hitSound = [
+  require('../resource/sounds/hit1.mp3'),
+  require('../resource/sounds/hit2.mp3'),
+  require('../resource/sounds/hit3.mp3'),
+  require('../resource/sounds/hit4.mp3'),
+];
+
 export const deathSound = [
   require('../resource/sounds/death1.mp3'),
   require('../resource/sounds/death2.mp3'),
@@ -26,8 +33,6 @@ export const stepSounds = [
   require('../resource/sounds/step2.mp3'),
   require('../resource/sounds/step3.mp3'),
   require('../resource/sounds/step4.mp3'),
-  require('../resource/sounds/step5.mp3'),
-  require('../resource/sounds/step6.mp3'),
 ];
 
 export const chestSound = require('../resource/sounds/chest.wav');

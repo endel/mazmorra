@@ -1,7 +1,7 @@
 import { Behaviour } from 'behaviour.js'
 import helpers from '../../shared/helpers'
 
-import { battleStartSound, wooshSound } from '../core/sound';
+import { battleStartSound, wooshSound, hitSound } from '../core/sound';
 
 export default class BattleBehaviour extends Behaviour {
 
@@ -67,7 +67,6 @@ export default class BattleBehaviour extends Behaviour {
       text = 'miss'
 
     } else if (this.defender) {
-      // play damage taken sound!
       this.defender.getEntity().emit('damage')
     }
 
@@ -90,6 +89,9 @@ export default class BattleBehaviour extends Behaviour {
 
       this.lastTimeout = App.clock.setTimeout(() => {
         this.object.sprite.material.color.setHex(this.originalColor)
+
+        // play damage taken sound!
+        hitSound[Math.floor(Math.random() * hitSound.length)].play();
       }, 50)
     }
   }
