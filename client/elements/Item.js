@@ -6,7 +6,16 @@ import LightOscillator from '../behaviors/LightOscillator'
 import Stretchable from '../behaviors/Stretchable'
 import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
 
-var unimportantItems = ['diamond', 'elixir-heal', 'elixir-potion', 'gold', 'life-heal', 'life-potion', 'mana-heal', 'mana-potion']
+var unimportantItems = [
+  'diamond',
+  'elixir-heal',
+  'elixir-potion',
+  'gold',
+  'life-heal',
+  'life-potion',
+  'mana-heal',
+  'mana-potion'
+]
 
 export default class Item extends THREE.Object3D {
 

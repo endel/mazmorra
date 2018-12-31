@@ -1,4 +1,5 @@
 import { Behaviour } from 'behaviour.js'
+import { chestSound } from '../core/sound';
 
 export default class Openable extends Behaviour {
 
@@ -8,8 +9,9 @@ export default class Openable extends Behaviour {
 
     if (!this.isOpen) {
       this.on('open', this.open.bind(this))
+
     } else {
-      this.open()
+      this.open(false)
     }
   }
 
@@ -17,7 +19,9 @@ export default class Openable extends Behaviour {
     return typeof(this.object.userData.action)==="object" && this.object.userData.action.type === 'open'
   }
 
-  open() {
+  open(playSound = true) {
+    if (playSound) chestSound.play();
+
     App.tweens.add(this.object.head.position).
       to({ y: this.openedY }, 500, Tweener.ease.quartOut).
       wait(100).

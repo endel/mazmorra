@@ -12,6 +12,7 @@ export default class Game {
     this.container = container
     this.container.innerHTML = "";
 
+
     this.renderer = new THREE.WebGLRenderer();
     // this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio( window.devicePixelRatio );
@@ -88,20 +89,22 @@ export default class Game {
   onWindowResize () {
     if (this.hud) this.hud.resize()
 
+    const WIDTH = window.innerWidth;
+    const HEIGHT = window.innerHeight;
+
     // // update camera aspect ratio / projection matrix
     // this.camera.aspect = window.innerWidth / window.innerHeight;
 
     // update orthogonal camera aspect ratio / projection matrix
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.left = - window.innerWidth / 2;
-    this.camera.right = window.innerWidth / 2;
-    this.camera.top = window.innerHeight / 2;
-    this.camera.bottom = - window.innerHeight / 2;
+    this.camera.aspect = WIDTH / HEIGHT;
+    this.camera.left = - WIDTH / 2;
+    this.camera.right = WIDTH / 2;
+    this.camera.top = HEIGHT / 2;
+    this.camera.bottom = - HEIGHT / 2;
 
     this.camera.updateProjectionMatrix();
 
-    this.renderer.setSize( window.innerWidth, window.innerHeight );
-    // this.cameraController.handleResize();
+    this.renderer.setSize( WIDTH, HEIGHT );
   }
 
   update () {

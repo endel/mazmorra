@@ -8,7 +8,7 @@ import CharacterController from '../../behaviors/CharacterController'
 import { enterRoom, getClientId } from '../../core/network'
 import helpers from "../../../shared/helpers"
 
-import { doorSound } from '../../core/sound';
+import { doorSound, coinSound } from '../../core/sound';
 
 export default class Level extends THREE.Object3D {
 
@@ -181,6 +181,7 @@ export default class Level extends THREE.Object3D {
           this.entities[ entity.userData.id ] = entity
 
           if (entity.userData.id === getClientId()) {
+            // SET GLOBAL CURRENT PLAYER OBJECT
             window.player = entity;
             this.createPlayerBehaviour(entity)
           }
@@ -230,10 +231,19 @@ export default class Level extends THREE.Object3D {
       if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
       entitiesToUpdate[change.path.id].active = change.value;
     });
+
+    // play coin sound when current player increases his gold
+    this.room.listen("entities/:id/gold", (change) => {
+      if (change.operation === "replace" && change.path.id === getClientId()) {
+        coinSound.play();
+      }
+    });
   }
 
   createPlayerBehaviour (entity) {
     entity.addBehaviour(new CharacterController, this.camera, this.room)
+    // window.createPlayerBehaviour = () => entity.addBehaviour(new CharacterController, this.camera, this.room)
+
     this.hud.setPlayerObject(entity)
   }
 

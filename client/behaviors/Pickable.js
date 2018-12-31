@@ -1,7 +1,6 @@
 import { Behaviour } from 'behaviour.js'
 
 import Shadow from './Shadow'
-import NearPlayerOpacity from './NearPlayerOpacity'
 
 export default class Pickable extends Behaviour {
 

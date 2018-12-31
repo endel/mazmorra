@@ -20,7 +20,6 @@ export default class Activatable extends Behaviour {
     if (this.object.userData.type === "fountain" ) {
       canPlaySound = (value === false);
     }
-    console.log('onActiveChange, canPlaySound:', canPlaySound);
 
     var sound = activatableSound[this.object.userData.type];
     if (sound && canPlaySound) { sound.play(); }
