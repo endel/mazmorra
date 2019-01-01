@@ -13,8 +13,9 @@ class ManaHeal extends Item {
   pick (player, state) {
     let heal = Math.floor(Math.random() * 10)+10
     player.mp.current += heal
-    state.addTextEvent("+" + heal, player.position, 'blue', 100)
-    state.removeEntity( this )
+    state.createTextEvent("+" + heal, player.position, 'blue', 100)
+
+    return true;
   }
 
 }

@@ -11,10 +11,11 @@ class LifeHeal extends Item {
   }
 
   pick (player, state) {
-    let heal = Math.floor(Math.random() * 10)+10
+    let heal = Math.floor(Math.random() * 10) + 10
     player.hp.current += heal
-    state.addTextEvent("+" + heal, player.position, 'red', 100)
-    state.removeEntity( this )
+    state.createTextEvent("+" + heal, player.position, 'red', 100)
+
+    return true;
   }
 
 }

@@ -14,7 +14,8 @@ class Gold extends Item {
     let gold = Math.floor(Math.random() * 5)+1
     player.gold += gold
     state.createTextEvent("+" + gold, player.position, 'yellow', 100)
-    state.removeEntity( this )
+
+    return true;
   }
 
 }

@@ -4,7 +4,7 @@ var Entity = require('./Entity')
 
   , helpers  = require('../../shared/helpers')
 
-class ItemEntity extends Entity {
+class Item extends Entity {
 
   constructor (type, position) {
     super()
@@ -19,4 +19,4 @@ class ItemEntity extends Entity {
 
 }
 
-module.exports = ItemEntity
+module.exports = Item

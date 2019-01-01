@@ -14,6 +14,7 @@ var helpers  = require('../../shared/helpers')
   // items
   , Gold  = require('../entities/items/Gold')
   , LifeHeal  = require('../entities/items/LifeHeal')
+  , ManaHeal  = require('../entities/items/ManaHeal')
 
   // interactive
   , Door  = require('../entities/interactive/Door')
@@ -211,7 +212,18 @@ class RoomUtils {
   }
 
   dropItemFrom (unit) {
-    return new Gold(unit.position)
+    const position = unit.position;
+    const index = this.rand.intBetween(0, 2);
+
+    let itemToDrop;
+
+    switch (index) {
+      case 0: itemToDrop = new Gold(position); break;
+      case 1: itemToDrop = new LifeHeal(position); break;
+      case 2: itemToDrop = new ManaHeal(position); break;
+    }
+
+    return itemToDrop;
   }
 
   shuffle (array) {

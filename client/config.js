@@ -7,6 +7,7 @@ module.exports = {
   COLOR_GREEN: new THREE.Color(0x6ca018),
   COLOR_YELLOW: new THREE.Color(0xfcf458),
   COLOR_WHITE: new THREE.Color(0xffffff),
+  COLOR_BLUE: new THREE.Color(0x185090),
 
   colors: {
     dark: 0x000000,    // black
