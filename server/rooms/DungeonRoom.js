@@ -65,9 +65,11 @@ class DungeonRoom extends Room {
     this.players.set(client, player)
     this.clientMap.set(player, client)
 
-    Hero.update({ _id: hero._id }, {
-      $set: { progress: this.state.progress }
-    }).then(() => {});
+    if (this.state.progress !== 1) {
+      Hero.update({ _id: hero._id }, {
+        $set: { progress: this.state.progress }
+      }).then(() => { });
+    }
   }
 
   onMessage (client, data) {

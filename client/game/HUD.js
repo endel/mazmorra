@@ -100,22 +100,25 @@ export default class HUD extends THREE.Scene {
   }
 
   onOpenInventory () {
-
-    if ( this.inventory.isOpen ) {
-
-      App.tweens.add( this.overlay.material ).to({ opacity: 0 }, 200).then(() => {
-        this.overlay.visible = false
-      })
+    if (this.inventory.isOpen) {
+      this.hideOverlay();
 
     } else {
-
-      this.overlay.visible = true
-      App.tweens.add( this.overlay.material ).to({ opacity: 0.5 }, 200)
-
+      this.showOverlay();
     }
 
     this.inventory.toggleOpen()
+  }
 
+  showOverlay (duration = 200) {
+    this.overlay.visible = true
+    App.tweens.add(this.overlay.material).to({ opacity: 0.5 }, duration);
+  }
+
+  hideOverlay(duration = 200) {
+    App.tweens.add(this.overlay.material).to({ opacity: 0 }, duration).then(() => {
+      this.overlay.visible = false
+    })
   }
 
   setPlayerObject (playerObject) {

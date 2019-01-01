@@ -100,14 +100,12 @@ export default class Level extends THREE.Object3D {
     this.room.onStateChange.addOnce((state) => this.setup(state));
 
     this.room.onError.add((err) => console.error(err));
+    this.room.onLeave.add(() => this.cleanup());
 
     this.room.onMessage.add((payload) => {
       let [ evt, data ] = payload
       if (evt === "goto") {
-        this.room.onLeave.addOnce(() => {
-          this.cleanup();
-          this.room = this.enterRoom('dungeon', data)
-        })
+        this.room.onLeave.addOnce(() => this.room = this.enterRoom('dungeon', data))
 
         this.room.leave()
         doorSound.play()
@@ -203,6 +201,16 @@ export default class Level extends THREE.Object3D {
       if (change.value <= 0) {
         var object = this.entities[change.path.id];
         object.getEntity().emit('died');
+
+        // Go back to lobby if current player has died
+        // (After 5 seconds)
+        if (change.path.id === getClientId()) {
+          this.dispatchEvent({ type: 'died' });
+          setTimeout(() => {
+            this.room.onLeave.addOnce(() => this.enterRoom('dungeon', { progress: 1 }));
+            this.room.leave();
+          }, 4000);
+        }
       }
     }, true);
 

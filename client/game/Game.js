@@ -74,14 +74,16 @@ export default class Game {
 
   init () {
     this.level = new Level( this.hud, this.camera )
-    this.level.addEventListener( "setup", this.onSetupLevel.bind(this) )
+    this.level.addEventListener("setup", this.onSetupLevel.bind(this))
+    this.level.addEventListener("died", () => this.hud.showOverlay(2000))
     this.scene.add( this.level )
     this.hud.init()
   }
 
   onSetupLevel (e) {
-    let clearColor = (e.state.daylight) ? config.colors[ e.state.mapkind ] : config.colors.dark
+    this.hud.hideOverlay();
 
+    let clearColor = (e.state.daylight) ? config.colors[ e.state.mapkind ] : config.colors.dark
     this.renderer.setClearColor( clearColor );
     // this.scene.fog = new THREE.FogExp2( clearColor, 1 );
   }
