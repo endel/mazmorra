@@ -44,13 +44,14 @@ class DungeonState extends EventEmitter {
 
     } else {
       // ['grass', 'rock', 'ice', 'inferno', 'castle']
-      this.mapkind = 'inferno';
+      // this.mapkind = 'inferno';
+      this.mapkind = 'rock';
 
-      // // big-and-spread (castle)
-      data = dungeon.generate(this.rand, {x: 52, y: 52}, {x: 6, y: 6}, {x: 12, y: 12}, 32)
+      // // // big-and-spread (castle)
+      // data = dungeon.generate(this.rand, {x: 52, y: 52}, {x: 6, y: 6}, {x: 12, y: 12}, 32)
 
-      // // compact / cave (rock)
-      // data = dungeon.generate(this.rand, {x: 16, y: 16}, {x: 4, y: 4}, {x: 8, y: 8}, 24)
+      // compact / cave (rock)
+      data = dungeon.generate(this.rand, {x: 16, y: 16}, {x: 4, y: 4}, {x: 8, y: 8}, 24)
 
       // // maze-like (castle)
       // data = dungeon.generate(this.rand, {x: 48, y: 48}, {x: 5, y: 5}, {x: 10, y: 10}, 32)
