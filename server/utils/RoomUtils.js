@@ -143,8 +143,6 @@ class RoomUtils {
 
       // add door
       this.state.addEntity(new Door(this.endPosition, {
-        identifier: 'grass',
-        mapkind: 'grass',
         difficulty: 1,
         progress: this.state.progress + 1
       }))

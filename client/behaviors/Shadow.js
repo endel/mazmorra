@@ -1,4 +1,3 @@
-'use strict';
 import { Behaviour } from 'behaviour.js'
 
 var material = null, geometry = null

@@ -1,12 +1,14 @@
 'use strict';
 
 import Highlight from './Highlight'
-import TextEvent from '../TextEvent'
+import { levelUpSound } from '../../core/sound';
 
 export default class LevelUp extends Highlight {
 
   constructor () {
     super()
+
+    levelUpSound.play();
 
     this.position.y = 1
 

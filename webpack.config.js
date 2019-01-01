@@ -34,7 +34,7 @@ module.exports = {
       },
       { test: /\.styl$/, loader: stylusLoader },
       { test: /\.(woff|woff2|eot|ttf|svg)$/, loader: 'file-loader?limit=1024&name=[name].[ext]' },
-      { test: /\.(wav|mp3)$/, loader: AudioSprite.loader() }
+      { test: /\.(wav|mp3|aif)$/, loader: AudioSprite.loader() }
     ],
 
   },

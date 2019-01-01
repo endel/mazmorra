@@ -14,14 +14,18 @@ export default class CharacterController extends Behaviour {
     this.originalY = this.object.position.y
     this.lookAtTarget = this.object.position.clone()
 
+    this.lightDistance = 8;
+
     this.object.addBehaviour(new Chat, room)
 
     // this.light = new THREE.SpotLight(0xffffff, 1, 300, 10);
-    this.light = new THREE.SpotLight(0xffffff);
-    this.light.penumbra = 1
-    this.light.target = this.object
-    this.light.position.set(0, 8, 0)
-    this.object.add(this.light)
+    if (!window.IS_DAY) {
+      this.light = new THREE.SpotLight(0xffffff);
+      this.light.penumbra = 1
+      this.light.target = this.object
+      this.light.position.set(0, this.lightDistance, 0)
+      this.object.add(this.light)
+    }
   }
 
   update () {

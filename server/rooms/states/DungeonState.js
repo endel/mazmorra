@@ -34,8 +34,9 @@ class DungeonState extends EventEmitter {
 
     this.progress = progress;
     this.difficulty = difficulty;
-    this.daylight = (serverHour > 6 && serverHour < 19);
 
+    // this.daylight = (serverHour > 6 && serverHour < 19);
+    this.daylight = (serverHour % 2 === 1)
     var data;
 
     if (progress === 1) {

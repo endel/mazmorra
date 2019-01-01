@@ -58,13 +58,12 @@ class DungeonRoom extends Room {
   }
 
   onJoin (client, options, user) {
-    let hero = user.heros[0];
-    let player = this.state.createPlayer(client, hero);
+    const hero = user.heros[0];
+    const player = this.state.createPlayer(client, hero);
 
-    this.heroes.set(client, hero._id)
+    this.heroes.set(client, hero)
     this.players.set(client, player)
     this.clientMap.set(player, client)
-
 
     Hero.update({ _id: hero._id }, {
       $set: { progress: this.state.progress }
@@ -72,9 +71,9 @@ class DungeonRoom extends Room {
   }
 
   onMessage (client, data) {
-    let key = data[0]
-      , value = data[1]
-      , player = this.players.get(client)
+    const key = data[0]
+        , value = data[1]
+        , player = this.players.get(client)
 
     if (!player) {
       console.log("ERROR: message comming from invalid player.")
@@ -83,6 +82,7 @@ class DungeonRoom extends Room {
 
     if (key == 'pos') {
       this.state.move(player, value, true)
+
     } else if (key == 'msg') {
       // remove message after 3 seconds
       let entity = this.state.addMessage(player, value)
@@ -91,7 +91,14 @@ class DungeonRoom extends Room {
   }
 
   onGoTo (player, data) {
-    this.send(this.clientMap.get(player), ['goto', data])
+    const client = this.clientMap.get(player);
+    const hero = this.heroes.get(client);
+
+    const progress = (hero.progress < data.progress)
+      ? data.progress
+      : hero.progress;
+
+    this.send(this.clientMap.get(player), ['goto', { progress }]);
   }
 
   removeEntity (entity) {
@@ -99,13 +106,13 @@ class DungeonRoom extends Room {
   }
 
   onLeave (client) {
-    var heroId = this.heroes.get(client)
+    const hero = this.heroes.get(client)
       , player = this.players.get(client)
 
-    if (!heroId) return;
+    if (!hero._id) return;
 
     // sync
-    return Hero.update({ _id: heroId }, {
+    return Hero.update({ _id: hero._id }, {
       $set: {
         lvl: player.lvl,
         gold: player.gold,
