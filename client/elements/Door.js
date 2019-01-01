@@ -2,10 +2,11 @@
 
 export default class Door extends THREE.Object3D {
 
-  constructor (data) {
+  constructor (data, currentProgress) {
     super()
 
     this.userData = data
+    this.currentProgress = currentProgress
 
     let type = (IS_DAY)
      ? 'door-day'
@@ -39,7 +40,10 @@ export default class Door extends THREE.Object3D {
   }
 
   get label () {
-    return "Door to #" + this.userData.destiny.progress;
+    const progress = this.userData.destiny.progress;
+    return (progress > this.currentProgress)
+      ? `Forward to #${progress}`
+      : `Back to #${progress}`
   }
 
   onMouseOver (tileSelection) {

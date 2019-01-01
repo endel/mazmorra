@@ -27,7 +27,6 @@ export default class NearPlayerOpacity extends Behaviour {
         , opacity = 5 / distance;
 
       if (this.entity.getBehaviour("Activatable")) {
-        console.log("IS ACTIVATABLE")
         this.object.activeSprite.material.opacity = opacity;
         this.object.inactiveSprite.material.opacity = opacity;
 

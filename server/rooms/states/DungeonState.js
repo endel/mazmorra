@@ -44,11 +44,19 @@ class DungeonState extends EventEmitter {
 
     } else {
       // ['grass', 'rock', 'ice', 'inferno', 'castle']
-      this.mapkind = 'grass';
+      this.mapkind = 'inferno';
 
+      // // big-and-spread (castle)
+      data = dungeon.generate(this.rand, {x: 52, y: 52}, {x: 6, y: 6}, {x: 12, y: 12}, 32)
+
+      // // compact / cave (rock)
       // data = dungeon.generate(this.rand, {x: 16, y: 16}, {x: 4, y: 4}, {x: 8, y: 8}, 24)
+
+      // // maze-like (castle)
       // data = dungeon.generate(this.rand, {x: 48, y: 48}, {x: 5, y: 5}, {x: 10, y: 10}, 32)
-      data = dungeon.generate(this.rand, {x: 24, y: 24}, {x: 6, y: 6}, {x: 12, y: 12}, 3);
+
+      // // regular rooms
+      // data = dungeon.generate(this.rand, {x: 24, y: 24}, {x: 6, y: 6}, {x: 12, y: 12}, 3);
     }
 
     this.grid = data[0]
@@ -90,22 +98,27 @@ class DungeonState extends EventEmitter {
   }
 
   createPlayer (client, hero) {
-    var player = new Player(client.id, hero)
+    // prevent hero from starting the game dead
+    // when he dies and returns to lobby
+    if (
+      hero.hp <= 0 &&
+      this.progress === 1
+    ) {
+      hero.hp = 1;
+    }
 
+    var player = new Player(client.id, hero)
     player.state = this
-    // player.position.on('move', this.onEntityMove.bind(this))
 
     if (hero.progress <= this.progress) {
       player.position.set(this.roomUtils.startPosition)
+
     } else {
       player.position.set(this.roomUtils.endPosition)
     }
 
     this.addEntity(player)
     this.players[ player.id ] = player
-
-    // TODO: refactor me!
-    client.player = player
 
     return player
   }
@@ -200,9 +213,9 @@ class DungeonState extends EventEmitter {
   toJSON () {
     return {
       mapkind: this.mapkind,
+      progress: this.progress,
       daylight: this.daylight,
       grid: this.grid,
-      // players: this.players,
       entities: this.entities,
     }
   }

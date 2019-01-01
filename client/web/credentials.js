@@ -36,7 +36,6 @@ class Credentials extends EventEmitter {
 
     this.registerForm = this.credentials.querySelector('form')
     this.registerForm.addEventListener("submit", (e) => {
-      debugger;
       e.preventDefault();
       e.stopPropagation();
       this.onSubmitCredentials(e);

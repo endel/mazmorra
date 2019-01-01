@@ -24,6 +24,7 @@ export default class Level extends THREE.Object3D {
     this.room = this.enterRoom('dungeon')
 
     this.entities = {}
+    this.progress = 0;
 
     this.clickedTileLight = new THREE.SpotLight(config.COLOR_RED, 0.5, 30);
     this.clickedTileLight.penumbra = 0.8
@@ -253,6 +254,24 @@ export default class Level extends THREE.Object3D {
     Resources.init();
 
     window.IS_DAY = state.daylight
+    this.progress = state.progress;
+
+    if (this.mapkindAestetics) {
+      clearInterval(this.mapkindAestetics);
+      this.mapkindAestetics = undefined;
+    }
+
+    /**
+     * Custom aestetics per mapkind
+     */
+    if (state.mapkind === "inferno") {
+      // Moving inferno walls
+      const infernoWallTile = ResourceManager.get('tile-inferno-wall');
+      this.mapkindAestetics = setInterval(() => infernoWallTile.offset.y += 0.01, 50);
+
+    } else if (state.mapkind === "ice") {
+
+    }
 
     if (state.daylight) {
       // ambient light

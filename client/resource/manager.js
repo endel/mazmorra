@@ -120,7 +120,7 @@ class ResourceManager {
             // color: 0xa0adaf,
             // specular: 0x111111,
             // shininess: 60,
-            shading: THREE.SmoothShading,
+            shading: THREE.FlatShading,
             map: texture,
             side: THREE.DoubleSide,
             // depthWrite: false

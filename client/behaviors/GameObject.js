@@ -32,8 +32,6 @@ export default class GameObject extends Behaviour {
       this.object.addBehaviour( this.battleBehaviour, this.factory )
 
     } else {
-
-      this.dest
       // TODO: refactor me
       this.object.sprite.material.rotation = Math.PI
       this.object.sprite.material.opacity = DEAD_ENTITY_OPACITY;

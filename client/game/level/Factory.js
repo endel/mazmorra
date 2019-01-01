@@ -36,7 +36,7 @@ export default class Factory {
 
     switch (data.type) {
       case helpers.ENTITIES.DOOR:
-        element = new Door(data)
+        element = new Door(data, this.level.progress)
         break;
 
       case helpers.ENTITIES.ENEMY:
