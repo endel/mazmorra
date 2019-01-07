@@ -229,24 +229,18 @@ export default class Factory {
       tile.rotation.x = Math.PI;
 
       if (type & helpers.DIRECTION.NORTH) {
-        tile.position.z += config.TILE_SIZE / 2
+        tile.position.z += config.TILE_SIZE / 2 // - config.WALL_THICKNESS / 2
 
       } else if (type & helpers.DIRECTION.SOUTH) {
-        tile.position.z -= config.TILE_SIZE / 2
-
-        // tile.material.transparent = true;
-        // tile.material.opacity = 0.4;
+        tile.position.z -= config.TILE_SIZE / 2 // - config.WALL_THICKNESS / 2
 
       } else if (type & helpers.DIRECTION.EAST) {
         tile.rotation.y = Math.PI / 2
-        tile.position.x -= config.TILE_SIZE / 2
-
-        // tile.material.transparent = true;
-        // tile.material.opacity = 0.4;
+        tile.position.x -= config.TILE_SIZE / 2 // + config.WALL_THICKNESS / 2
 
       } else if (type & helpers.DIRECTION.WEST) {
         tile.rotation.y = Math.PI / 2
-        tile.position.x += config.TILE_SIZE / 2
+        tile.position.x += config.TILE_SIZE / 2 // - config.WALL_THICKNESS / 2
       }
     }
 

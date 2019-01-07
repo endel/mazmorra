@@ -48,50 +48,17 @@ export default class Level extends THREE.Object3D {
   }
 
   onMouseOver (e) {
-
     let walkableObject = null
 
-    if ( e.target.userData.type === "walkable" ) {
-
+    if (e.target.userData.type === "walkable") {
       walkableObject = e.target
-
-    } else if ( e.target.userData.position ) {
-
-      walkableObject = this.factory.getTileAt( e.target.userData.position )
-
-    } else if ( e.target.parent.userData.position ) {
-
-      walkableObject = this.factory.getTileAt( e.target.parent.userData.position )
-
-    } else if ( e.path.length > 1 ) {
-
-      // TODO: this might be unecessary
-      // try to select over tile through intersection path
-
-      let intersection = e.path.filter(i => i.object.userData.type === "walkable" || i.object.userData.position)[0]
-
-      if ( ! intersection )  { return }
-
-      if ( intersection.object.userData.position ) {
-
-        walkableObject = this.factory.getTileAt( intersection.object.userData.position )
-
-      } else {
-
-        walkableObject = intersection.object
-
-      }
-
     }
 
-    this.setTileSelection( walkableObject )
-
+    this.setTileSelection(walkableObject)
   }
 
-  onMouseOut (e) {
-
-    this.setTileSelection( null )
-
+  onMouseOut(e) {
+    this.setTileSelection(null)
   }
 
   enterRoom (name, options = {}) {
@@ -269,6 +236,16 @@ export default class Level extends THREE.Object3D {
       this.mapkindAestetics = undefined;
     }
 
+    // The point-light improves readability of room connections (slightly shadowed)
+    var pointLight = new THREE.PointLight(0xffffff);
+    pointLight.position.z = 500;
+    this.add(pointLight);
+
+    // Global ambient light
+    var light = new THREE.AmbientLight(0xffffff); // soft white light
+    this.add(light);
+    window.light = light
+
     /**
      * Custom aestetics per mapkind
      */
@@ -280,16 +257,6 @@ export default class Level extends THREE.Object3D {
     } else if (state.mapkind === "ice") {
 
     }
-
-    // The point-light improves readability of room connections (slightly shadowed)
-    var pointLight = new THREE.PointLight(0xffffff);
-    pointLight.position.z = 500;
-    this.add(pointLight);
-
-    // Global ambient light
-    var light = new THREE.AmbientLight(0xffffff); // soft white light
-    this.add(light);
-    window.light = light
 
     if (state.daylight) {
       pointLight.intensity = 0.25;

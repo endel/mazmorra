@@ -49,47 +49,45 @@ export default class Raycaster extends Behaviour {
 
     this.path = this.raycaster.intersectObject( this.object, true )
 
-    let nextTargetObject = (this.path.length > 0) && this.path[0].object
+    // let nextTargetObject = (this.path.length > 0) && this.path[0].object
+    let nextTargetObject;
 
-    // get next object in case trying to select 'Cursor'
-    // TODO: improve me?
-    if (
-        nextTargetObject.parent instanceof Cursor ||
-        nextTargetObject.parent instanceof MeshText2D ||
-        nextTargetObject.parent instanceof SpriteText2D ||
-        ( nextTargetObject.parent && nextTargetObject.parent.parent instanceof Cursor )
-    ) {
-      nextTargetObject = ( this.path[1] ) ? this.path[1].object : null
+    for (let i = 0, l = this.path.length; i < l; i++) {
+      const object = this.path[i].object;
+
+      if (object.userData.type === "walkable") {
+        nextTargetObject = this.path[i].object;
+        break;
+
+      } else if (object.parent.userData.type === "walkable" || object.parent.userData.hud) {
+        nextTargetObject = this.path[i].object.parent;
+        break;
+      }
     }
 
     if (this.targetObject !== nextTargetObject) {
 
       // mouseout
       if (this.targetObject) {
-
-        this.targetObject.dispatchEvent( {
+        this.targetObject.dispatchEvent({
           type: "mouseout",
           bubbles: true,
           path: this.path
-        } )
-
+        })
       }
 
       // mouseover
       if (nextTargetObject) {
-
         nextTargetObject.dispatchEvent({
           type: "mouseover",
           bubbles: true,
           path: this.path
         })
-
       }
 
     }
 
     this.targetObject = nextTargetObject
-
   }
 
   onTouchStart (e) {

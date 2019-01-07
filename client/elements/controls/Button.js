@@ -3,6 +3,8 @@ export default class Button extends THREE.Object3D {
   constructor (kind = 'button-left') {
     super()
 
+    this.userData.hud = true;
+
     this.hoverScale = 1.04
     this.mouseOutScale = 1
 

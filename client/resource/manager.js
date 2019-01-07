@@ -53,6 +53,8 @@ class ResourceManager {
     element.width = tex.frame.w * config.HUD_SCALE
     element.scale.set(element.width, element.height, 1)
 
+    element.userData.hud = true;
+
     return element
   }
 
@@ -127,7 +129,15 @@ class ResourceManager {
             side: THREE.DoubleSide,
             // depthWrite: false
           })
-          this.geometries[ name ] = new THREE.PlaneGeometry(config.TILE_SIZE, config.TILE_SIZE)
+
+          // if (name.indexOf('-wall') >= 0) {
+          //   // walls are boxes
+          //   this.geometries[name] = new THREE.BoxGeometry(config.TILE_SIZE, config.TILE_SIZE, config.WALL_THICKNESS)
+
+          // } else {
+            this.geometries[name] = new THREE.PlaneGeometry(config.TILE_SIZE, config.TILE_SIZE)
+
+          // }
         }
 
         this.textures[ name ] = texture

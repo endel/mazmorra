@@ -49,14 +49,20 @@ export default class SlotStrip extends THREE.Object3D {
     this._numSlots = total
     this.updateChildren()
   }
-  get numSlots () { return this._numSlots }
+
+  get numSlots () {
+    return this._numSlots
+  }
 
   updateChildren () {
     let row, column
       , i = this.children.length
       , slot = null
 
-    while (i--) { this.remove(this.children[i]) }
+    // remove previous children
+    while (i--) {
+      this.remove(this.children[i])
+    }
 
     this.slots = []
     for (i=0; i<this._numSlots; i++) {

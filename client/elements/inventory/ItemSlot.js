@@ -8,6 +8,7 @@ export default class ItemSlot extends THREE.Object3D {
     super()
 
     this._item = null
+    this.userData.hud = true;
 
     this.accepts = options.accepts
 
@@ -104,7 +105,7 @@ export default class ItemSlot extends THREE.Object3D {
 
   onDragStart (e) {
 
-    let targetSlot = e.target.parent
+    let targetSlot = e.target
 
     if ( targetSlot.item ) {
 
@@ -133,8 +134,7 @@ export default class ItemSlot extends THREE.Object3D {
   }
 
   onDragEnd (e) {
-
-    let targetSlot = e.target.parent
+    let targetSlot = e.target
 
     if ( !targetSlot.item ) {
 

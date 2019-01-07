@@ -38,20 +38,23 @@ export default class Inventory extends THREE.Object3D {
     // emit toggle event
     this.getEntity().emit('toggle', this.isOpen)
 
-    let scaleFrom = ((this.isOpen) ? 0.5 : 1)
-      , scaleTo = ((this.isOpen) ? 1 : 0.5)
+    const scaleFrom = ((this.isOpen) ? 0.5 : 1)
+    const scaleTo = ((this.isOpen) ? 1 : 0.5)
 
     this.scale.set(scaleFrom, scaleFrom, scaleFrom)
-    if (this.isOpen) this.visible = true
+
+    if (this.isOpen) {
+      this.visible = true
+    }
 
     //
     // fade all element materials separately
     // (THREE.js can't change opacity of containers)
     //
-    let elementsToFade = this.characterItems.children
-                          .concat(this.slots.children)
-                          .concat(this.exchangeSlots.children)
-                          .concat(this.exchangeSymbol)
+    const elementsToFade = this.characterItems.children.
+      concat(this.slots.children).
+      concat(this.exchangeSlots.children).
+      concat(this.exchangeSymbol)
 
     elementsToFade.map((el, i) => {
       let targetOpacity = ((this.isOpen) ? ItemSlot.DEFAULT_OPACITY : 0)

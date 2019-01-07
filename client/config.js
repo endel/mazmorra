@@ -2,6 +2,7 @@ module.exports = {
   BACKEND_ENDPOINT: window.location.protocol + "//" + window.location.hostname + ":3553",
 
   TILE_SIZE: 3,
+  WALL_THICKNESS: 0.7,
 
   COLOR_RED: new THREE.Color(0xd00000),
   COLOR_GREEN: new THREE.Color(0x6ca018),

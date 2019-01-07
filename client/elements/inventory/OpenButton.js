@@ -3,6 +3,8 @@ export default class InventoryIcon extends THREE.Object3D {
   constructor () {
     super()
 
+    this.userData.hud = true;
+
     this.isOpen = false
 
     var closedMaterial = ResourceManager.get("hud-bag")
