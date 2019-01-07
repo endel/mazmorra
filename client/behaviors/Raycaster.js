@@ -59,7 +59,7 @@ export default class Raycaster extends Behaviour {
         nextTargetObject = this.path[i].object;
         break;
 
-      } else if (object.parent.userData.type === "walkable" || object.parent.userData.hud) {
+      } else if (object.parent.userData.hud) {
         nextTargetObject = this.path[i].object.parent;
         break;
       }
