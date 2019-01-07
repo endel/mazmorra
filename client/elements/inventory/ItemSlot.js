@@ -47,27 +47,21 @@ export default class ItemSlot extends THREE.Object3D {
   }
 
   onMouseOver ( e ) {
-
     if (this._item || draggingItem) {
       App.tweens.remove(this.scale)
       App.tweens.add(this.scale).to({ x: 1.1, y: 1.1 }, 200, Tweener.ease.quadOut)
     }
-
   }
 
   onMouseOut () {
-
     App.tweens.remove(this.scale)
     App.tweens.add(this.scale).to({ x: 1, y: 1 }, 200, Tweener.ease.quadOut)
-
   }
 
-  set item ( item ) {
-
-    if ( item ) {
-
-      this.add( this.use )
-      this.remove( this.free )
+  set item(item) {
+    if (item) {
+      this.add(this.use)
+      this.remove(this.free)
 
       item.position.x = 0
       item.position.y = 0
@@ -76,11 +70,8 @@ export default class ItemSlot extends THREE.Object3D {
       this.add(item)
 
     } else {
-
       if (this._item) {
-
         this.remove(this._item)
-
       }
 
       this.remove(this.use)
@@ -88,32 +79,26 @@ export default class ItemSlot extends THREE.Object3D {
     }
 
     this._item = item
-
   }
 
   get item () {
-
     return this._item
-
   }
 
   get material () {
-
     return this._item ? this.use.material : this.free.material
-
   }
 
-  onDragStart (e) {
-
+  onDragStart(e) {
     let targetSlot = e.target
 
-    if ( targetSlot.item ) {
+    if (targetSlot.item) {
 
       draggingItem = targetSlot.item
       draggingFrom = targetSlot
 
       // setup initialScale variable for the first time
-      if ( draggingItem.initialScale === undefined ) {
+      if (draggingItem.initialScale === undefined) {
         draggingItem.initialScale = draggingItem.scale.clone()
       }
 
@@ -128,16 +113,13 @@ export default class ItemSlot extends THREE.Object3D {
         x: draggingItem.initialScale.x + (2 * config.HUD_SCALE),
         y: draggingItem.initialScale.y + (2 * config.HUD_SCALE)
       }, 300, Tweener.ease.quintOut)
-
     }
-
   }
 
-  onDragEnd (e) {
+  onDragEnd(e) {
     let targetSlot = e.target
 
-    if ( !targetSlot.item ) {
-
+    if (!targetSlot.item) {
       targetSlot.item = draggingItem
 
       App.cursor.dispatchEvent({
@@ -149,11 +131,7 @@ export default class ItemSlot extends THREE.Object3D {
       App.tweens.add(draggingItem.scale).to(draggingItem.initialScale, 300, Tweener.ease.quintOut)
 
       draggingItem = null
-
-      console.log("drag end!", targetSlot)
-
     }
-
   }
 
 }
