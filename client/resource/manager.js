@@ -34,7 +34,8 @@ class ResourceManager {
   }
 
   static createTileMesh(identifier) {
-    return new THREE.Mesh(this.geometries[ identifier ], this.materials[ identifier ])
+    const mesh = new THREE.Mesh(this.geometries[ identifier ], this.materials[ identifier ]);
+    return mesh;
   }
 
   static getSprite (identifier) {
@@ -120,6 +121,7 @@ class ResourceManager {
             // color: 0xa0adaf,
             // specular: 0x111111,
             // shininess: 60,
+            // flatShading: false,
             shading: THREE.FlatShading,
             map: texture,
             side: THREE.DoubleSide,

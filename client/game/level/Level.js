@@ -281,11 +281,24 @@ export default class Level extends THREE.Object3D {
 
     }
 
+    // The point-light improves readability of room connections (slightly shadowed)
+    var pointLight = new THREE.PointLight(0xffffff);
+    pointLight.position.z = 500;
+    this.add(pointLight);
+
+    // Global ambient light
+    var light = new THREE.AmbientLight(0xffffff); // soft white light
+    this.add(light);
+    window.light = light
+
     if (state.daylight) {
-      // ambient light
-      var light = new THREE.AmbientLight( 0xffffff ); // soft white light
-      this.add( light );
-      window.light = light
+      pointLight.intensity = 0.25;
+      light.intensity = 1;
+
+    } else {
+      // TODO: possible to play around with luminosity with different kinds of maps
+      pointLight.intensity = 0.05;
+      light.intensity = 0.05
     }
 
     this.add(this.camera)

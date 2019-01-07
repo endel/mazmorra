@@ -9,7 +9,7 @@ def is_power_of_two(x)
   x == 1 && n != 1
 end
 
-file = ARGV[0] || './characters.psd'
+file = ARGV[0] || './assets.psd'
 psd = PSD.new(file, parse_layer_images: true)
 psd.parse!
 
