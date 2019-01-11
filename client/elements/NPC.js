@@ -25,7 +25,7 @@ export default class NPC extends THREE.Object3D {
     this.originalColor = this.sprite.material.color.getHex()
 
     this.sprite.scale.normalizeWithTexture(this.sprite.material.map)
-    this.sprite.position.y = 0.1
+    this.sprite.position.y = 0.18
 
     this.add(this.sprite)
 

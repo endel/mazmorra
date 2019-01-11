@@ -11,14 +11,14 @@ export default class Lifebar extends THREE.Object3D {
       green:  { bg: 0x183400, fg: 0x7cac20 }
     }
 
+    this.background = new THREE.Sprite(new THREE.SpriteMaterial({ color: 0xffffffff }))
+    this.background.scale.x = 1;
+    this.add(this.background)
+
     this.bar = new THREE.Sprite(new THREE.SpriteMaterial({ color: 0xffffffff }))
     // depthWrite: false, depthTest: false
     // this.bar.renderOrder = 0
     this.add(this.bar)
-
-    this.background = new THREE.Sprite(new THREE.SpriteMaterial({ color: 0xffffffff }))
-    this.background.scale.x = 1;
-    this.add(this.background)
 
     this.color = 'green'
 

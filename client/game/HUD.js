@@ -21,10 +21,10 @@ export default class HUD extends THREE.Scene {
     super()
 
     this.camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, - 1, 10 );
-    this.camera.position.z = 10
+    this.camera.position.z = 5
 
     this.cursor = new Cursor
-    this.cursor.position.z = 10
+    this.cursor.position.z = 5
     this.add(this.cursor)
 
     // Expose cursor globally on app
@@ -74,13 +74,18 @@ export default class HUD extends THREE.Scene {
     // this.levelUpButton = new LevelUpButton()
     // this.add(this.levelUpButton)
 
-    this.overlay = new THREE.Mesh( new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial( { color: 0x000000, side: THREE.DoubleSide } ) );
-    this.overlay.material.transparent = true
+    this.overlay = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({
+      color: 0x000000,
+      side: THREE.FrontSide,
+      transparent: true
+    }));
+    this.overlay.position.z = -1
     this.overlay.material.opacity = 0
     this.overlay.visible = false
 
-    this.resize()
+    window.hud = this;
 
+    this.resize()
   }
 
   init () {

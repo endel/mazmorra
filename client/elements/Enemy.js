@@ -27,9 +27,9 @@ export default class Enemy extends THREE.Object3D {
     this.originalColor = this.sprite.material.color.getHex()
 
     this.sprite.scale.normalizeWithTexture(this.sprite.material.map)
-    // this.sprite.position.y = scale/2 // - this.sprite.material.map.frame.h
-    this.sprite.position.y = 0.1
 
+    this.sprite.center.set(0.5, 0);
+    this.sprite.position.y = -0.5;
     this.add(this.sprite)
 
     // only attach lifebar if enemy is alive

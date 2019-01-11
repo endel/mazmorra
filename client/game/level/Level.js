@@ -226,6 +226,8 @@ export default class Level extends THREE.Object3D {
   }
 
   setInitialState (state) {
+    this.mapkind = state.mapkind;
+
     Resources.init();
 
     window.IS_DAY = state.daylight
@@ -249,13 +251,12 @@ export default class Level extends THREE.Object3D {
     /**
      * Custom aestetics per mapkind
      */
-    if (state.mapkind === "inferno") {
+    if (this.mapkind === "inferno") {
       // Moving inferno walls
       const infernoWallTile = ResourceManager.get('tile-inferno-wall');
       this.mapkindAestetics = setInterval(() => infernoWallTile.offset.y += 0.01, 50);
 
-    } else if (state.mapkind === "ice") {
-
+    } else if (this.mapkind === "ice") {
     }
 
     if (state.daylight) {
@@ -274,11 +275,11 @@ export default class Level extends THREE.Object3D {
 
     this.factory.setGrid(state.grid)
 
-    if (state.mapkind === "lobby") {
+    if (this.mapkind === "lobby") {
       this.factory.createTiles('castle');
 
     } else {
-      this.factory.createTiles(state.mapkind)
+      this.factory.createTiles(this.mapkind)
     }
   }
 

@@ -5,6 +5,13 @@ export default class BottleBar extends THREE.Object3D {
 
     this.offsetMultiplier = 1
 
+    this.bg = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: ResourceManager.get("hud-bar-bg"),
+      transparent: true
+    }))
+    this.bg.material.opacity = 0.6
+    this.add(this.bg)
+
     this.fg = new THREE.Sprite(new THREE.SpriteMaterial({
       map: ResourceManager.get("hud-" + type + "-bar-fill"),
       transparent: true
@@ -12,13 +19,6 @@ export default class BottleBar extends THREE.Object3D {
     this.fg.scale.set(1, 2, 1)
     this.fg.material.opacity = 0.85
     this.add(this.fg)
-
-    this.bg = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: ResourceManager.get("hud-bar-bg"),
-      transparent: true
-    }))
-    this.bg.material.opacity = 0.6
-    this.add(this.bg)
 
     this.scale.set(this.bg.material.map.frame.w * config.HUD_SCALE, this.bg.material.map.frame.h * config.HUD_SCALE, 1)
 

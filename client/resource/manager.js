@@ -12,7 +12,7 @@ THREE.Texture.prototype.createInstance = function() {
   return inst;
 }
 
-const scaleRatio = 5.5
+const scaleRatio = 5.6
 THREE.Vector3.prototype.normalizeWithTexture = function(texture, isMesh = false) {
   let ratio = (!isMesh) ? scaleRatio : Math.max(texture.frame.w, texture.frame.h)
   this.set(texture.frame.w / ratio, texture.frame.h / ratio, 1)
@@ -78,7 +78,9 @@ class ResourceManager {
 
       for (let filename in spritesheet.frames) {
         let name = filename.match(/(.*)\.png$/)[1]
-        if (name.match(/^tile/)) { continue; }
+        if (name.match(/^tile/)) {
+          continue;
+        }
 
         let frame = spritesheet.frames[filename].frame
           , texture = this.atlas.createInstance()
@@ -116,7 +118,7 @@ class ResourceManager {
 
         // set repeat and create material / geometry for level tiles
         if (name.match(/^tile/)) {
-          texture.repeat.set(3, 3)
+          texture.repeat.set(2, 2)
           texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 
           this.materials[ name ] = new THREE.MeshPhongMaterial({

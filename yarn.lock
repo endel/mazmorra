@@ -4633,13 +4633,13 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.2"
 
-three-text2d@^0.3.0-rc2:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/three-text2d/-/three-text2d-0.3.4.tgz#7dbf14c20d14ee9114dcd9bc9e90d3f1b1da25d7"
+three-text2d@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/three-text2d/-/three-text2d-0.4.1.tgz#4737176bbe16b8b1200e87d2d2dfa8bc80413888"
 
-three@^0.75.0:
-  version "0.75.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.75.0.tgz#944de0c68a9b1ba2be7a829c0511891a615eb500"
+three@^0.100.0:
+  version "0.100.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.100.0.tgz#262841c0b7d88ebd62af73f28d9f578963b3aa00"
 
 throttle.js@^1.0.0:
   version "1.0.1"

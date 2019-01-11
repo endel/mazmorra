@@ -2,15 +2,13 @@
 
 export default class Door extends THREE.Object3D {
 
-  constructor (data, currentProgress) {
+  constructor (data, currentProgress, mapkind) {
     super()
 
     this.userData = data
     this.currentProgress = currentProgress
 
-    let type = (IS_DAY)
-     ? 'door-day'
-     : 'door-night';
+    let type = 'door-' + mapkind;
 
     let material = new THREE.MeshPhongMaterial( {
         shading: THREE.FlatShading,
@@ -21,7 +19,10 @@ export default class Door extends THREE.Object3D {
       , geometry = new THREE.PlaneGeometry(config.TILE_SIZE, config.TILE_SIZE)
       , mesh = new THREE.Mesh(geometry, material)
 
-    mesh.position.y = 0.6
+    window.door = this;
+
+    this.position.y = 0.5;
+    mesh.position.y = 0.5
 
     // TODO: automate a good-looking position based on door direction
     mesh.position.z -= 1.499

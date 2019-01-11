@@ -33,6 +33,7 @@ export default class GameObject extends Behaviour {
 
     } else {
       // TODO: refactor me
+      this.object.sprite.center.y = 0.85
       this.object.sprite.material.rotation = Math.PI
       this.object.sprite.material.opacity = DEAD_ENTITY_OPACITY;
     }

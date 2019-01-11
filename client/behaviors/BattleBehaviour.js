@@ -107,13 +107,19 @@ export default class BattleBehaviour extends Behaviour {
     var initY = this.object.position.y
     App.tweens.add(this.object.position).
       to({ y: this.object.position.y + 1 }, 300, Tweener.ease.cubicOut).
-      add(this.object.sprite.material).
-      to({ rotation: Math.PI }, 150, Tweener.ease.cubicInOut).
-      add(this.object.position).
-      to({ y: initY }, 300, Tweener.ease.bounceOut).
-      add(this.object.sprite.material).
-      to({ opacity: DEAD_ENTITY_OPACITY }, 100, Tweener.ease.cubicInOut).
-      then(this.detach.bind(this));
+      then(() => {
+        App.tweens.add(this.object.sprite.center).
+          to({ y: 1 }, 150, Tweener.ease.cubicInOut);
+
+        App.tweens.add(this.object.sprite.material).
+          to({ rotation: Math.PI }, 150, Tweener.ease.cubicInOut).
+          add(this.object.position).
+          to({ y: initY }, 300, Tweener.ease.bounceOut).
+          add(this.object.sprite.material).
+          to({ opacity: DEAD_ENTITY_OPACITY }, 100, Tweener.ease.cubicInOut).
+          then(this.detach.bind(this));
+
+      })
   }
 
   onDetach () {

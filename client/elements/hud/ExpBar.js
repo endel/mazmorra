@@ -6,6 +6,13 @@ export default class ExpBar extends THREE.Object3D {
 
     this.offsetMultiplier = 3
 
+    this.bg = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: ResourceManager.get("hud-exp-bar-bg") ,
+      transparent: true
+    }))
+    this.bg.material.opacity = 0.6
+    this.add(this.bg)
+
     this.fg = new THREE.Sprite(new THREE.SpriteMaterial({
       map: ResourceManager.get("hud-exp-bar-fill"),
       transparent: true
@@ -13,13 +20,6 @@ export default class ExpBar extends THREE.Object3D {
     this.fg.scale.set(3, 1, 1)
     this.fg.material.opacity = 0.85
     this.add(this.fg)
-
-    this.bg = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: ResourceManager.get("hud-exp-bar-bg") ,
-      transparent: true
-    }))
-    this.bg.material.opacity = 0.6
-    this.add(this.bg)
 
     this.scale.set(this.bg.material.map.frame.w * config.HUD_SCALE, this.bg.material.map.frame.h * config.HUD_SCALE, 1)
 

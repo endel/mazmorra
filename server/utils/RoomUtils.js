@@ -160,7 +160,7 @@ class RoomUtils {
 
     while (numEnemies--) {
       this.addEntity(room, (position) => {
-        var enemyList = ['rabbit', 'rat', 'skeleton', 'snake']
+        var enemyList = ['rabbit', 'rat', 'skeleton', 'goblin', 'bat', 'frog', 'boss-1']
         var enemy = new Enemy(enemyList[Math.floor((Math.random() * enemyList.length))])
         enemy.state = this.state
         enemy.position.set(position)

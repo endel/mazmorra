@@ -19,7 +19,7 @@ psd.tree.descendant_layers.each do |layer|
 
   next if !layer.path.index('ignore').nil? || original.width == 0 || original.height == 0
 
-  filename = "images/sprites/#{layer.path.gsub('/', '-')}.png"
+  filename = "images/sprites/#{layer.path.gsub('/', '-').strip}.png"
   # power_of_two.save("app/#{filename}")
   original.save("public/#{filename}")
   file_list << filename
