@@ -14,6 +14,7 @@ import Inventory from '../elements/inventory/Inventory'
 import SlotStrip from '../elements/inventory/SlotStrip'
 
 import { MeshText2D, textAlign } from 'three-text2d'
+import { inventorySound } from '../core/sound';
 
 export default class HUD extends THREE.Scene {
 
@@ -105,11 +106,14 @@ export default class HUD extends THREE.Scene {
   }
 
   onOpenInventory () {
+
     if (this.inventory.isOpen) {
       this.hideOverlay();
+      inventorySound.close.play();
 
     } else {
       this.showOverlay();
+      inventorySound.open.play();
     }
 
     this.inventory.toggleOpen()
@@ -127,24 +131,18 @@ export default class HUD extends THREE.Scene {
   }
 
   setPlayerObject (playerObject) {
-
     this.character.composition = playerObject.composition
 
     if ( !this.controller ) {
-
       this.controller = new HUDController
-
       this.addBehaviour(this.controller, playerObject)
 
     } else {
-
       this.controller.playerObject = playerObject
-
     }
 
     this.inventory.getEntity().detachAll()
     this.inventory.addBehaviour(new InventoryBehaviour, playerObject)
-
   }
 
   resize() {

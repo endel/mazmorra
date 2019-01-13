@@ -113,13 +113,9 @@ export default class Raycaster extends Behaviour {
   }
 
   onClick (e) {
-
     this.doRaycast()
 
-    console.log(this.targetObject);
-
     if ( this.isTargetReachable ) {
-
       e.preventDefault()
 
       this.targetObject.dispatchEvent({
@@ -127,40 +123,30 @@ export default class Raycaster extends Behaviour {
         bubbles: true,
         path: this.path
       })
-
     }
   }
 
   onMouseDown () {
-
     if ( this.isTargetReachable ) {
-
       this.targetObject.dispatchEvent({
         type: "mousedown",
         bubbles: true,
         path: this.path
       })
-
     }
-
   }
 
   onMouseUp () {
-
     if ( this.isTargetReachable ) {
-
       this.targetObject.dispatchEvent({
         type: "mouseup",
         bubbles: true,
         path: this.path
       })
-
     }
-
   }
 
   onDetach () {
   }
-
 
 }

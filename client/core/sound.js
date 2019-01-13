@@ -44,6 +44,15 @@ export const coinSound = require('../resource/sounds/coin.mp3');
 export const levelUpSound = require('../resource/sounds/levelup.aif');
 
 /**
+ * Inventory
+ */
+
+export const inventorySound = {
+  open: require('../resource/sounds/inventory/open.ogg'),
+  close: require('../resource/sounds/inventory/close.ogg'),
+}
+
+/**
  * Stingers
  */
 export const deathStingerSound = require('../resource/sounds/stingers/death.mp3');

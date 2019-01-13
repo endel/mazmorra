@@ -109,7 +109,7 @@ export default class BattleBehaviour extends Behaviour {
       to({ y: this.object.position.y + 1 }, 300, Tweener.ease.cubicOut).
       then(() => {
         App.tweens.add(this.object.sprite.center).
-          to({ y: 1 }, 150, Tweener.ease.cubicInOut);
+          to({ y: 1 }, 150, Tweener.ease.cubicOut);
 
         App.tweens.add(this.object.sprite.material).
           to({ rotation: Math.PI }, 150, Tweener.ease.cubicInOut).

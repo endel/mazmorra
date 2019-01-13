@@ -8,7 +8,10 @@ export default class HasLifebar extends Behaviour {
     // lifebar
     this.lifebar = new Lifebar()
     this.lifebar.position.x = 0
-    this.lifebar.position.y = 1.5
+
+    // position lifebar on top of enemy's variable height
+    this.lifebar.position.y = this.object.sprite.scale.y + 0.2;
+
     this.lifebar.position.z = 0
     this.lifebar.visible = false
     this.object.add(this.lifebar)

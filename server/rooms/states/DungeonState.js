@@ -45,7 +45,9 @@ class DungeonState extends EventEmitter {
 
     } else {
       // ['grass', 'rock', 'ice', 'inferno', 'castle']
-      this.mapkind = 'ice';
+      this.mapkind = 'rock';
+      // this.mapkind = 'rock-2';
+      // this.mapkind = 'castle';
 
       // // // big-and-spread (castle)
       // data = dungeon.generate(this.rand, {x: 52, y: 52}, {x: 6, y: 6}, {x: 12, y: 12}, 32)

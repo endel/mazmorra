@@ -113,7 +113,8 @@ class RoomUtils {
 
   populateRoom (room) {
     this.populateEnemies(room)
-    this.populateAesthetics(room, Math.max(room.size.x, room.size.y) / 2)
+
+    // this.populateAesthetics(room, Math.max(room.size.x, room.size.y) / 2)
 
     if (this.rand.intBetween(0, 12) === 12) {
       this.addEntity(room, (position) => new Chest(position))
@@ -157,10 +158,41 @@ class RoomUtils {
 
   populateEnemies (room) {
     var numEnemies = Math.floor(this.rand.intBetween(0, this.state.difficulty * 2))
+    var enemyList = [
+      'bat',
+      'eye',
+      'fairy',
+      'fat-zombie',
+      'flying-eye',
+      'frog',
+      'giant-spider',
+      'glass-eye',
+      'goblin-2',
+      'goblin-3',
+      'goblin-boss',
+      'goblin',
+      'golem',
+      'lava-ogre',
+      'lava-totem',
+      'minion',
+      'monkey',
+      'octopus-boss',
+      'owl',
+      'rabbit',
+      'rat',
+      'scorpio-boss',
+      'skeleton-2',
+      'skeleton',
+      'snow-goblin-boss',
+      'snow-minion-2',
+      'snow-minion',
+      'witch',
+      'zombie'
+    ];
 
     while (numEnemies--) {
       this.addEntity(room, (position) => {
-        var enemyList = ['rabbit', 'rat', 'skeleton', 'goblin', 'bat', 'frog', 'boss-1']
+
         var enemy = new Enemy(enemyList[Math.floor((Math.random() * enemyList.length))])
         enemy.state = this.state
         enemy.position.set(position)
@@ -178,8 +210,6 @@ class RoomUtils {
       'merchant',
       'elder',
       'lady',
-      'guard',
-      'guard',
       'guard',
       'guard',
     ];

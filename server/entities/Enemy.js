@@ -15,6 +15,10 @@ class Enemy extends Unit {
     this.kind = kind
     this.lvl = 1
 
+    // enemy starts with a random direction
+    const directions = ['bottom', 'left', 'top', 'right'];
+    this.direction = directions[ Math.floor(Math.random() * directions.length) ];
+
     // this.armor = 0
     // this.damage = 1
 

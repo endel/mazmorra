@@ -16,6 +16,8 @@ export default class Door extends THREE.Object3D {
         side: THREE.FrontSide,
         transparent: true
       })
+      // +2.8 for the pillars
+      // , geometry = new THREE.PlaneGeometry(config.TILE_SIZE + 2.8, config.TILE_SIZE + 2.8)
       , geometry = new THREE.PlaneGeometry(config.TILE_SIZE, config.TILE_SIZE)
       , mesh = new THREE.Mesh(geometry, material)
 
@@ -29,6 +31,8 @@ export default class Door extends THREE.Object3D {
 
     mesh.scale.normalizeWithTexture(material.map, true)
     this.add(mesh)
+
+    window.door = this;
 
     let lightColor = 0xfcfcfc
       , light = new THREE.PointLight(lightColor, 1.5, 5); // Spotlight would be better here
