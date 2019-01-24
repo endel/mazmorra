@@ -165,7 +165,7 @@ class RoomUtils {
       'fat-zombie',
       'flying-eye',
       'frog',
-      'giant-spider',
+      'spider-giant',
       'glass-eye',
       'goblin-2',
       'goblin-3',

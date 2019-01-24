@@ -8,7 +8,7 @@ class Chest extends Interactive {
 
   constructor (position) {
     super(helpers.ENTITIES.CHEST, position)
-    this.kind = (Math.random() > 0.5) ? 'chest' : 'bucket'
+    this.kind = 'chest2'
   }
 
   interact (moveEvent, player, state) {
