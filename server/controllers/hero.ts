@@ -1,11 +1,12 @@
-var express = require('express')
-  , router = express.Router()
+import express from "express";
 
-  , User = require('../db/models').User
-  , Hero = require('../db/models').Hero
+import { User } from "../db/models";
+import { Hero } from "../db/models";
 
-  // middlewares
-  , validUser = require('../middlewares/valid-user')
+// middlewares
+import { validUser } from "../middlewares/valid-user";
+
+export const router = express.Router()
 
 router.get('/', validUser, function(req, res) {
   var user = req.user
@@ -28,6 +29,3 @@ router.post('/', validUser, function(req, res) {
     res.send(JSON.stringify({success: true}))
   })
 })
-
-module.exports = router
-

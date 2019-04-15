@@ -1,28 +1,26 @@
- 'use strict';
+import gen from "random-seed";
 
-var gen = require('random-seed')
+import dungeon from "../../../shared/Dungeon";
+import helpers from "../../../shared/helpers";
 
-  , dungeon  = require('../../../shared/Dungeon')
-  , helpers  = require('../../../shared/helpers')
+import { EventEmitter } from "events";
+import PF from "pathfinding";
 
-  , EventEmitter  = require('events').EventEmitter
-  , PF = require('pathfinding')
+import { GridUtils } from "../../utils/GridUtils";
+import { RoomUtils } from "../../utils/RoomUtils";
 
-  , GridUtils  = require('../../utils/GridUtils')
-  , RoomUtils  = require('../../utils/RoomUtils')
+// entities
+import { Player } from "../../entities/Player";
+import { Enemy } from "../../entities/Enemy";
+import { Unit } from "../../entities/Unit";
+import { Fountain } from "../../entities/interactive/Fountain";
 
-  // entities
-  , Player  = require('../../entities/Player')
-  , Enemy  = require('../../entities/Enemy')
-  , Unit  = require('../../entities/Unit')
-  , Fountain  = require('../../entities/interactive/Fountain')
+// entity types
+import { Item } from "../../entities/Item";
+import { TextEvent } from "../../entities/ephemeral/TextEvent";
+import { Interactive } from "../../entities/Interactive";
 
-  // entity types
-  , Item  = require('../../entities/Item')
-  , TextEvent  = require('../../entities/ephemeral/TextEvent')
-  , Interactive  = require('../../entities/Interactive')
-
-class DungeonState extends EventEmitter {
+export class DungeonState extends EventEmitter {
 
   constructor (progress, difficulty, daylight) {
     super()
@@ -224,5 +222,3 @@ class DungeonState extends EventEmitter {
   }
 
 }
-
-module.exports = DungeonState

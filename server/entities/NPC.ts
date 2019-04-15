@@ -1,10 +1,9 @@
-var helpers  = require('../../shared/helpers')
+import helpers from "../../shared/helpers";
 
-  // Entities
-  , Player = require('./Player')
+// Entities
+import { Player } from "./Player";
 
-
-class NPC extends Player {
+export class NPC extends Player {
 
   constructor (kind, npcHero = {}) {
     super(undefined, npcHero)
@@ -32,5 +31,3 @@ class NPC extends Player {
   }
 
 }
-
-module.exports = NPC

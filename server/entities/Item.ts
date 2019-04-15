@@ -1,10 +1,7 @@
-'use strict';
+import { Entity } from "./Entity";
+import helpers from "../../shared/helpers";
 
-var Entity = require('./Entity')
-
-  , helpers  = require('../../shared/helpers')
-
-class Item extends Entity {
+export class Item extends Entity {
 
   constructor (type, position) {
     super()
@@ -18,5 +15,3 @@ class Item extends Entity {
   }
 
 }
-
-module.exports = Item

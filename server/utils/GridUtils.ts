@@ -1,6 +1,6 @@
 var Entity = require('../entities/Entity')
 
-class GridUtils {
+export class GridUtils {
 
   constructor (entities) {
     this.entities = entities
@@ -37,5 +37,3 @@ class GridUtils {
 
 
 }
-
-module.exports = GridUtils

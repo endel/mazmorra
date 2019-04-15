@@ -1,10 +1,8 @@
-'use strict';
 
-var Interactive = require('../Interactive')
+import { Interactive } from "../Interactive";
+import helpers from "../../../shared/helpers";
 
-  , helpers  = require('../../../shared/helpers')
-
-class Chest extends Interactive {
+export class Chest extends Interactive {
 
   constructor (position) {
     super(helpers.ENTITIES.CHEST, position)
@@ -23,6 +21,3 @@ class Chest extends Interactive {
   }
 
 }
-
-module.exports = Chest
-

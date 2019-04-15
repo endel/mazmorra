@@ -1,8 +1,6 @@
-'use strict';
+import { EventEmitter } from "events";
 
-var EventEmitter = require('events').EventEmitter
-
-class Bar extends EventEmitter {
+export class Bar extends EventEmitter {
 
   constructor (current, max) {
     super()
@@ -23,5 +21,3 @@ class Bar extends EventEmitter {
   }
 
 }
-
-module.exports = Bar

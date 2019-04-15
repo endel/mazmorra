@@ -1,11 +1,9 @@
-'use strict';
+import { Entity } from "../Entity";
+import helpers from "../../../shared/helpers";
 
-var Entity = require('../Entity')
-  , helpers  = require('../../../shared/helpers')
+export class TextEvent extends Entity {
 
-  , creationTime = new WeakMap()
-
-class TextEvent extends Entity {
+  creationTime: number;
 
   constructor (text, position, kind, ttl, small) {
     super()
@@ -16,18 +14,16 @@ class TextEvent extends Entity {
     this.position = position
     this.ttl = ttl // ttl on interface
 
-    creationTime.set(this, Date.now())
+    this.creationTime =  Date.now();
 
     if (kind)  { this.kind = kind }
     if (small) { this.small = true }
   }
 
   update (currentTime) {
-    if (currentTime > creationTime.get(this) + 3000) {
+    if (currentTime > this.creationTime + 3000) {
       this.state.removeEntity(this)
     }
   }
 
 }
-
-module.exports = TextEvent

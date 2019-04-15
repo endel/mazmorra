@@ -1,9 +1,7 @@
-'use strict';
+import { EventEmitter } from "events";
+import { distance } from "../helpers/Math";
 
-var EventEmitter = require('events').EventEmitter
-var distance = require('../helpers/Math').distance
-
-class BattleAction extends EventEmitter {
+export class BattleAction extends EventEmitter {
 
   constructor (attacker, defender) {
     super()
@@ -89,5 +87,3 @@ class BattleAction extends EventEmitter {
   }
 
 }
-
-module.exports = BattleAction

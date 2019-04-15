@@ -1,8 +1,6 @@
-'use strict';
+import { EventEmitter } from "events";
 
-var EventEmitter = require('events').EventEmitter
-
-class Movement extends EventEmitter {
+export class Movement extends EventEmitter {
 
   constructor (unit) {
     super()
@@ -127,5 +125,3 @@ class MoveEvent {
   cancel () { this.isCancelled = true }
   valid () { return !this.isCancelled }
 }
-
-module.exports = Movement

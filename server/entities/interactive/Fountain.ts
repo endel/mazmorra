@@ -1,9 +1,7 @@
-'use strict';
+import { Interactive } from "../Interactive";
+import helpers from "../../../shared/helpers";
 
-var Interactive = require('../Interactive')
-  , helpers  = require('../../../shared/helpers')
-
-class Fountain extends Interactive {
+export class Fountain extends Interactive {
 
   constructor (position) {
     super(helpers.ENTITIES.FOUNTAIN, position)
@@ -38,5 +36,3 @@ class Fountain extends Interactive {
   }
 
 }
-
-module.exports = Fountain

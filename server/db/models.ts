@@ -1,10 +1,10 @@
-var mongoose = require('mongoose')
-  , Schema = mongoose.Schema
+import mongoose from "mongoose";
+const Schema = mongoose.Schema
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGO_URI, { useMongoClient: true });
 
-module.exports.User = mongoose.model('User', new Schema({
+export const User: any = mongoose.model('User', new Schema({
   email: String,
   password: String,
   token: String,
@@ -13,7 +13,7 @@ module.exports.User = mongoose.model('User', new Schema({
   ]
 }))
 
-module.exports.Hero = mongoose.model('Hero', new Schema({
+export const Hero: any = mongoose.model('Hero', new Schema({
   _user: { type: Schema.Types.ObjectId, ref: 'User' },
   name: String,
 

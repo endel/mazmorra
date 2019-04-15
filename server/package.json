@@ -23,6 +23,8 @@
     "shortid": "^2.2.14"
   },
   "devDependencies": {
-    "nodemon": "^1.7.1"
+    "nodemon": "^1.18.11",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.4.3"
   }
 }

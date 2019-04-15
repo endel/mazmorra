@@ -1,17 +1,15 @@
-'use strict';
-
-var Entity = require('./Entity')
-var Bar = require('../core/Bar')
-var Movement = require('../core/Movement')
-var Inventory = require('../core/Inventory')
-var EquipedItems = require('../core/EquipedItems')
+import { Entity } from "./Entity";
+import { Bar } from "../core/Bar";
+import { Movement } from "../core/Movement";
+import { Inventory } from "../core/Inventory";
+import { EquipedItems } from "../core/EquipedItems";
 
 // Actions
-var BattleAction = require('../actions/BattleAction')
+import { BattleAction } from "../actions/BattleAction";
 
 var lastHpRegenerationTime = new WeakMap()
 
-class Unit extends Entity {
+export class Unit extends Entity {
 
   constructor (id, options) {
     super(id)
@@ -19,9 +17,9 @@ class Unit extends Entity {
     if (!options) options = {}
 
     // Items / Inventory
-    this.inventory = new Inventory()
+    this.inventory = new Inventory();
     // this.inventory.set(options.inventory || [])
-    this.inventory.set([{type: 'shield-wood'}])
+    this.inventory.set([{type: 'shield-wood'}]);
 
     this.equipedItems = new EquipedItems()
     this.equipedItems.set(options.equipedItems || [])
@@ -175,5 +173,3 @@ class Unit extends Entity {
 
 
 }
-
-module.exports = Unit

@@ -1,10 +1,7 @@
-'use strict';
+import { Item } from "../Item";
+import helpers from "../../../shared/helpers";
 
-var Item = require('../Item')
-
-  , helpers  = require('../../../shared/helpers')
-
-class LifeHeal extends Item {
+export class LifeHeal extends Item {
 
   constructor (position) {
     super(helpers.ENTITIES.LIFE_HEAL, position)
@@ -19,6 +16,3 @@ class LifeHeal extends Item {
   }
 
 }
-
-module.exports = LifeHeal
-

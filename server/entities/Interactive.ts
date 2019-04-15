@@ -1,8 +1,6 @@
-'use strict';
+import { Entity } from "./Entity";
 
-var Entity = require('./Entity')
-
-class Interactive extends Entity {
+export class Interactive extends Entity {
 
   constructor (type, position) {
     super()
@@ -16,5 +14,3 @@ class Interactive extends Entity {
   }
 
 }
-
-module.exports = Interactive

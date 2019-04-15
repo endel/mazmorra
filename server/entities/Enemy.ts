@@ -1,12 +1,10 @@
-'use strict';
-
-var helpers  = require('../../shared/helpers')
+import helpers from "../../shared/helpers";
 
   // Entities
-  , Unit = require('./Unit')
-  , Player = require('./Player')
+import { Unit } from "./Unit";
+import { Player } from "./Player";
 
-class Enemy extends Unit {
+export class Enemy extends Unit {
 
   constructor (kind) {
     super()
@@ -50,8 +48,4 @@ class Enemy extends Unit {
     return super.takeDamage(battleAction)
   }
 
-
-
 }
-
-module.exports = Enemy

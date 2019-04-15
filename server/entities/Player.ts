@@ -1,9 +1,7 @@
-'use strict';
+import { Unit } from "./Unit";
+import helpers from "../../shared/helpers";
 
-var Unit = require('./Unit')
-  , helpers  = require('../../shared/helpers')
-
-class Player extends Unit {
+export class Player extends Unit {
 
   constructor (id, hero) {
     super(id, hero)
@@ -57,5 +55,3 @@ class Player extends Unit {
     }
   }
 }
-
-module.exports = Player

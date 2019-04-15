@@ -1,11 +1,8 @@
-// var Entity = require('../entities/Entity')
-var Item = require('../entities/Item')
+import { Item } from "../entities/Item";
 
-class Inventory {
+export class Inventory {
 
-  constructor (options, items) {
-    if (!options) options = {}
-
+  constructor (options = {}, items: any) {
     this.slots = {}
     this.capacity = options.capacity || 4
 
@@ -39,6 +36,3 @@ class Inventory {
   }
 
 }
-
-module.exports = Inventory
-

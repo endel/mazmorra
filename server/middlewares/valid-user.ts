@@ -1,7 +1,6 @@
-var User = require('../db/models').User
-  , Hero = require('../db/models').Hero
+import { User, Hero } from "../db/models";
 
-module.exports = function validUser(req, res, next) {
+export function validUser(req, res, next) {
   var token = req.query.token
   if (!token) {
     return res.send(JSON.stringify({valid: false}))

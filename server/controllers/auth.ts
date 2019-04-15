@@ -1,14 +1,14 @@
-var express = require('express')
-  , router = express.Router()
+import express from "express";
 
-  , User = require('../db/models').User
-  , Hero = require('../db/models').Hero
+import { User } from "../db/models";
+import { Hero } from "../db/models";
 
-  // middlewares
-  , validUser = require('../middlewares/valid-user')
+// middlewares
+import { validUser } from "../middlewares/valid-user";
 
-  , crypto = require('crypto')
-  , salt = "wow, such security, very safe"
+import crypto from "crypto";
+
+const salt = "wow, such security, very safe"
 
 function digest (text) {
   var hmac = crypto.createHmac('sha256', salt);
@@ -21,6 +21,8 @@ function generateToken (cb) {
     cb(buf.toString('hex'))
   });
 }
+
+export const router = express.Router();
 
 /**
  * Return an unique id
@@ -50,7 +52,7 @@ router.post('/login', function(req, res) {
   var password = digest(req.body.password)
 
   User.findOne({ email: req.body.email }).populate('heros').then(user => {
-    if (doc.password === password) {
+    if (user.password === password) {
       return user;
     } else {
       throw new Error("invalid credentials")
@@ -125,5 +127,3 @@ router.post('/register', function(req, res) {
     }))
   })
 });
-
-module.exports = router

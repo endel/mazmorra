@@ -1,18 +1,10 @@
-"use strict";
-
-var Room = require('colyseus').Room
-
-  , DungeonState = require('./states/DungeonState')
-
-  , User = require('../db/models').User
-  , Hero = require('../db/models').Hero
-
-  , utils = require('colyseus').utils
-  , protocol = require('colyseus').protocol
+import { Room } from "colyseus";
+import { DungeonState } from "./states/DungeonState";
+import { User, Hero } from "../db/models";
 
 const TICK_RATE = 30
 
-class DungeonRoom extends Room {
+export class DungeonRoom extends Room {
 
   onInit (options) {
     this.autoDispose = false;
@@ -142,5 +134,3 @@ class DungeonRoom extends Room {
   // }
 
 }
-
-module.exports = DungeonRoom

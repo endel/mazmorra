@@ -1,10 +1,7 @@
-'use strict';
+import { Item } from "../Item";
+import helpers from "../../../shared/helpers";
 
-var Item = require('../Item')
-
-  , helpers  = require('../../../shared/helpers')
-
-class Gold extends Item {
+export class Gold extends Item {
 
   constructor (position) {
     super(helpers.ENTITIES.GOLD, position)
@@ -19,5 +16,3 @@ class Gold extends Item {
   }
 
 }
-
-module.exports = Gold

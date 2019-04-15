@@ -1,27 +1,27 @@
-var helpers  = require('../../shared/helpers')
+import helpers from "../../shared/helpers";
 
-  // entities
-  , Player  = require('../entities/Player')
-  , Enemy  = require('../entities/Enemy')
-  , NPC  = require('../entities/NPC')
-  , Unit  = require('../entities/Unit')
-  , Entity  = require('../entities/Entity')
+// entities
+import { Player }  from "../entities/Player";
+import { Enemy }  from "../entities/Enemy";
+import { NPC }  from "../entities/NPC";
+import { Unit }  from "../entities/Unit";
+import { Entity }  from "../entities/Entity";
 
-  // entity types
-  , Item  = require('../entities/Item')
-  , Interactive  = require('../entities/Interactive')
+// entity types
+import { Item }  from "../entities/Item";
+import { Interactive }  from "../entities/Interactive";
 
-  // items
-  , Gold  = require('../entities/items/Gold')
-  , LifeHeal  = require('../entities/items/LifeHeal')
-  , ManaHeal  = require('../entities/items/ManaHeal')
+// items
+import { Gold }  from "../entities/items/Gold";
+import { LifeHeal }  from "../entities/items/LifeHeal";
+import { ManaHeal }  from "../entities/items/ManaHeal";
 
-  // interactive
-  , Door  = require('../entities/interactive/Door')
-  , Chest  = require('../entities/interactive/Chest')
-  , Fountain  = require('../entities/interactive/Fountain')
+// interactive
+import { Door }  from "../entities/interactive/Door";
+import { Chest }  from "../entities/interactive/Chest";
+import { Fountain }  from "../entities/interactive/Fountain";
 
-class RoomUtils {
+export class RoomUtils {
 
   constructor (rand, state, rooms) {
     this.rand = rand
@@ -267,5 +267,3 @@ class RoomUtils {
   }
 
 }
-
-module.exports = RoomUtils
