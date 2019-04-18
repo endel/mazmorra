@@ -1,8 +1,11 @@
+import { type } from "@colyseus/schema";
 
 import { Interactive } from "../Interactive";
 import helpers from "../../../shared/helpers";
+import { Action } from "../../actions/Action";
 
 export class Chest extends Interactive {
+  @type("string") kind: string;
 
   constructor (position) {
     super(helpers.ENTITIES.CHEST, position)
@@ -11,11 +14,8 @@ export class Chest extends Interactive {
 
   interact (moveEvent, player, state) {
     if (!this.action) {
-      this.action = {
-        type: 'open',
-        lastUpdateTime: Date.now()
-      };
-      state.dropItemFrom (this)
+      this.action = new Action("open");
+      state.dropItemFrom(this);
       moveEvent.cancel()
     }
   }

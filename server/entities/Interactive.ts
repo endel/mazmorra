@@ -1,12 +1,16 @@
 import { Entity } from "./Entity";
+import { Point } from "../rooms/states/DungeonState";
+import { type } from "@colyseus/schema";
+import { Action } from "../actions/Action";
 
 export class Interactive extends Entity {
+  @type(Action) action: Action;
 
-  constructor (type, position) {
+  constructor (type, position: Point) {
     super()
 
     this.type = type
-    this.position = position || { x: null, y: null }
+    this.position.set(position);
   }
 
   interact (moveEvent, player, state) {

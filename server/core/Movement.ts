@@ -1,16 +1,22 @@
+import { type, Schema } from "@colyseus/schema";
 import { EventEmitter } from "events";
+import { Position } from "./Position";
+import { Point } from "../rooms/states/DungeonState";
+import { Unit } from "../entities/Unit";
 
-export class Movement extends EventEmitter {
+export class Movement extends Position {
+  pending: Point[] = [];
+  lastMove: number = 0;
+  active: boolean = false;
+
+  unit: Unit;
+  target: Unit;
+
+  events = new EventEmitter();
 
   constructor (unit) {
     super()
-    this.position = { x: null, y: null }
-
-    this.pending = []
-    this.lastMove = 0
-
     this.unit = unit
-    this.active = false
   }
 
   get destiny () {
@@ -20,38 +26,23 @@ export class Movement extends EventEmitter {
 
   equals (other) {
     return (
-      this.position.x === other.x &&
-      this.position.y === other.y
+      this.x === other.x &&
+      this.y === other.y
     );
   }
 
-  get x () {
-    return this.position.x
-  }
-  set x (x) {
-    console.log("set x:", x)
-    this.position.x = x
-  }
-  get y () {
-    return this.position.y
-  }
-  set y (y) {
-    console.log("set y:", y)
-    this.position.y = y
-  }
-
-  set (x, y) {
+  set (x: any, y?: number) {
     if (!y && typeof(x) === "object") {
       y = x.y
       x = x.x
     }
 
-    var event = new MoveEvent(this.unit)
-    this.emit('move', event, this.position.x, this.position.y, x, y)
+    var event = new MoveEvent(this.unit);
+    this.events.emit('move', event, this.x, this.y, x, y);
 
-    if ( event.valid() ) {
-      this.position.x = x
-      this.position.y = y
+    if (event.valid()) {
+      this.x = x;
+      this.y = y;
     }
 
     // console.log(event.valid(), this.position)
@@ -95,33 +86,33 @@ export class Movement extends EventEmitter {
     // change direction
     if (this.pending.length > 0) {
       var x = this.pending[0][0], y = this.pending[0][1]
-      if (this.position.x < x) {
+      if (this.x < x) {
         this.unit.direction = 'bottom'
 
-      } else if (this.position.x > x) {
+      } else if (this.x > x) {
         this.unit.direction = 'top'
 
-      } else if (this.position.y > y) {
+      } else if (this.y > y) {
         this.unit.direction = 'left'
 
-      } else if (this.position.y < y) {
+      } else if (this.y < y) {
         this.unit.direction = 'right'
       }
     }
 
   }
 
-  toJSON () {
-    return this.position
-  }
-
 }
 
 class MoveEvent {
+  isCancelled: boolean;
+  target: any;
+
   constructor (target) {
     this.isCancelled = false
     this.target = target
   }
-  cancel () { this.isCancelled = true }
-  valid () { return !this.isCancelled }
+
+  cancel() { this.isCancelled = true }
+  valid() { return !this.isCancelled }
 }

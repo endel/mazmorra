@@ -1,23 +1,30 @@
+import { type } from "@colyseus/schema";
+
 import { Entity } from "../Entity";
 import helpers from "../../../shared/helpers";
+import { Position } from "../../core/Position";
 
 export class TextEvent extends Entity {
+  @type("string") text: string;
+  @type("number") ttl: number;
+
+  @type("number") kind: number;
+  @type("boolean") small: boolean;
 
   creationTime: number;
 
-  constructor (text, position, kind, ttl, small) {
-    super()
-    if (!ttl) { ttl = 3000 }
+  constructor (text, position, kind, ttl = 3000, small: boolean = false) {
+    super();
 
-    this.type = helpers.ENTITIES.TEXT_EVENT
-    this.text = text
-    this.position = position
-    this.ttl = ttl // ttl on interface
+    this.type = helpers.ENTITIES.TEXT_EVENT;
+    this.text = text;
+    this.position = position;
+    this.ttl = ttl; // ttl on interface
 
     this.creationTime =  Date.now();
 
-    if (kind)  { this.kind = kind }
-    if (small) { this.small = true }
+    if (kind) { this.kind = kind; }
+    if (small) { this.small = true; }
   }
 
   update (currentTime) {

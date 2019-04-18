@@ -1,23 +1,31 @@
+import { type } from "@colyseus/schema";
 import { EventEmitter } from "events";
+
+import { Action } from "./Action";
 import { distance } from "../helpers/Math";
+import { Position } from "../core/Position";
+import { Unit } from "../entities/Unit";
 
-export class BattleAction extends EventEmitter {
+export class BattleAction extends Action {
+  @type("boolean") missed: boolean;
+  @type("number") damage: number;
+  @type("boolean") critical: boolean;
+  @type(Position) position = new Position();
 
-  constructor (attacker, defender) {
+  active: boolean = false;
+
+  attacker: Unit;
+  defender: Unit;
+
+  events = new EventEmitter();
+
+  constructor (attacker: Unit, defender: Unit) {
     super()
 
-    this.type = 'attack'
-    this.attacker = attacker
-    this.defender = defender
+    this.attacker = attacker;
+    this.defender = defender;
 
-    this.position = this.defender.position
-    this.missed = null
-    this.damage = null
-    this.critical = null
-
-    this.lastUpdateTime = 0
-
-    this.active = false;
+    this.position = this.defender.position;
   }
 
   get isEligible () {
@@ -28,7 +36,7 @@ export class BattleAction extends EventEmitter {
     if(!this.isEligible) {
       // clear BattleAction
       this.attacker.action = null;
-      this.removeAllListeners();
+      this.events.removeAllListeners();
     }
 
     let d20 = Math.ceil(Math.random() * 20)
@@ -73,17 +81,6 @@ export class BattleAction extends EventEmitter {
         this.lastUpdateTime = currentTime
       }
     }
-  }
-
-  toJSON () {
-    return (this.active) ? {
-      type: this.type,
-      missed: this.missed,
-      damage: this.damage,
-      critical: this.critical,
-      position: this.position,
-      lastUpdateTime: this.lastUpdateTime
-    } : null
   }
 
 }

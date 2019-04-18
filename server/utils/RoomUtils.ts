@@ -1,3 +1,5 @@
+import { RandomSeed } from "random-seed";
+
 import helpers from "../../shared/helpers";
 
 // entities
@@ -17,18 +19,27 @@ import { LifeHeal }  from "../entities/items/LifeHeal";
 import { ManaHeal }  from "../entities/items/ManaHeal";
 
 // interactive
-import { Door }  from "../entities/interactive/Door";
+import { Door, DoorDestiny }  from "../entities/interactive/Door";
 import { Chest }  from "../entities/interactive/Chest";
 import { Fountain }  from "../entities/interactive/Fountain";
 
+import { DungeonState } from "../rooms/states/DungeonState";
+
 export class RoomUtils {
+
+  rand: RandomSeed;
+  state: DungeonState;
+  rooms: any;
+  data = new WeakMap();
+
+  startPosition: any;
+  endPosition: any;
 
   constructor (rand, state, rooms) {
     this.rand = rand
     this.state = state
 
     this.rooms = rooms
-    this.data = new WeakMap()
 
     this.cacheRoomData()
 
@@ -93,20 +104,20 @@ export class RoomUtils {
 
   createEntities () {
     // entrance
-    this.state.addEntity(new Door(this.startPosition, {
+    this.state.addEntity(new Door(this.startPosition, new DoorDestiny({
       identifier: 'grass',
       mapkind: 'grass',
       difficulty: 1,
       progress: this.state.progress - 1
-    }))
+    })));
 
     // out
-    this.state.addEntity(new Door(this.endPosition, {
+    this.state.addEntity(new Door(this.endPosition, new DoorDestiny({
       identifier: 'grass',
       mapkind: 'grass',
       difficulty: 1,
       progress: this.state.progress + 1
-    }))
+    })));
 
     this.rooms.forEach(room => this.populateRoom(room))
   }
@@ -144,10 +155,10 @@ export class RoomUtils {
       this.populateNPCs(room);
 
       // add door
-      this.state.addEntity(new Door(this.endPosition, {
+      this.state.addEntity(new Door(this.endPosition, new DoorDestiny({
         difficulty: 1,
         progress: this.state.progress + 1
-      }))
+      })));
 
       // create 3 fountains
       for (let i=0; i<3; i++) {

@@ -1,4 +1,5 @@
-import gen from "random-seed";
+import { Schema, type, ArraySchema, MapSchema } from "@colyseus/schema";
+import gen, { RandomSeed } from "random-seed";
 
 import dungeon from "../../../shared/Dungeon";
 import helpers from "../../../shared/helpers";
@@ -19,21 +20,43 @@ import { Fountain } from "../../entities/interactive/Fountain";
 import { Item } from "../../entities/Item";
 import { TextEvent } from "../../entities/ephemeral/TextEvent";
 import { Interactive } from "../../entities/Interactive";
+import { Entity } from "../../entities/Entity";
+
+export interface Point {
+  x: number;
+  y: number;
+}
 
 export class DungeonState extends EventEmitter {
+  // predicatble random generator
+  rand = gen.create();
 
-  constructor (progress, difficulty, daylight) {
+  @type("number") progress: number;
+  @type("number") difficulty: number;
+  @type("boolean") daylight: boolean = true; // (serverHour % 2 === 1)
+  @type("string") mapkind: string;
+
+  @type(["number"]) grid = new ArraySchema<number>();
+  @type("number") width: number;
+  @type({ map: Entity }) entities = new MapSchema<Entity>();
+
+  rooms: any;
+  players: {[id: string]: Player} = {};
+
+  gridUtils: GridUtils;
+  roomUtils: RoomUtils;
+
+  pathgrid: PF.Grid;
+  finder = new PF.AStarFinder(); // { allowDiagonal: true, dontCrossCorners: true }
+
+  constructor (progress, difficulty, daylight?: boolean) {
     super()
 
     const serverHour = (new Date()).getHours();
 
-    // predicatble random generator
-    this.rand = gen.create()
-
     this.progress = progress;
     this.difficulty = difficulty;
 
-    // this.daylight = (serverHour % 2 === 1)
     this.daylight = true
     var data;
 
@@ -60,19 +83,16 @@ export class DungeonState extends EventEmitter {
       data = dungeon.generate(this.rand, {x: 24, y: 24}, {x: 6, y: 6}, {x: 12, y: 12}, 3);
     }
 
-    this.grid = data[0]
+    this.width = data[0].length;
+    this.grid = this.flat(data[0]);
     this.rooms = data[1]
-
-    this.entities = {}
-    this.players = {}
 
     this.gridUtils = new GridUtils(this.entities)
 
     // 0 = walkable, 1 = blocked
     this.pathgrid = new PF.Grid(
-      this.grid.map(line => line.map(type => (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1))
+      data[0].map(line => line.map(type => (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1))
     )
-    this.finder = new PF.AStarFinder(); // { allowDiagonal: true, dontCrossCorners: true }
 
     this.roomUtils = new RoomUtils(this.rand, this, this.rooms)
 
@@ -157,7 +177,7 @@ export class DungeonState extends EventEmitter {
     }
   }
 
-  move (unit, destiny, allowChangeTarget) {
+  move (unit: Unit, destiny: Point, allowChangeTarget?: boolean) {
     if (destiny.x == unit.position.y && destiny.y == unit.position.x) {
       return false;
     }
@@ -211,14 +231,23 @@ export class DungeonState extends EventEmitter {
     }
   }
 
-  toJSON () {
-    return {
-      mapkind: this.mapkind,
-      progress: this.progress,
-      daylight: this.daylight,
-      grid: this.grid,
-      entities: this.entities,
-    }
-  }
+  flat (arr: any[][], depth: number = 1) {
+    if (depth < 1) return Array.prototype.slice.call(this);
+    return (function flat(arr, depth) {
+      var len = arr.length >>> 0;
+      var flattened = [];
+      var i = 0;
+      while (i < len) {
+        if (i in arr) {
+          var el = arr[i];
+          if (Array.isArray(el) && depth > 0)
+            flattened = flattened.concat(flat(el, depth - 1));
+          else flattened.push(el);
+        }
+        i++;
+      }
+      return flattened;
+    })(arr, depth);
+  };
 
 }

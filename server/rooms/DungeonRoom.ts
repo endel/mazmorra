@@ -4,12 +4,18 @@ import { User, Hero } from "../db/models";
 
 const TICK_RATE = 30
 
-export class DungeonRoom extends Room {
+export class DungeonRoom extends Room<DungeonState> {
+  autoDispose = false;
+  maxClients = 10;
+
+  progress: number;
+  difficulty: number;
+
+  players = new WeakMap();
+  heroes = new WeakMap();
+  clientMap = new WeakMap();
 
   onInit (options) {
-    this.autoDispose = false;
-    this.maxClients = 10;
-
     this.progress = options.progress || 1
     this.difficulty = options.difficulty || 1
 

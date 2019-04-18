@@ -1,7 +1,22 @@
+import { Schema, type } from "@colyseus/schema";
 import { Unit } from "./Unit";
 import helpers from "../../shared/helpers";
 
+export class SkinProperties extends Schema {
+  @type("string") klass: string;
+  @type("string") hair: string;
+  @type("string") hairColor: string;
+  @type("string") eye: string;
+  @type("string") body: string;
+}
+
 export class Player extends Unit {
+  @type("string") name: string;
+  @type("number") type: number;
+  @type(SkinProperties) properties = new SkinProperties();
+
+  @type("number") gold: number;
+  @type("number") diamond: number;
 
   constructor (id, hero) {
     super(id, hero)
@@ -10,13 +25,12 @@ export class Player extends Unit {
     this.name = hero.name
     this.lvl = hero.lvl || 1
 
-    this.properties = {
-      klass: hero.klass,
-      hair: hero.hair,
-      hairColor: hero.hairColor,
-      eye: hero.eye,
-      body: hero.body
-    }
+    // skin properties
+    this.properties.klass = hero.klass;
+    this.properties.hair = hero.hair;
+    this.properties.hairColor = hero.hairColor;
+    this.properties.eye = hero.eye;
+    this.properties.body = hero.body
 
     // hit | mana | experience points
     this.hp.set(hero.hp || 100, 100)
@@ -28,12 +42,10 @@ export class Player extends Unit {
 
     // TODO: calculate this based on
     // player klass + lvl
-    this.attributes = {
-      strenght: 1,
-      dexterity: 1,
-      intelligence: 1,
-      vitality: 1
-    }
+    this.attributes.strenght = 1;
+    this.attributes.dexterity = 1;
+    this.attributes.intelligence = 1;
+    this.attributes.vitality = 1
 
     this.armor = 1
     this.damage = 1

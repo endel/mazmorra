@@ -23,8 +23,8 @@ export class Unit extends Entity {
   @type(Inventory) inventory = new Inventory({}, [{ type: 'shield-wood' }]);
   @type(EquipedItems) equipedItems = new EquipedItems();
   @type(Inventory) quickInventory = new Inventory({ capacity: 3 });
+  @type(BattleAction) action: BattleAction;
 
-  @type(Movement) position = new Movement(this);
   @type("string") direction = "bottom";
 
   @type(Bar) hp = new Bar(50);
@@ -49,7 +49,9 @@ export class Unit extends Entity {
   hpRegeneration: number = 0
   hpRegenerationInterval: number = 3000
 
-  constructor(id, options: any = {}) {
+  position: Movement;// override type
+
+  constructor(id?: string, options: any = {}) {
     super(id)
 
     this.equipedItems.set(options.equipedItems || [])
@@ -68,7 +70,8 @@ export class Unit extends Entity {
     this.attackDistance = 1
     this.attackSpeed = 2000
 
-    this.position.on('move', this.onMove.bind(this))
+    this.position = new Movement(this);// FIXME:
+    this.position.events.on('move', this.onMove.bind(this))
   }
 
   onMove(moveEvent, prevX, prevY, currentX, currentY) {

@@ -1,14 +1,15 @@
+import { type } from "@colyseus/schema";
 import { Interactive } from "../Interactive";
 import helpers from "../../../shared/helpers";
 
 export class Fountain extends Interactive {
+  @type("boolean") active: boolean = (Math.random() > 0.5);
+
+  activationTime: number = Date.now();
+  fillTimeout: number = 30000; // 30 seconds to fill
 
   constructor (position) {
     super(helpers.ENTITIES.FOUNTAIN, position)
-    this.active = (Math.random() > 0.5 )
-
-    this.activationTime = Date.now()
-    this.fillTimeout = 30000 // 30 seconds to fill
   }
 
   update (currentTime) {

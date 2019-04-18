@@ -3,11 +3,14 @@ import helpers from "../../shared/helpers";
   // Entities
 import { Unit } from "./Unit";
 import { Player } from "./Player";
+import { type } from "@colyseus/schema";
 
 export class Enemy extends Unit {
+  @type("number") type: number;
+  @type("string") kind: string;
 
   constructor (kind) {
-    super()
+    super();
     this.type = helpers.ENTITIES.ENEMY
 
     this.kind = kind

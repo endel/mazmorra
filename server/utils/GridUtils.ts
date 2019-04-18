@@ -1,15 +1,14 @@
 import { Entity } from "../entities/Entity";
+import { Unit } from "../entities/Unit";
 
 export class GridUtils {
+  entities: {[id: string]: Unit};
 
   constructor (entities) {
     this.entities = entities
   }
 
-  getEntityAt (x, y, classReference, meetAttribute) {
-    if (!classReference) classReference = Entity
-    if (!meetAttribute) meetAttribute = false
-
+  getEntityAt (x, y, classReference: any = Entity, meetAttribute?: string) {
     // var entities = []
     for (var id in this.entities) {
       // return first entity found at that position
