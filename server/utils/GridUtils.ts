@@ -1,4 +1,4 @@
-var Entity = require('../entities/Entity')
+import { Entity } from "../entities/Entity";
 
 export class GridUtils {
 

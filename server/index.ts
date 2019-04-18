@@ -1,30 +1,26 @@
-"use strict";
+require('dotenv').config()
 
-var _ = require('dotenv').config()
+import http from 'http';
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
 
-  , colyseus = require('colyseus')
-  , http = require('http')
+import { Server } from 'colyseus';
 
-  , express = require('express')
-  , bodyParser = require('body-parser')
-  , cors = require('cors')
+import { router as auth } from "./controllers/auth";
+import { router as hero } from "./controllers/auth";
+import { DungeonRoom } from './rooms/DungeonRoom';
 
-  , port = process.env.PORT || 3553
-  , app = express()
-  , server = http.createServer(app)
-  , gameServer = new colyseus.Server({server: server})
+const port = process.env.PORT || 3553;
+const app = express();
 
-  , DungeonRoom = require('./rooms/DungeonRoom')
+const server = http.createServer(app);
+const gameServer = new Server({ server: server });
 
-gameServer.register('dungeon', DungeonRoom)
-// gameServer.register('castle', DungeonRoom, { mapkind: 'castle' })
-// gameServer.register('grass', DungeonRoom, { mapkind: 'grass' })
-// gameServer.register('rock', DungeonRoom, { mapkind: 'rock' })
-// gameServer.register('ice', DungeonRoom, { mapkind: 'ice' })
-// gameServer.register('inferno', DungeonRoom, { mapkind: 'inferno' })
+gameServer.register('dungeon', DungeonRoom);
 
 if (process.env.ENVIRONMENT !== "production") {
-  app.use(cors())
+  app.use(cors());
 } else {
   var whitelist = ['http://talk.itch.zone'];
   app.use(cors({
@@ -38,9 +34,9 @@ if (process.env.ENVIRONMENT !== "production") {
 // to support URL-encoded bodies
 app.use(bodyParser.json());
 
-app.use(express.static( __dirname + '/../public' ))
-app.use('/auth', require('./controllers/auth'))
-app.use('/hero', require('./controllers/hero'))
+app.use(express.static( __dirname + '/../public' ));
+app.use('/auth', auth);
+app.use('/hero', hero);
 
 server.listen(port);
 

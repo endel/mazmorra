@@ -1,17 +1,29 @@
+import { Schema, type, MapSchema } from "@colyseus/schema";
 import { Item } from "../entities/Item";
 
-export class Inventory {
+interface InventoryOptions {
+  capacity?: number;
+}
 
-  constructor (options = {}, items: any) {
-    this.slots = {}
+export class Inventory extends Schema {
+  @type({ map: Item })
+  slots = new MapSchema<Item>();
+
+  @type("number")
+  capacity: number;
+
+  constructor (options: InventoryOptions = {}, items?: any) {
+    super();
+
     this.capacity = options.capacity || 4
 
-    if (items) { this.set(items) }
+    if (items) {
+      this.set(items)
+    }
   }
 
-  set (items) {
-    let item, i
-    for (i=0; i<items.length; i++) {
+  set (items: any) {
+    for (let i=0; i<items.length; i++) {
       // TODO: fix position
       this.add(new Item(items[i].type, { x: i, y: 0 }))
     }
@@ -29,10 +41,6 @@ export class Inventory {
 
   hasAvailability () {
     return Object.keys( this.slots ).length < this.capacity
-  }
-
-  toJSON () {
-    return this.slots
   }
 
 }

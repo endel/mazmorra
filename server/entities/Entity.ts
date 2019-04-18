@@ -1,9 +1,12 @@
 import shortid from "shortid";
 import { Schema, type } from "@colyseus/schema";
+import { DungeonState } from "../rooms/states/DungeonState";
 
 export class Entity extends Schema {
   @type("string")
   id: string;
+
+  state: DungeonState;
 
   constructor (id?: string) {
     super();
@@ -11,11 +14,8 @@ export class Entity extends Schema {
     this.id = id || shortid.generate()
   }
 
-  update() {
+  update(currentTime?: number) {
     /* does nothing */
   }
-
-  set state (value) { state.set(this, value) }
-  get state () { return state.get(this) }
 
 }
