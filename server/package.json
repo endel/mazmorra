@@ -6,17 +6,19 @@
   "main": "index.js",
   "scripts": {
     "start-production": "pm2 start index.js --node-args='--harmony --use-strict'",
-    "start": "nodemon --harmony ./index.js localhost 3553"
+    "start": "nodemon --watch 'src/**/*.ts'  --exec 'ts-node' ./index.ts localhost 3553"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@colyseus/social": "^0.10.2",
     "body-parser": "^1.14.2",
     "clock-timer.js": "^1.1.4",
-    "colyseus": "^0.10.5",
+    "colyseus": "^0.10.7",
     "cors": "^2.7.1",
     "dotenv": "^2.0.0",
     "express": "^4.13.3",
+    "express-jwt": "^5.3.1",
     "mongoose": "^4.4.3",
     "pathfinding": "^0.4.17",
     "random-seed": "^0.3.0",
@@ -25,7 +27,7 @@
   "devDependencies": {
     "@types/random-seed": "^0.3.3",
     "nodemon": "^1.18.11",
-    "ts-node": "^8.1.0",
+    "ts-node": "^8.2.0",
     "typescript": "^3.4.3"
   }
 }

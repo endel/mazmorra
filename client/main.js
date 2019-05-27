@@ -11,10 +11,11 @@ ResourceManager.load(() => {
   game.render()
 
   credentials.on('login', (data) => {
-    game.characterBuilder.setHero(data.heros[0])
+    // game.characterBuilder.setHero(data.heros[0])
+    game.characterBuilder.setHero({})
   })
 
-  credentials.init()
+  credentials.init();
 })
 
 //

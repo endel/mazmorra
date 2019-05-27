@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 
 import { Server } from 'colyseus';
+import socialRoutes from "@colyseus/social/express";
 
 import { router as auth } from "./controllers/auth";
 import { router as hero } from "./controllers/auth";
@@ -35,7 +36,9 @@ if (process.env.ENVIRONMENT !== "production") {
 app.use(bodyParser.json());
 
 app.use(express.static( __dirname + '/../public' ));
-app.use('/auth', auth);
+
+app.use('/', socialRoutes);
+// app.use('/auth', auth);
 app.use('/hero', hero);
 
 server.listen(port);
