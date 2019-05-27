@@ -39,13 +39,13 @@ var helpers = {
 
     // game entities
     ENTITIES: {
-      DOOR: 0,
-      LIGHT: 1,
-      CHEST: 3,
-      PLAYER: 10,
-      TEXT_EVENT: 11,
+      DOOR: '0',
+      LIGHT: '1',
+      CHEST: '3',
+      PLAYER: '10',
+      TEXT_EVENT: '11',
 
-      NPC: 20,
+      NPC: '20',
 
       // items 100~400
       BOOK_BLUE: 'book-blue',
@@ -110,7 +110,7 @@ var helpers = {
       // non-interactive / aesthetics
       AESTHETICS: 'aesthetics',
 
-      ENEMY: 1000,
+      ENEMY: '1000',
     },
 
     // common classes

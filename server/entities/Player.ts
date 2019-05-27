@@ -3,16 +3,15 @@ import { Unit } from "./Unit";
 import helpers from "../../shared/helpers";
 
 export class SkinProperties extends Schema {
-  @type("string") klass: string;
-  @type("string") hair: string;
-  @type("string") hairColor: string;
-  @type("string") eye: string;
-  @type("string") body: string;
+  @type("number") klass: string;
+  @type("number") hair: string;
+  @type("number") hairColor: string;
+  @type("number") eye: string;
+  @type("number") body: string;
 }
 
 export class Player extends Unit {
   @type("string") name: string;
-  @type("number") type: number;
   @type(SkinProperties) properties = new SkinProperties();
 
   @type("number") gold: number;

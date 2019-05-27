@@ -1,6 +1,7 @@
 import { Room } from "colyseus";
 import { DungeonState } from "./states/DungeonState";
-import { User, Hero } from "../db/models";
+import { User, verifyToken } from "@colyseus/social";
+import { Hero } from "../db/models";
 
 const TICK_RATE = 30
 
@@ -25,25 +26,16 @@ export class DungeonRoom extends Room<DungeonState> {
 
     this.setState(new DungeonState(this.progress, this.difficulty))
 
-    this.state.on('goto', this.onGoTo.bind(this))
+    this.state.events.on('goto', this.onGoTo.bind(this))
 
     setInterval( this.tick.bind(this), 1000 / TICK_RATE );
 
     // this.setSimulationInterval( this.tick.bind(this), 1000 / TICK_RATE )
   }
 
-  onAuth (options) {
-    return new Promise((resolve, reject) => {
-      User.findOne({ token: options.token }).populate('heros').then(user => {
-        if (!user) {
-          console.log("WARNING: invalid token '" + options.token + "'")
-          reject();
-
-        } else {
-          resolve(user);
-        }
-      })
-    });
+  async onAuth (options) {
+    const token = verifyToken(options.token);
+    return await User.findById(token._id);
   }
 
   requestJoin (options) {
@@ -56,7 +48,7 @@ export class DungeonRoom extends Room<DungeonState> {
   }
 
   onJoin (client, options, user) {
-    const hero = user.heros[0];
+    const hero = new Hero();
     const player = this.state.createPlayer(client, hero);
 
     this.heroes.set(client, hero)

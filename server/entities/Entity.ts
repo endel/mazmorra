@@ -5,7 +5,7 @@ import { Position } from "../core/Position";
 
 export class Entity extends Schema {
   @type("string") id: string;
-  @type("number") type: number;
+  @type("string") type: string;
   @type(Position) position = new Position();
 
   state: DungeonState;

@@ -53,7 +53,7 @@ export class RoomUtils {
 
     for (var i=0; i<positions.length; i++) {
       let position = positions[i]
-        , type = this.state.grid[position.y][position.x-1]
+        , type = this.state.grid[(position.x-1) + this.state.width * position.y ];
 
       if ((type & helpers.TILE_TYPE.WALL) && (type & helpers.DIRECTION.NORTH)) {
         possiblePositions.push(position)
@@ -155,6 +155,7 @@ export class RoomUtils {
       this.populateNPCs(room);
 
       // add door
+      console.log("endPosition:", this.endPosition);
       this.state.addEntity(new Door(this.endPosition, new DoorDestiny({
         difficulty: 1,
         progress: this.state.progress + 1

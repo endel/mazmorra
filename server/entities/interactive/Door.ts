@@ -30,12 +30,12 @@ export class Door extends Interactive {
   @type(DoorDestiny) destiny: DoorDestiny;
 
   constructor (position: Point, destiny: DoorDestiny) {
-    super(helpers.ENTITIES.DOOR, position)
+    super(helpers.ENTITIES.DOOR, position);
     this.destiny = destiny
   }
 
   interact (moveEvent, player, state) {
-    state.emit('goto', player, this.destiny)
+    state.events.emit('goto', player, this.destiny)
   }
 
 }

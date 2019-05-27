@@ -27,9 +27,10 @@ export interface Point {
   y: number;
 }
 
-export class DungeonState extends EventEmitter {
+export class DungeonState extends Schema {
   // predicatble random generator
   rand = gen.create();
+  events = new EventEmitter();
 
   @type("number") progress: number;
   @type("number") difficulty: number;
@@ -83,8 +84,13 @@ export class DungeonState extends EventEmitter {
       data = dungeon.generate(this.rand, {x: 24, y: 24}, {x: 6, y: 6}, {x: 12, y: 12}, 3);
     }
 
+    // assign flattened grid to array schema
+    const flatgrid = this.flat(data[0]);
+    for (let i = 0; i < flatgrid.length; i++) {
+      this.grid[i] = flatgrid[i];
+    }
+
     this.width = data[0].length;
-    this.grid = this.flat(data[0]);
     this.rooms = data[1]
 
     this.gridUtils = new GridUtils(this.entities)
@@ -232,7 +238,7 @@ export class DungeonState extends EventEmitter {
   }
 
   flat (arr: any[][], depth: number = 1) {
-    if (depth < 1) return Array.prototype.slice.call(this);
+    if (depth < 1) return Array.prototype.slice.call(arr);
     return (function flat(arr, depth) {
       var len = arr.length >>> 0;
       var flattened = [];

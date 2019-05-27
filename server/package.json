@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start-production": "pm2 start index.js --node-args='--harmony --use-strict'",
-    "start": "nodemon --watch 'src/**/*.ts'  --exec 'ts-node' ./index.ts localhost 3553"
+    "start": "DEBUG=colyseus:* nodemon --watch 'src/**/*.ts'  --exec 'ts-node' ./index.ts localhost 3553"
   },
   "author": "",
   "license": "ISC",
