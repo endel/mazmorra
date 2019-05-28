@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@colyseus/monitor": "^0.10.0",
     "@colyseus/social": "^0.10.2",
     "body-parser": "^1.14.2",
     "clock-timer.js": "^1.1.4",

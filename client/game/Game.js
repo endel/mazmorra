@@ -73,11 +73,11 @@ export default class Game {
   }
 
   init () {
-    this.level = new Level( this.hud, this.camera )
-    this.level.addEventListener("setup", this.onSetupLevel.bind(this))
-    this.level.addEventListener("died", () => this.hud.showOverlay(2000))
-    this.scene.add( this.level )
-    this.hud.init()
+    this.level = new Level(this.hud, this.camera);
+    this.level.addEventListener("setup", this.onSetupLevel.bind(this));
+    this.level.addEventListener("died", () => this.hud.showOverlay(2000));
+    this.scene.add(this.level);
+    this.hud.init();
   }
 
   onSetupLevel (e) {

@@ -45,6 +45,8 @@ export class RoomUtils {
 
     this.startPosition = this.getRandomDoorPosition(this.rooms[0]);
     this.endPosition = this.getRandomDoorPosition(this.rooms[ this.rooms.length-1 ])
+    console.log("this.startPosition:", this.startPosition);
+    console.log("this.endPosition:", this.endPosition);
   }
 
   getRandomDoorPosition (room) {

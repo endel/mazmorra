@@ -64,13 +64,14 @@ export default class Level extends THREE.Object3D {
   enterRoom (name, options = {}) {
     this.room = enterRoom(name, options)
 
-    this.room.onStateChange.addOnce((state) => this.setup(state));
+    // first level setup
+    this.room.onStateChange.addOnce((state) => this.setInitialState(state));
 
     this.room.onError.add((err) => console.error(err));
     this.room.onLeave.add(() => this.cleanup());
 
     this.room.onMessage.add((payload) => {
-      let [ evt, data ] = payload
+      const [ evt, data ] = payload
       if (evt === "goto") {
         this.room.onLeave.addOnce(() => this.room = this.enterRoom('dungeon', data))
 
@@ -82,12 +83,10 @@ export default class Level extends THREE.Object3D {
     return this.room
   }
 
-  setup (state) {
-    this.dispatchEvent({ type: 'setup', state: state })
+  setupStateCallbacks () {
+    var state = this.room.state;
 
-    // first level setup
-    this.setInitialState(state);
-
+    /*
     var entitiesToUpdate = {};
     this.room.onStateChange.add((state) => {
       for (var entityId in entitiesToUpdate) {
@@ -137,85 +136,131 @@ export default class Level extends THREE.Object3D {
         }
       }
     });
+    */
 
-    this.room.listen("entities/:id", (change) => {
-      if (change.operation === "remove") {
-          this.removeEntity(this.entities[ change.path.id ])
-          delete this.entities[ change.path.id ];
+    state.entities.onAdd = (entity, key) => {
+      // create new player
+      const object = this.factory.createEntity(entity)
+      object.userData = entity;
 
-      } else if (change.operation === "add") {
-          // create new player
-          let entity = this.factory.createEntity(change.value)
-          this.entities[ entity.userData.id ] = entity
+      this.entities[object.userData.id] = object;
 
-          if (entity.userData.id === getClientId()) {
-            // SET GLOBAL CURRENT PLAYER OBJECT
-            window.player = entity;
-            this.createPlayerBehaviour(entity)
+      if (object.userData.id === getClientId()) {
+        // SET GLOBAL CURRENT PLAYER OBJECT
+        console.log("CREATE PLAYER BEHAVIOUR!");
+        window.player = object;
+        this.createPlayerBehaviour(object);
+      }
+
+      // may not be a player
+      if (entity.hp) {
+        entity.hp.onChange = (changes) => {
+          for (const change of changes) {
+            if (change.field === "current") {
+              if (change.value <= 0) {
+                object.getEntity().emit('died');
+
+                // Go back to lobby if current player has died
+                // (After 5 seconds)
+                if (key === getClientId()) {
+                  this.dispatchEvent({ type: 'died' });
+                  setTimeout(() => {
+                    this.room.onLeave.addOnce(() => this.enterRoom('dungeon', { progress: 1 }));
+                    this.room.leave();
+                  }, 4000);
+                }
+              }
+            }
           }
+        };
       }
-    }, true);
+      // entity.hp.triggerAll() ??
 
+      entity.onChange = (changes) => {
+        for (const change of changes) {
+          if (change.field === "lvl") {
+            object.add(new LevelUp())
 
-    this.room.listen("entities/:id/position/:axis", (change) => {
-      if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
-      entitiesToUpdate[change.path.id][change.path.axis] = change.value;
-    }, true);
+            this.factory.createEntity({
+              type: helpers.ENTITIES.TEXT_EVENT,
+              text: 'UP',
+              kind: 'warn',
+              ttl: 500,
+              special: true,
+              position: object.userData.position
+            });
 
-    this.room.listen("entities/:id/hp/current", (change) => {
-      if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
+          } else if (change.field === "gold") {
+            // picked coin
+            if (key === getClientId()) {
+              coinSound.play();
+            }
 
-      if (change.value <= 0) {
-        var object = this.entities[change.path.id];
-        object.getEntity().emit('died');
+          } else if (change.field === "position") {
+            object.getEntity().emit('nextPoint', this.factory.fixTilePosition(object.position.clone(), change.value.y, change.value.x));
 
-        // Go back to lobby if current player has died
-        // (After 5 seconds)
-        if (change.path.id === getClientId()) {
-          this.dispatchEvent({ type: 'died' });
-          setTimeout(() => {
-            this.room.onLeave.addOnce(() => this.enterRoom('dungeon', { progress: 1 }));
-            this.room.leave();
-          }, 4000);
+          } else if (change.field === "direction") {
+            object.direction = change.value;
+
+          } else if (change.field === "action") {
+            const actionType = change.value && change.value.type;
+            object.getEntity().emit(actionType, change.value);
+
+          } else if (change.field === "active") {
+            object.getEntity().emit('active', change.value);
+          }
+
         }
-      }
-    }, true);
+      };
+      // entity.triggerAll() ??
+    };
+    state.entities.triggerAll();
 
-    this.room.listen("entities/:id/lvl", (change) => {
-      if (change.operation === "replace") {
-        if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
-        entitiesToUpdate[change.path.id].levelUp = true;
-      }
-    }, true);
+    state.entities.onRemove = (entity, key) => {
+      this.removeEntity(this.entities[ key ])
+      delete this.entities[ key ];
+    }
 
-    this.room.listen("entities/:id/direction", (change) => {
-      var object = this.entities[change.path.id];
-      object.direction = change.value;
-    }, true);
+    // this.room.listen("entities/:id/position/:axis", (change) => {
+    //   if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
+    //   entitiesToUpdate[change.path.id][change.path.axis] = change.value;
+    // }, true);
+
+    // this.room.listen("entities/:id/lvl", (change) => {
+    //   if (change.operation === "replace") {
+    //     if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
+    //     entitiesToUpdate[change.path.id].levelUp = true;
+    //   }
+    // }, true);
+
+    // this.room.listen("entities/:id/direction", (change) => {
+    //   var object = this.entities[change.path.id];
+    //   object.direction = change.value;
+    // }, true);
 
 
-    this.room.listen("entities/:id/action", (change) => {
-      if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
-      entitiesToUpdate[change.path.id].action = true;
-    });
+    // this.room.listen("entities/:id/action", (change) => {
+    //   if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
+    //   entitiesToUpdate[change.path.id].action = true;
+    // });
 
-    this.room.listen("entities/:id/action/lastUpdateTime", (change) => {
-      if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
-      entitiesToUpdate[change.path.id].action = true;
-    });
+    // this.room.listen("entities/:id/action/lastUpdateTime", (change) => {
+    //   if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
+    //   entitiesToUpdate[change.path.id].action = true;
+    // });
 
-    // USE FOUNTAIONS / ITEMS
-    this.room.listen("entities/:id/active", (change) => {
-      if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
-      entitiesToUpdate[change.path.id].active = change.value;
-    });
+    // // USE FOUNTAIONS / ITEMS
+    // this.room.listen("entities/:id/active", (change) => {
+    //   if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
+    //   entitiesToUpdate[change.path.id].active = change.value;
+    // });
 
-    // play coin sound when current player increases his gold
-    this.room.listen("entities/:id/gold", (change) => {
-      if (change.operation === "replace" && change.path.id === getClientId()) {
-        coinSound.play();
-      }
-    });
+    // // play coin sound when current player increases his gold
+    // this.room.listen("entities/:id/gold", (change) => {
+    //   if (change.operation === "replace" && change.path.id === getClientId()) {
+    //     coinSound.play();
+    //   }
+    // });
   }
 
   createPlayerBehaviour (entity) {
@@ -226,7 +271,10 @@ export default class Level extends THREE.Object3D {
   }
 
   setInitialState (state) {
+    this.dispatchEvent({ type: 'setup', state: state })
+
     this.mapkind = state.mapkind;
+    this.mapwidth = state.width;
 
     Resources.init();
 
@@ -281,10 +329,11 @@ export default class Level extends THREE.Object3D {
     } else {
       this.factory.createTiles(this.mapkind)
     }
+
+    this.setupStateCallbacks();
   }
 
   setTileSelection (object) {
-
     if (!object) {
 
       if (this.selection.parent) {

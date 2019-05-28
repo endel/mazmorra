@@ -59,11 +59,11 @@ export class DungeonState extends Schema {
     this.difficulty = difficulty;
 
     this.daylight = true
-    var data;
+    let grid, rooms;
 
     if (progress === 1) {
       this.mapkind = "castle";
-      data = dungeon.generate(this.rand, { x: 12, y: 12 }, { x: 12, y: 12}, { x: 12, y: 12 }, 1);
+      [grid, rooms] = dungeon.generate(this.rand, { x: 12, y: 12 }, { x: 10, y: 10}, { x: 12, y: 12 }, 1);
 
     } else {
       // ['grass', 'rock', 'ice', 'inferno', 'castle']
@@ -81,26 +81,23 @@ export class DungeonState extends Schema {
       // data = dungeon.generate(this.rand, {x: 48, y: 48}, {x: 5, y: 5}, {x: 10, y: 10}, 32)
 
       // regular rooms
-      data = dungeon.generate(this.rand, {x: 24, y: 24}, {x: 6, y: 6}, {x: 12, y: 12}, 3);
+      [grid, rooms] = dungeon.generate(this.rand, {x: 24, y: 24}, {x: 6, y: 6}, {x: 12, y: 12}, 3);
     }
 
+    this.width = grid.length;
+    this.rooms = rooms;
+
+    // 0 = walkable, 1 = blocked
+    this.pathgrid = new PF.Grid(grid.map(line => line.map(type => (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1)))
+
     // assign flattened grid to array schema
-    const flatgrid = this.flat(data[0]);
+    const flatgrid = this.flattenGrid(grid, this.width);
     for (let i = 0; i < flatgrid.length; i++) {
       this.grid[i] = flatgrid[i];
     }
 
-    this.width = data[0].length;
-    this.rooms = data[1]
-
-    this.gridUtils = new GridUtils(this.entities)
-
-    // 0 = walkable, 1 = blocked
-    this.pathgrid = new PF.Grid(
-      data[0].map(line => line.map(type => (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1))
-    )
-
-    this.roomUtils = new RoomUtils(this.rand, this, this.rooms)
+    this.gridUtils = new GridUtils(this.entities);
+    this.roomUtils = new RoomUtils(this.rand, this, this.rooms);
 
     if (progress === 1) {
       // lobby
@@ -110,6 +107,8 @@ export class DungeonState extends Schema {
       // regular room
       this.roomUtils.createEntities()
     }
+
+    console.log("mapkind:", this.mapkind);
   }
 
   addEntity (entity) {
@@ -237,23 +236,16 @@ export class DungeonState extends Schema {
     }
   }
 
-  flat (arr: any[][], depth: number = 1) {
-    if (depth < 1) return Array.prototype.slice.call(arr);
-    return (function flat(arr, depth) {
-      var len = arr.length >>> 0;
-      var flattened = [];
-      var i = 0;
-      while (i < len) {
-        if (i in arr) {
-          var el = arr[i];
-          if (Array.isArray(el) && depth > 0)
-            flattened = flattened.concat(flat(el, depth - 1));
-          else flattened.push(el);
-        }
-        i++;
+  flattenGrid (grid: any[][], width) {
+    const flattened = Array(grid.length * grid[0].length);
+
+    for (let y = 0, h = grid[0].length; y < h; y++) {
+      for (let x = 0; x < width; x++) {
+        flattened[x + width * y] = grid[y][x];
       }
-      return flattened;
-    })(arr, depth);
+    }
+
+    return flattened;
   };
 
 }

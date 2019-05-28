@@ -147,20 +147,20 @@ export default class Factory {
   }
 
   createTiles (mapkind = 'grass') {
-    var xlen = this.grid.length
-      , ylen = this.grid[0].length;
+    var width = this.level.mapwidth;
 
-    for (var x = 0; x < xlen; ++x) {
-      for (var y = 0; y < ylen; ++y) {
-        var tile = this.grid[x][y];
+    for (let i = 0, l = this.grid.length; i < l; i++) {
+      const tile = this.grid[i];
 
-        if (tile & helpers.TILE_TYPE.EMPTY) {
-          continue;
-        }
-
-        // map 3d coordinates (-width/2~width/2 x -height/2~height/2)
-        this.addTile(mapkind, tile, x, y);
+      if (tile & helpers.TILE_TYPE.EMPTY) {
+        continue;
       }
+
+      const x = (i % width);
+      const y = Math.floor(i / width);
+
+      // map 3d coordinates (-width/2~width/2 x -height/2~height/2)
+      this.addTile(mapkind, tile, y, x);
     }
   }
 
@@ -249,11 +249,11 @@ export default class Factory {
   }
 
   fixTilePosition(vec, x, y) {
-    var xlen = this.grid.length
-      , ylen = this.grid[0].length;
+    const xlen = this.level.mapwidth;
+    const ylen = this.grid.length / xlen;
 
-    vec.x = (x - (xlen / 2)) * config.TILE_SIZE
-    vec.z = (y - (ylen / 2)) * config.TILE_SIZE
+    vec.x = (x - (ylen / 2)) * config.TILE_SIZE
+    vec.z = (y - (xlen / 2)) * config.TILE_SIZE
 
     return vec
   }
