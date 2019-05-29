@@ -32,7 +32,7 @@ class Login extends EventEmitter {
       this.credentials.querySelector("a.register").addEventListener("click", (e) => {
         e.preventDefault();
         this.emit('register', {
-          name: this.credentials.querySelector("p.register input").value
+          name: this.credentials.querySelector("p.register input").value || "Anonymous"
         });
       });
 
