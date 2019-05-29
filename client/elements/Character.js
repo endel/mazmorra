@@ -20,7 +20,7 @@ export default class Character extends THREE.Object3D {
   }
 
   get label () {
-    return `${ this.userData.name } - LVL ${ this.userData.lvl }`
+    return `${ this.userData.name } - lvl ${ this.userData.lvl }`
   }
 
   set direction (direction) {

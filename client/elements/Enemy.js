@@ -43,7 +43,7 @@ export default class Enemy extends THREE.Object3D {
   }
 
   get label () {
-    var text = this.userData.kind + ` - LVL ${ this.userData.lvl }`
+    var text = this.userData.kind + ` - lvl ${ this.userData.lvl }`
 
     if (this.userData.hp.current <= 0) {
       text = `Dead ${ text }`

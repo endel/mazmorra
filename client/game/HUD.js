@@ -59,7 +59,7 @@ export default class HUD extends THREE.Scene {
     })
 
     // Label
-    this.selectionText = new MeshText2D("WELCOME", {
+    this.selectionText = new MeshText2D("Welcome", {
       font: config.DEFAULT_FONT,
       fillStyle: '#fff',
       antialias: false

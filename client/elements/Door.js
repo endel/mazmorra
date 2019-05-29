@@ -47,8 +47,8 @@ export default class Door extends THREE.Object3D {
   get label () {
     const progress = this.userData.destiny.progress;
     return (progress > this.currentProgress)
-      ? `Forward to #${progress}`
-      : `Back to #${progress}`
+      ? `Door forward to ${progress}`
+      : `Door back to ${progress}`
   }
 
   onMouseOver (tileSelection) {

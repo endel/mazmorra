@@ -22,7 +22,7 @@ export default class Fountain extends THREE.Object3D {
   }
 
   get label () {
-    return ((this.activateable.isActive) ? "FOUNTAIN" : "DRY FOUNTAIN")
+    return ((this.activateable.isActive) ? "Fountain" : "Dry Fountain")
   }
 
 }

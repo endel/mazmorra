@@ -6,9 +6,7 @@ import { Hero } from "../db/Hero";
 export const router = express.Router()
 
 router.get('/', jwtMiddleware, async (req: express.Request, res: express.Response) => {
-  console.log("received request:", req.auth._id);
-  const heroes = await Hero.find({ userId: req.auth._id });
-  console.log("heroes:", heroes);
+  const heroes = await Hero.find({ userId: req.auth._id, alive: true });
   res.json(heroes);
 });
 
