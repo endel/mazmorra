@@ -2,13 +2,12 @@ import { type } from "@colyseus/schema";
 
 import { Entity } from "../Entity";
 import helpers from "../../../shared/helpers";
-import { Position } from "../../core/Position";
 
 export class TextEvent extends Entity {
   @type("string") text: string;
   @type("number") ttl: number;
 
-  @type("number") kind: number;
+  @type("string") kind: number;
   @type("boolean") small: boolean;
 
   creationTime: number;

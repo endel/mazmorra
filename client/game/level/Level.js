@@ -203,7 +203,8 @@ export default class Level extends THREE.Object3D {
             object.direction = change.value;
 
           } else if (change.field === "action") {
-            const actionType = change.value && change.value.type;
+            console.log("ACTION!", change);
+            const actionType = change.value && change.value.active && change.value.type;
             object.getEntity().emit(actionType, change.value);
 
           } else if (change.field === "active") {
@@ -217,8 +218,10 @@ export default class Level extends THREE.Object3D {
     state.entities.triggerAll();
 
     state.entities.onRemove = (entity, key) => {
-      this.removeEntity(this.entities[ key ])
-      delete this.entities[ key ];
+      if (this.entities[key]) {
+        this.removeEntity(this.entities[key])
+        delete this.entities[key];
+      }
     }
 
     // this.room.listen("entities/:id/position/:axis", (change) => {
@@ -337,12 +340,10 @@ export default class Level extends THREE.Object3D {
     if (!object) {
 
       if (this.selection.parent) {
-
         this.selection.target = []
         this.selection.parent.remove(this.selection)
         this.selectionLight.intensity = 0
         this.targetPosition = null
-
       }
 
     } else {

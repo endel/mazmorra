@@ -12,8 +12,6 @@ export class BattleAction extends Action {
   @type("boolean") critical: boolean;
   @type(Position) position = new Position();
 
-  active: boolean = false;
-
   attacker: Unit;
   defender: Unit;
 
@@ -25,7 +23,7 @@ export class BattleAction extends Action {
     this.attacker = attacker;
     this.defender = defender;
 
-    this.position = this.defender.position;
+    this.position = this.defender.position.clone();
   }
 
   get isEligible () {
