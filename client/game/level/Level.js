@@ -197,13 +197,13 @@ export default class Level extends THREE.Object3D {
             }
 
           } else if (change.field === "position") {
+            console.log("CHANGE POSITION:", change.value.y, change.value.x);
             object.getEntity().emit('nextPoint', this.factory.fixTilePosition(object.position.clone(), change.value.y, change.value.x));
 
           } else if (change.field === "direction") {
             object.direction = change.value;
 
           } else if (change.field === "action") {
-            console.log("ACTION!", change);
             const actionType = change.value && change.value.active && change.value.type;
             object.getEntity().emit(actionType, change.value);
 

@@ -215,7 +215,7 @@ export class DungeonState extends Schema {
   }
 
   addMessage (player, message) {
-    return this.createTextEvent(message, player.position, false, false, true)
+    return this.createTextEvent(message, player.position, false, undefined, true)
   }
 
   createTextEvent (text, position, kind, ttl, small) {

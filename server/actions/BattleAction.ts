@@ -17,7 +17,7 @@ export class BattleAction extends Action {
 
   events = new EventEmitter();
 
-  constructor (attacker: Unit, defender: Unit) {
+  constructor(attacker: Unit, defender: Unit) {
     super()
 
     this.attacker = attacker;
@@ -26,12 +26,12 @@ export class BattleAction extends Action {
     this.position = this.defender.position.clone();
   }
 
-  get isEligible () {
+  get isEligible() {
     return this.defender.isAlive && (distance(this.attacker.position, this.defender.position) <= this.attacker.attackDistance)
   }
 
-  attack () {
-    if(!this.isEligible) {
+  attack() {
+    if (!this.isEligible) {
       // clear BattleAction
       this.attacker.action = null;
       this.events.removeAllListeners();
@@ -43,7 +43,7 @@ export class BattleAction extends Action {
     this.critical = (d20 == 20)
 
     if (!this.missed) {
-      this.damage = d20 + this.attacker.damage + this.attacker.attributes[ this.attacker.damageAttribute ]
+      this.damage = d20 + this.attacker.damage + this.attacker.attributes[this.attacker.damageAttribute]
       if (this.critical) {
         this.damage *= Math.floor(this.attacker.criticalBonus)
       }
@@ -61,24 +61,26 @@ export class BattleAction extends Action {
     }
   }
 
-  update (currentTime) {
-    this.active = this.isEligible
+  update(currentTime) {
+    const timeDiff = currentTime - this.lastUpdateTime
+    const nextAttackAllowed = timeDiff > this.attacker.attackSpeed;
 
-    if (this.active) {
-      let timeDiff = currentTime - this.lastUpdateTime
-        , attacks = 0
-        , pos = null
+    this.active = this.isEligible && nextAttackAllowed;
 
-      if (timeDiff > this.attacker.attackSpeed) {
-        // attacks = Math.floor(timeDiff / this.attacker.attackSpeed)
-        // while (attacks--) {
-          // this.attack()
-        // }
+    if (nextAttackAllowed) {
+      // attacks = Math.floor(timeDiff / this.attacker.attackSpeed)
+      // while (attacks--) {
+      // this.attack()
+      // }
 
+      if (this.active) {
+        let attacks = 0, pos = null
         this.attack()
-        this.lastUpdateTime = currentTime
       }
+
+      this.lastUpdateTime = currentTime;
     }
+
   }
 
 }

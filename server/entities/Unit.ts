@@ -173,9 +173,11 @@ export class Unit extends Entity {
   levelUp () {
     this.lvl ++
 
-    for (let attr in this.attributes) {
-      this.attributes[ attr ]++
-    }
+    // upgrade attributes
+    this.attributes.strenght++;
+    this.attributes.dexterity++;
+    this.attributes.intelligence++;
+    this.attributes.vitality++;
 
     this.hp.current = this.hp.max
     this.mp.current = this.mp.max

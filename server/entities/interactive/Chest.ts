@@ -14,7 +14,7 @@ export class Chest extends Interactive {
 
   interact (moveEvent, player, state) {
     if (!this.action) {
-      this.action = new Action("open");
+      this.action = new Action("open", true);
       state.dropItemFrom(this);
       moveEvent.cancel()
     }
