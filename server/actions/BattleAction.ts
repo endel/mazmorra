@@ -22,8 +22,6 @@ export class BattleAction extends Action {
 
     this.attacker = attacker;
     this.defender = defender;
-
-    this.position = this.defender.position.clone();
   }
 
   get isEligible() {
@@ -75,9 +73,14 @@ export class BattleAction extends Action {
 
       this.active = active;
 
+
       if (this.active) {
         let attacks = 0, pos = null
+
         this.attack()
+
+        // update attack position
+        this.position = this.defender.position.clone();
       }
 
       this.lastUpdateTime = currentTime;
