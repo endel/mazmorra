@@ -2,34 +2,74 @@ import { client } from '../core/network';
 
 var EventEmitter = require('tiny-emitter')
 
-class Credentials extends EventEmitter {
+class Login extends EventEmitter {
 
   constructor() {
     super()
-    this.token = localStorage.getItem('token')
+    this.credentials = document.querySelector('#credentials')
 
-    this.on('login', () => {
-      this.credentials = document.querySelector('#credentials')
-      this.credentials.classList.remove('active')
-    })
+    this.on('register', () => this.hideLogin());
+    this.on('login', () => this.hideLogin());
+  }
+
+  hideLogin() {
+    this.credentials = document.querySelector('#credentials')
+    this.credentials.classList.remove('active')
   }
 
   async init () {
+    // console.log(this.credentials);
+    await this.login();
+  }
+
+  async login() {
     await client.auth.login();
 
-    this.emit('login', client.auth);
+    const heroes = await this.getHeroes();
+
+    if (heroes.length === 0) {
+      this.credentials.querySelector("p.register.hidden").classList.remove("hidden");
+      this.credentials.querySelector("a.register").addEventListener("click", (e) => {
+        e.preventDefault();
+        this.emit('register', {
+          name: this.credentials.querySelector("p.register input").value
+        });
+      });
+
+    } else {
+      this.credentials.querySelector("p.login.hidden").classList.remove("hidden");
+      this.credentials.querySelector("a.login").addEventListener("click", (e) => {
+        e.preventDefault();
+        this.emit('login', heroes[0]);
+      });
+    }
+  }
+
+  async getHeroes() {
+    return fetch(`${ client.auth.endpoint }/hero`, {
+      method: 'get',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + client.auth.token
+      },
+    }).then(r => r.json());
+  }
+
+  async createHero(data) {
+    return fetch(`${client.auth.endpoint}/hero`, {
+      method: 'post',
+      body: JSON.stringify(data),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + client.auth.token
+      },
+    }).then(r => r.json());
   }
 
   async update (properties) {
     await client.auth.save();
-    // return fetch(`${ config.BACKEND_ENDPOINT }/hero?token=${ this.token }`, {
-    //   method: 'post',
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify(properties)
-    // })
   }
 
   onAuth (data) {
@@ -73,9 +113,9 @@ class Credentials extends EventEmitter {
 
   onSubmitCredentials (e) {
     // console.log("ON SUBMIT!");
-    // console.log(`${config.BACKEND_ENDPOINT}/auth/${this.action}`);
+    // console.log(`${client.auth.endpoint}/auth/${this.action}`);
 
-    // fetch(`${config.BACKEND_ENDPOINT}/auth/${this.action}`, {
+    // fetch(`${client.auth.endpoint}/auth/${this.action}`, {
     //   method: 'post',
     //   headers: {
     //     'Accept': 'application/json',
@@ -106,4 +146,4 @@ class Credentials extends EventEmitter {
 
 }
 
-export default new Credentials
+export default new Login

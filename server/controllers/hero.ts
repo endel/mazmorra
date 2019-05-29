@@ -1,31 +1,26 @@
 import express from "express";
+import { jwtMiddleware } from "@colyseus/social/express";
 
-import { User } from "../db/models";
-import { Hero } from "../db/models";
-
-// middlewares
-import { validUser } from "../middlewares/valid-user";
+import { Hero } from "../db/Hero";
 
 export const router = express.Router()
 
-router.get('/', validUser, function(req, res) {
-  var user = req.user
+router.get('/', jwtMiddleware, async (req: express.Request, res: express.Response) => {
+  console.log("received request:", req.auth._id);
+  const heroes = await Hero.find({ userId: req.auth._id });
+  console.log("heroes:", heroes);
+  res.json(heroes);
+});
 
-  res.send(JSON.stringify({
-    heros: user && user.heros,
-    valid: (!!user)
-  }))
-})
+router.post('/', jwtMiddleware, async (req, res) => {
+  res.json(await Hero.create({
+    userId: req.auth._id,
 
-router.post('/', validUser, function(req, res) {
-  var hero = req.user.heros[0]
-
-  if (!hero) {
-    res.status(500).send('hero not found')
-    return
-  }
-
-  Hero.find({ _id: hero._id }).update(req.body).then(() => {
-    res.send(JSON.stringify({success: true}))
-  })
-})
+    name: req.body.name,
+    klass: req.body.klass,
+    hair: req.body.hair,
+    hairColor: req.body.hairColor,
+    eye: req.body.eye,
+    body: req.body.body,
+  }));
+});

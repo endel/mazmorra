@@ -1,6 +1,4 @@
 module.exports = {
-  BACKEND_ENDPOINT: window.location.protocol + "//" + window.location.hostname + ":3553",
-
   TILE_SIZE: 3,
   WALL_THICKNESS: 0.7,
 

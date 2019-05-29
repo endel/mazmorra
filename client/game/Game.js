@@ -3,6 +3,7 @@ import HUD from './HUD'
 import Level from './level/Level'
 import CharacterBuilder from './character/Builder'
 import Raycaster from '../behaviors/Raycaster'
+import login from '../web/login'
 
 import config from '../config'
 
@@ -48,10 +49,6 @@ export default class Game {
     // this.level = new Level(this.scene, this.hud, this.camera)
     // this.level.on('setup', this.onSetupLevel.bind(this))
 
-    this.characterBuilder = new CharacterBuilder( this.hud, this.camera )
-    this.characterBuilder.addEventListener( "complete", this.init.bind(this) )
-    this.scene.add( this.characterBuilder )
-
     // set background for character builder
     this.onSetupLevel({
       state: {
@@ -70,6 +67,20 @@ export default class Game {
     // this.stats.domElement.style.position = 'absolute';
     // this.stats.domElement.style.top = '0px';
     // this.container.appendChild( this.stats.domElement );
+  }
+
+  buildCharacter(heroData) {
+    this.characterBuilder = new CharacterBuilder(this.hud, this.camera);
+    this.characterBuilder.addEventListener("complete", () => this.createHero(heroData));
+    this.characterBuilder.setHero(heroData);;
+
+    this.scene.add(this.characterBuilder);
+  }
+
+  async createHero(data) {
+    const hero = await login.createHero({ ...this.characterBuilder.getHero(), ...data });
+    console.log("HERO CREATED:", hero);
+    this.init();
   }
 
   init () {

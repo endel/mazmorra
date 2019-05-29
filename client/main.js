@@ -4,18 +4,25 @@ require('./css/main.styl');
 import ResourceManager from './resource/manager'
 import Game from './game/Game'
 
-import credentials from './web/credentials'
+import login from './web/login'
 
 ResourceManager.load(() => {
-  let game = new Game(document.getElementById('game'))
-  game.render()
+  const game = new Game(document.getElementById('game'))
+  game.render();
 
-  credentials.on('login', (data) => {
+  login.on('register', (data) => {
     // game.characterBuilder.setHero(data.heros[0])
-    game.characterBuilder.setHero({})
+    game.buildCharacter(data);
+    // game.characterBuilder.setHero({});
   })
 
-  credentials.init();
+  login.on('login', (data) => {
+    // game.characterBuilder.setHero(data.heros[0])
+    // game.characterBuilder.setHero(data);
+    game.init();
+  })
+
+  login.init();
 })
 
 //

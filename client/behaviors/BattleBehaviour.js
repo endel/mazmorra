@@ -43,6 +43,8 @@ export default class BattleBehaviour extends Behaviour {
     this.defender = this.factory.level.getEntityAt(data.position)
     this.attackingPoint = this.defender.position;
 
+    console.log("DEFENDER:", this.defender);
+
     if (!this.isAttacking) {
       this.isAttacking = true
       this.togglePosition = true

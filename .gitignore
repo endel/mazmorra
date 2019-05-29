@@ -10,3 +10,7 @@ app/images/sprites/*.png
 db.sqlite3
 /public
 /server/src
+
+public/images/spritesheet.png
+public/images/spritesheet.json
+public/images/sprites/*.png

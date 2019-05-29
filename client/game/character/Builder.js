@@ -1,6 +1,6 @@
 import Keycode from 'keycode.js'
 
-import credentials from '../../web/credentials'
+import credentials from '../../web/login'
 
 import { Resources } from '../../elements/character/Resources'
 import Composition from '../../elements/character/Composition'

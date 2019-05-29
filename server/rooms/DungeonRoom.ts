@@ -1,7 +1,7 @@
 import { Room } from "colyseus";
 import { DungeonState } from "./states/DungeonState";
 import { User, verifyToken } from "@colyseus/social";
-import { Hero } from "../db/models";
+import { Hero } from "../db/Hero";
 
 const TICK_RATE = 30
 
@@ -34,8 +34,8 @@ export class DungeonRoom extends Room<DungeonState> {
   }
 
   async onAuth (options) {
-    const token = verifyToken(options.token);
-    return await User.findById(token._id);
+    const userId = verifyToken(options.token)._id;
+    return await Hero.findOne({ userId, alive: true });
   }
 
   requestJoin (options) {
@@ -47,8 +47,7 @@ export class DungeonRoom extends Room<DungeonState> {
     return success;
   }
 
-  onJoin (client, options, user) {
-    const hero = new Hero();
+  onJoin (client, options, hero) {
     const player = this.state.createPlayer(client, hero);
 
     this.heroes.set(client, hero)

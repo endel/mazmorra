@@ -9,8 +9,7 @@ import { Server } from 'colyseus';
 import socialRoutes from "@colyseus/social/express";
 import { monitor } from "@colyseus/monitor";
 
-import { router as auth } from "./controllers/auth";
-import { router as hero } from "./controllers/auth";
+import { router as hero } from "./controllers/hero";
 import { DungeonRoom } from './rooms/DungeonRoom';
 
 const port = process.env.PORT || 3553;
@@ -39,7 +38,6 @@ app.use(bodyParser.json());
 app.use(express.static( __dirname + '/../public' ));
 
 app.use('/', socialRoutes);
-// app.use('/auth', auth);
 app.use('/hero', hero);
 
 app.use('/colyseus', monitor(gameServer));
