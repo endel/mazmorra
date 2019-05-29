@@ -178,7 +178,7 @@ export default class Level extends THREE.Object3D {
 
       entity.onChange = (changes) => {
         for (const change of changes) {
-          if (change.field === "lvl") {
+          if (change.field === "lvl" && change.value !== change.previousValue) {
             object.add(new LevelUp())
 
             this.factory.createEntity({
@@ -207,7 +207,7 @@ export default class Level extends THREE.Object3D {
             const actionType = change.value && change.value.active && change.value.type;
             object.getEntity().emit(actionType, change.value);
 
-          } else if (change.field === "active") {
+          } else if (change.field === "active" && change.value !== change.previousValue) {
             object.getEntity().emit('active', change.value);
           }
 
