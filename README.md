@@ -1,6 +1,6 @@
 <img src="logo.png?raw=true" />
 
-## Retro MMORPG
+## Retro Roguelike RPG
 
 Work in progress!
 
