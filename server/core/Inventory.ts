@@ -1,5 +1,6 @@
 import { Schema, type, MapSchema } from "@colyseus/schema";
 import { Item } from "../entities/Item";
+import { createItem } from "../entities/items/createItem";
 
 interface InventoryOptions {
   capacity?: number;
@@ -25,15 +26,15 @@ export class Inventory extends Schema {
   set (items: any) {
     for (let i=0; i<items.length; i++) {
       // TODO: fix position
-      this.add(new Item(items[i].type, { x: i, y: 0 }))
+      this.add(createItem(items[i].type, { x: i, y: 0 }));
     }
   }
 
-  add (item) {
+  add (item: Item) {
     let success = this.hasAvailability()
 
     if (this.hasAvailability()) {
-      this.slots[ item.id ] = item
+      this.slots[item.id] = item.clone();
     }
 
     return success

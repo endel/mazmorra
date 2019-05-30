@@ -1,13 +1,15 @@
 import { Schema, type } from "@colyseus/schema";
 import { Unit } from "./Unit";
 import helpers from "../../shared/helpers";
+import { Item } from "./Item";
+import { DBHero } from "../db/Hero";
 
 export class SkinProperties extends Schema {
-  @type("number") klass: string;
-  @type("number") hair: string;
-  @type("number") hairColor: string;
-  @type("number") eye: string;
-  @type("number") body: string;
+  @type("number") klass: number;
+  @type("number") hair: number;
+  @type("number") hairColor: number;
+  @type("number") eye: number;
+  @type("number") body: number;
 }
 
 export class Player extends Unit {
@@ -17,7 +19,7 @@ export class Player extends Unit {
   @type("number") gold: number;
   @type("number") diamond: number;
 
-  constructor (id, hero) {
+  constructor (id, hero: DBHero) {
     super(id, hero)
     this.type = helpers.ENTITIES.PLAYER
 
@@ -29,7 +31,7 @@ export class Player extends Unit {
     this.properties.hair = hero.hair;
     this.properties.hairColor = hero.hairColor;
     this.properties.eye = hero.eye;
-    this.properties.body = hero.body
+    this.properties.body = hero.body;
 
     // hit | mana | experience points
     this.hp.set(hero.hp || 100, 100)
@@ -65,4 +67,5 @@ export class Player extends Unit {
       this.state.checkOverlapingEntities(moveEvent, currentX, currentY)
     }
   }
+
 }

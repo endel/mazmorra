@@ -1,18 +1,17 @@
-import { Item } from "../Item";
 import helpers from "../../../shared/helpers";
+import { ConsumableItem } from "./ConsumableItem";
 
-export class ManaHeal extends Item {
+export class ManaHeal extends ConsumableItem {
 
-  constructor (position) {
-    super(helpers.ENTITIES.LIFE_HEAL, position)
+  constructor () {
+    super()
+    this.type = helpers.ENTITIES.LIFE_HEAL;
   }
 
-  pick (player, state) {
-    let heal = Math.floor(Math.random() * 10)+10
-    player.mp.current += heal
-    state.createTextEvent("+" + heal, player.position, 'blue', 100)
-
-    return true;
+  consume(player, state) {
+    let heal = Math.floor(Math.random() * 10) + 10;
+    player.mp.current += heal;
+    state.createTextEvent("+" + heal, player.position, 'blue', 100);
   }
 
 }

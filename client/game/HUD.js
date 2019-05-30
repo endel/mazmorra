@@ -46,15 +46,15 @@ export default class HUD extends THREE.Scene {
     this.openInventoryButton.addEventListener('click', this.onOpenInventory.bind(this))
 
     // Usable skills / items
-    this.usableSkills = new SlotStrip({
+    this.skillsInventory = new SlotStrip({
       columns: 1,
       slots: 3,
       accepts: 'skill'
     })
 
-    this.usableItems = new SlotStrip({
+    this.quickInventory = new SlotStrip({
       columns: 1,
-      slots: 3,
+      slots: 6,
       accepts: 'usable'
     })
 
@@ -99,8 +99,8 @@ export default class HUD extends THREE.Scene {
     this.add( this.character )
 
     this.add( this.inventory )
-    this.add( this.usableItems )
-    this.add( this.usableSkills )
+    this.add( this.quickInventory )
+    // this.add( this.skillsInventory )
 
     this.add( this.openInventoryButton )
   }
@@ -130,19 +130,23 @@ export default class HUD extends THREE.Scene {
     })
   }
 
-  setPlayerObject (playerObject) {
-    this.character.composition = playerObject.composition
+  setPlayerObject (player, data) {
+    this.character.composition = player.composition
 
     if ( !this.controller ) {
-      this.controller = new HUDController
-      this.addBehaviour(this.controller, playerObject)
+      this.controller = new HUDController()
+      this.addBehaviour(this.controller, player)
 
     } else {
-      this.controller.playerObject = playerObject
+      this.controller.player = player
     }
 
     this.inventory.getEntity().detachAll()
-    this.inventory.addBehaviour(new InventoryBehaviour, playerObject)
+    this.inventory.addBehaviour(new InventoryBehaviour(), player)
+
+    // bind inventory objects
+    this.inventory.slots.userData = data.inventory;
+    this.quickInventory.userData = data.quickInventory;
   }
 
   resize() {
@@ -166,8 +170,8 @@ export default class HUD extends THREE.Scene {
 
     // this.levelUpButton.position.set( this.character.position.x + margin, this.character.position.y - this.levelUpButton.height + ( config.HUD_SCALE/3 * config.HUD_SCALE), 1)
 
-    this.usableSkills.position.x = - window.innerWidth / 2 + this.usableSkills.width/2 + margin
-    this.usableSkills.position.y = - window.innerHeight / 2 + this.usableSkills.slotSize/2 + margin
+    this.skillsInventory.position.x = - window.innerWidth / 2 + this.skillsInventory.width/2 + margin
+    this.skillsInventory.position.y = - window.innerHeight / 2 + this.skillsInventory.slotSize/2 + margin
 
     //
     // RIGHT SIDE
@@ -182,8 +186,8 @@ export default class HUD extends THREE.Scene {
       this.resources.position.y - this.resources.height - this.openInventoryButton.height - config.HUD_MARGIN - config.HUD_SCALE,
       0
     )
-    this.usableItems.position.x = window.innerWidth / 2 - this.usableItems.width/2 - margin
-    this.usableItems.position.y = - window.innerHeight / 2 + this.usableItems.slotSize/2 + margin
+    this.quickInventory.position.x = this.resources.position.x - (margin/2)
+    this.quickInventory.position.y = this.openInventoryButton.position.y - this.quickInventory.height - margin;
 
     //
     // BOTTOM

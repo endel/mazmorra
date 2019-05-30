@@ -5,6 +5,13 @@ export default class HUDController extends Behaviour {
 
   onAttach (playerObject) {
     this.playerObject = playerObject
+
+    // events
+    this.on("update-inventory", this.onUpdateInventory.bind(this))
+  }
+
+  onUpdateInventory(inventoryType) {
+    this.object[inventoryType].updateItems();
   }
 
   update () {

@@ -32,6 +32,10 @@ export default class Inventory extends THREE.Object3D {
     this.height = this.characterItems.height
   }
 
+  updateItems () {
+    this.slots.updateItems();
+  }
+
   toggleOpen () {
     this.isOpen = !this.isOpen
 

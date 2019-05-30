@@ -3,8 +3,9 @@ import helpers from "../../../shared/helpers";
 
 export class Gold extends Item {
 
-  constructor (position) {
-    super(helpers.ENTITIES.GOLD, position)
+  constructor () {
+    super()
+    this.type = helpers.ENTITIES.GOLD;
   }
 
   pick (player, state) {

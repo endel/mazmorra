@@ -7,12 +7,10 @@ export default class SlotStrip extends THREE.Object3D {
     super()
 
     this.slots = []
-    this.columns = options.columns || 4
+    this.columns = options.columns || 6
     this.allowRemove = options.allowRemove || false
 
     this.accepts = options.accepts
-
-    this.lastItemsRef = null
 
     if (options.slots) {
       this.numSlots = options.slots
@@ -28,21 +26,16 @@ export default class SlotStrip extends THREE.Object3D {
     }
   }
 
-  updateItems (items) {
-    // same items, do nothing
-    if (items === this.lastItemsRef) {
-      return
-    }
+  updateItems () {
+    const items = this.userData.slots;
 
-    this.clearItems()
+    this.clearItems();
 
     let i = 0
     for (let itemId in items) {
       this.slots[i].item = ResourceManager.getHUDElement(`items-${ items[itemId].type }`)
       i++
     }
-
-    this.lastItemsRef = items
   }
 
   set numSlots (total) {

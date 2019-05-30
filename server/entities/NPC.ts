@@ -9,7 +9,7 @@ export class NPC extends Player {
   @type("string") kind: string;
 
   constructor (kind, npcHero = {}) {
-    super(undefined, npcHero)
+    super(undefined, npcHero as any)
 
     // // only used for Player
     // delete this['properties'];

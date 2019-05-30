@@ -1,18 +1,14 @@
 import { Entity } from "./Entity";
-import helpers from "../../shared/helpers";
-import { Point } from "../rooms/states/DungeonState";
+import { Player } from "./Player";
 
 export class Item extends Entity {
 
-  constructor (type, position: Point) {
+  constructor () {
     super()
-
-    this.type = type
-    this.position.set(position);
   }
 
-  pick (player, state) {
-    return player.inventory.add(this)
+  pick (player: Player, state) {
+    return player.inventory.add(this);
   }
 
 }

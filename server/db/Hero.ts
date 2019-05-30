@@ -3,14 +3,12 @@ import { ObjectId, mongoose } from "@colyseus/social";
 const Schema = mongoose.Schema
 
 export interface DBItem {
-  // item properties
+  type: string,
 }
 
 const Item = new mongoose.Schema<DBItem>({
-  // item properties
-}, {
-  _id: false
-});
+  type: String
+}, { _id: false });
 
 export interface DBSkill {
   // skill propertyes
@@ -18,9 +16,7 @@ export interface DBSkill {
 
 const Skill = new mongoose.Schema<DBItem>({
   // skill properties
-}, {
-  _id: false
-});
+}, { _id: false });
 
 export interface DBHero extends mongoose.Document {
   userId: ObjectId;
@@ -49,12 +45,12 @@ export interface DBHero extends mongoose.Document {
   intelligence: number;
   vitality: number;
 
-  inventory: any[];
-  equipedItems: any[];
-  quickInventory: any[];
+  inventory: DBItem[];
+  equipedItems: DBItem[];
+  quickInventory: DBItem[];
 
   skills: any;
-}
+};
 
 export const Hero = mongoose.model<DBHero>('Hero', new Schema<DBHero>({
   userId: Schema.Types.ObjectId,

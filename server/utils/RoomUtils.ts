@@ -129,9 +129,14 @@ export class RoomUtils {
 
     // this.populateAesthetics(room, Math.max(room.size.x, room.size.y) / 2)
 
-    if (this.rand.intBetween(0, 12) === 12) {
-      this.addEntity(room, (position) => new Chest(position))
-    }
+    // if (this.rand.intBetween(0, 12) === 12) {
+    //   this.addEntity(room, (position) => new Chest(position))
+    // }
+
+    this.addEntity(room, (position) => new Chest(position))
+    this.addEntity(room, (position) => new Chest(position))
+    this.addEntity(room, (position) => new Chest(position))
+    this.addEntity(room, (position) => new Chest(position))
 
     if (this.rand.intBetween(0, 6) === 6) {
       this.addEntity(room, (position) => new Fountain(position))
@@ -259,13 +264,15 @@ export class RoomUtils {
     const position = unit.position;
     const index = this.rand.intBetween(0, 2);
 
-    let itemToDrop;
+    let itemToDrop: Item;
 
     switch (index) {
-      case 0: itemToDrop = new Gold(position); break;
-      case 1: itemToDrop = new LifeHeal(position); break;
-      case 2: itemToDrop = new ManaHeal(position); break;
+      case 0: itemToDrop = new Gold(); break;
+      case 1: itemToDrop = new LifeHeal(); break;
+      case 2: itemToDrop = new ManaHeal(); break;
     }
+
+    itemToDrop.position.set(position);
 
     return itemToDrop;
   }

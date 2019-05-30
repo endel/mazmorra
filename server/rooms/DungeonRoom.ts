@@ -1,7 +1,8 @@
-import { Room } from "colyseus";
+import { Room, Client } from "colyseus";
 import { DungeonState } from "./states/DungeonState";
-import { User, verifyToken } from "@colyseus/social";
-import { Hero } from "../db/Hero";
+import { verifyToken } from "@colyseus/social";
+import { Hero, DBHero } from "../db/Hero";
+import { Player } from "../entities/Player";
 
 const TICK_RATE = 30
 
@@ -12,9 +13,9 @@ export class DungeonRoom extends Room<DungeonState> {
   progress: number;
   difficulty: number;
 
-  players = new WeakMap();
-  heroes = new WeakMap();
-  clientMap = new WeakMap();
+  players = new WeakMap<Client, Player>();
+  heroes = new WeakMap<Client, DBHero>();
+  clientMap = new WeakMap<Player, Client>();
 
   onInit (options) {
     this.progress = options.progress || 1
@@ -96,28 +97,34 @@ export class DungeonRoom extends Room<DungeonState> {
     this.state.removeEntity(entity)
   }
 
-  onLeave (client) {
+  async onLeave (client) {
     const hero = this.heroes.get(client)
       , player = this.players.get(client)
 
     if (!hero._id) return;
 
+    const quickInventory = Object.values(player.quickInventory.slots).map(slot => slot.toJSON());
+    const inventory = Object.values(player.inventory.slots).map(slot => slot.toJSON());
+
     // sync
-    return Hero.update({ _id: hero._id }, {
+    await Hero.update({ _id: hero._id }, {
       $set: {
         lvl: player.lvl,
         gold: player.gold,
         diamond: player.diamond,
         hp: player.hp.current,
         mp: player.mp.current,
-        xp: player.xp.current
+        xp: player.xp.current,
+
+        quickInventory,
+        inventory,
       }
-    }).then(() => {
-      this.players.delete(client)
-      this.clientMap.delete(player)
-      this.heroes.delete(client)
-      this.state.removePlayer(player)
     });
+
+    this.players.delete(client)
+    this.clientMap.delete(player)
+    this.heroes.delete(client)
+    this.state.removePlayer(player)
   }
 
   tick () {

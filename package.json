@@ -32,6 +32,7 @@
     "yarn": "^1.12.3"
   },
   "dependencies": {
+    "@colyseus/social": "^0.10.4",
     "audiosprite-loader": "^0.1.5",
     "behaviour.js": "^0.2.4",
     "clock-timer.js": "^1.1.4",
@@ -43,7 +44,7 @@
     "lerp": "^1.0.3",
     "random-seed": "^0.3.0",
     "three": "^0.100.0",
-    "three-text2d": "^0.5.0",
+    "three-text2d": "^0.5.1",
     "throttle.js": "^1.0.0",
     "tiny-emitter": "^1.0.2",
     "tweener": "0.1.28"

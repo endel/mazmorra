@@ -8,6 +8,7 @@ import { EquipedItems } from "../core/EquipedItems";
 
 // Actions
 import { BattleAction } from "../actions/BattleAction";
+import { DBHero } from "../db/Hero";
 
 type Attribute = 'strenght' | 'dexterity' | 'intelligence' | 'vitality';
 
@@ -22,7 +23,7 @@ export class Unit extends Entity {
   // Items / Inventory
   @type(Inventory) inventory = new Inventory({}, [{ type: 'shield-wood' }]);
   @type(EquipedItems) equipedItems = new EquipedItems();
-  @type(Inventory) quickInventory = new Inventory({ capacity: 3 });
+  @type(Inventory) quickInventory = new Inventory({ capacity: 6 });
   @type(BattleAction) action: BattleAction;
 
   @type("string") direction = "bottom";
@@ -51,11 +52,11 @@ export class Unit extends Entity {
 
   position: Movement;// override type
 
-  constructor(id?: string, options: any = {}) {
+  constructor(id?: string, hero: Partial<DBHero> = {}) {
     super(id)
 
-    this.equipedItems.set(options.equipedItems || [])
-    this.quickInventory.set(options.quickInventory || [])
+    this.equipedItems.set(hero.equipedItems || [])
+    this.quickInventory.set(hero.quickInventory || [])
 
     this.action = null
 

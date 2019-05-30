@@ -147,9 +147,20 @@ export default class Level extends THREE.Object3D {
 
       if (object.userData.id === getClientId()) {
         // SET GLOBAL CURRENT PLAYER OBJECT
-        console.log("CREATE PLAYER BEHAVIOUR!");
         window.player = object;
-        this.createPlayerBehaviour(object);
+        this.createPlayerBehaviour(object, entity);
+
+        // update inventory
+        entity.quickInventory.onChange = (changes) => {
+          this.hud.getEntity().emit('update-inventory', 'quickInventory');
+        }
+        entity.quickInventory.triggerAll();
+
+        // update inventory
+        entity.inventory.onChange = (changes) => {
+          this.hud.getEntity().emit('update-inventory', 'inventory');
+        }
+        entity.inventory.triggerAll();
       }
 
       // may not be a player
@@ -176,6 +187,11 @@ export default class Level extends THREE.Object3D {
       }
       // entity.hp.triggerAll() ??
 
+
+      /**
+       * Entity Change:
+       * Level / Position / Direction
+       */
       entity.onChange = (changes) => {
         for (const change of changes) {
           if (change.field === "lvl" && change.value !== change.previousValue) {
@@ -265,11 +281,9 @@ export default class Level extends THREE.Object3D {
     // });
   }
 
-  createPlayerBehaviour (entity) {
-    entity.addBehaviour(new CharacterController, this.camera, this.room)
-    // window.createPlayerBehaviour = () => entity.addBehaviour(new CharacterController, this.camera, this.room)
-
-    this.hud.setPlayerObject(entity)
+  createPlayerBehaviour (object, data) {
+    object.addBehaviour(new CharacterController, this.camera, this.room)
+    this.hud.setPlayerObject(object, data)
   }
 
   setInitialState (state) {
