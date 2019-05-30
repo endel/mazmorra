@@ -119,7 +119,7 @@ export default class ItemSlot extends THREE.Object3D {
   onDragEnd(e) {
     let targetSlot = e.target
 
-    if (!targetSlot.item) {
+    if (!targetSlot.item && draggingItem) {
       targetSlot.item = draggingItem
 
       App.cursor.dispatchEvent({
