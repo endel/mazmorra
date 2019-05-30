@@ -10,8 +10,8 @@ export default class Inventory extends THREE.Object3D {
     this.isOpen = false
 
     this.characterItems = new CharacterItems()
-    this.slots = new SlotStrip({ slots: 4 })
-    this.exchangeSlots = new SlotStrip({ slots: 1, allowRemove: true })
+    this.slots = new SlotStrip({ slots: 4, inventoryType: "inventory" })
+    this.exchangeSlots = new SlotStrip({ slots: 1, allowRemove: true, inventoryType: "exchange" })
 
     this.characterItems.position.x -= this.characterItems.width/2 + this.slots.slotSize/1.5
     this.slots.position.x = this.characterItems.position.x + (this.characterItems.width/2 + this.slots.slotSize / 2 +  config.HUD_SCALE * 2)

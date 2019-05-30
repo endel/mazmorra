@@ -24,6 +24,7 @@ export default class Raycaster extends Behaviour {
     window.addEventListener( "touchstart", this.onTouchStart.bind(this), false )
     window.addEventListener( "touchend", this.onTouchEnd.bind(this), false )
     window.addEventListener( "click", this.onClick.bind(this), false )
+    window.addEventListener( "dblclick", this.onDoubleClick.bind(this), false )
     window.addEventListener( "mousedown", this.onMouseDown.bind(this), false )
     window.addEventListener( "mouseup", this.onMouseUp.bind(this), false )
 
@@ -120,6 +121,20 @@ export default class Raycaster extends Behaviour {
 
       this.targetObject.dispatchEvent({
         type: "click",
+        bubbles: true,
+        path: this.path
+      })
+    }
+  }
+
+  onDoubleClick (e) {
+    this.doRaycast()
+
+    if ( this.isTargetReachable ) {
+      e.preventDefault()
+
+      this.targetObject.dispatchEvent({
+        type: "dblclick",
         bubbles: true,
         path: this.path
       })

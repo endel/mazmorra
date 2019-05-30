@@ -75,6 +75,10 @@ export class DungeonRoom extends Room<DungeonState> {
     if (key == 'pos') {
       this.state.move(player, value, true)
 
+    } else if (key == 'consume-item') {
+      const [inventoryType, itemId] = value;
+      console.log("CONSUME ITEM:", { inventoryType, itemId });
+
     } else if (key == 'msg') {
       // remove message after 3 seconds
       let entity = this.state.addMessage(player, value)

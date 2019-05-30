@@ -1,5 +1,4 @@
 import ItemSlot from './ItemSlot'
-import DraggableItem from './components/DraggableItem'
 
 export default class SlotStrip extends THREE.Object3D {
 
@@ -9,6 +8,7 @@ export default class SlotStrip extends THREE.Object3D {
     this.slots = []
     this.columns = options.columns || 6
     this.allowRemove = options.allowRemove || false
+    this.inventoryType = options.inventoryType;
 
     this.accepts = options.accepts
 
@@ -34,13 +34,14 @@ export default class SlotStrip extends THREE.Object3D {
     let i = 0
     for (let itemId in items) {
       this.slots[i].item = ResourceManager.getHUDElement(`items-${ items[itemId].type }`)
+      this.slots[i].item.userData.itemId = itemId;
       i++
     }
   }
 
   set numSlots (total) {
     this._numSlots = total
-    this.updateChildren()
+    this.updateChildren();
   }
 
   get numSlots () {
@@ -58,16 +59,16 @@ export default class SlotStrip extends THREE.Object3D {
     }
 
     this.slots = []
-    for (i=0; i<this._numSlots; i++) {
+    for (i = 0; i < this.numSlots; i++) {
       column = i % this.columns
       row = Math.floor(i / this.columns)
 
-      slot = new ItemSlot({ accepts: this.accepts })
-      slot.position.x = (slot.width +  config.HUD_SCALE) * column
-      slot.position.y = (slot.height +  config.HUD_SCALE) * row
+      slot = new ItemSlot({ accepts: this.accepts });
+      slot.position.x = (slot.width + config.HUD_SCALE) * column;
+      slot.position.y = (slot.height + config.HUD_SCALE) * row;
 
-      this.slots.push( slot )
-      this.add(slot)
+      this.slots.push(slot);
+      this.add(slot);
     }
 
     // add REMOVE slot
@@ -89,7 +90,7 @@ export default class SlotStrip extends THREE.Object3D {
   }
 
   get slotSize () {
-    return this.slots[0].width
+    return this.slots[0].width;
   }
 
 }

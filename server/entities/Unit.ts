@@ -21,7 +21,7 @@ export class UnitAttributes extends Schema {
 
 export class Unit extends Entity {
   // Items / Inventory
-  @type(Inventory) inventory = new Inventory({}, [{ type: 'shield-wood' }]);
+  @type(Inventory) inventory = new Inventory({ capacity: 4 });
   @type(EquipedItems) equipedItems = new EquipedItems();
   @type(Inventory) quickInventory = new Inventory({ capacity: 6 });
   @type(BattleAction) action: BattleAction;
@@ -57,6 +57,7 @@ export class Unit extends Entity {
 
     this.equipedItems.set(hero.equipedItems || [])
     this.quickInventory.set(hero.quickInventory || [])
+    this.inventory.set(hero.inventory || [])
 
     this.action = null
 

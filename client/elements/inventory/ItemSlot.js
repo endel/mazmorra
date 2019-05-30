@@ -37,13 +37,13 @@ export default class ItemSlot extends THREE.Object3D {
     // drag end
     this.addEventListener('mouseup', this.onDragEnd.bind(this))
     this.addEventListener('touchend', this.onDragEnd.bind(this))
+
+    // double click
+    this.addEventListener('dblclick', this.onDoubleClick.bind(this))
   }
 
   hasItem () {
     return this._item
-  }
-
-  isAccepted ( item ) {
   }
 
   onMouseOver ( e ) {
@@ -131,6 +131,24 @@ export default class ItemSlot extends THREE.Object3D {
       App.tweens.add(draggingItem.scale).to(draggingItem.initialScale, 300, Tweener.ease.quintOut)
 
       draggingItem = null
+    }
+  }
+
+  onDoubleClick(e) {
+    let targetSlot = e.target
+    console.log("DOUBLE CLICK!");
+
+    if (targetSlot.item) {
+      console.log(targetSlot.item);
+      console.log(targetSlot.item.userData.itemId);
+      console.log(this.parent.inventoryType);
+
+      // attach inventory type for sending to room handler.
+      e.itemId = targetSlot.item.userData.itemId;
+      e.inventoryType = this.parent.inventoryType;
+
+    } else {
+      e.stopPropagation = true;
     }
   }
 

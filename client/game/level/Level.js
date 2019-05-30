@@ -86,58 +86,6 @@ export default class Level extends THREE.Object3D {
   setupStateCallbacks () {
     var state = this.room.state;
 
-    /*
-    var entitiesToUpdate = {};
-    this.room.onStateChange.add((state) => {
-      for (var entityId in entitiesToUpdate) {
-        var entityToUpdate = entitiesToUpdate[entityId];
-        delete entitiesToUpdate[entityId];
-
-        var object = this.entities[entityId];
-
-        if (!object) {
-          console.warn("entity", entityId, "is not on client. still receiving data from server.");
-          return;
-        }
-
-        object.userData = state.entities[entityId];
-        object.userData.x = state.entities[entityId].position.x;
-        object.userData.y = state.entities[entityId].position.y;
-
-        // TODO: possible leak here
-        if (
-          entityToUpdate.x !== undefined ||
-          entityToUpdate.y !== undefined
-        ) {
-          object.getEntity().emit('nextPoint', this.factory.fixTilePosition(object.position.clone(), object.userData.y, object.userData.x))
-        }
-
-        if (entityToUpdate.action) {
-          let actionType = object.userData.action && object.userData.action.type;
-          object.getEntity().emit(actionType, object.userData.action)
-        }
-
-        if (entityToUpdate.active !== undefined) {
-          object.getEntity().emit('active', entityToUpdate.active)
-        }
-
-          // LEVEL UP text event
-        if (entityToUpdate.levelUp) {
-          object.add(new LevelUp())
-
-          this.factory.createEntity({
-            type: helpers.ENTITIES.TEXT_EVENT,
-            text: 'UP',
-            kind: 'warn',
-            ttl: 500,
-            special: true,
-            position: object.userData.position
-          });
-        }
-      }
-    });
-    */
-
     state.entities.onAdd = (entity, key) => {
       // create new player
       const object = this.factory.createEntity(entity)
@@ -199,7 +147,7 @@ export default class Level extends THREE.Object3D {
 
             this.factory.createEntity({
               type: helpers.ENTITIES.TEXT_EVENT,
-              text: 'UP',
+              text: 'Level Up!',
               kind: 'warn',
               ttl: 500,
               special: true,
@@ -283,7 +231,17 @@ export default class Level extends THREE.Object3D {
 
   createPlayerBehaviour (object, data) {
     object.addBehaviour(new CharacterController, this.camera, this.room)
-    this.hud.setPlayerObject(object, data)
+    this.hud.setPlayerObject(object, data);
+
+    // allow to consume items!
+    this.hud.addEventListener("dblclick", (e) => {
+      e.stopPropagation = true;
+
+      console.log("EVENT REACHED Level.js:", e);
+      if (e.inventoryType && e.itemId) {
+        this.room.send(["consume-item", [e.inventoryType, e.itemId]]);
+      }
+    });
   }
 
   setInitialState (state) {

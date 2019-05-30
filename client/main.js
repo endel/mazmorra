@@ -30,7 +30,7 @@ ResourceManager.load(() => {
 //
 THREE.Object3D.prototype.dispatchEvent = function (event) {
   THREE.EventDispatcher.prototype.dispatchEvent.call(this, event);
-  if (event.bubbles && this.parent) {
+  if (event.bubbles && !event.stopPropagation && this.parent) {
     this.parent.dispatchEvent(event)
   }
 }

@@ -22,7 +22,8 @@ export default class DraggableItem extends Behaviour {
     this.isDragging = true
   }
 
-  stopDrag () {
+  stopDrag (e) {
+    e.preventDefault();
     this.isDragging = false
   }
 
