@@ -12,6 +12,8 @@ import { DBHero } from "../db/Hero";
 
 type Attribute = 'strenght' | 'dexterity' | 'intelligence' | 'vitality';
 
+export type InventoryType = 'inventory' | 'quickInventory';
+
 export class UnitAttributes extends Schema {
   @type("number") strenght = 1;
   @type("number") dexterity = 1;

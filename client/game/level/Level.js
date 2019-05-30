@@ -100,7 +100,11 @@ export default class Level extends THREE.Object3D {
 
         // update inventory
         entity.quickInventory.onChange = (changes) => {
+          console.log("QUICK INVENTORY CHANGE");
           this.hud.getEntity().emit('update-inventory', 'quickInventory');
+        }
+        entity.quickInventory.slots.onRemove = (changes) => {
+          console.log("REMOVE SLOT!");
         }
         entity.quickInventory.triggerAll();
 

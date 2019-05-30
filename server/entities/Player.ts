@@ -1,8 +1,9 @@
 import { Schema, type } from "@colyseus/schema";
-import { Unit } from "./Unit";
+import { Unit, InventoryType } from "./Unit";
 import helpers from "../../shared/helpers";
 import { Item } from "./Item";
 import { DBHero } from "../db/Hero";
+import { ConsumableItem } from "./items/ConsumableItem";
 
 export class SkinProperties extends Schema {
   @type("number") klass: number;
@@ -58,6 +59,15 @@ export class Player extends Unit {
     this.attackSpeed = 1000
 
     this.hpRegeneration = 1
+  }
+
+  consumeItem(inventoryType: InventoryType, itemId: string) {
+    const inventory = this[inventoryType];
+    const item: ConsumableItem = inventory.slots[itemId];
+
+    if (item && inventory.remove(itemId)) {
+      item.consume(this, this.state);
+    }
   }
 
   onMove (moveEvent, prevX, prevY, currentX, currentY) {

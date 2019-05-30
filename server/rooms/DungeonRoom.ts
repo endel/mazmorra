@@ -77,7 +77,8 @@ export class DungeonRoom extends Room<DungeonState> {
 
     } else if (key == 'consume-item') {
       const [inventoryType, itemId] = value;
-      console.log("CONSUME ITEM:", { inventoryType, itemId });
+      console.log('consume-item', {inventoryType, itemId})
+      player.consumeItem(inventoryType, itemId);
 
     } else if (key == 'msg') {
       // remove message after 3 seconds
