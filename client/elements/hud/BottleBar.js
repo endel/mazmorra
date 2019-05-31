@@ -34,6 +34,8 @@ export default class BottleBar extends THREE.Object3D {
     var totalHeight = this.bg.material.map.frame.h
       , imgHeight = this.fg.material.map.image.height
 
+    console.log("SET BAR PERCENTAGE:", percentage);
+
     // (1 - %)
     var finalPercentage = 1 - percentage
     this.fg.material.map.offset.y = this.initialOffset-((totalHeight/imgHeight)*finalPercentage)

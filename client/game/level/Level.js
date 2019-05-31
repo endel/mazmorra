@@ -113,6 +113,7 @@ export default class Level extends THREE.Object3D {
           this.hud.getEntity().emit('update-inventory', 'inventory');
         }
         entity.inventory.triggerAll();
+        console.log("SET GLOBAL CURRENT PLAYER OBJECT");
       }
 
       // may not be a player
@@ -120,6 +121,7 @@ export default class Level extends THREE.Object3D {
         entity.hp.onChange = (changes) => {
           for (const change of changes) {
             if (change.field === "current") {
+              console.log("HP CHANGED:", change.value);
               if (change.value <= 0) {
                 object.getEntity().emit('died');
 
@@ -157,6 +159,8 @@ export default class Level extends THREE.Object3D {
               special: true,
               position: object.userData.position
             });
+
+          } else if (change.field === "hp" && key === getClientId()) {
 
           } else if (change.field === "gold") {
             // picked coin

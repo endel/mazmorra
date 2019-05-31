@@ -135,11 +135,11 @@ export default class HUD extends THREE.Scene {
     this.character.composition = player.composition
 
     if ( !this.controller ) {
-      this.controller = new HUDController()
-      this.addBehaviour(this.controller, player)
+      this.controller = new HUDController();
+      this.addBehaviour(this.controller, player);
 
     } else {
-      this.controller.player = player
+      this.controller.playerObject = player;
     }
 
     this.inventory.getEntity().detachAll()
