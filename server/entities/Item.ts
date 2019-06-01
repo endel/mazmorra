@@ -9,7 +9,13 @@ export class Item extends Entity {
   }
 
   pick (unit: Unit, state: DungeonState) {
-    return unit.inventory.add(this);
+    const success = unit.inventory.add(this);
+
+    if (success) {
+      state.events.emit("sound", "pickItem", unit);
+    }
+
+    return success
   }
 
 }

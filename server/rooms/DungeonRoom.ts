@@ -99,7 +99,9 @@ export class DungeonRoom extends Room<DungeonState> {
   }
 
   broadcastSound (soundName, player) {
+    console.log("broadcastSound", soundName, player);
     if (player) {
+      console.log("TRIGGER SOUND:", soundName, player, this.clientMap.get(player));
       this.send(this.clientMap.get(player), ["sound", soundName]);
 
     } else {

@@ -53,6 +53,8 @@ export const inventorySound = {
   close: require('../resource/sounds/inventory/close.ogg'),
 }
 
+export const pickItemSound = inventorySound.open;
+
 /**
  * Stingers
  */
