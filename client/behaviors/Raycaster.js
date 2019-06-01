@@ -6,16 +6,15 @@ import Cursor from '../elements/hud/Cursor'
 export default class Raycaster extends Behaviour {
 
   onAttach (camera, parentRaycaster = null) {
-
     this.camera = camera
-
     this.raycaster = new THREE.Raycaster()
-
     this.parentRaycaster = parentRaycaster || null
-
     this.targetObject = null
-
     this.path = null
+
+    // double tap (mobile)
+    this.lastTapTarget = null;
+    this.lastTapTime = Date.now();
 
     // do raycast at every 200ms
     setInterval(() => this.doRaycast(), 200);
@@ -95,9 +94,19 @@ export default class Raycaster extends Behaviour {
     if (e.touches && e.touches[0]) {
       let touch = e.touches[0]
 
+      if (
+        this.lastTapTarget == this.targetObject &&
+        Date.now() - this.lastTapTime < 200
+      ) {
+        window.dispatchEvent(new Event("dblclick"));
+        return;
+      }
+
       App.onMouseMove( touch )
 
       this.onClick( e )
+      this.lastTapTarget = this.targetObject;
+      this.lastTapTime = Date.now();
     }
   }
 

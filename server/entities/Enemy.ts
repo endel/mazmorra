@@ -30,7 +30,7 @@ export class Enemy extends Unit {
     super.update(currentTime)
 
     if (!this.action) {
-      var closePlayer = this.state.gridUtils.getEntityAt(this.position.y - 1, this.position.x, Player)
+      const closePlayer = this.state.gridUtils.getEntityAt(this.position.y - 1, this.position.x, Player)
            || this.state.gridUtils.getEntityAt(this.position.y + 1, this.position.x, Player)
            || this.state.gridUtils.getEntityAt(this.position.y, this.position.x + 1, Player)
            || this.state.gridUtils.getEntityAt(this.position.y, this.position.x - 1, Player)
@@ -46,7 +46,7 @@ export class Enemy extends Unit {
   }
 
   takeDamage (battleAction ) {
-    this.state.move(this, { x: battleAction.attacker.position.y, y: battleAction.attacker.position.x }) // , false
+    this.state.move(this, { x: battleAction.attacker.position.y, y: battleAction.attacker.position.x })
     return super.takeDamage(battleAction)
   }
 

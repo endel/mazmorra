@@ -86,7 +86,9 @@ export class Movement extends Position {
 
     // change direction
     if (this.pending.length > 0) {
-      var x = this.pending[0][0], y = this.pending[0][1]
+      const x = this.pending[0][0];
+      const y = this.pending[0][1];
+
       if (this.x < x) {
         this.unit.direction = 'bottom'
 

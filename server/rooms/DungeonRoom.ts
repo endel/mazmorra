@@ -76,6 +76,9 @@ export class DungeonRoom extends Room<DungeonState> {
     if (key == 'pos') {
       this.state.move(player, value, true)
 
+    } else if (key == 'drop-item') {
+      const [tile, inventoryType, itemId] = value;
+
     } else if (key == 'consume-item') {
       const [inventoryType, itemId] = value;
       player.consumeItem(inventoryType, itemId);
@@ -99,9 +102,7 @@ export class DungeonRoom extends Room<DungeonState> {
   }
 
   broadcastSound (soundName, player) {
-    console.log("broadcastSound", soundName, player);
     if (player) {
-      console.log("TRIGGER SOUND:", soundName, player, this.clientMap.get(player));
       this.send(this.clientMap.get(player), ["sound", soundName]);
 
     } else {

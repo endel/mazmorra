@@ -168,6 +168,7 @@ export default class Level extends THREE.Object3D {
             object.getEntity().emit('nextPoint', this.factory.fixTilePosition(object.position.clone(), change.value.y, change.value.x));
 
           } else if (change.field === "direction") {
+            console.log("CHANGE DIRECTION", key, change.value);
             object.direction = change.value;
 
           } else if (change.field === "action") {

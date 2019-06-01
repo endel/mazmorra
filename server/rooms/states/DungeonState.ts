@@ -191,13 +191,9 @@ export class DungeonState extends Schema {
     }
   }
 
-  move (unit: Unit, destiny: Point, allowChangeTarget?: boolean) {
+  move (unit: Unit, destiny: Point, allowChangeTarget: boolean = true) {
     if (destiny.x == unit.position.y && destiny.y == unit.position.x) {
       return false;
-    }
-
-    if (typeof(allowChangeTarget)==="undefined") {
-      allowChangeTarget = true
     }
 
     var moves = this.finder.findPath(
@@ -206,21 +202,22 @@ export class DungeonState extends Schema {
       this.pathgrid.clone() // FIXME: we shouldn't create leaks that way!
     );
 
-    moves.shift() // first block is always the starting point, we don't need it
+    moves.shift(); // first block is always the starting point, we don't need it
 
     if (allowChangeTarget) {
       unit.position.target = this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit, 'isAlive')
-        || this.gridUtils.getEntityAt(destiny.x, destiny.y)
+        || this.gridUtils.getEntityAt(destiny.x, destiny.y);
 
       // TODO: refactor me
       if (unit.position.target instanceof Unit && unit.position.target.isAlive) {
-        unit.attack(unit.position.target)
+        unit.attack(unit.position.target);
+
       } else {
-        unit.attack(null)
+        unit.attack(null);
       }
     }
 
-    unit.position.moveTo(moves)
+    unit.position.moveTo(moves);
   }
 
   addMessage (player, message) {
