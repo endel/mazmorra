@@ -1,4 +1,7 @@
 import { Inventory } from "./Inventory";
+import { EquipableItem } from "../entities/items/EquipableItem";
+
+export type EquipedPosition = 'head' | 'body' | 'left' | 'right' | 'boot'
 
 export class EquipedItems extends Inventory {
 
@@ -6,8 +9,28 @@ export class EquipedItems extends Inventory {
     super({ capacity: 5 })
   }
 
-  add (item) {
-    return super.add(item)
+  hasHead() {
+    return !!this.slots['head'];
+  }
+
+  hasBody() {
+    return !!this.slots['body'];
+  }
+
+  hasLeft() {
+    return !!this.slots['left'];
+  }
+
+  hasRight() {
+    return !!this.slots['right'];
+  }
+
+  hasBoot() {
+    return !!this.slots['boot'];
+  }
+
+  equip(position: EquipedPosition, item: EquipableItem) {
+
   }
 
 }

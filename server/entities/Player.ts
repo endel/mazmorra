@@ -71,6 +71,17 @@ export class Player extends Unit {
     }
   }
 
+  inventoryDrag(fromInventoryType: InventoryType, toInventoryType: InventoryType, itemId: string) {
+    const fromInventory = this[fromInventoryType];
+    const toInventory = this[toInventoryType]
+
+    const item = fromInventory.slots[itemId];
+    if (item && toInventory.hasAvailability()) {
+      fromInventory.remove(itemId);
+      toInventory.add(item);
+    }
+  }
+
   onMove (moveEvent: MoveEvent, prevX, prevY, currentX, currentY) {
     super.onMove(moveEvent, prevX, prevY, currentX, currentY)
 

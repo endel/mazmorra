@@ -76,11 +76,12 @@ export class DungeonRoom extends Room<DungeonState> {
     if (key == 'pos') {
       this.state.move(player, value, true)
 
-    } else if (key == 'drop-item') {
-      const [tile, inventoryType, itemId] = value;
+    } else if (key == 'inventory-drag') {
+      const { fromInventoryType, toInventoryType, itemId } = value;
+      player.inventoryDrag(fromInventoryType, toInventoryType, itemId);
 
     } else if (key == 'consume-item') {
-      const [inventoryType, itemId] = value;
+      const { inventoryType, itemId } = value;
       player.consumeItem(inventoryType, itemId);
 
     } else if (key == 'msg') {

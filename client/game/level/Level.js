@@ -104,12 +104,9 @@ export default class Level extends THREE.Object3D {
 
         // update inventory
         entity.quickInventory.onChange = (changes) => {
-          console.log("QUICK INVENTORY CHANGE");
           this.hud.getEntity().emit('update-inventory', 'quickInventory');
         }
-        entity.quickInventory.slots.onRemove = (changes) => {
-          console.log("REMOVE SLOT!");
-        }
+        entity.quickInventory.slots.onRemove = (changes) => {}
         entity.quickInventory.triggerAll();
 
         // update inventory
@@ -117,7 +114,6 @@ export default class Level extends THREE.Object3D {
           this.hud.getEntity().emit('update-inventory', 'inventory');
         }
         entity.inventory.triggerAll();
-        console.log("SET GLOBAL CURRENT PLAYER OBJECT");
       }
 
       // may not be a player
@@ -125,7 +121,6 @@ export default class Level extends THREE.Object3D {
         entity.hp.onChange = (changes) => {
           for (const change of changes) {
             if (change.field === "current") {
-              console.log("HP CHANGED:", change.value);
               if (change.value <= 0) {
                 object.getEntity().emit('died');
 
@@ -168,7 +163,6 @@ export default class Level extends THREE.Object3D {
             object.getEntity().emit('nextPoint', this.factory.fixTilePosition(object.position.clone(), change.value.y, change.value.x));
 
           } else if (change.field === "direction") {
-            console.log("CHANGE DIRECTION", key, change.value);
             object.direction = change.value;
 
           } else if (change.field === "action") {
@@ -239,14 +233,23 @@ export default class Level extends THREE.Object3D {
     this.hud.setPlayerObject(object, data);
 
     // allow to consume items!
-    this.hud.addEventListener("dblclick", (e) => {
+    this.hud.addEventListener("consume-item", (e) => {
       e.stopPropagation = true;
-
-      console.log("EVENT REACHED Level.js:", e);
-      if (e.inventoryType && e.itemId) {
-        this.room.send(["consume-item", [e.inventoryType, e.itemId]]);
-      }
+      this.room.send(["consume-item", {
+        inventoryType: e.inventoryType,
+        itemId: e.itemId
+      }]);
     });
+
+    this.hud.addEventListener("inventory-drag", (e) => {
+      e.stopPropagation = true;
+      this.room.send(["inventory-drag", {
+        fromInventoryType: e.fromInventoryType,
+        toInventoryType: e.toInventoryType,
+        itemId: e.itemId
+      }]);
+    });
+
   }
 
   setInitialState (state) {

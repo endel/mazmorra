@@ -125,7 +125,15 @@ export default class ItemSlot extends THREE.Object3D {
       App.cursor.dispatchEvent({
         type: "drag",
         item: false
-      })
+      });
+
+      this.dispatchEvent({
+        type: "inventory-drag",
+        bubbles: true,
+        fromInventoryType: draggingFrom.parent.inventoryType,
+        toInventoryType: this.parent.inventoryType,
+        itemId: targetSlot.item.userData.itemId
+      });
 
       App.tweens.remove(draggingItem.scale)
       App.tweens.add(draggingItem.scale).to(draggingItem.initialScale, 300, Tweener.ease.quintOut)
@@ -136,16 +144,15 @@ export default class ItemSlot extends THREE.Object3D {
 
   onDoubleClick(e) {
     let targetSlot = e.target
-    console.log("DOUBLE CLICK!");
 
     if (targetSlot.item) {
-      console.log(targetSlot.item);
-      console.log(targetSlot.item.userData.itemId);
-      console.log(this.parent.inventoryType);
-
       // attach inventory type for sending to room handler.
-      e.itemId = targetSlot.item.userData.itemId;
-      e.inventoryType = this.parent.inventoryType;
+      this.dispatchEvent({
+        type: "consume-item",
+        bubbles: true,
+        itemId: targetSlot.item.userData.itemId,
+        inventoryType: this.parent.inventoryType
+      });
 
     } else {
       e.stopPropagation = true;
