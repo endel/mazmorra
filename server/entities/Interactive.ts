@@ -1,9 +1,11 @@
 import { Entity } from "./Entity";
-import { Point } from "../rooms/states/DungeonState";
+import { Point, DungeonState } from "../rooms/states/DungeonState";
 import { type } from "@colyseus/schema";
 import { Action } from "../actions/Action";
+import { MoveEvent } from "../core/Movement";
+import { Unit } from "./Unit";
 
-export class Interactive extends Entity {
+export abstract class Interactive extends Entity {
   @type(Action) action: Action;
 
   constructor (type, position: Point) {
@@ -13,8 +15,5 @@ export class Interactive extends Entity {
     this.position.set(position);
   }
 
-  interact (moveEvent, player, state) {
-    throw new Error(`${this.constructor.name} should implement interact(moveEvent, player, state) method`)
-  }
-
+  abstract interact (moveEvent: MoveEvent, unit: Unit, state: DungeonState);
 }

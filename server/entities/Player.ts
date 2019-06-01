@@ -4,6 +4,7 @@ import helpers from "../../shared/helpers";
 import { Item } from "./Item";
 import { DBHero } from "../db/Hero";
 import { ConsumableItem } from "./items/ConsumableItem";
+import { MoveEvent } from "../core/Movement";
 
 export class SkinProperties extends Schema {
   @type("number") klass: number;
@@ -70,7 +71,7 @@ export class Player extends Unit {
     }
   }
 
-  onMove (moveEvent, prevX, prevY, currentX, currentY) {
+  onMove (moveEvent: MoveEvent, prevX, prevY, currentX, currentY) {
     super.onMove(moveEvent, prevX, prevY, currentX, currentY)
 
     if (this.position.target) {

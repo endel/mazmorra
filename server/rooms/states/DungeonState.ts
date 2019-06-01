@@ -21,6 +21,7 @@ import { Item } from "../../entities/Item";
 import { TextEvent } from "../../entities/ephemeral/TextEvent";
 import { Interactive } from "../../entities/Interactive";
 import { Entity } from "../../entities/Entity";
+import { MoveEvent, Movement } from "../../core/Movement";
 
 export interface Point {
   x: number;
@@ -87,9 +88,6 @@ export class DungeonState extends Schema {
     this.width = grid.length;
     this.rooms = rooms;
 
-    // 0 = walkable, 1 = blocked
-    this.pathgrid = new PF.Grid(grid.map(line => line.map(type => (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1)))
-
     // assign flattened grid to array schema
     const flatgrid = this.flattenGrid(grid, this.width);
     for (let i = 0; i < flatgrid.length; i++) {
@@ -107,6 +105,15 @@ export class DungeonState extends Schema {
       // regular room
       this.roomUtils.createEntities()
     }
+
+    // 0 = walkable, 1 = blocked
+    this.pathgrid = new PF.Grid(grid.map((line, x) => {
+      return line.map((type, y) => {
+        // const hasInteractive = this.gridUtils.getEntityAt(x, y, Interactive, 'actAsObstacle');
+        // console.log("has interactive?", x, y, hasInteractive);
+        return (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1;
+      });
+    }))
 
     console.log("mapkind:", this.mapkind);
   }
@@ -161,23 +168,25 @@ export class DungeonState extends Schema {
     }
   }
 
-  checkOverlapingEntities (moveEvent, x, y) {
+  checkOverlapingEntities (moveEvent: MoveEvent, x, y) {
     var entities = this.gridUtils.getAllEntitiesAt(y, x)
-      , player = moveEvent.target
+      , unit = moveEvent.target
 
     for (var i=0; i<entities.length; i++) {
       let entity = entities[i]
 
-      if (entity instanceof Enemy && entity.isAlive) {
-        moveEvent.cancel()
-      }
+      if (unit instanceof Unit) {
+        if (entity instanceof Enemy && entity.isAlive) {
+          moveEvent.cancel();
+        }
 
-      if (entity instanceof Item && entity.pick(player, this)) {
-        this.removeEntity(entity)
-      }
+        if (entity instanceof Item && entity.pick(unit, this)) {
+          this.removeEntity(entity);
+        }
 
-      if (entity instanceof Interactive) {
-        entity.interact(moveEvent, player, this)
+        if (entity instanceof Interactive && (moveEvent.target.position as Movement).target === entity) {
+          entity.interact(moveEvent, unit, this);
+        }
       }
     }
   }
@@ -218,7 +227,7 @@ export class DungeonState extends Schema {
     return this.createTextEvent(message, player.position, false, undefined, true)
   }
 
-  createTextEvent (text, position, kind, ttl, small) {
+  createTextEvent (text, position, kind, ttl, small?) {
     var textEvent = new TextEvent(text, position, kind, ttl, small)
     textEvent.state = this
     this.addEntity(textEvent)

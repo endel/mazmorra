@@ -1,5 +1,6 @@
 import { Entity } from "./Entity";
-import { Player } from "./Player";
+import { DungeonState } from "../rooms/states/DungeonState";
+import { Unit } from "./Unit";
 
 export class Item extends Entity {
 
@@ -7,8 +8,8 @@ export class Item extends Entity {
     super()
   }
 
-  pick (player: Player, state) {
-    return player.inventory.add(this);
+  pick (unit: Unit, state: DungeonState) {
+    return unit.inventory.add(this);
   }
 
 }

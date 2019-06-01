@@ -12,6 +12,7 @@ export class ManaHeal extends ConsumableItem {
     let heal = Math.floor(Math.random() * 10) + 10;
     player.mp.current += heal;
     state.createTextEvent("+" + heal, player.position, 'blue', 100);
+    state.events.emit("sound", "potion", player);
   }
 
 }

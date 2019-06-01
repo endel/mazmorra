@@ -9,7 +9,8 @@ import { Resources } from '../../elements/character/Resources';
 import { enterRoom, getClientId } from '../../core/network'
 import helpers from "../../../shared/helpers"
 
-import { doorSound, coinSound } from '../../core/sound';
+import * as sounds from '../../core/sound';
+import { doorSound, playRandom } from '../../core/sound';
 
 export default class Level extends THREE.Object3D {
 
@@ -76,7 +77,10 @@ export default class Level extends THREE.Object3D {
         this.room.onLeave.addOnce(() => this.room = this.enterRoom('dungeon', data))
 
         this.room.leave()
-        doorSound.play()
+        doorSound.play();
+
+      } else if (evt === "sound") {
+        this.playSound(data);
       }
     });
 
@@ -159,14 +163,6 @@ export default class Level extends THREE.Object3D {
               special: true,
               position: object.userData.position
             });
-
-          } else if (change.field === "hp" && key === getClientId()) {
-
-          } else if (change.field === "gold") {
-            // picked coin
-            if (key === getClientId()) {
-              coinSound.play();
-            }
 
           } else if (change.field === "position") {
             object.getEntity().emit('nextPoint', this.factory.fixTilePosition(object.position.clone(), change.value.y, change.value.x));
@@ -371,6 +367,17 @@ export default class Level extends THREE.Object3D {
 
     object.getEntity().destroy()
 
+  }
+
+  playSound (soundName) {
+    const sound = sounds[soundName + "Sound"];
+
+    if (Array.isArray(sound)) {
+      playRandom(sound);
+
+    } else if (sound) {
+      sound.play();
+    }
   }
 
   playerAction (targetPosition) {

@@ -41,6 +41,7 @@ export const stepSounds = [
 
 export const chestSound = require('../resource/sounds/chest.wav');
 export const coinSound = require('../resource/sounds/coin.mp3');
+export const potionSound = require('../resource/sounds/potion.wav');
 export const levelUpSound = require('../resource/sounds/levelup.aif');
 
 /**

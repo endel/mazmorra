@@ -28,6 +28,7 @@ export class DungeonRoom extends Room<DungeonState> {
     this.setState(new DungeonState(this.progress, this.difficulty))
 
     this.state.events.on('goto', this.onGoTo.bind(this))
+    this.state.events.on('sound', this.broadcastSound.bind(this))
 
     setInterval( this.tick.bind(this), 1000 / TICK_RATE );
 
@@ -77,7 +78,6 @@ export class DungeonRoom extends Room<DungeonState> {
 
     } else if (key == 'consume-item') {
       const [inventoryType, itemId] = value;
-      console.log('consume-item', {inventoryType, itemId})
       player.consumeItem(inventoryType, itemId);
 
     } else if (key == 'msg') {
@@ -96,6 +96,15 @@ export class DungeonRoom extends Room<DungeonState> {
       : hero.progress;
 
     this.send(this.clientMap.get(player), ['goto', { progress }]);
+  }
+
+  broadcastSound (soundName, player) {
+    if (player) {
+      this.send(this.clientMap.get(player), ["sound", soundName]);
+
+    } else {
+      this.broadcast(["sound", soundName]);
+    }
   }
 
   removeEntity (entity) {

@@ -3,6 +3,7 @@ import { EventEmitter } from "events";
 import { Position } from "./Position";
 import { Point } from "../rooms/states/DungeonState";
 import { Unit } from "../entities/Unit";
+import { Entity } from "../entities/Entity";
 
 export class Movement extends Position {
   pending: Point[] = [];
@@ -10,7 +11,7 @@ export class Movement extends Position {
   active: boolean = false;
 
   unit: Unit;
-  target: Unit;
+  target: Entity;
 
   events = new EventEmitter();
 
@@ -104,9 +105,9 @@ export class Movement extends Position {
 
 }
 
-class MoveEvent {
+export class MoveEvent {
   isCancelled: boolean;
-  target: any;
+  target: Entity;
 
   constructor (target) {
     this.isCancelled = false

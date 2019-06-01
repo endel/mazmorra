@@ -2,7 +2,7 @@ import { type, Schema } from "@colyseus/schema";
 
 import { Entity } from "./Entity";
 import { Bar } from "../core/Bar";
-import { Movement } from "../core/Movement";
+import { Movement, MoveEvent } from "../core/Movement";
 import { Inventory } from "../core/Inventory";
 import { EquipedItems } from "../core/EquipedItems";
 
@@ -78,7 +78,7 @@ export class Unit extends Entity {
     this.position.events.on('move', this.onMove.bind(this))
   }
 
-  onMove(moveEvent, prevX, prevY, currentX, currentY) {
+  onMove(moveEvent: MoveEvent, prevX, prevY, currentX, currentY) {
 
     // check if target position has been changed
     if (this.position.target) {
