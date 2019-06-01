@@ -391,11 +391,47 @@ export default class Level extends THREE.Object3D {
     this.clickedTileLight.position.copy(this.selectionLight.position)
     this.clickedTileLight.target = this.selectionLight.target
 
-    this.room.send(['pos', {
+    const moveCommand = {
       x: this.targetPosition.x,
-      y: this.targetPosition.y
-    }])
+      y: this.targetPosition.y,
+    };
 
+    if (App.cursor.isDragging) {
+      /**
+       * Allow to drop item to the floor
+       */
+      const draggingItemSprite = App.cursor.getDraggingItem();
+      const item = draggingItemSprite.userData;
+
+      /**
+       * Animate & remove item from cursor.
+       */
+      App.tweens.
+        add(draggingItemSprite.scale).
+        to(draggingItemSprite.initialScale, 300, Tweener.ease.quintOut);
+      App.tweens.
+        add(draggingItemSprite.material).
+        to({ opacity: 0 }, 300, Tweener.ease.quintOut).
+        then(() => {
+          if (draggingItemSprite.parent) {
+            draggingItemSprite.parent.remove(draggingItemSprite)
+          }
+        });
+
+      // stop dragging
+      App.cursor.dispatchEvent({
+        type: "drag",
+        item: false
+      });
+
+      this.room.send(['drop-item', {
+        inventoryType: item.inventoryType,
+        itemId: item.itemId
+      }]);
+      return;
+    }
+
+    this.room.send(['move', moveCommand]);
   }
 
   cleanup () {

@@ -73,6 +73,9 @@ export default class Cursor extends THREE.Object3D {
     return this.dragging.children.length > 0
   }
 
+  getDraggingItem () {
+    return this.dragging.children[0];
+  }
 
 }
 

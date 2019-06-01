@@ -161,10 +161,12 @@ export class DungeonState extends Schema {
     this.removeEntity(player)
   }
 
-  dropItemFrom (unit) {
-    let dropped = this.roomUtils.dropItemFrom(unit)
-    if (dropped) {
-      this.addEntity(dropped)
+  dropItemFrom (unit, item?: Item) {
+    item = item || this.roomUtils.createRandomItem();
+
+    if (item) {
+      item.position.set(unit.position);
+      this.addEntity(item)
     }
   }
 

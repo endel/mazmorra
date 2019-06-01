@@ -82,6 +82,15 @@ export class Player extends Unit {
     }
   }
 
+  dropItem(inventoryType: InventoryType, itemId: string) {
+    const inventory = this[inventoryType];
+    const item: Item = inventory.slots[itemId];
+
+    if (item && inventory.remove(itemId)) {
+      this.state.dropItemFrom(this, item.clone());
+    }
+  }
+
   onMove (moveEvent: MoveEvent, prevX, prevY, currentX, currentY) {
     super.onMove(moveEvent, prevX, prevY, currentX, currentY)
 

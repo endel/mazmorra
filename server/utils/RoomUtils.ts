@@ -260,8 +260,7 @@ export class RoomUtils {
     }
   }
 
-  dropItemFrom (unit) {
-    const position = unit.position;
+  createRandomItem () {
     const index = this.rand.intBetween(0, 2);
 
     let itemToDrop: Item;
@@ -271,8 +270,6 @@ export class RoomUtils {
       case 1: itemToDrop = new LifeHeal(); break;
       case 2: itemToDrop = new ManaHeal(); break;
     }
-
-    itemToDrop.position.set(position);
 
     return itemToDrop;
   }

@@ -73,7 +73,7 @@ export class DungeonRoom extends Room<DungeonState> {
       return
     }
 
-    if (key == 'pos') {
+    if (key == 'move') {
       this.state.move(player, value, true)
 
     } else if (key == 'inventory-drag') {
@@ -83,6 +83,10 @@ export class DungeonRoom extends Room<DungeonState> {
     } else if (key == 'consume-item') {
       const { inventoryType, itemId } = value;
       player.consumeItem(inventoryType, itemId);
+
+    } else if (key == 'drop-item') {
+      const { inventoryType, itemId } = value;
+      player.dropItem(inventoryType, itemId);
 
     } else if (key == 'msg') {
       // remove message after 3 seconds

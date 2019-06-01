@@ -5,7 +5,7 @@ export class ManaHeal extends ConsumableItem {
 
   constructor () {
     super()
-    this.type = helpers.ENTITIES.LIFE_HEAL;
+    this.type = helpers.ENTITIES.MANA_HEAL;
   }
 
   consume(player, state) {
