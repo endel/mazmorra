@@ -7,19 +7,19 @@ export abstract class EquipableItem extends Item {
   }
 
   isBody() {
-    return !!this.slots['body'];
+    return false;
   }
 
   isLeft() {
-    return !!this.slots['left'];
+    return false;
   }
 
   isRight() {
-    return !!this.slots['right'];
+    return false;
   }
 
   isBoot() {
-    return !!this.slots['boot'];
+    return false;
   }
 
 
