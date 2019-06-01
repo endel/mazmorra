@@ -127,13 +127,18 @@ export default class ItemSlot extends THREE.Object3D {
         item: false
       });
 
-      this.dispatchEvent({
-        type: "inventory-drag",
-        bubbles: true,
-        fromInventoryType: draggingFrom.parent.inventoryType,
-        toInventoryType: this.parent.inventoryType,
-        itemId: targetSlot.item.userData.itemId
-      });
+      /**
+       * dispatch "inventory-drag" event only for different types of inventories
+       */
+      if (draggingFrom.parent.inventoryType !== this.parent.inventoryType) {
+        this.dispatchEvent({
+          type: "inventory-drag",
+          bubbles: true,
+          fromInventoryType: draggingFrom.parent.inventoryType,
+          toInventoryType: this.parent.inventoryType,
+          itemId: targetSlot.item.userData.itemId
+        });
+      }
 
       App.tweens.remove(draggingItem.scale)
       App.tweens.add(draggingItem.scale).to(draggingItem.initialScale, 300, Tweener.ease.quintOut)
