@@ -1,12 +1,15 @@
 import { Entity } from "./Entity";
 import { DungeonState } from "../rooms/states/DungeonState";
 import { Unit } from "./Unit";
+import { Player } from "./Player";
 
-export class Item extends Entity {
+export abstract class Item extends Entity {
 
   constructor () {
     super()
   }
+
+  abstract use(player: Player, state: DungeonState): boolean;
 
   pick (unit: Unit, state: DungeonState) {
     const success = unit.inventory.add(this);

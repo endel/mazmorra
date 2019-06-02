@@ -175,20 +175,26 @@ export class DungeonState extends Schema {
       , unit = moveEvent.target
 
     for (var i=0; i<entities.length; i++) {
-      let entity = entities[i]
+      let entity = entities[i] as Entity;
 
       if (unit instanceof Unit) {
         if (entity instanceof Enemy && entity.isAlive) {
           moveEvent.cancel();
         }
 
-        if (entity instanceof Item && entity.pick(unit, this)) {
-          this.removeEntity(entity);
+        if (
+          moveEvent.destiny.x === entity.position.x &&
+          moveEvent.destiny.y === entity.position.y
+        ) {
+          if (entity instanceof Item && entity.pick(unit, this)) {
+            this.removeEntity(entity);
+          }
+
+          if (entity instanceof Interactive) {
+            entity.interact(moveEvent, unit, this);
+          }
         }
 
-        if (entity instanceof Interactive && (moveEvent.target.position as Movement).target === entity) {
-          entity.interact(moveEvent, unit, this);
-        }
       }
     }
   }

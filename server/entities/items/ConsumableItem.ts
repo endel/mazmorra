@@ -1,10 +1,7 @@
 import { Item } from "../Item";
 import { Player } from "../Player";
-import { DungeonState } from "../../rooms/states/DungeonState";
 
 export abstract class ConsumableItem extends Item {
-
-  abstract consume(player: Player, state: DungeonState);
 
   pick (player: Player, state) {
     let success: boolean = false;

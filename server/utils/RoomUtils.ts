@@ -24,6 +24,7 @@ import { Chest }  from "../entities/interactive/Chest";
 import { Fountain }  from "../entities/interactive/Fountain";
 
 import { DungeonState } from "../rooms/states/DungeonState";
+import { ShieldItem } from "../entities/items/ShieldItem";
 
 export class RoomUtils {
 
@@ -261,7 +262,7 @@ export class RoomUtils {
   }
 
   createRandomItem () {
-    const index = this.rand.intBetween(0, 2);
+    const index = this.rand.intBetween(0, 3);
 
     let itemToDrop: Item;
 
@@ -269,6 +270,10 @@ export class RoomUtils {
       case 0: itemToDrop = new Gold(); break;
       case 1: itemToDrop = new LifeHeal(); break;
       case 2: itemToDrop = new ManaHeal(); break;
+      case 3:
+        itemToDrop = new ShieldItem();
+        itemToDrop.type = helpers.ENTITIES.SHIELD_WOOD;
+        break;
     }
 
     return itemToDrop;

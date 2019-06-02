@@ -80,9 +80,9 @@ export class DungeonRoom extends Room<DungeonState> {
       const { fromInventoryType, toInventoryType, itemId } = value;
       player.inventoryDrag(fromInventoryType, toInventoryType, itemId);
 
-    } else if (key == 'consume-item') {
+    } else if (key == 'use-item') {
       const { inventoryType, itemId } = value;
-      player.consumeItem(inventoryType, itemId);
+      player.useItem(inventoryType, itemId);
 
     } else if (key == 'drop-item') {
       const { inventoryType, itemId } = value;
@@ -127,6 +127,9 @@ export class DungeonRoom extends Room<DungeonState> {
 
     const quickInventory = Object.values(player.quickInventory.slots).map(slot => slot.toJSON());
     const inventory = Object.values(player.inventory.slots).map(slot => slot.toJSON());
+    const equipedItems = Object.values(player.equipedItems.slots).map(slot => slot.toJSON());
+
+    console.log("equiped items?", equipedItems);
 
     // sync
     await Hero.update({ _id: hero._id }, {
@@ -140,6 +143,7 @@ export class DungeonRoom extends Room<DungeonState> {
 
         quickInventory,
         inventory,
+        equipedItems
       }
     });
 

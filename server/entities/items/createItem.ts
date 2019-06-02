@@ -4,6 +4,7 @@ import { Point } from "../../rooms/states/DungeonState";
 import { Item } from "../Item";
 import { LifeHeal } from "./LifeHeal";
 import { ManaHeal } from "./ManaHeal";
+import { ShieldItem } from "./ShieldItem";
 
 export function createItem(type: string, position?: Point): Item {
   let item: Item;
@@ -15,11 +16,16 @@ export function createItem(type: string, position?: Point): Item {
     case helpers.ENTITIES.MANA_HEAL: item = new ManaHeal(); break;
     case helpers.ENTITIES.MANA_POTION: item = new ManaHeal(); break;
 
-    // Default
-    default:
-      item = new Item();
+    case helpers.ENTITIES.SHIELD_WOOD:
+      item = new ShieldItem();
       item.type = type;
-      break;
+    break;
+
+    // // Default
+    // default:
+    //   item = new Item();
+    //   item.type = type;
+    //   break;
   }
 
   item.position.set(position);

@@ -1,4 +1,4 @@
-import CharacterItems from './CharacterItems'
+import EquipedItems from './EquipedItems'
 import SlotStrip from './SlotStrip'
 import ItemSlot from './ItemSlot'
 
@@ -9,27 +9,27 @@ export default class Inventory extends THREE.Object3D {
 
     this.isOpen = false
 
-    this.characterItems = new CharacterItems()
+    this.equipedItems = new EquipedItems()
     this.slots = new SlotStrip({ slots: 4, inventoryType: "inventory" })
     this.exchangeSlots = new SlotStrip({ slots: 1, allowRemove: true, inventoryType: "exchange" })
 
-    this.characterItems.position.x -= this.characterItems.width/2 + this.slots.slotSize/1.5
-    this.slots.position.x = this.characterItems.position.x + (this.characterItems.width/2 + this.slots.slotSize / 2 +  config.HUD_SCALE * 2)
+    this.equipedItems.position.x -= this.equipedItems.width/2 + this.slots.slotSize/1.5
+    this.slots.position.x = this.equipedItems.position.x + (this.equipedItems.width/2 + this.slots.slotSize / 2 +  config.HUD_SCALE * 2)
     this.slots.position.y = this.slots.height
 
-    this.exchangeSlots.position.x = this.characterItems.position.x + (this.characterItems.width/2 + this.slots.slotSize / 2 +  config.HUD_SCALE * 2) + (this.exchangeSlots.width / 2)
+    this.exchangeSlots.position.x = this.equipedItems.position.x + (this.equipedItems.width/2 + this.slots.slotSize / 2 +  config.HUD_SCALE * 2) + (this.exchangeSlots.width / 2)
     this.exchangeSlots.position.y = -this.exchangeSlots.height
 
     this.exchangeSymbol = ResourceManager.getHUDElement('hud-exchange-icon')
     this.exchangeSymbol.position.x = this.slots.position.x + this.slots.width/2 - this.exchangeSymbol.width/2
 
-    this.add(this.characterItems)
+    this.add(this.equipedItems)
     this.add(this.slots)
     this.add(this.exchangeSymbol)
     this.add(this.exchangeSlots)
 
-    this.width = this.characterItems.width + this.slots.position.x + this.slots.width
-    this.height = this.characterItems.height
+    this.width = this.equipedItems.width + this.slots.position.x + this.slots.width
+    this.height = this.equipedItems.height
   }
 
   updateItems () {
@@ -55,7 +55,7 @@ export default class Inventory extends THREE.Object3D {
     // fade all element materials separately
     // (THREE.js can't change opacity of containers)
     //
-    const elementsToFade = this.characterItems.children.
+    const elementsToFade = this.equipedItems.children.
       concat(this.slots.children).
       concat(this.exchangeSlots.children).
       concat(this.exchangeSymbol)

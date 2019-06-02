@@ -38,7 +38,7 @@ export class Movement extends Position {
       x = x.x
     }
 
-    var event = new MoveEvent(this.unit);
+    var event = new MoveEvent(this.unit, { x, y });
     this.events.emit('move', event, this.x, this.y, x, y);
 
     if (event.valid()) {
@@ -110,10 +110,12 @@ export class Movement extends Position {
 export class MoveEvent {
   isCancelled: boolean;
   target: Entity;
+  destiny: Point; // TODO: here should be the final destiny!
 
-  constructor (target) {
+  constructor (target, destiny: Point) {
     this.isCancelled = false
     this.target = target
+    this.destiny = destiny;
   }
 
   cancel() { this.isCancelled = true }

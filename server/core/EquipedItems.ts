@@ -1,36 +1,25 @@
 import { Inventory } from "./Inventory";
 import { EquipableItem } from "../entities/items/EquipableItem";
-
-export type EquipedPosition = 'head' | 'body' | 'left' | 'right' | 'boot'
+import { EquipmentSlot } from "./EquipmentSlot";
 
 export class EquipedItems extends Inventory {
-
   constructor () {
     super({ capacity: 5 })
   }
 
-  hasHead() {
-    return !!this.slots['head'];
+  isSlotAvailable(slot: EquipmentSlot) {
+    return !this.slots[slot];
   }
 
-  hasBody() {
-    return !!this.slots['body'];
-  }
+  add (item: EquipableItem) {
+    const hasAvailability = this.isSlotAvailable(item.slotName);
+    console.log("is slot", item.slotName, "available?", hasAvailability);
 
-  hasLeft() {
-    return !!this.slots['left'];
-  }
+    if (hasAvailability) {
+      this.slots[item.slotName] = item.clone();
+    }
 
-  hasRight() {
-    return !!this.slots['right'];
-  }
-
-  hasBoot() {
-    return !!this.slots['boot'];
-  }
-
-  equip(position: EquipedPosition, item: EquipableItem) {
-
+    return hasAvailability;
   }
 
 }

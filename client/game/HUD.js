@@ -33,14 +33,15 @@ export default class HUD extends THREE.Scene {
 
     // Life / Mana / Expr
     this.manabar = new BottleBar('mana')
-
     this.lifebar = new BottleBar('life')
-
     this.expbar = new ExpBar()
 
     // Miscelaneous
     this.inventory = new Inventory()
     this.inventory.visible = false
+
+    // FIXME: this is a workaround for `HUDController#onUpdateInventory`
+    this.equipedItems = this.inventory.equipedItems;
 
     this.openInventoryButton = new OpenInventoryButton()
     this.openInventoryButton.addEventListener('click', this.onOpenInventory.bind(this))
@@ -147,8 +148,8 @@ export default class HUD extends THREE.Scene {
 
     // bind inventory objects
     this.inventory.slots.userData = data.inventory;
-
     this.quickInventory.userData = data.quickInventory;
+    this.inventory.equipedItems.userData = data.equipedItems;
   }
 
   resize() {

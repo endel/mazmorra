@@ -18,7 +18,8 @@ module.exports = {
   },
 
   // ZOOM: 23
-  ZOOM: 32 / window.devicePixelRatio,
+  // ZOOM: 32 / window.devicePixelRatio,
+  ZOOM: 40 / window.devicePixelRatio,
   IS_DAY: true,
 
   HUD_MARGIN: 2.5,

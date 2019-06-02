@@ -102,18 +102,18 @@ export default class Level extends THREE.Object3D {
         window.player = object;
         this.createPlayerBehaviour(object, entity);
 
-        // update inventory
-        entity.quickInventory.onChange = (changes) => {
-          this.hud.getEntity().emit('update-inventory', 'quickInventory');
-        }
-        entity.quickInventory.slots.onRemove = (changes) => {}
+        /**
+         * update inventory
+         */
+        entity.quickInventory.onChange = (_) => { this.hud.getEntity().emit('update-inventory', 'quickInventory'); }
         entity.quickInventory.triggerAll();
 
-        // update inventory
-        entity.inventory.onChange = (changes) => {
-          this.hud.getEntity().emit('update-inventory', 'inventory');
-        }
+        entity.inventory.onChange = (_) => { this.hud.getEntity().emit('update-inventory', 'inventory'); }
         entity.inventory.triggerAll();
+
+        // update inventory
+        entity.equipedItems.onChange = (_) => { this.hud.getEntity().emit('update-inventory', 'equipedItems'); }
+        entity.equipedItems.triggerAll();
       }
 
       // may not be a player
@@ -233,9 +233,9 @@ export default class Level extends THREE.Object3D {
     this.hud.setPlayerObject(object, data);
 
     // allow to consume items!
-    this.hud.addEventListener("consume-item", (e) => {
+    this.hud.addEventListener("use-item", (e) => {
       e.stopPropagation = true;
-      this.room.send(["consume-item", {
+      this.room.send(["use-item", {
         inventoryType: e.inventoryType,
         itemId: e.itemId
       }]);

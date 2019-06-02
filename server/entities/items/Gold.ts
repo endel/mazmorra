@@ -8,6 +8,9 @@ export class Gold extends Item {
     this.type = helpers.ENTITIES.GOLD;
   }
 
+  // you cannot really use gold...
+  use(player, state) { return true; }
+
   pick (player, state) {
     //
     // FIXME!

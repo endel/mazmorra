@@ -3,7 +3,6 @@ import { Unit, InventoryType } from "./Unit";
 import helpers from "../../shared/helpers";
 import { Item } from "./Item";
 import { DBHero } from "../db/Hero";
-import { ConsumableItem } from "./items/ConsumableItem";
 import { MoveEvent } from "../core/Movement";
 
 export class SkinProperties extends Schema {
@@ -62,18 +61,20 @@ export class Player extends Unit {
     this.hpRegeneration = 1
   }
 
-  consumeItem(inventoryType: InventoryType, itemId: string) {
+  useItem(inventoryType: InventoryType, itemId: string) {
     const inventory = this[inventoryType];
-    const item: ConsumableItem = inventory.slots[itemId];
+    const item: Item = inventory.slots[itemId];
 
-    if (item && inventory.remove(itemId)) {
-      item.consume(this, this.state);
+    if (item && item.use(this, this.state)) {
+      inventory.remove(itemId);
     }
   }
 
   inventoryDrag(fromInventoryType: InventoryType, toInventoryType: InventoryType, itemId: string) {
     const fromInventory = this[fromInventoryType];
     const toInventory = this[toInventoryType]
+
+    console.log("inventoryDrag", { fromInventoryType, toInventoryType });
 
     const item = fromInventory.slots[itemId];
     if (item && toInventory.hasAvailability()) {

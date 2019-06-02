@@ -153,7 +153,7 @@ export default class ItemSlot extends THREE.Object3D {
     if (targetSlot.item) {
       // attach inventory type for sending to room handler.
       this.dispatchEvent({
-        type: "consume-item",
+        type: "use-item",
         bubbles: true,
         itemId: targetSlot.item.userData.itemId,
         inventoryType: this.parent.inventoryType

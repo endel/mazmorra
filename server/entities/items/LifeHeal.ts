@@ -8,11 +8,12 @@ export class LifeHeal extends ConsumableItem {
     this.type = helpers.ENTITIES.LIFE_HEAL;
   }
 
-  consume(player, state) {
+  use(player, state) {
     let heal = Math.floor(Math.random() * 10) + 10;
     player.hp.current += heal;
     state.createTextEvent("+" + heal, player.position, 'red', 100);
     state.events.emit("sound", "potion", player);
+    return true;
   }
 
 }
