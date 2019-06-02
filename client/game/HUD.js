@@ -56,7 +56,6 @@ export default class HUD extends THREE.Scene {
     this.quickInventory = new SlotStrip({
       columns: 1,
       slots: 6,
-      accepts: 'usable',
       inventoryType: "quickInventory"
     })
 

@@ -107,7 +107,7 @@ export default class ItemSlot extends THREE.Object3D {
       App.cursor.dispatchEvent({
         type: "drag",
         item: draggingItem
-      })
+      });
 
       App.tweens.add(draggingItem.scale).to({
         x: draggingItem.initialScale.x + (2 * config.HUD_SCALE),
@@ -119,13 +119,21 @@ export default class ItemSlot extends THREE.Object3D {
   onDragEnd(e) {
     let targetSlot = e.target
 
+    //
+    // EquipedItems: check if target slot accepts this type of item.
+    //
+    if (
+      draggingItem.userData.slotName &&
+      this.accepts &&
+      draggingItem.userData.slotName !== this.accepts
+    ) {
+      // cancel drop if slotName doesn't match dropped slot.
+      draggingFrom.item = draggingItem;
+      this._revertDraggingItem();
+    }
+
     if (!targetSlot.item && draggingItem) {
       targetSlot.item = draggingItem
-
-      App.cursor.dispatchEvent({
-        type: "drag",
-        item: false
-      });
 
       /**
        * dispatch "inventory-drag" event only for different types of inventories
@@ -140,10 +148,7 @@ export default class ItemSlot extends THREE.Object3D {
         });
       }
 
-      App.tweens.remove(draggingItem.scale)
-      App.tweens.add(draggingItem.scale).to(draggingItem.initialScale, 300, Tweener.ease.quintOut)
-
-      draggingItem = null
+      this._revertDraggingItem();
     }
   }
 
@@ -162,6 +167,18 @@ export default class ItemSlot extends THREE.Object3D {
     } else {
       e.stopPropagation = true;
     }
+  }
+
+  _revertDraggingItem() {
+    App.cursor.dispatchEvent({
+      type: "drag",
+      item: false
+    });
+
+    App.tweens.remove(draggingItem.scale)
+    App.tweens.add(draggingItem.scale).to(draggingItem.initialScale, 300, Tweener.ease.quintOut)
+
+    draggingItem = null
   }
 
 }

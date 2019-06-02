@@ -5,6 +5,7 @@ import { Item } from "../Item";
 import { LifeHeal } from "./LifeHeal";
 import { ManaHeal } from "./ManaHeal";
 import { ShieldItem } from "./ShieldItem";
+import { WeaponItem } from "./WeaponItem";
 
 export function createItem(type: string, position?: Point): Item {
   let item: Item;
@@ -18,6 +19,11 @@ export function createItem(type: string, position?: Point): Item {
 
     case helpers.ENTITIES.SHIELD_WOOD:
       item = new ShieldItem();
+      item.type = type;
+    break;
+
+    case helpers.ENTITIES.SWORD:
+      item = new WeaponItem();
       item.type = type;
     break;
 

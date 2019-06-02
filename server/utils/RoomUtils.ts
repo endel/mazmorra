@@ -25,6 +25,7 @@ import { Fountain }  from "../entities/interactive/Fountain";
 
 import { DungeonState } from "../rooms/states/DungeonState";
 import { ShieldItem } from "../entities/items/ShieldItem";
+import { WeaponItem } from "../entities/items/WeaponItem";
 
 export class RoomUtils {
 
@@ -262,7 +263,7 @@ export class RoomUtils {
   }
 
   createRandomItem () {
-    const index = this.rand.intBetween(0, 3);
+    const index = this.rand.intBetween(0, 4);
 
     let itemToDrop: Item;
 
@@ -273,6 +274,10 @@ export class RoomUtils {
       case 3:
         itemToDrop = new ShieldItem();
         itemToDrop.type = helpers.ENTITIES.SHIELD_WOOD;
+        break;
+      case 4:
+        itemToDrop = new WeaponItem();
+        itemToDrop.type = helpers.ENTITIES.SWORD;
         break;
     }
 

@@ -34,9 +34,11 @@ export default class SlotStrip extends THREE.Object3D {
 
     let i = 0
     for (let itemId in items) {
-      this.slots[i].item = ResourceManager.getHUDElement(`items-${ items[itemId].type }`)
+      const item = items[itemId];
+      this.slots[i].item = ResourceManager.getHUDElement(`items-${ item.type }`)
       this.slots[i].item.userData.itemId = itemId;
       this.slots[i].item.userData.inventoryType = this.inventoryType;
+      this.slots[i].item.userData.slotName = item.slotName;
       i++
     }
   }
