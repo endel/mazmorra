@@ -1,5 +1,5 @@
-import { ConsumableItem } from "./ConsumableItem";
-import helpers from "../../../shared/helpers";
+import { ConsumableItem } from "../ConsumableItem";
+import helpers from "../../../../shared/helpers";
 
 export class LifeHeal extends ConsumableItem {
 

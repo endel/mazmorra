@@ -1,5 +1,5 @@
-import helpers from "../../../shared/helpers";
-import { ConsumableItem } from "./ConsumableItem";
+import helpers from "../../../../shared/helpers";
+import { ConsumableItem } from "../ConsumableItem";
 
 export class ManaHeal extends ConsumableItem {
 

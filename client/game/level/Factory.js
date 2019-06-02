@@ -108,6 +108,7 @@ export default class Factory {
       case helpers.ENTITIES.GOLD:
       case helpers.ENTITIES.HAT_SUPERIOR:
       case helpers.ENTITIES.HAT:
+      case helpers.ENTITIES.HELMET_CAP:
       case helpers.ENTITIES.HELMET_METAL_GOLD:
       case helpers.ENTITIES.HELMET_METAL:
       case helpers.ENTITIES.KNIFE_SUPERIOR:

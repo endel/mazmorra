@@ -2,10 +2,12 @@ import helpers from "../../../shared/helpers";
 
 import { Point } from "../../rooms/states/DungeonState";
 import { Item } from "../Item";
-import { LifeHeal } from "./LifeHeal";
-import { ManaHeal } from "./ManaHeal";
-import { ShieldItem } from "./ShieldItem";
-import { WeaponItem } from "./WeaponItem";
+import { LifeHeal } from "./consumable/LifeHeal";
+import { ManaHeal } from "./consumable/ManaHeal";
+import { ShieldItem } from "./equipable/ShieldItem";
+import { WeaponItem } from "./equipable/WeaponItem";
+import { BootItem } from "./equipable/BootItem";
+import { HelmetItem } from "./equipable/HelmetItem";
 
 export function createItem(type: string, position?: Point): Item {
   let item: Item;
@@ -27,12 +29,23 @@ export function createItem(type: string, position?: Point): Item {
       item.type = type;
     break;
 
+    case helpers.ENTITIES.BOOTS_REGULAR:
+      item = new BootItem();
+      item.type = type;
+    break;
+
+    case helpers.ENTITIES.HELMET_CAP:
+      item = new HelmetItem();
+      item.type = type;
+    break;
+
     // // Default
     // default:
     //   item = new Item();
     //   item.type = type;
     //   break;
   }
+  console.log(type);
 
   item.position.set(position);
 

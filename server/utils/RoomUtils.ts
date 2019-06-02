@@ -15,8 +15,8 @@ import { Interactive }  from "../entities/Interactive";
 
 // items
 import { Gold }  from "../entities/items/Gold";
-import { LifeHeal }  from "../entities/items/LifeHeal";
-import { ManaHeal }  from "../entities/items/ManaHeal";
+import { LifeHeal }  from "../entities/items/consumable/LifeHeal";
+import { ManaHeal }  from "../entities/items/consumable/ManaHeal";
 
 // interactive
 import { Door, DoorDestiny }  from "../entities/interactive/Door";
@@ -24,8 +24,11 @@ import { Chest }  from "../entities/interactive/Chest";
 import { Fountain }  from "../entities/interactive/Fountain";
 
 import { DungeonState } from "../rooms/states/DungeonState";
-import { ShieldItem } from "../entities/items/ShieldItem";
-import { WeaponItem } from "../entities/items/WeaponItem";
+import { ShieldItem } from "../entities/items/equipable/ShieldItem";
+import { WeaponItem } from "../entities/items/equipable/WeaponItem";
+import { BootItem } from "../entities/items/equipable/BootItem";
+import { HelmetItem } from "../entities/items/equipable/HelmetItem";
+import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 
 export class RoomUtils {
 
@@ -263,7 +266,7 @@ export class RoomUtils {
   }
 
   createRandomItem () {
-    const index = this.rand.intBetween(0, 4);
+    const index = this.rand.intBetween(0, 7);
 
     let itemToDrop: Item;
 
@@ -275,10 +278,25 @@ export class RoomUtils {
         itemToDrop = new ShieldItem();
         itemToDrop.type = helpers.ENTITIES.SHIELD_WOOD;
         break;
+
       case 4:
         itemToDrop = new WeaponItem();
         itemToDrop.type = helpers.ENTITIES.SWORD;
+
+      case 5:
+        itemToDrop = new BootItem();
+        itemToDrop.type = helpers.ENTITIES.BOOTS_REGULAR;
         break;
+
+      case 6:
+        itemToDrop = new HelmetItem();
+        itemToDrop.type = helpers.ENTITIES.HELMET_CAP;
+        break;
+
+      // case 7:
+      //   itemToDrop = new ArmorItem();
+      //   itemToDrop.type = helpers.ENTITIES.SWORD;
+      //   break;
     }
 
     return itemToDrop;
