@@ -138,9 +138,14 @@ export default class ItemSlot extends THREE.Object3D {
       // cancel drop if slotName doesn't match dropped slot.
       draggingFrom.item = draggingItem;
       this._revertDraggingItem();
+      return;
     }
 
-    if (!targetSlot.item && draggingItem) {
+    if (draggingItem) {
+
+      let switchWith = {};
+      if (this.item) { switchWith['switchItemId'] = this.item.userData.itemId }
+
       targetSlot.item = draggingItem
 
       /**
@@ -152,7 +157,8 @@ export default class ItemSlot extends THREE.Object3D {
           bubbles: true,
           fromInventoryType: draggingFrom.parent.inventoryType,
           toInventoryType: this.parent.inventoryType,
-          itemId: targetSlot.item.userData.itemId
+          itemId: targetSlot.item.userData.itemId,
+          ...switchWith
         });
       }
 

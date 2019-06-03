@@ -246,7 +246,8 @@ export default class Level extends THREE.Object3D {
       this.room.send(["inventory-drag", {
         fromInventoryType: e.fromInventoryType,
         toInventoryType: e.toInventoryType,
-        itemId: e.itemId
+        itemId: e.itemId,
+        switchItemId: e.switchItemId,
       }]);
     });
 

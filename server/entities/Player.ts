@@ -70,12 +70,21 @@ export class Player extends Unit {
     }
   }
 
-  inventoryDrag(fromInventoryType: InventoryType, toInventoryType: InventoryType, itemId: string) {
+  inventoryDrag(fromInventoryType: InventoryType, toInventoryType: InventoryType, itemId: string, switchItemId: string) {
     const fromInventory = this[fromInventoryType];
     const toInventory = this[toInventoryType]
 
     const item = fromInventory.slots[itemId];
-    if (item && toInventory.hasAvailability()) {
+    const switchItem = toInventory.slots[switchItemId];
+
+    if (item && switchItem) {
+      fromInventory.remove(itemId);
+      toInventory.remove(switchItemId);
+
+      fromInventory.add(switchItem);
+      toInventory.add(item);
+
+    } else if (item && toInventory.hasAvailability()) {
       fromInventory.remove(itemId);
       toInventory.add(item);
     }

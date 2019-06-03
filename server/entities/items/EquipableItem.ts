@@ -12,6 +12,10 @@ export abstract class EquipableItem extends Item {
 
     if (isSlotAvailable) {
       player.equipedItems.add(this);
+
+    } else {
+      // switch
+
     }
 
     return isSlotAvailable;
