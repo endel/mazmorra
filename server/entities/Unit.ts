@@ -54,6 +54,7 @@ export class Unit extends Entity {
 
   position: Movement;// override type
 
+  // Reference on the database (raw hero values, without applied modifiers)
   dbRef: Partial<DBHero>;
 
   constructor(id?: string, hero: Partial<DBHero> = {}) {
