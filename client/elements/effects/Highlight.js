@@ -15,7 +15,7 @@ export default class Highlight extends THREE.Sprite {
     this.scale.y /= 1.5
     this.scale.z /= 1.5
 
-    this.material.opacity = 0.8
+    this.material.opacity = 0.4
 
     this.name = name
   }

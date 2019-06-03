@@ -123,6 +123,7 @@ export default class ItemSlot extends THREE.Object3D {
     // EquipedItems: check if target slot accepts this type of item.
     //
     if (
+      draggingItem &&
       draggingItem.userData.slotName &&
       this.accepts &&
       draggingItem.userData.slotName !== this.accepts

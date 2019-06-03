@@ -31,16 +31,16 @@ export default class Item extends THREE.Object3D {
     // only highlight important items
     if (unimportantItems.indexOf(data.type) === -1) {
       this.highlight = new Highlight()
-      this.highlight.position.y = 0.9
+      this.highlight.position.y = 0.8
       this.highlight.addBehaviour(new Stretchable)
       this.add(this.highlight)
 
-      var light = new THREE.SpotLight(0xffffff, 0.5, 50);
-      light.penumbra = 1
-      light.addBehaviour(new LightOscillator, 0.5, 0.6, 0.05)
-      light.position.set(0, 4, 0)
-      light.target = this.item
-      this.add(light)
+      // var light = new THREE.SpotLight(0xffffff, 0.5, 50);
+      // light.penumbra = 1
+      // light.addBehaviour(new LightOscillator, 0.5, 0.6, 0.05)
+      // light.position.set(0, 4, 0)
+      // light.target = this.item
+      // this.add(light)
 
     } else {
       this.addBehaviour(new NearPlayerOpacity)
