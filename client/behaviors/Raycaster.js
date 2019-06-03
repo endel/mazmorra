@@ -19,13 +19,14 @@ export default class Raycaster extends Behaviour {
     // do raycast at every 200ms
     setInterval(() => this.doRaycast(), 200);
 
-    window.addEventListener( "mousemove", this.doRaycast.bind(this), false )
-    window.addEventListener( "touchstart", this.onTouchStart.bind(this), false )
-    window.addEventListener( "touchend", this.onTouchEnd.bind(this), false )
-    window.addEventListener( "click", this.onClick.bind(this), false )
-    window.addEventListener( "dblclick", this.onDoubleClick.bind(this), false )
-    window.addEventListener( "mousedown", this.onMouseDown.bind(this), false )
-    window.addEventListener( "mouseup", this.onMouseUp.bind(this), false )
+    window.addEventListener("mousemove", this.doRaycast.bind(this), false);
+    window.addEventListener("touchstart", this.onTouchStart.bind(this), false);
+    window.addEventListener("touchend", this.onTouchEnd.bind(this), false);
+    window.addEventListener("click", this.onClick.bind(this), false);
+    window.addEventListener("dblclick", this.onDoubleClick.bind(this), false);
+    window.addEventListener("contextmenu", this.onContextMenu.bind(this), false);
+    window.addEventListener("mousedown", this.onMouseDown.bind(this), false);
+    window.addEventListener("mouseup", this.onMouseUp.bind(this), false);
 
   }
 
@@ -121,6 +122,7 @@ export default class Raycaster extends Behaviour {
   }
 
   onClick (e) {
+    console.log("onClick!");
     this.doRaycast()
 
     if ( this.isTargetReachable ) {
@@ -146,6 +148,12 @@ export default class Raycaster extends Behaviour {
         path: this.path
       })
     }
+  }
+
+  onContextMenu (e) {
+    e.preventDefault();
+    console.log("TODO: simulate double click on context menu");
+    // this.onDoubleClick(e);
   }
 
   onMouseDown () {

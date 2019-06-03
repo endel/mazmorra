@@ -30,9 +30,6 @@ ${item.modifiers
     var position = this.toScreenPosition(sprite);
     this.el.style.left = (position.x - (config.HUD_SCALE * 5) - this.el.clientWidth - config.HUD_SCALE) + "px";
     this.el.style.top = (position.y - (config.HUD_SCALE * 5)) + "px";
-
-    // this.el.style.left = (App.mouse.clientX + 12) + "px";
-    // this.el.style.top = (App.mouse.clientY - 12) + "px";
   }
 
   hide() {

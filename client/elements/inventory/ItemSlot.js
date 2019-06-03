@@ -180,7 +180,7 @@ export default class ItemSlot extends THREE.Object3D {
   }
 
   _showHint() {
-    if (!draggingItem && this._item && this._item.userData.item) {
+    if (this._item && this._item.userData.item) {
       hint.show(this._item.userData.item, this);
     }
   }
