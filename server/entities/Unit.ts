@@ -54,12 +54,16 @@ export class Unit extends Entity {
 
   position: Movement;// override type
 
+  dbRef: Partial<DBHero>;
+
   constructor(id?: string, hero: Partial<DBHero> = {}) {
     super(id)
 
-    this.equipedItems.set(hero.equipedItems || [])
-    this.quickInventory.set(hero.quickInventory || [])
-    this.inventory.set(hero.inventory || [])
+    this.dbRef = hero;
+
+    this.equipedItems.set(this.dbRef.equipedItems || [])
+    this.quickInventory.set(this.dbRef.quickInventory || [])
+    this.inventory.set(this.dbRef.inventory || [])
 
     this.action = null
 
