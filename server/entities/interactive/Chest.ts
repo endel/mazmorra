@@ -9,7 +9,9 @@ export class Chest extends Interactive {
 
   constructor (position) {
     super(helpers.ENTITIES.CHEST, position)
-    this.kind = 'chest2'
+
+    const chestTypes = ['chest', 'chest2', 'bucket'];
+    this.kind = chestTypes[Math.floor(Math.random() * chestTypes.length)];
   }
 
   interact (moveEvent, player, state) {

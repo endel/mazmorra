@@ -29,6 +29,8 @@ import { WeaponItem } from "../entities/items/equipable/WeaponItem";
 import { BootItem } from "../entities/items/equipable/BootItem";
 import { HelmetItem } from "../entities/items/equipable/HelmetItem";
 import { ArmorItem } from "../entities/items/equipable/ArmorItem";
+import { ConsumableItem } from "../entities/items/ConsumableItem";
+import { EquipableItem } from "../entities/items/EquipableItem";
 
 export class RoomUtils {
 
@@ -282,6 +284,7 @@ export class RoomUtils {
       case 4:
         itemToDrop = new WeaponItem();
         itemToDrop.type = helpers.ENTITIES.SWORD;
+        break;
 
       case 5:
         itemToDrop = new BootItem();
@@ -299,7 +302,35 @@ export class RoomUtils {
       //   break;
     }
 
+    if (itemToDrop instanceof EquipableItem) {
+      this.assignEquipableItemModifiers(itemToDrop);
+    }
+
     return itemToDrop;
+  }
+
+  assignEquipableItemModifiers(item: Item) {
+    if (item instanceof ShieldItem) {
+      const modifier = this.rand.intBetween(3, 4);
+      item.addModifier({ attr: "armor", modifier });
+
+    } else if (item instanceof WeaponItem) {
+      const modifier = this.rand.intBetween(1, 2);
+      item.addModifier({ attr: "damage", modifier });
+
+    } else if (item instanceof BootItem) {
+      const modifier = this.rand.intBetween(1, 2);
+      item.addModifier({ attr: "armor", modifier });
+
+    } else if (item instanceof HelmetItem) {
+      const modifier = this.rand.intBetween(2, 3);
+      item.addModifier({ attr: "armor", modifier });
+
+    } else if (item instanceof ArmorItem) {
+      const modifier = this.rand.intBetween(3, 4);
+      item.addModifier({ attr: "armor", modifier });
+
+    }
   }
 
   shuffle (array) {

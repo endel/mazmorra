@@ -13,7 +13,6 @@ export class EquipedItems extends Inventory {
 
   add (item: EquipableItem) {
     const hasAvailability = this.isSlotAvailable(item.slotName);
-    console.log("is slot", item.slotName, "available?", hasAvailability);
 
     if (hasAvailability) {
       this.slots[item.slotName] = item.clone();

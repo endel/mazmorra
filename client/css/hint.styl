@@ -6,6 +6,17 @@
   background #cca874
   font-size 28px
 
+  &::after
+    content ' '
+    position absolute
+    display block
+    background #cca874
+    width: 6px
+    height 6px
+    top 24px
+    bottom 0
+    right -6px
+
   &::before
     content ' '
     position absolute
@@ -43,10 +54,18 @@
     font-size 26px
     margin 0
 
-  img
-    float left
-    image-rendering pixelated
-    margin-right 12px
+  // img
+  //   float left
+  //   image-rendering pixelated
+  //   margin-right 12px
+
+  small
+    font-size 24px
+    margin-left 4px
+    &.increase
+      color #3c8008
+    &.decrease
+      color #a00000
 
   &.active
     display inline-block

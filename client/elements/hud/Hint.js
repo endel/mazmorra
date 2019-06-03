@@ -8,6 +8,8 @@ class Hint  {
   show(item, sprite) {
     this.el.classList.add("active");
 
+    const equipedItems = player.userData.equipedItems.slots;
+
     const innerHTML = `
 <h2>
   <!-- <img src="images/sprites/items-${item.type}.png" width="${sprite.item.scale.x}" height="${sprite.item.scale.y}" /> -->
@@ -18,7 +20,20 @@ ${(
   ?
     "<p>" +
       item.modifiers.map(modifier => {
-        return `<string>${modifier.attr}</strong> ${(modifier.modifier > 0) ? "+" : ""}${modifier.modifier}`
+        const equipedItemModifier = equipedItems[item.slotName] && equipedItems[item.slotName].modifiers.filter(mod => mod.attr === modifier.attr)[0];
+        const equipedModifier = (!equipedItemModifier)
+          ? modifier.modifier
+          : equipedItemModifier.modifier;
+
+        return `
+          <string>${modifier.attr}</strong> ${(modifier.modifier > 0) ? "+" : ""}
+          ${modifier.modifier}
+          ${(modifier.modifier > equipedModifier)
+            ? `<small class="increase">(+ ${modifier.modifier - equipedModifier})</small>`
+            : (modifier.modifier < equipedModifier)
+              ? `<small class="decrease">(- ${Math.abs(modifier.modifier - equipedModifier)})</small>`
+              : "" }
+        `;
       }).join("<br />") +
     "</p>"
   :

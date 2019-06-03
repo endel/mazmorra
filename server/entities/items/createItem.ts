@@ -9,6 +9,7 @@ import { WeaponItem } from "./equipable/WeaponItem";
 import { BootItem } from "./equipable/BootItem";
 import { HelmetItem } from "./equipable/HelmetItem";
 import { DBItem } from "../../db/Hero";
+import { EquipableItem } from "./EquipableItem";
 
 export function createItem(data: Item | DBItem, position?: Point): Item {
   let item: Item;
@@ -47,14 +48,14 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
     //   break;
   }
 
-  // /**
-  //  * Assign item modifiers
-  //  */
-  // if ('modifiers' in data) {
-  //   data.modifiers.forEach(modifier => {
-  //     item.addModifier(modifier);
-  //   });
-  // }
+  /**
+   * Assign item modifiers
+   */
+  if (item instanceof EquipableItem && 'modifiers' in data) {
+    data.modifiers.forEach(modifier => {
+      item.addModifier(modifier);
+    });
+  }
 
   item.position.set(position);
 

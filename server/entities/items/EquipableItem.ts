@@ -23,7 +23,7 @@ export abstract class EquipableItem extends Item {
     if (this.use(unit, state)) {
       success = true;
 
-    } else if (unit.inventory.add(this)) {
+    } else {
       success = super.pick(unit, state);
     }
 

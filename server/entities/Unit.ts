@@ -62,25 +62,25 @@ export class Unit extends Entity {
 
     this.dbRef = hero;
 
-    this.equipedItems.set(this.dbRef.equipedItems || [])
-    this.quickInventory.set(this.dbRef.quickInventory || [])
-    this.inventory.set(this.dbRef.inventory || [])
+    this.equipedItems.set(this.dbRef.equipedItems || []);
+    this.quickInventory.set(this.dbRef.quickInventory || []);
+    this.inventory.set(this.dbRef.inventory || []);
 
-    this.action = null
+    this.action = null;
 
-    this.armor = 1
-    this.damage = 1
-    this.damageAttribute = 'strenght'
-    this.criticalBonus = 1.5
+    this.armor = 1;
+    this.damage = 1;
+    this.damageAttribute = 'strenght';
+    this.criticalBonus = 1.5;
 
     // walking attributes
-    this.walkSpeed = 1000
+    this.walkSpeed = 1000;
 
-    this.attackDistance = 1
-    this.attackSpeed = 2000
+    this.attackDistance = 1;
+    this.attackSpeed = 2000;
 
     this.position = new Movement(this);// FIXME:
-    this.position.events.on('move', this.onMove.bind(this))
+    this.position.events.on('move', this.onMove.bind(this));
   }
 
   onMove(moveEvent: MoveEvent, prevX, prevY, currentX, currentY) {
