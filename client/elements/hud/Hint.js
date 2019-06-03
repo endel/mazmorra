@@ -13,15 +13,17 @@ class Hint  {
   <!-- <img src="images/sprites/items-${item.type}.png" width="${sprite.item.scale.x}" height="${sprite.item.scale.y}" /> -->
   ${item.type}
 </h2>
-${item.modifiers
+${(
+(item.modifiers && item.modifiers.length > 0)
   ?
-    "<ul>" +
+    "<p>" +
       item.modifiers.map(modifier => {
-        return `<string>${modifier.attr}</strong>: ${modifier.modifier}`
+        return `<string>${modifier.attr}</strong> ${(modifier.modifier > 0) ? "+" : ""}${modifier.modifier}`
       }).join("<br />") +
-    "</ul>"
+    "</p>"
   :
-    ""}
+    ""
+)}
 `;
 
     this.el.innerHTML = innerHTML;

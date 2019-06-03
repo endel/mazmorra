@@ -47,14 +47,14 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
     //   break;
   }
 
-  /**
-   * Assign item modifiers
-   */
-  if ('modifiers' in data) {
-    data.modifiers.forEach(modifier => {
-      item.addModifier(modifier);
-    });
-  }
+  // /**
+  //  * Assign item modifiers
+  //  */
+  // if ('modifiers' in data) {
+  //   data.modifiers.forEach(modifier => {
+  //     item.addModifier(modifier);
+  //   });
+  // }
 
   item.position.set(position);
 
