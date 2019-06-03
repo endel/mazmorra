@@ -144,9 +144,10 @@ export default class ItemSlot extends THREE.Object3D {
     if (draggingItem) {
 
       let switchWith = {};
-      if (this.item) { switchWith['switchItemId'] = this.item.userData.itemId }
-
-      targetSlot.item = draggingItem
+      if (this.item) {
+        switchWith['switchItemId'] = this.item.userData.itemId
+        draggingFrom.item = this.item;
+      }
 
       /**
        * dispatch "inventory-drag" event only for different types of inventories
@@ -157,10 +158,12 @@ export default class ItemSlot extends THREE.Object3D {
           bubbles: true,
           fromInventoryType: draggingFrom.parent.inventoryType,
           toInventoryType: this.parent.inventoryType,
-          itemId: targetSlot.item.userData.itemId,
+          itemId: draggingItem.userData.itemId,
           ...switchWith
         });
       }
+
+      targetSlot.item = draggingItem
 
       this._revertDraggingItem();
     }
