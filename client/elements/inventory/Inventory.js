@@ -10,23 +10,22 @@ export default class Inventory extends THREE.Object3D {
     this.isOpen = false
 
     this.equipedItems = new EquipedItems()
-    this.slots = new SlotStrip({ slots: 4, inventoryType: "inventory" })
-    this.exchangeSlots = new SlotStrip({ slots: 1, allowRemove: true, inventoryType: "exchange" })
+    this.slots = new SlotStrip({ slots: 12, columns: 4, inventoryType: "inventory" })
+    // this.exchangeSlots = new SlotStrip({ slots: 1, allowRemove: true, inventoryType: "exchange" })
 
     this.equipedItems.position.x -= this.equipedItems.width/2 + this.slots.slotSize/1.5
     this.slots.position.x = this.equipedItems.position.x + (this.equipedItems.width/2 + this.slots.slotSize / 2 +  config.HUD_SCALE * 2)
-    this.slots.position.y = this.slots.height
+    this.slots.position.y = -this.slots.height/3
 
-    this.exchangeSlots.position.x = this.equipedItems.position.x + (this.equipedItems.width/2 + this.slots.slotSize / 2 +  config.HUD_SCALE * 2) + (this.exchangeSlots.width / 2)
-    this.exchangeSlots.position.y = -this.exchangeSlots.height
-
-    this.exchangeSymbol = ResourceManager.getHUDElement('hud-exchange-icon')
-    this.exchangeSymbol.position.x = this.slots.position.x + this.slots.width/2 - this.exchangeSymbol.width/2
+    // this.exchangeSlots.position.x = this.equipedItems.position.x + (this.equipedItems.width/2 + this.slots.slotSize / 2 +  config.HUD_SCALE * 2) + (this.exchangeSlots.width / 2)
+    // this.exchangeSlots.position.y = -this.exchangeSlots.height
+    // this.exchangeSymbol = ResourceManager.getHUDElement('hud-exchange-icon')
+    // this.exchangeSymbol.position.x = this.slots.position.x + this.slots.width/2 - this.exchangeSymbol.width/2
 
     this.add(this.equipedItems)
     this.add(this.slots)
-    this.add(this.exchangeSymbol)
-    this.add(this.exchangeSlots)
+    // this.add(this.exchangeSymbol)
+    // this.add(this.exchangeSlots)
 
     this.width = this.equipedItems.width + this.slots.position.x + this.slots.width
     this.height = this.equipedItems.height
@@ -56,9 +55,9 @@ export default class Inventory extends THREE.Object3D {
     // (THREE.js can't change opacity of containers)
     //
     const elementsToFade = this.equipedItems.children.
-      concat(this.slots.children).
-      concat(this.exchangeSlots.children).
-      concat(this.exchangeSymbol)
+      concat(this.slots.children);
+      // concat(this.exchangeSlots.children).
+      // concat(this.exchangeSymbol)
 
     elementsToFade.map((el, i) => {
       let targetOpacity = ((this.isOpen) ? ItemSlot.DEFAULT_OPACITY : 0)

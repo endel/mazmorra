@@ -36,7 +36,7 @@ export default class HUD extends THREE.Scene {
     this.lifebar = new BottleBar('life')
     this.expbar = new ExpBar()
 
-    // Miscelaneous
+    // Inventory
     this.inventory = new Inventory()
     this.inventory.visible = false
 

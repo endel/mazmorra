@@ -35,30 +35,30 @@ export class Player extends Unit {
     this.properties.body = hero.body;
 
     // hit | mana | experience points
-    this.hp.set(hero.hp || 100, 100)
-    this.mp.set(hero.mp || 100, 100)
-    this.xp.set(hero.xp || 0, 10)
+    this.hp.set(hero.hp || 100, 100);
+    this.mp.set(hero.mp || 100, 100);
+    this.xp.set(hero.xp || 0, 10);
 
-    this.gold = hero.gold || 0
-    this.diamond = hero.diamond || 0
+    this.gold = hero.gold || 0;
+    this.diamond = hero.diamond || 0;
 
     // TODO: calculate this based on
     // player klass + lvl
     this.attributes.strenght = 1;
     this.attributes.dexterity = 1;
     this.attributes.intelligence = 1;
-    this.attributes.vitality = 1
+    this.attributes.vitality = 1;
 
-    this.armor = 1
-    this.damage = 1
+    this.armor = 1;
+    this.damage = 1;
 
-    this.attackDistance = 1
+    this.attackDistance = 1;
 
     // this.walkSpeed = 600
-    this.walkSpeed = 300
-    this.attackSpeed = 1000
+    this.walkSpeed = 300;
+    this.attackSpeed = 1000;
 
-    this.hpRegeneration = 1
+    this.hpRegeneration = 1;
   }
 
   useItem(inventoryType: InventoryType, itemId: string) {
@@ -73,8 +73,6 @@ export class Player extends Unit {
   inventoryDrag(fromInventoryType: InventoryType, toInventoryType: InventoryType, itemId: string) {
     const fromInventory = this[fromInventoryType];
     const toInventory = this[toInventoryType]
-
-    console.log("inventoryDrag", { fromInventoryType, toInventoryType });
 
     const item = fromInventory.slots[itemId];
     if (item && toInventory.hasAvailability()) {

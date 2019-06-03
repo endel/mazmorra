@@ -2,14 +2,35 @@ import { ObjectId, mongoose } from "@colyseus/social";
 
 const Schema = mongoose.Schema
 
+/**
+ * Attribute modifier
+ */
+export interface DBAttributeModifier {
+  attr: string,
+  modifier: number
+}
+
+const AttributeModifier = new mongoose.Schema<DBAttributeModifier>({
+  attr: String,
+  modifier: Number
+}, { _id: false });
+
+/**
+ * Item
+ */
 export interface DBItem {
   type: string,
+  modifiers?: DBAttributeModifier[]
 }
 
 const Item = new mongoose.Schema<DBItem>({
-  type: String
+  type: String,
+  modifiers: [AttributeModifier]
 }, { _id: false });
 
+/**
+ * Skill
+ */
 export interface DBSkill {
   // skill propertyes
 }
@@ -18,6 +39,9 @@ const Skill = new mongoose.Schema<DBItem>({
   // skill properties
 }, { _id: false });
 
+/**
+ * Hero
+ */
 export interface DBHero extends mongoose.Document {
   userId: ObjectId;
 

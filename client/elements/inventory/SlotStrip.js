@@ -36,9 +36,9 @@ export default class SlotStrip extends THREE.Object3D {
     for (let itemId in items) {
       const item = items[itemId];
       this.slots[i].item = ResourceManager.getHUDElement(`items-${ item.type }`)
+      this.slots[i].item.userData.item = item;
       this.slots[i].item.userData.itemId = itemId;
       this.slots[i].item.userData.inventoryType = this.inventoryType;
-      this.slots[i].item.userData.slotName = item.slotName;
       i++
     }
   }
@@ -62,18 +62,22 @@ export default class SlotStrip extends THREE.Object3D {
       this.remove(this.children[i])
     }
 
+    const maxRows = Math.floor(this.numSlots / this.columns) - 1;
+
     this.slots = []
     for (i = 0; i < this.numSlots; i++) {
       column = i % this.columns
       row = Math.floor(i / this.columns)
 
       slot = new ItemSlot({ accepts: this.accepts });
-      slot.position.x = (slot.width + config.HUD_SCALE) * column;
-      slot.position.y = (slot.height + config.HUD_SCALE) * row;
+      slot.position.x = (slot.width + config.HUD_SCALE) * (column);
+      slot.position.y = (slot.height + config.HUD_SCALE) * (maxRows - row);
 
       this.slots.push(slot);
       this.add(slot);
     }
+
+    // this.slots.reverse();
 
     // add REMOVE slot
     if (this.allowRemove) {

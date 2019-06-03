@@ -23,7 +23,7 @@ export class UnitAttributes extends Schema {
 
 export class Unit extends Entity {
   // Items / Inventory
-  @type(Inventory) inventory = new Inventory({ capacity: 4 });
+  @type(Inventory) inventory = new Inventory({ capacity: 12 });
   @type(EquipedItems) equipedItems = new EquipedItems();
   @type(Inventory) quickInventory = new Inventory({ capacity: 6 });
   @type(BattleAction) action: BattleAction;

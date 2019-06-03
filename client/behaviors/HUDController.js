@@ -15,14 +15,14 @@ export default class HUDController extends Behaviour {
   }
 
   update () {
-    this.object.resources.goldAmount.text = this.playerObject.userData.gold
-    this.object.resources.diamondAmount.text = this.playerObject.userData.diamond
-    this.object.character.levelText.text = this.playerObject.userData.lvl
+    // TODO: only update texts when they really change
+    this.object.resources.goldAmount.text = this.playerObject.userData.gold.toString();
+    this.object.resources.diamondAmount.text = this.playerObject.userData.diamond.toString();
+    this.object.character.levelText.text = "lvl: " + this.playerObject.userData.lvl;
 
-    this.setPercentage( this.object.lifebar, this.playerObject.userData.hp.current / this.playerObject.userData.hp.max, 'y'  )
-    this.setPercentage( this.object.manabar, this.playerObject.userData.mp.current / this.playerObject.userData.mp.max, 'y'  )
-    this.setPercentage( this.object.expbar, this.playerObject.userData.xp.current / this.playerObject.userData.xp.max, 'x' )
-    this.object.character.levelText.text = this.playerObject.userData.lvl
+    this.setPercentage(this.object.lifebar, this.playerObject.userData.hp.current / this.playerObject.userData.hp.max, 'y');
+    this.setPercentage(this.object.manabar, this.playerObject.userData.mp.current / this.playerObject.userData.mp.max, 'y');
+    this.setPercentage(this.object.expbar, this.playerObject.userData.xp.current / this.playerObject.userData.xp.max, 'x');
   }
 
   setPercentage (object, percentage, attr) {

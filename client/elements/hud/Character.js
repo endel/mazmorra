@@ -16,7 +16,7 @@ export default class Character extends THREE.Object3D {
     this.width = (MAX_CHAR_WIDTH *  config.HUD_SCALE)
     this.height = (MAX_CHAR_HEIGHT *  config.HUD_SCALE)
 
-    this.levelText = new MeshText2D("1", {
+    this.levelText = new MeshText2D(" ", {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: '#d0c01c',

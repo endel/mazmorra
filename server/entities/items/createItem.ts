@@ -8,11 +8,12 @@ import { ShieldItem } from "./equipable/ShieldItem";
 import { WeaponItem } from "./equipable/WeaponItem";
 import { BootItem } from "./equipable/BootItem";
 import { HelmetItem } from "./equipable/HelmetItem";
+import { DBItem } from "../../db/Hero";
 
-export function createItem(type: string, position?: Point): Item {
+export function createItem(data: Item | DBItem, position?: Point): Item {
   let item: Item;
 
-  switch (type) {
+  switch (data.type) {
     // Consumables
     case helpers.ENTITIES.LIFE_HEAL: item = new LifeHeal(); break;
     case helpers.ENTITIES.LIFE_POTION: item = new LifeHeal(); break;
@@ -21,22 +22,22 @@ export function createItem(type: string, position?: Point): Item {
 
     case helpers.ENTITIES.SHIELD_WOOD:
       item = new ShieldItem();
-      item.type = type;
+      item.type = data.type;
     break;
 
     case helpers.ENTITIES.SWORD:
       item = new WeaponItem();
-      item.type = type;
+      item.type = data.type;
     break;
 
     case helpers.ENTITIES.BOOTS_REGULAR:
       item = new BootItem();
-      item.type = type;
+      item.type = data.type;
     break;
 
     case helpers.ENTITIES.HELMET_CAP:
       item = new HelmetItem();
-      item.type = type;
+      item.type = data.type;
     break;
 
     // // Default
@@ -45,7 +46,15 @@ export function createItem(type: string, position?: Point): Item {
     //   item.type = type;
     //   break;
   }
-  console.log(type);
+
+  /**
+   * Assign item modifiers
+   */
+  if ('modifiers' in data) {
+    data.modifiers.forEach(modifier => {
+      item.addModifier(modifier);
+    });
+  }
 
   item.position.set(position);
 

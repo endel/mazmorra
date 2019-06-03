@@ -1,3 +1,5 @@
+import hint from "../hud/Hint";
+
 let draggingItem = null
   , draggingFrom = null
 
@@ -47,6 +49,8 @@ export default class ItemSlot extends THREE.Object3D {
   }
 
   onMouseOver ( e ) {
+    this._showHint();
+
     if (this._item || draggingItem) {
       App.tweens.remove(this.scale)
       App.tweens.add(this.scale).to({ x: 1.1, y: 1.1 }, 200, Tweener.ease.quadOut)
@@ -54,6 +58,8 @@ export default class ItemSlot extends THREE.Object3D {
   }
 
   onMouseOut () {
+    hint.hide();
+
     App.tweens.remove(this.scale)
     App.tweens.add(this.scale).to({ x: 1, y: 1 }, 200, Tweener.ease.quadOut)
   }
@@ -90,8 +96,9 @@ export default class ItemSlot extends THREE.Object3D {
   }
 
   onDragStart(e) {
-    let targetSlot = e.target
+    hint.hide();
 
+    let targetSlot = e.target
     if (targetSlot.item) {
 
       draggingItem = targetSlot.item
@@ -124,9 +131,9 @@ export default class ItemSlot extends THREE.Object3D {
     //
     if (
       draggingItem &&
-      draggingItem.userData.slotName &&
+      draggingItem.userData.item.slotName &&
       this.accepts &&
-      draggingItem.userData.slotName !== this.accepts
+      draggingItem.userData.item.slotName !== this.accepts
     ) {
       // cancel drop if slotName doesn't match dropped slot.
       draggingFrom.item = draggingItem;
@@ -151,6 +158,8 @@ export default class ItemSlot extends THREE.Object3D {
 
       this._revertDraggingItem();
     }
+
+    this._showHint();
   }
 
   onDoubleClick(e) {
@@ -167,6 +176,12 @@ export default class ItemSlot extends THREE.Object3D {
 
     } else {
       e.stopPropagation = true;
+    }
+  }
+
+  _showHint() {
+    if (!draggingItem && this._item && this._item.userData.item) {
+      hint.show(this._item.userData.item, this);
     }
   }
 

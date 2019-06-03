@@ -1,0 +1,54 @@
+#hint
+  position absolute
+  display none
+  opacity 0
+  transition opacity 0.2s
+  background #cca874
+  font-size 28px
+
+  &::before
+    content ' '
+    position absolute
+    display block
+    background #b49054
+    width: 6px
+    height 6px
+    top 30px
+    bottom 0
+    right -12px
+
+  h2
+    color #986c1b
+    text-shadow -1px 0 #2c1800, 0 -1px #2c1800, 1px 0 #2c1800, 0px 2px #2c1800
+    font-size 32px
+
+    &.red
+      color #d00000
+      text-shadow -1px 0 #5c0400, 0 -1px #5c0400, 1px 0  #5c0400, 0px 2px #5c0400
+
+    &.green
+      color #7cac20
+      text-shadow -1px 0 #347004, 0 -1px #347004, 1px 0  #347004, 0px 2px #347004
+
+    &.blue
+      color #1c80e4
+      text-shadow -1px 0 #043478, 0 -1px #043478, 1px 0  #043478, 0px 2px #043478
+
+    &.purple
+      color #9848b0
+      text-shadow -1px 0 #501858, 0 -1px #501858, 1px 0  #501858, 0px 2px #501858
+
+  img
+    float left
+    image-rendering pixelated
+    margin-right 12px
+
+  &.active
+    display inline-block
+    // width 200px
+    opacity 1
+    padding 12px 18px 12px 12px
+    -webkit-box-shadow 6px 6px 0px 0px #b49054;
+    -moz-box-shadow 6px 6px 0px 0px #b49054;
+    box-shadow 6px 6px 0px 0px #b49054;
+

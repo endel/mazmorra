@@ -43,9 +43,9 @@ export default class EquipedItems extends THREE.Object3D {
       // re-add existing item
       if (item) {
         this[slotName].item = ResourceManager.getHUDElement(`items-${item.type}`)
+        this[slotName].item.userData.item = item;
         this[slotName].item.userData.itemId = slotName;
         this[slotName].item.userData.inventoryType = this.inventoryType;
-        this[slotName].item.userData.slotName = item.slotName;
       }
     }
   }

@@ -27,7 +27,7 @@ export class Inventory extends Schema {
   set (items: Item[] | DBItem[]) {
     for (let i=0; i<items.length; i++) {
       // TODO: fix position
-      this.add(createItem(items[i].type, { x: i, y: 0 }));
+      this.add(createItem(items[i], { x: i, y: 0 }));
     }
   }
 
