@@ -74,15 +74,22 @@ export class Player extends Unit {
     const fromInventory = this[fromInventoryType];
     const toInventory = this[toInventoryType]
 
-    const item = fromInventory.slots[itemId];
-    const switchItem = toInventory.slots[switchItemId];
+    const item = fromInventory.getItem(itemId);
+    const switchItem = toInventory.getItem(switchItemId);
 
     if (item && switchItem) {
-      fromInventory.remove(itemId);
-      toInventory.remove(switchItemId);
+      console.log("item:", item.toJSON());
+      console.log("switchItem:", switchItem.toJSON());
 
-      fromInventory.add(switchItem);
-      toInventory.add(item);
+      const s1 = fromInventory.remove(itemId);
+      console.log("fromInventory.remove", itemId, s1);
+      const s2 = toInventory.remove(switchItemId);
+      console.log("toInventory.remove", switchItemId, s2);
+
+      const s3 = fromInventory.add(switchItem);
+      console.log("fromInventory.add", s3, switchItem.type);
+      const s4 = toInventory.add(item);
+      console.log("toInventory.add", s4, item.type);
 
     } else if (item && toInventory.hasAvailability()) {
       fromInventory.remove(itemId);

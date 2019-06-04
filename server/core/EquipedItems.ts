@@ -1,6 +1,7 @@
 import { Inventory } from "./Inventory";
 import { EquipableItem } from "../entities/items/EquipableItem";
 import { EquipmentSlot } from "./EquipmentSlot";
+import { Item } from "../entities/Item";
 
 export class EquipedItems extends Inventory {
   constructor () {
@@ -19,6 +20,29 @@ export class EquipedItems extends Inventory {
     }
 
     return hasAvailability;
+  }
+
+  getItem(itemId: string) {
+    for (let slotName in this.slots) {
+      const itemInSlot: Item = this.slots[slotName];
+      if (itemInSlot.id === itemId) {
+        return itemInSlot;
+      }
+    }
+  }
+
+  remove(itemId: string) {
+    for (let slotName in this.slots) {
+      const itemInSlot: Item = this.slots[slotName];
+      console.log("let's delete itemId:", itemId, "slot:", slotName, itemInSlot.id === itemId);
+
+      if (itemInSlot.id === itemId) {
+        delete this.slots[slotName];
+        return true;
+      }
+    }
+
+    return false;
   }
 
 }

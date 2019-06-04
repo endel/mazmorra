@@ -145,7 +145,7 @@ export default class ItemSlot extends THREE.Object3D {
 
       let switchWith = {};
       if (this.item) {
-        switchWith['switchItemId'] = this.item.userData.itemId
+        switchWith['switchItemId'] = this.item.userData.item.id
         draggingFrom.item = this.item;
       }
 

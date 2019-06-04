@@ -41,6 +41,10 @@ export class Inventory extends Schema {
     return hasAvailability;
   }
 
+  getItem(itemId: string) {
+    return this.slots[itemId];
+  }
+
   remove(itemId: string) {
     if (this.slots[itemId]) {
       delete this.slots[itemId];

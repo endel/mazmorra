@@ -63,7 +63,7 @@ export class DungeonRoom extends Room<DungeonState> {
     }
   }
 
-  onMessage (client, data) {
+  onMessage (client: Client, data) {
     const key = data[0]
         , value = data[1]
         , player = this.players.get(client)
