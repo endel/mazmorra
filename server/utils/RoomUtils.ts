@@ -19,7 +19,7 @@ import { LifeHeal }  from "../entities/items/consumable/LifeHeal";
 import { ManaHeal }  from "../entities/items/consumable/ManaHeal";
 
 // interactive
-import { Door, DoorDestiny }  from "../entities/interactive/Door";
+import { Door, DoorDestiny, DoorProgress }  from "../entities/interactive/Door";
 import { Chest }  from "../entities/interactive/Chest";
 import { Fountain }  from "../entities/interactive/Fountain";
 
@@ -52,8 +52,6 @@ export class RoomUtils {
 
     this.startPosition = this.getRandomDoorPosition(this.rooms[0]);
     this.endPosition = this.getRandomDoorPosition(this.rooms[ this.rooms.length-1 ])
-    console.log("this.startPosition:", this.startPosition);
-    console.log("this.endPosition:", this.endPosition);
   }
 
   getRandomDoorPosition (room) {
@@ -117,7 +115,7 @@ export class RoomUtils {
       identifier: 'grass',
       mapkind: 'grass',
       difficulty: 1,
-      progress: this.state.progress - 1
+      progress: DoorProgress.BACK
     })));
 
     // out
@@ -125,7 +123,7 @@ export class RoomUtils {
       identifier: 'grass',
       mapkind: 'grass',
       difficulty: 1,
-      progress: this.state.progress + 1
+      progress: DoorProgress.FORWARD
     })));
 
     this.rooms.forEach(room => this.populateRoom(room))
@@ -169,10 +167,9 @@ export class RoomUtils {
       this.populateNPCs(room);
 
       // add door
-      console.log("endPosition:", this.endPosition);
       this.state.addEntity(new Door(this.endPosition, new DoorDestiny({
         difficulty: 1,
-        progress: this.state.progress + 1
+        progress: DoorProgress.LATEST
       })));
 
       // create 3 fountains

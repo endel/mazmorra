@@ -35,7 +35,6 @@ export class EquipedItems extends Inventory {
   remove(itemId: string) {
     for (let slotName in this.slots) {
       const itemInSlot: Item = this.slots[slotName];
-      console.log("let's delete itemId:", itemId, "slot:", slotName, itemInSlot.id === itemId);
 
       if (itemInSlot.id === itemId) {
         delete this.slots[slotName];

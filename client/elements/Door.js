@@ -21,8 +21,6 @@ export default class Door extends THREE.Object3D {
       , geometry = new THREE.PlaneGeometry(config.TILE_SIZE, config.TILE_SIZE)
       , mesh = new THREE.Mesh(geometry, material)
 
-    window.door = this;
-
     this.position.y = 0.5;
     mesh.position.y = 0.5
 
@@ -46,9 +44,28 @@ export default class Door extends THREE.Object3D {
 
   get label () {
     const progress = this.userData.destiny.progress;
-    return (progress > this.currentProgress)
-      ? `Forward to ${progress}`
-      : `Back to ${progress}`
+    // export enum DoorProgress {
+    //   FORWARD = 1,
+    //   BACK = -1,
+    //   HOME = 0,
+    //   LATEST = 10,
+    // }
+
+    let label = "";
+    if (progress === 1) {
+      label = `Forward to ${this.currentProgress + progress}`;
+
+    } else if (progress === -1) {
+      label = `Back to ${this.currentProgress + progress}`;
+
+    } else if (progress === 0) {
+      label = `Back to Lobby`
+
+    } else if (progress === 10) {
+      label = `Continue from ${player.userData.latestProgress}`;
+    }
+
+    return label;
   }
 
   onMouseOver (tileSelection) {

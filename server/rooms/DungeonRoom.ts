@@ -3,6 +3,7 @@ import { DungeonState } from "./states/DungeonState";
 import { verifyToken } from "@colyseus/social";
 import { Hero, DBHero } from "../db/Hero";
 import { Player } from "../entities/Player";
+import { DoorProgress } from "../entities/interactive/Door";
 
 const TICK_RATE = 30
 
@@ -68,9 +69,7 @@ export class DungeonRoom extends Room<DungeonState> {
         $set.latestProgress = this.state.progress;
       }
 
-      Hero.updateOne({ _id: hero._id }, { $set }).then(() => {
-        console.log("HERO PROGRESS UPDATED:", $set);
-      });
+      Hero.updateOne({ _id: hero._id }, { $set }).then(() => {});
     }
   }
 
@@ -89,7 +88,6 @@ export class DungeonRoom extends Room<DungeonState> {
 
     } else if (key == 'inventory-drag') {
       const { fromInventoryType, toInventoryType, itemId, switchItemId } = value;
-      console.log({ fromInventoryType, toInventoryType, itemId, switchItemId });
       player.inventoryDrag(fromInventoryType, toInventoryType, itemId, switchItemId);
 
     } else if (key == 'use-item') {
@@ -111,14 +109,20 @@ export class DungeonRoom extends Room<DungeonState> {
     const client = this.clientMap.get(player);
     const hero = this.heroes.get(client);
 
-    const progress = (hero.currentProgress - data.progress >= -1)
-      ? data.progress
-      : hero.currentProgress;
+    let progress: number = hero.currentProgress;
 
-    console.log("hero.currentProgress", hero.currentProgress);
-    console.log("data.progress", data.progress);
+    if (data.progress === DoorProgress.FORWARD) {
+      progress = hero.currentProgress + 1;
 
-    console.log("GOTO PROGRESS:", progress);
+    } else if (data.progress === DoorProgress.BACK) {
+      progress = hero.currentProgress - 1;
+
+    } else if (data.progress === DoorProgress.LATEST) {
+      progress = hero.latestProgress;
+
+    } else if (data.progress === DoorProgress.HOME) {
+      progress = 1;
+    }
 
     this.send(this.clientMap.get(player), ['goto', { progress }]);
   }

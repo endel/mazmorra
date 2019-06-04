@@ -4,6 +4,13 @@ import helpers from "../../../shared/helpers";
 
 import { Point } from "../../rooms/states/DungeonState";
 
+export enum DoorProgress {
+  FORWARD = 1,
+  BACK = -1,
+  HOME = 0,
+  LATEST = 10,
+}
+
 interface DoorDestinyOptions {
   difficulty: number;
   progress: number;
@@ -15,7 +22,7 @@ export class DoorDestiny extends Schema implements DoorDestinyOptions {
   @type("string") identifier: string;
   @type("string") mapkind: string;
   @type("number") difficulty: number;
-  @type("number") progress: number;
+  @type("number") progress: DoorProgress;
 
   constructor(data: DoorDestinyOptions) {
     super();
@@ -31,11 +38,11 @@ export class Door extends Interactive {
 
   constructor (position: Point, destiny: DoorDestiny) {
     super(helpers.ENTITIES.DOOR, position);
-    this.destiny = destiny
+    this.destiny = destiny;
   }
 
   interact (moveEvent, player, state) {
-    state.events.emit('goto', player, this.destiny)
+    state.events.emit('goto', player, this.destiny);
   }
 
 }

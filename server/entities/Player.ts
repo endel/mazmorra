@@ -21,9 +21,13 @@ export class Player extends Unit {
   @type("number") gold: number;
   @type("number") diamond: number;
 
+  @type("number") latestProgress: number;
+
   constructor (id, hero: DBHero) {
     super(id, hero)
     this.type = helpers.ENTITIES.PLAYER
+
+    this.latestProgress = hero.latestProgress;
 
     this.name = hero.name
     this.lvl = hero.lvl || 1
