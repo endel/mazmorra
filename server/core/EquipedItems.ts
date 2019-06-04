@@ -12,10 +12,11 @@ export class EquipedItems extends Inventory {
     return !this.slots[slot];
   }
 
-  add (item: EquipableItem) {
+  add (item: EquipableItem, force: boolean = false) {
     const hasAvailability = this.isSlotAvailable(item.slotName);
 
-    if (hasAvailability) {
+    // FORCE is a workaround for a @colyseus/schema bug
+    if (hasAvailability || force) {
       this.slots[item.slotName] = item.clone();
     }
 

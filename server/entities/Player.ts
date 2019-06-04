@@ -4,6 +4,7 @@ import helpers from "../../shared/helpers";
 import { Item } from "./Item";
 import { DBHero } from "../db/Hero";
 import { MoveEvent } from "../core/Movement";
+import { EquipedItems } from "../core/EquipedItems";
 
 export class SkinProperties extends Schema {
   @type("number") klass: number;
@@ -78,18 +79,19 @@ export class Player extends Unit {
     const switchItem = toInventory.getItem(switchItemId);
 
     if (item && switchItem) {
-      console.log("item:", item.toJSON());
-      console.log("switchItem:", switchItem.toJSON());
+      if ((toInventory instanceof EquipedItems)) {
+        // @colyseus/schema workaround
+        fromInventory.remove(itemId);
+        fromInventory.add(switchItem);
+        toInventory.add(item, true);
 
-      const s1 = fromInventory.remove(itemId);
-      console.log("fromInventory.remove", itemId, s1);
-      const s2 = toInventory.remove(switchItemId);
-      console.log("toInventory.remove", switchItemId, s2);
+      } else {
+        fromInventory.remove(itemId);
+        toInventory.remove(switchItemId);
 
-      const s3 = fromInventory.add(switchItem);
-      console.log("fromInventory.add", s3, switchItem.type);
-      const s4 = toInventory.add(item);
-      console.log("toInventory.add", s4, item.type);
+        fromInventory.add(switchItem);
+        toInventory.add(item);
+      }
 
     } else if (item && toInventory.hasAvailability()) {
       fromInventory.remove(itemId);
