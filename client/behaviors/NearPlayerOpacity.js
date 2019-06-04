@@ -30,6 +30,10 @@ export default class NearPlayerOpacity extends Behaviour {
         this.object.activeSprite.material.opacity = opacity;
         this.object.inactiveSprite.material.opacity = opacity;
 
+      // } else if (this.entity.getBehaviour("Openable")) {
+      //   this.object.body.material.opacity = opacity;
+      //   this.object.head.material.opacity = opacity;
+
       } else {
         (this.object.material || this.object.children[0].material).opacity = opacity;
       }

@@ -36,7 +36,7 @@ export class DungeonState extends Schema {
 
   @type("number") progress: number;
   @type("number") difficulty: number;
-  @type("boolean") daylight: boolean = true; // (serverHour % 2 === 1)
+  @type("boolean") daylight: boolean;
   @type("string") mapkind: string;
 
   @type(["number"]) grid = new ArraySchema<number>();
@@ -55,12 +55,12 @@ export class DungeonState extends Schema {
   constructor (progress, difficulty, daylight?: boolean) {
     super()
 
-    const serverHour = (new Date()).getHours();
-
     this.progress = progress;
     this.difficulty = difficulty;
 
-    this.daylight = true
+    const serverMinutes = (new Date()).getMinutes();
+    this.daylight = (serverMinutes >= 30);
+
     let grid, rooms;
 
     if (progress === 1) {

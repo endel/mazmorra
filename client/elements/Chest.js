@@ -1,6 +1,7 @@
 'use strict';
 
 import Openable from '../behaviors/Openable'
+import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
 
 export default class Chest extends THREE.Object3D {
 
@@ -15,7 +16,9 @@ export default class Chest extends THREE.Object3D {
     this.add(this.head)
 
     this.openableBehaviour = new Openable
-    this.addBehaviour(this.openableBehaviour)
+    this.addBehaviour(this.openableBehaviour);
+
+    // this.addBehaviour(new NearPlayerOpacity);
   }
 
   get label () {
