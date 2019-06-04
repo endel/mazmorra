@@ -22,6 +22,7 @@ import { TextEvent } from "../../entities/ephemeral/TextEvent";
 import { Interactive } from "../../entities/Interactive";
 import { Entity } from "../../entities/Entity";
 import { MoveEvent, Movement } from "../../core/Movement";
+import { DBHero } from "../../db/Hero";
 
 export interface Point {
   x: number;
@@ -130,7 +131,7 @@ export class DungeonState extends Schema {
     delete this.entities[entity.id]
   }
 
-  createPlayer (client, hero) {
+  createPlayer (client, hero: DBHero) {
     // prevent hero from starting the game dead
     // when he dies and returns to lobby
     if (
@@ -143,7 +144,7 @@ export class DungeonState extends Schema {
     var player = new Player(client.id, hero)
     player.state = this
 
-    if (hero.progress <= this.progress) {
+    if (hero.currentProgress <= this.progress) {
       player.position.set(this.roomUtils.startPosition)
 
     } else {

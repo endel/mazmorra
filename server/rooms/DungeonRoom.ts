@@ -49,17 +49,28 @@ export class DungeonRoom extends Room<DungeonState> {
     return success;
   }
 
-  onJoin (client, options, hero) {
+  async onJoin (client: Client, options: any, hero: DBHero) {
     const player = this.state.createPlayer(client, hero);
 
     this.heroes.set(client, hero)
     this.players.set(client, player)
     this.clientMap.set(player, client)
 
-    if (this.state.progress !== 1) {
-      Hero.update({ _id: hero._id }, {
-        $set: { progress: this.state.progress }
-      }).then(() => { });
+    // store hero's currentProgress
+    if (
+      this.state.progress > 1 &&
+      this.state.progress !== hero.currentProgress
+    ) {
+      hero.currentProgress = this.state.progress;
+
+      const $set: any = { currentProgress: hero.currentProgress };
+      if (this.state.progress > hero.latestProgress) {
+        $set.latestProgress = this.state.progress;
+      }
+
+      Hero.updateOne({ _id: hero._id }, { $set }).then(() => {
+        console.log("HERO PROGRESS UPDATED:", $set);
+      });
     }
   }
 
@@ -100,9 +111,14 @@ export class DungeonRoom extends Room<DungeonState> {
     const client = this.clientMap.get(player);
     const hero = this.heroes.get(client);
 
-    const progress = (hero.progress < data.progress)
+    const progress = (hero.currentProgress - data.progress >= -1)
       ? data.progress
-      : hero.progress;
+      : hero.currentProgress;
+
+    console.log("hero.currentProgress", hero.currentProgress);
+    console.log("data.progress", data.progress);
+
+    console.log("GOTO PROGRESS:", progress);
 
     this.send(this.clientMap.get(player), ['goto', { progress }]);
   }
@@ -131,7 +147,7 @@ export class DungeonRoom extends Room<DungeonState> {
     const equipedItems = Object.values(player.equipedItems.slots).map(slot => slot.toJSON());
 
     // sync
-    await Hero.update({ _id: hero._id }, {
+    await Hero.updateOne({ _id: hero._id }, {
       $set: {
         lvl: player.lvl,
         gold: player.gold,

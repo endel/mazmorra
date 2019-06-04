@@ -54,7 +54,8 @@ export interface DBHero extends mongoose.Document {
   eye: number;
   body: number;
 
-  progress: number;
+  currentProgress: number;
+  latestProgress: number;
   alive: boolean;
 
   hp: number;
@@ -89,7 +90,9 @@ export const Hero = mongoose.model<DBHero>('Hero', new Schema<DBHero>({
   body: { type: Number, default: 0 },
 
   // how deep is the hero in the campaign?
-  progress: { type: Number, default: 1 },
+  currentProgress: { type: Number, default: 1 },
+  latestProgress: { type: Number, default: 1 },
+
   alive: { type: Boolean, default: true },
 
   // store only current values
