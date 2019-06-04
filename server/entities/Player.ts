@@ -79,13 +79,14 @@ export class Player extends Unit {
     const switchItem = toInventory.getItem(switchItemId);
 
     if (item && switchItem) {
+      // @colyseus/schema workaround
       if ((toInventory instanceof EquipedItems)) {
-        // @colyseus/schema workaround
         fromInventory.remove(itemId);
         fromInventory.add(switchItem);
         toInventory.add(item, true);
 
       } else {
+        // without workaround: https://github.com/colyseus/schema/issues/26
         fromInventory.remove(itemId);
         toInventory.remove(switchItemId);
 
