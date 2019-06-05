@@ -1,8 +1,9 @@
 'use strict';
+import helpers from '../../shared/helpers'
 
 export default class Door extends THREE.Object3D {
 
-  constructor (data, currentProgress, mapkind) {
+  constructor (data, currentProgress, mapkind, gridTile) {
     super()
 
     this.userData = data
@@ -22,11 +23,20 @@ export default class Door extends THREE.Object3D {
       , geometry = new THREE.PlaneGeometry(config.TILE_SIZE, config.TILE_SIZE)
       , mesh = new THREE.Mesh(geometry, material)
 
-    this.position.y = 0.5;
-    mesh.position.y = 0.5
+    console.log("gridTile:", gridTile);
+    if (gridTile & helpers.DIRECTION.NORTH) {
+      console.log("IS NORTH!")
+      this.position.y = 0.5;
+      mesh.position.y = 0.5
+      mesh.position.z -= 1.499 // TODO: automate a good-looking position based on door direction
 
-    // TODO: automate a good-looking position based on door direction
-    mesh.position.z -= 1.499
+    } else if (gridTile & helpers.DIRECTION.WEST) {
+      console.log("IS WEST!")
+      this.position.x = 0.5;
+      mesh.position.x = -1.5;
+      mesh.position.y = 1;
+      mesh.rotateY(Math.PI/2);
+    }
 
     mesh.scale.normalizeWithTexture(material.map, true)
     this.add(mesh)

@@ -37,7 +37,7 @@ export class RoomUtils {
   rand: RandomSeed;
   state: DungeonState;
   rooms: any;
-  data = new WeakMap();
+  cache = new WeakMap();
 
   startPosition: any;
   endPosition: any;
@@ -56,13 +56,18 @@ export class RoomUtils {
 
   getRandomDoorPosition (room) {
     var possiblePositions = []
-      , positions = this.data.get(room)
+      , positions = this.cache.get(room)
 
     for (var i=0; i<positions.length; i++) {
-      let position = positions[i]
-        , type = this.state.grid[(position.x-1) + this.state.width * position.y ];
+      const position = positions[i];
 
-      if ((type & helpers.TILE_TYPE.WALL) && (type & helpers.DIRECTION.NORTH)) {
+      const northTile = this.state.grid[(position.x - 1) + this.state.width * position.y];
+      const westTile = this.state.grid[(position.x) + this.state.width * (position.y - 1)];
+
+      if ((northTile & helpers.TILE_TYPE.WALL) && (northTile & helpers.DIRECTION.NORTH)) {
+        possiblePositions.push(position)
+
+      } else if ((westTile & helpers.TILE_TYPE.WALL) && (westTile & helpers.DIRECTION.WEST)) {
         possiblePositions.push(position)
       }
     }
@@ -84,7 +89,7 @@ export class RoomUtils {
         }
       }
 
-      this.data.set(room, this.shuffle(positions))
+      this.cache.set(room, this.shuffle(positions))
     }
   }
 
@@ -97,7 +102,7 @@ export class RoomUtils {
   }
 
   getNumPositionsRemaining (room) {
-    return this.data.get(room).length
+    return this.cache.get(room).length
   }
 
   hasPositionsRemaining (room) {
@@ -105,7 +110,7 @@ export class RoomUtils {
   }
 
   getNextAvailablePosition (room) {
-    let positions = this.data.get(room)
+    let positions = this.cache.get(room)
     return positions.shift()
   }
 

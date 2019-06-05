@@ -81,16 +81,16 @@ export class DungeonState extends Schema {
       // this.mapkind = 'castle';
 
       // const dungeonStyle = this.rand.intBetween(0, 5);
-      const dungeonStyle = 0;
+      const dungeonStyle: number = 1;
 
       let minRoomSize: Point = { x: 0, y: 0 };
       let maxRoomSize: Point = { x: 0, y: 0 };
 
+      this.width = 14 + Math.floor(progress / 2);
+      this.height = 14 + Math.floor(progress / 2);
+
       if (dungeonStyle === 0) {
         // regular rooms
-        this.width = 14 + Math.floor(progress / 2);
-        this.height = 14 + Math.floor(progress / 2);
-
         minRoomSize.x = Math.max(Math.ceil(this.width * 0.3), 6);
         minRoomSize.y = Math.max(Math.ceil(this.height * 0.3), 6);
 
@@ -98,35 +98,62 @@ export class DungeonState extends Schema {
         maxRoomSize.y = Math.max(Math.ceil(this.height * 0.4), 10);
 
       } else if (dungeonStyle === 1) {
-        // compact / cave (rock)
-        this.width = 24;
-        this.height = 13;
-        [grid, rooms] = dungeon.generate(this.rand, {x: 16, y: 16}, {x: 4, y: 4}, {x: 8, y: 8}, 24)
+        // compact / cave
+        minRoomSize.x = 4
+        minRoomSize.y = 4
+
+        maxRoomSize.x = 8
+        maxRoomSize.y = 8
 
       } else if (dungeonStyle === 2) {
         // one-direction
-        this.width = 32;
-        this.height = 24;
-        [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, { x: 6, y: 6 }, { x: 12, y: 12 }, 4)
+        if (progress % 2 === 0) {
+          minRoomSize.x = this.width;
+          minRoomSize.y = Math.max(Math.floor(this.height * 0.33), 6);
+
+          maxRoomSize.x = this.width;
+          maxRoomSize.y = Math.floor(this.height * 0.33);
+
+        } else {
+          minRoomSize.x = Math.max(Math.floor(this.width * 0.33), 6);
+          minRoomSize.y = this.height;
+
+          maxRoomSize.x = Math.floor(this.width * 0.33);
+          maxRoomSize.y = this.height;
+        }
+
+        // [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, { x: 6, y: 6 }, { x: 12, y: 12 }, 4)
 
       } else if (dungeonStyle === 3) {
         // maze-like
-        this.width = 48;
-        this.height = 48;
-        [grid, rooms] = dungeon.generate(this.rand, {x: 48, y: 48}, {x: 5, y: 5}, {x: 10, y: 10}, 32)
+        this.width = Math.ceil(this.width * 1.4);
+        this.height = Math.ceil(this.height * 1.4);
+
+        minRoomSize.x = Math.max(Math.ceil(this.width / 4), 5);
+        minRoomSize.y = Math.max(Math.ceil(this.height / 4), 5);
+
+        maxRoomSize.x = Math.max(Math.ceil(this.width / 4), 10);
+        maxRoomSize.y = Math.max(Math.ceil(this.height / 4), 10);
 
       } else if (dungeonStyle === 4) {
         // big-and-spread (castle)
         this.width = 48;
         this.height = 48;
-        [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, { x: 6, y: 6 }, { x: 12, y: 12 }, 32)
+
+        minRoomSize.x = 6;
+        minRoomSize.y = 6;
+
+        maxRoomSize.x = 12;
+        maxRoomSize.y = 12;
       }
 
       const numRooms: number = Math.min(Math.floor((this.width * this.height) / (maxRoomSize.x * maxRoomSize.y)), Math.floor(progress / 2));
+
       console.log("SIZE:", { x: this.width, y: this.height });
       console.log({ minRoomSize });
       console.log({ maxRoomSize });
       console.log({ numRooms });
+
       [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, minRoomSize, maxRoomSize, numRooms);
     }
 

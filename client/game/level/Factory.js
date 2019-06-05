@@ -36,7 +36,20 @@ export default class Factory {
 
     switch (data.type) {
       case helpers.ENTITIES.DOOR:
-        element = new Door(data, this.level.progress, this.level.mapkind)
+        // THIS IS UGLY AF
+        let gridItem;
+
+        // DETECT IF IS NORTH OR WEST TILE
+        const northTile = this.grid[(data.position.x - 1) + this.level.mapwidth * data.position.y];
+        const westTile = this.grid[data.position.x + this.level.mapwidth * (data.position.y - 1)];
+
+        if ((northTile & helpers.TILE_TYPE.WALL) && (northTile & helpers.DIRECTION.NORTH)) {
+          gridItem = northTile;
+        } else if ((westTile & helpers.TILE_TYPE.WALL) && (westTile & helpers.DIRECTION.WEST)) {
+          gridItem = westTile;
+        }
+
+        element = new Door(data, this.level.progress, this.level.mapkind, gridItem);
         break;
 
       case helpers.ENTITIES.ENEMY:
