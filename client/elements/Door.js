@@ -23,15 +23,12 @@ export default class Door extends THREE.Object3D {
       , geometry = new THREE.PlaneGeometry(config.TILE_SIZE, config.TILE_SIZE)
       , mesh = new THREE.Mesh(geometry, material)
 
-    console.log("gridTile:", gridTile);
     if (gridTile & helpers.DIRECTION.NORTH) {
-      console.log("IS NORTH!")
       this.position.y = 0.5;
       mesh.position.y = 0.5
       mesh.position.z -= 1.499 // TODO: automate a good-looking position based on door direction
 
     } else if (gridTile & helpers.DIRECTION.WEST) {
-      console.log("IS WEST!")
       this.position.x = 0.5;
       mesh.position.x = -1.5;
       mesh.position.y = 1;

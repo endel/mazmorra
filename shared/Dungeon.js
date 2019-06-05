@@ -200,6 +200,8 @@ var dungeon = {
         switch(branchPos.dir) {
             case helpers.DIRECTION.NORTH:
                 grid[branchPos.x][branchPos.y - 1] = helpers.TILE_TYPE.FLOOR | helpers.DIRECTION.NORTH;
+                // grid[branchPos.x + 1][branchPos.y - 1] = helpers.TILE_TYPE.FLOOR | helpers.DIRECTION.NORTH;
+                // grid[branchPos.x][branchPos.y - 1] = helpers.TILE_TYPE.FLOOR;
                 break;
 
             case helpers.DIRECTION.SOUTH:
