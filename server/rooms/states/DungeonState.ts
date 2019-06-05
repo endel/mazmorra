@@ -73,15 +73,15 @@ export class DungeonState extends Schema {
     } else {
       // ['grass', 'rock', 'ice', 'inferno', 'castle']
 
-      // this.mapkind = 'rock';
-      this.mapkind = 'rock-2';
+      this.mapkind = 'rock';
+      // this.mapkind = 'rock-2';
       // this.mapkind = 'ice';
       // this.mapkind = 'grass';
       // this.mapkind = 'inferno';
       // this.mapkind = 'castle';
 
       // const dungeonStyle = this.rand.intBetween(0, 5);
-      const dungeonStyle: number = 1;
+      const dungeonStyle: number = 0;
 
       let minRoomSize: Point = { x: 0, y: 0 };
       let maxRoomSize: Point = { x: 0, y: 0 };
@@ -99,8 +99,8 @@ export class DungeonState extends Schema {
 
       } else if (dungeonStyle === 1) {
         // compact / cave
-        minRoomSize.x = 4
-        minRoomSize.y = 4
+        minRoomSize.x = 5
+        minRoomSize.y = 5
 
         maxRoomSize.x = 8
         maxRoomSize.y = 8

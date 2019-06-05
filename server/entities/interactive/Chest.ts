@@ -7,11 +7,10 @@ import { Action } from "../../actions/Action";
 export class Chest extends Interactive {
   @type("string") kind: string;
 
-  constructor (position) {
+  constructor (position, kind: string) {
     super(helpers.ENTITIES.CHEST, position)
 
-    const chestTypes = ['chest', 'chest2', 'bucket'];
-    this.kind = chestTypes[Math.floor(Math.random() * chestTypes.length)];
+    this.kind = kind;
   }
 
   interact (moveEvent, player, state) {

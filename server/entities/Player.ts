@@ -41,7 +41,7 @@ export class Player extends Unit {
 
     // hit | mana | experience points
     this.hp.set(hero.hp || 100, 100);
-    this.mp.set(hero.mp || 100, 100);
+    this.mp.set(hero.mp || 0, 100);
     this.xp.set(hero.xp || 0, 10);
 
     this.gold = hero.gold || 0;

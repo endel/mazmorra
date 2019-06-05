@@ -1,3 +1,4 @@
+import * as Keycode from "keycode.js";
 import Resources from '../elements/hud/Resources'
 
 import Character from '../elements/hud/Character'
@@ -44,7 +45,7 @@ export default class HUD extends THREE.Scene {
     this.equipedItems = this.inventory.equipedItems;
 
     this.openInventoryButton = new OpenInventoryButton()
-    this.openInventoryButton.addEventListener('click', this.onOpenInventory.bind(this))
+    this.openInventoryButton.addEventListener('click', this.onToggleInventory.bind(this))
 
     // Usable skills / items
     this.skillsInventory = new SlotStrip({
@@ -63,6 +64,14 @@ export default class HUD extends THREE.Scene {
     this.selectionText = new MeshText2D("Welcome", {
       font: config.DEFAULT_FONT,
       fillStyle: '#fff',
+      antialias: false
+    })
+
+    // Label
+    this.levelText = new MeshText2D("Lobby", {
+      font: config.SMALL_FONT,
+      fillStyle: '#fff',
+      align: textAlign.right,
       antialias: false
     })
 
@@ -87,6 +96,8 @@ export default class HUD extends THREE.Scene {
 
     window.hud = this;
 
+    window.addEventListener("keypress", this.onKeyPress.bind(this));
+
     this.resize()
   }
 
@@ -96,6 +107,7 @@ export default class HUD extends THREE.Scene {
     this.add( this.lifebar )
     this.add( this.expbar )
     this.add( this.selectionText )
+    this.add( this.levelText )
     this.add( this.resources )
     this.add( this.character )
 
@@ -106,7 +118,17 @@ export default class HUD extends THREE.Scene {
     this.add( this.openInventoryButton )
   }
 
-  onOpenInventory () {
+  onKeyPress (e) {
+    if (
+      e.which === Keycode.I + 32 || e.which === Keycode.I ||
+      e.which === Keycode.B + 32 || e.which === Keycode.B
+    ) {
+      // open inventory pressing "i" or "b"
+      this.onToggleInventory();
+    }
+  }
+
+  onToggleInventory () {
 
     if (this.inventory.isOpen) {
       this.hideOverlay();
@@ -160,6 +182,14 @@ export default class HUD extends THREE.Scene {
     // TOP
     //
     this.selectionText.position.set(0, window.innerHeight / 2 - (margin * 2), 0)
+
+    this.levelText.position.set(-this.levelText.width -  config.HUD_SCALE * ( config.HUD_MARGIN * 3 ), window.innerHeight / 2 - margin * 2, 0)
+
+    this.levelText.position.set(
+      window.innerWidth / 2 - config.HUD_SCALE * (config.HUD_MARGIN),
+      - window.innerHeight / 2 + this.levelText.height + (config.HUD_MARGIN * 3),
+      0
+    )
 
     //
     // LEFT SIDE

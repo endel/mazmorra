@@ -143,10 +143,13 @@ export class RoomUtils {
     //   this.addEntity(room, (position) => new Chest(position))
     // }
 
-    this.addEntity(room, (position) => new Chest(position))
-    this.addEntity(room, (position) => new Chest(position))
-    this.addEntity(room, (position) => new Chest(position))
-    this.addEntity(room, (position) => new Chest(position))
+    // const chestTypes = ['chest', 'chest2', 'bucket'];
+    const chestKind = 'bucket';
+
+    this.addEntity(room, (position) => new Chest(position, chestKind))
+    this.addEntity(room, (position) => new Chest(position, chestKind))
+    this.addEntity(room, (position) => new Chest(position, chestKind))
+    this.addEntity(room, (position) => new Chest(position, chestKind))
 
     if (this.rand.intBetween(0, 6) === 6) {
       this.addEntity(room, (position) => new Fountain(position))
@@ -188,34 +191,42 @@ export class RoomUtils {
     var numEnemies = Math.floor(this.rand.intBetween(0, this.state.difficulty * 2))
     var enemyList = [
       'bat',
-      'eye',
-      'fairy',
-      'fat-zombie',
-      'flying-eye',
-      'frog',
-      'spider-giant',
-      'glass-eye',
-      'goblin-2',
-      'goblin-3',
-      'goblin-boss',
-      'goblin',
-      'golem',
-      'lava-ogre',
-      'lava-totem',
-      'minion',
-      'monkey',
-      'octopus-boss',
-      'owl',
-      'rabbit',
       'rat',
-      'scorpio-boss',
-      'skeleton-2',
-      'skeleton',
-      'snow-goblin-boss',
-      'snow-minion-2',
-      'snow-minion',
-      'witch',
-      'zombie'
+      'spider',
+      // 'spider-medium',
+      // 'spider-giant',
+      // 'slime',
+      // 'slime-cube',
+      // 'slime-2',
+      // 'slime-big',
+
+      // 'eye',
+      // 'fairy',
+      // 'fat-zombie',
+      // 'flying-eye',
+      // 'frog',
+      // 'spider-giant',
+      // 'glass-eye',
+      // 'goblin-2',
+      // 'goblin-3',
+      // 'goblin-boss',
+      // 'goblin',
+      // 'golem',
+      // 'lava-ogre',
+      // 'lava-totem',
+      // 'minion',
+      // 'monkey',
+      // 'octopus-boss',
+      // 'owl',
+      // 'rabbit',
+      // 'scorpio-boss',
+      // 'skeleton-2',
+      // 'skeleton',
+      // 'snow-goblin-boss',
+      // 'snow-minion-2',
+      // 'snow-minion',
+      // 'witch',
+      // 'zombie'
     ];
 
     while (numEnemies--) {

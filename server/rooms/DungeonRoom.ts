@@ -109,6 +109,11 @@ export class DungeonRoom extends Room<DungeonState> {
     const client = this.clientMap.get(player);
     const hero = this.heroes.get(client);
 
+    if (!hero) {
+      // FIXME: NPC's shouldn't try to go to another place.
+      return;
+    }
+
     let progress: number = hero.currentProgress;
 
     if (data.progress === DoorProgress.FORWARD) {
