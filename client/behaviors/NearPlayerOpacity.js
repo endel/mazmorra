@@ -9,6 +9,7 @@ export default class NearPlayerOpacity extends Behaviour {
       return;
     }
 
+    this.on('died', this.detach.bind(this))
   }
 
   update () {

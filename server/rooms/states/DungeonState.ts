@@ -41,6 +41,7 @@ export class DungeonState extends Schema {
 
   @type(["number"]) grid = new ArraySchema<number>();
   @type("number") width: number;
+  @type("number") height: number;
   @type({ map: Entity }) entities = new MapSchema<Entity>();
 
   rooms: any;
@@ -65,35 +66,89 @@ export class DungeonState extends Schema {
 
     if (progress === 1) {
       this.mapkind = "castle";
-      [grid, rooms] = dungeon.generate(this.rand, { x: 12, y: 12 }, { x: 10, y: 10}, { x: 12, y: 12 }, 1);
+      this.width = 12;
+      this.height = 12;
+      [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, { x: 10, y: 10}, { x: 12, y: 12 }, 1);
 
     } else {
       // ['grass', 'rock', 'ice', 'inferno', 'castle']
-      this.mapkind = 'rock';
-      // this.mapkind = 'rock-2';
+
+      // this.mapkind = 'rock';
+      this.mapkind = 'rock-2';
+      // this.mapkind = 'ice';
+      // this.mapkind = 'grass';
+      // this.mapkind = 'inferno';
       // this.mapkind = 'castle';
 
-      // // // big-and-spread (castle)
-      // data = dungeon.generate(this.rand, {x: 52, y: 52}, {x: 6, y: 6}, {x: 12, y: 12}, 32)
+      // const dungeonStyle = this.rand.intBetween(0, 5);
+      const dungeonStyle = 0;
 
-      // // compact / cave (rock)
-      // data = dungeon.generate(this.rand, {x: 16, y: 16}, {x: 4, y: 4}, {x: 8, y: 8}, 24)
+      let minRoomSize: Point = { x: 0, y: 0 };
+      let maxRoomSize: Point = { x: 0, y: 0 };
 
-      // // maze-like (castle)
-      // data = dungeon.generate(this.rand, {x: 48, y: 48}, {x: 5, y: 5}, {x: 10, y: 10}, 32)
+      if (dungeonStyle === 0) {
+        // regular rooms
+        this.width = 14 + Math.floor(progress / 2);
+        this.height = 14 + Math.floor(progress / 2);
 
-      // regular rooms
-      [grid, rooms] = dungeon.generate(this.rand, {x: 24, y: 24}, {x: 6, y: 6}, {x: 12, y: 12}, 3);
+        minRoomSize.x = Math.max(Math.ceil(this.width * 0.3), 6);
+        minRoomSize.y = Math.max(Math.ceil(this.height * 0.3), 6);
+
+        maxRoomSize.x = Math.max(Math.ceil(this.width * 0.4), 10);
+        maxRoomSize.y = Math.max(Math.ceil(this.height * 0.4), 10);
+
+      } else if (dungeonStyle === 1) {
+        // compact / cave (rock)
+        this.width = 24;
+        this.height = 13;
+        [grid, rooms] = dungeon.generate(this.rand, {x: 16, y: 16}, {x: 4, y: 4}, {x: 8, y: 8}, 24)
+
+      } else if (dungeonStyle === 2) {
+        // one-direction
+        this.width = 32;
+        this.height = 24;
+        [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, { x: 6, y: 6 }, { x: 12, y: 12 }, 4)
+
+      } else if (dungeonStyle === 3) {
+        // maze-like
+        this.width = 48;
+        this.height = 48;
+        [grid, rooms] = dungeon.generate(this.rand, {x: 48, y: 48}, {x: 5, y: 5}, {x: 10, y: 10}, 32)
+
+      } else if (dungeonStyle === 4) {
+        // big-and-spread (castle)
+        this.width = 48;
+        this.height = 48;
+        [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, { x: 6, y: 6 }, { x: 12, y: 12 }, 32)
+      }
+
+      const numRooms: number = Math.min(Math.floor((this.width * this.height) / (maxRoomSize.x * maxRoomSize.y)), Math.floor(progress / 2));
+      console.log("SIZE:", { x: this.width, y: this.height });
+      console.log({ minRoomSize });
+      console.log({ maxRoomSize });
+      console.log({ numRooms });
+      [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, minRoomSize, maxRoomSize, numRooms);
     }
 
-    this.width = grid.length;
+
     this.rooms = rooms;
 
     // assign flattened grid to array schema
-    const flatgrid = this.flattenGrid(grid, this.width);
+    const flatgrid = this.flattenGrid(grid, this.width, this.height);
     for (let i = 0; i < flatgrid.length; i++) {
       this.grid[i] = flatgrid[i];
     }
+
+    /**
+    ////////////////
+    let i = 0;
+    while (flatgrid.length > 0) {
+      const spliced = flatgrid.splice(0, this.width);
+      console.log(spliced.length, spliced.join(","));
+      i++;
+    }
+    ////////////////
+    */
 
     this.gridUtils = new GridUtils(this.entities);
     this.roomUtils = new RoomUtils(this.rand, this, this.rooms);
@@ -251,14 +306,20 @@ export class DungeonState extends Schema {
     }
   }
 
-  flattenGrid (grid: any[][], width) {
-    const flattened = Array(grid.length * grid[0].length);
+  flattenGrid (grid: any[][], width, height) {
+    const flattened = Array(width * height);
 
-    for (let y = 0, h = grid[0].length; y < h; y++) {
-      for (let x = 0; x < width; x++) {
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) {
         flattened[x + width * y] = grid[y][x];
       }
     }
+
+    // for (let x = 0; x < width; x++) {
+    //   for (let y = 0; y < height; y++) {
+    //     flattened[x + width * y] = grid[x][y];
+    //   }
+    // }
 
     return flattened;
   };

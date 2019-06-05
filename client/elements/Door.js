@@ -8,7 +8,8 @@ export default class Door extends THREE.Object3D {
     this.userData = data
     this.currentProgress = currentProgress
 
-    let type = 'door-' + mapkind;
+    const doorStyle = (this.userData.destiny.progress <= 0) ? "up" : "down";
+    const type = 'door-' + mapkind + "-" + doorStyle;
 
     let material = new THREE.MeshPhongMaterial( {
         shading: THREE.FlatShading,
@@ -33,7 +34,7 @@ export default class Door extends THREE.Object3D {
     window.door = this;
 
     let lightColor = 0xfcfcfc
-      , light = new THREE.PointLight(lightColor, 1.5, 5); // Spotlight would be better here
+      , light = new THREE.PointLight(lightColor, 1, 5); // Spotlight would be better here
 
     light.position.set(0, 0.7, -0.25)
     this.add(light)
