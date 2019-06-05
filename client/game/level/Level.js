@@ -185,47 +185,6 @@ export default class Level extends THREE.Object3D {
         delete this.entities[key];
       }
     }
-
-    // this.room.listen("entities/:id/position/:axis", (change) => {
-    //   if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
-    //   entitiesToUpdate[change.path.id][change.path.axis] = change.value;
-    // }, true);
-
-    // this.room.listen("entities/:id/lvl", (change) => {
-    //   if (change.operation === "replace") {
-    //     if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
-    //     entitiesToUpdate[change.path.id].levelUp = true;
-    //   }
-    // }, true);
-
-    // this.room.listen("entities/:id/direction", (change) => {
-    //   var object = this.entities[change.path.id];
-    //   object.direction = change.value;
-    // }, true);
-
-
-    // this.room.listen("entities/:id/action", (change) => {
-    //   if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
-    //   entitiesToUpdate[change.path.id].action = true;
-    // });
-
-    // this.room.listen("entities/:id/action/lastUpdateTime", (change) => {
-    //   if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
-    //   entitiesToUpdate[change.path.id].action = true;
-    // });
-
-    // // USE FOUNTAIONS / ITEMS
-    // this.room.listen("entities/:id/active", (change) => {
-    //   if (!entitiesToUpdate[change.path.id]) entitiesToUpdate[change.path.id] = {};
-    //   entitiesToUpdate[change.path.id].active = change.value;
-    // });
-
-    // // play coin sound when current player increases his gold
-    // this.room.listen("entities/:id/gold", (change) => {
-    //   if (change.operation === "replace" && change.path.id === getClientId()) {
-    //     coinSound.play();
-    //   }
-    // });
   }
 
   createPlayerBehaviour (object, data) {
@@ -256,14 +215,24 @@ export default class Level extends THREE.Object3D {
   setInitialState (state) {
     this.dispatchEvent({ type: 'setup', state: state })
 
+    window.IS_DAY = state.daylight
     this.mapkind = state.mapkind;
     this.mapwidth = state.width;
+    this.progress = state.progress;
 
     Resources.init();
 
-    window.IS_DAY = state.daylight
-    this.progress = state.progress;
+    //
+    // Display map name + progress
+    //
+    if (this.progress !== 1) {
+      this.hud.levelText.text = `${this.mapkind} ${this.progress}`;
 
+    } else {
+      this.hud.levelText.text = `Village`;
+    }
+
+    //
     if (this.mapkindAestetics) {
       clearInterval(this.mapkindAestetics);
       this.mapkindAestetics = undefined;
