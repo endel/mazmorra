@@ -1,5 +1,3 @@
-import Keycode from 'keycode.js'
-
 import credentials from '../../web/login'
 
 import { Resources } from '../../elements/character/Resources'
@@ -74,14 +72,14 @@ export default class Builder extends THREE.Object3D {
     this.bodyColorPicker.addEventListener('change', this.onChangeColor.bind(this, 'body'))
     this.hud.add(this.bodyColorPicker)
 
-    this.classSelection = new SelectBox(this.options.classes, "GUILD")
+    this.classSelection = new SelectBox(this.options.classes, "Class")
     this.classSelection.position.set(0, this.bodyColorPicker.position.y + this.classSelection.height +  config.HUD_MARGIN, 0)
     this.classSelection.addEventListener('change', this.onChangeClass.bind(this))
     this.hud.add(this.classSelection)
 
     // complete button
     this.completeButton = new Button('button-right')
-    this.completeButton.position.set(window.innerWidth / 3, window.innerHeight / 3, 0)
+    this.completeButton.position.set(window.innerWidth / 3, this.completeButton.height/2, 0)
     this.completeButton.addEventListener('click', this.onComplete.bind(this))
     this.hud.add(this.completeButton)
   }

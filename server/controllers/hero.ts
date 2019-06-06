@@ -1,7 +1,7 @@
 import express from "express";
 import { jwtMiddleware } from "@colyseus/social/express";
 
-import { Hero } from "../db/Hero";
+import { Hero, ATTRIBUTE_BASE_VALUE } from "../db/Hero";
 
 export const router = express.Router()
 
@@ -11,6 +11,15 @@ router.get('/', jwtMiddleware, async (req: express.Request, res: express.Respons
 });
 
 router.post('/', jwtMiddleware, async (req, res) => {
+    // see client/config.js for ordering
+  const primaryAttributes = [
+    'strength',
+    'inteligence',
+    'agility',
+  ];
+
+  const primaryAttribute = primaryAttributes[req.body.klass];
+
   res.json(await Hero.create({
     userId: req.auth._id,
 
@@ -20,5 +29,8 @@ router.post('/', jwtMiddleware, async (req, res) => {
     hairColor: req.body.hairColor,
     eye: req.body.eye,
     body: req.body.body,
+
+    primaryAttribute,
+    [primaryAttribute]: ATTRIBUTE_BASE_VALUE + 1
   }));
 });

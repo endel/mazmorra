@@ -122,8 +122,6 @@ export class DungeonState extends Schema {
           maxRoomSize.y = this.height;
         }
 
-        // [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, { x: 6, y: 6 }, { x: 12, y: 12 }, 4)
-
       } else if (dungeonStyle === 3) {
         // maze-like
         this.width = Math.ceil(this.width * 1.4);

@@ -8,9 +8,26 @@ class Hint  {
   show(item, sprite) {
     this.el.classList.add("active");
 
+    let contents = "";
+
+    if (item.type) {
+      contents = this.getItemHTML(item, sprite);
+
+    } else {
+      contents = `<p>${item}</p>`;
+    }
+
+    this.el.innerHTML = contents;
+
+    var position = this.toScreenPosition(sprite);
+    this.el.style.left = (position.x - (config.HUD_SCALE * 5) - this.el.clientWidth - config.HUD_SCALE) + "px";
+    this.el.style.top = (position.y - (config.HUD_SCALE * 5)) + "px";
+  }
+
+  getItemHTML(item, sprite) {
     const equipedItems = player.userData.equipedItems.slots;
 
-    const innerHTML = `
+    return `
 <h2>
   <!-- <img src="images/sprites/items-${item.type}.png" width="${sprite.item.scale.x}" height="${sprite.item.scale.y}" /> -->
   ${item.type}
@@ -41,12 +58,6 @@ ${(
 )}
 `;
 
-    this.el.innerHTML = innerHTML;
-
-
-    var position = this.toScreenPosition(sprite);
-    this.el.style.left = (position.x - (config.HUD_SCALE * 5) - this.el.clientWidth - config.HUD_SCALE) + "px";
-    this.el.style.top = (position.y - (config.HUD_SCALE * 5)) + "px";
   }
 
   hide() {

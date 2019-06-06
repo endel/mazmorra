@@ -1,15 +1,16 @@
 import helpers from "../../shared/helpers";
 
   // Entities
-import { Unit } from "./Unit";
+import { Unit, StatsModifiers } from "./Unit";
 import { Player } from "./Player";
 import { type } from "@colyseus/schema";
+import { DBHero } from "../db/Hero";
 
 export class Enemy extends Unit {
   @type("string") kind: string;
 
-  constructor (kind) {
-    super();
+  constructor (kind, data: Partial<DBHero>, modifiers: Partial<StatsModifiers> = {}) {
+    super(undefined, data);
     this.type = helpers.ENTITIES.ENEMY
 
     this.kind = kind
@@ -19,11 +20,10 @@ export class Enemy extends Unit {
     const directions = ['bottom', 'left', 'top', 'right'];
     this.direction = directions[ Math.floor(Math.random() * directions.length) ];
 
-    // this.armor = 0
-    // this.damage = 1
-
-    // this.walkSpeed = 1000
-    // this.attackSpeed = 1000
+    // apply stats modifiers
+    for (const statName in modifiers) {
+      this.statsModifiers[statName] = modifiers[statName];
+    }
   }
 
   update (currentTime) {

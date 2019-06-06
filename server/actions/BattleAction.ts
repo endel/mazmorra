@@ -35,18 +35,27 @@ export class BattleAction extends Action {
       this.events.removeAllListeners();
     }
 
-    let d20 = Math.ceil(Math.random() * 20)
+    const percent = Math.random();
 
-    this.missed = (d20 <= this.defender.armor)
-    this.critical = (d20 == 20)
+    this.missed = (percent <= this.defender.evasion);
+    this.critical = (percent >= 1 - this.defender.criticalStrikeChance);
 
     if (!this.missed) {
-      this.damage = d20 + this.attacker.damage + this.attacker.attributes[this.attacker.damageAttribute]
+      this.damage = this.attacker.getDamage();
+
+      // reduce armor from damage
+      this.damage -= this.defender.getArmor();
+
+      // prevent negative damage
+      if (this.damage < 0) { this.damage = 0; }
+
       if (this.critical) {
-        this.damage *= Math.floor(this.attacker.criticalBonus)
+        this.damage = Math.ceil(this.damage * this.attacker.criticalBonus)
       }
 
-      let damageTaken = this.defender.takeDamage(this)
+      // Defender take the damage
+      this.defender.hp.current -= this.damage;
+      // let damageTaken = this.defender.takeDamage(this)
 
       if (!this.defender.isAlive) {
         this.defender.onDie()

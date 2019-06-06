@@ -1,9 +1,14 @@
+import hint from "../hud/Hint"
+
 export default class BottleBar extends THREE.Object3D {
 
-  constructor (type = 'life') {
+  constructor (type = 'hp') {
     super()
 
+    this.userData.hud = true;
+
     this.offsetMultiplier = 1
+    this.attribute = type;
 
     this.bg = new THREE.Sprite(new THREE.SpriteMaterial({
       map: ResourceManager.get("hud-bar-bg"),
@@ -27,14 +32,28 @@ export default class BottleBar extends THREE.Object3D {
 
     this.initialOffset = this.fg.material.map.offset.y
 
+    this.addEventListener('mouseover', this.onMouseOver.bind(this))
+    this.addEventListener('mouseout', this.onMouseOut.bind(this))
+
     this.set(0)
+  }
+
+  onMouseOver () {
+    const update = () => hint.show(player.userData[this.attribute].current + " / " + player.userData[this.attribute].max, this);
+    update();
+
+    this.updateHintInterval = setInterval(update, 300);
+  }
+
+  onMouseOut () {
+    hint.hide();
+
+    clearInterval(this.updateHintInterval);
   }
 
   set (percentage) {
     var totalHeight = this.bg.material.map.frame.h
       , imgHeight = this.fg.material.map.image.height
-
-    console.log("SET BAR PERCENTAGE:", percentage);
 
     // (1 - %)
     var finalPercentage = 1 - percentage

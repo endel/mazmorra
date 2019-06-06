@@ -4,7 +4,7 @@ export class Bar extends Schema {
   @type("number") current: number;
   @type("number") max: number;
 
-  constructor (current: number, max?: number) {
+  constructor (current?: number, max?: number) {
     super();
     this.current = current;
     this.max = max || current;

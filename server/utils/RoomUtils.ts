@@ -31,6 +31,7 @@ import { HelmetItem } from "../entities/items/equipable/HelmetItem";
 import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 import { ConsumableItem } from "../entities/items/ConsumableItem";
 import { EquipableItem } from "../entities/items/EquipableItem";
+import { DBHero } from "../db/Hero";
 
 export class RoomUtils {
 
@@ -231,8 +232,14 @@ export class RoomUtils {
 
     while (numEnemies--) {
       this.addEntity(room, (position) => {
-
-        var enemy = new Enemy(enemyList[Math.floor((Math.random() * enemyList.length))])
+        const enemyType = enemyList[Math.floor((Math.random() * enemyList.length))];
+        const enemy = new Enemy(enemyType, {
+          strength: 1,
+          agility: 0,
+          intelligence: 0,
+        }, {
+          damage: 2
+        });
         enemy.state = this.state
         enemy.position.set(position)
         return enemy
@@ -324,7 +331,7 @@ export class RoomUtils {
 
   assignEquipableItemModifiers(item: Item) {
     if (item instanceof ShieldItem) {
-      const modifier = this.rand.intBetween(3, 4);
+      const modifier = this.rand.intBetween(1, 2);
       item.addModifier({ attr: "armor", modifier });
 
     } else if (item instanceof WeaponItem) {
@@ -336,11 +343,11 @@ export class RoomUtils {
       item.addModifier({ attr: "armor", modifier });
 
     } else if (item instanceof HelmetItem) {
-      const modifier = this.rand.intBetween(2, 3);
+      const modifier = this.rand.intBetween(1, 2);
       item.addModifier({ attr: "armor", modifier });
 
     } else if (item instanceof ArmorItem) {
-      const modifier = this.rand.intBetween(3, 4);
+      const modifier = this.rand.intBetween(1, 3);
       item.addModifier({ attr: "armor", modifier });
 
     }

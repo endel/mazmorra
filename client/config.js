@@ -30,9 +30,9 @@ module.exports = {
 
   // player preferences
   classes: [
-    'red',
-    'blue',
-    'green'
+    'strength',
+    'inteligence',
+    'agility',
   ],
   hairs: [
     "Boy",

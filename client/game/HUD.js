@@ -33,8 +33,8 @@ export default class HUD extends THREE.Scene {
     App.cursor = this.cursor
 
     // Life / Mana / Expr
-    this.manabar = new BottleBar('mana')
-    this.lifebar = new BottleBar('life')
+    this.manabar = new BottleBar('mp')
+    this.lifebar = new BottleBar('hp')
     this.expbar = new ExpBar()
 
     // Inventory
@@ -95,7 +95,6 @@ export default class HUD extends THREE.Scene {
     this.overlay.visible = false
 
     window.hud = this;
-
     window.addEventListener("keypress", this.onKeyPress.bind(this));
 
     this.resize()
@@ -124,6 +123,7 @@ export default class HUD extends THREE.Scene {
       e.which === Keycode.B + 32 || e.which === Keycode.B
     ) {
       // open inventory pressing "i" or "b"
+      this.openInventoryButton.onClick();
       this.onToggleInventory();
     }
   }

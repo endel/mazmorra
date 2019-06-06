@@ -9,16 +9,30 @@ import { EquipedItems } from "../core/EquipedItems";
 // Actions
 import { BattleAction } from "../actions/BattleAction";
 import { DBHero } from "../db/Hero";
+import { Item } from "./Item";
 
-type Attribute = 'strenght' | 'dexterity' | 'intelligence' | 'vitality';
+export const BASE_WALKING_SPEED = 400;
 
+export type Attribute = 'strength' | 'agility' | 'intelligence';
 export type InventoryType = 'inventory' | 'quickInventory';
 
+export type StatsModifiers = {
+  strength: number;
+  agility: number;
+  intelligence: number;
+  armor: number;
+  damage: number;
+  walkSpeed: number;
+  attackDistance: number;
+  attackSpeed: number;
+  evasion: number;
+  criticalStrikeChance: number;
+}
+
 export class UnitAttributes extends Schema {
-  @type("number") strenght = 1;
-  @type("number") dexterity = 1;
-  @type("number") intelligence = 1;
-  @type("number") vitality = 1;
+  @type("number") strength;
+  @type("number") agility;
+  @type("number") intelligence;
 }
 
 export class Unit extends Entity {
@@ -33,54 +47,118 @@ export class Unit extends Entity {
   @type(Bar) hp = new Bar(50);
   @type(Bar) mp = new Bar(0);
   @type(Bar) xp = new Bar(0, 10);
+
   @type(UnitAttributes) attributes = new UnitAttributes();
+  @type("string") primaryAttribute: Attribute;
   @type("number") lvl = 1;
 
-  @type("number") armor = 1;
-  @type("number") damage = 1;
+  @type("number") armor = 0;
 
-  @type("string") damageAttribute: Attribute = "strenght";
   @type("number") criticalBonus = 1.5; // damage * criticalBonus (on critical)
-
-  @type("number") walkSpeed = 1000;
+  @type("number") walkSpeed = 1;
 
   // attack attributes
   @type("number") attackDistance = 1;
-  @type("number") attackSpeed = 2000;
+  @type("number") attackSpeed = 1500;
+
+  // 0~1
+  evasion: number = 0.001;
+  criticalStrikeChance: number = 0.1;
 
   lastHpRegenerationTime: number = 0;
   hpRegeneration: number = 0
-  hpRegenerationInterval: number = 3000
+  hpRegenerationInterval: number = 30000; // 30 seconds
 
   position: Movement;// override type
 
-  // Reference on the database (raw hero values, without applied modifiers)
-  dbRef: Partial<DBHero>;
+  // list of stats modifiers
+  statsModifiers: StatsModifiers = {
+    strength: 0,
+    agility: 0,
+    intelligence: 0,
+
+    armor: 0,
+    damage: 0,
+
+    walkSpeed: 0,
+    attackDistance: 0,
+    attackSpeed: 0,
+
+    evasion: 0,
+    criticalStrikeChance: 0,
+  };
 
   constructor(id?: string, hero: Partial<DBHero> = {}) {
     super(id)
 
-    this.dbRef = hero;
-
-    this.equipedItems.set(this.dbRef.equipedItems || []);
-    this.quickInventory.set(this.dbRef.quickInventory || []);
-    this.inventory.set(this.dbRef.inventory || []);
-
     this.action = null;
 
-    this.armor = 1;
-    this.damage = 1;
-    this.damageAttribute = 'strenght';
-    this.criticalBonus = 1.5;
+    this.quickInventory.set(hero.quickInventory || []);
+    this.inventory.set(hero.inventory || []);
 
-    // walking attributes
-    this.walkSpeed = 1000;
+    this.equipedItems.set(hero.equipedItems || []);
+    this.equipedItems.events.on('change', () => this.onEquipedItemsChange());
 
-    this.attackDistance = 1;
-    this.attackSpeed = 2000;
+    this.primaryAttribute = hero.primaryAttribute || "strength";
+    this.attributes.strength = hero.strength || 1;
+    this.attributes.agility = hero.agility || 1;
+    this.attributes.intelligence = hero.intelligence || 1;
+
+    this.recalculateStatsModifiers();
+
+    // hit | mana | experience points
+    this.hp.current = hero.hp || 100;
+    this.mp.current = hero.mp || 0;
+    this.xp.set(hero.xp || 0, 100); // TOOD: max xp must be a formula against `lvl`
 
     this.position = new Movement(this);// FIXME:
     this.position.events.on('move', this.onMove.bind(this));
+  }
+
+  recalculateStatsModifiers() {
+    console.log("will recalculate stats modifiers...");
+    // re-set all stats modifiers
+    for (const attr in this.statsModifiers) {
+      this.statsModifiers[attr] = 0;
+    }
+
+    // cache all equiped items modifiers
+    for (const slotName in this.equipedItems.slots) {
+      const item: Item = this.equipedItems.slots[slotName];
+      if (item) {
+        item.modifiers.forEach(modifier => {
+          this.statsModifiers[modifier.attr] += modifier.modifier
+        });
+      }
+    }
+
+    this.hp.max = (this.attributes.strength + this.statsModifiers['strength']) * 4;
+    this.mp.max = (this.attributes.intelligence + this.statsModifiers['intelligence']) * 2;
+
+    console.log("stats modifiers recalculated!");
+  }
+
+  onEquipedItemsChange(): void {
+    this.recalculateStatsModifiers();
+  }
+
+  getWalkSpeed() {
+    return this.walkSpeed * BASE_WALKING_SPEED;
+  }
+
+  getDamage() {
+    const minDamage = this.attributes[this.primaryAttribute] + this.statsModifiers[this.primaryAttribute];
+    const maxDamage = minDamage + this.statsModifiers['damage'];
+    return Math.floor(Math.random() * (maxDamage - minDamage + 1) + minDamage);
+  }
+
+  getArmor() {
+    const baseArmor: {[id in Attribute]: number} = {
+      'strength': 0,
+      'agility': -1,
+      'intelligence': -2,
+    }
+    return this.armor + this.attributes.strength + baseArmor[this.primaryAttribute];
   }
 
   onMove(moveEvent: MoveEvent, prevX, prevY, currentX, currentY) {
@@ -183,10 +261,9 @@ export class Unit extends Entity {
     this.lvl ++
 
     // upgrade attributes
-    this.attributes.strenght++;
-    this.attributes.dexterity++;
+    this.attributes.strength++;
+    this.attributes.agility++;
     this.attributes.intelligence++;
-    this.attributes.vitality++;
 
     this.hp.current = this.hp.max
     this.mp.current = this.mp.max

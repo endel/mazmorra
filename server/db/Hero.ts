@@ -1,4 +1,5 @@
 import { ObjectId, mongoose } from "@colyseus/social";
+import { Attribute } from "../entities/Unit";
 
 const Schema = mongoose.Schema
 
@@ -65,10 +66,12 @@ export interface DBHero extends mongoose.Document {
   gold: number;
   diamond: number;
 
-  strenght: number;
-  dexterity: number;
+  primaryAttribute: Attribute;
+  baseArmor: number;
+
+  strength: number;
+  agility: number;
   intelligence: number;
-  vitality: number;
 
   inventory: DBItem[];
   equipedItems: DBItem[];
@@ -77,6 +80,7 @@ export interface DBHero extends mongoose.Document {
   skills: any;
 };
 
+export const ATTRIBUTE_BASE_VALUE = 1;
 export const Hero = mongoose.model<DBHero>('Hero', new Schema<DBHero>({
   userId: Schema.Types.ObjectId,
 
@@ -104,10 +108,15 @@ export const Hero = mongoose.model<DBHero>('Hero', new Schema<DBHero>({
   gold: { type: Number, default: 0 },
   diamond: { type: Number, default: 0 },
 
-  strenght: Number,
-  dexterity: Number,
-  intelligence: Number,
-  vitality: Number,
+  /**
+   * Static values based on Hero "class"
+   */
+  primaryAttribute: String,
+  baseArmor: Number,
+
+  strength: { type: Number, default: ATTRIBUTE_BASE_VALUE },
+  agility: { type: Number, default: ATTRIBUTE_BASE_VALUE },
+  intelligence: { type: Number, default: ATTRIBUTE_BASE_VALUE },
 
   inventory: { type: [Item], default: [] },
   equipedItems: { type: [Item], default: [] },

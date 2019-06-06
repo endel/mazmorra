@@ -21,7 +21,7 @@ export class NPC extends Player {
   }
 
   updateWalkSpeed () {
-    this.walkSpeed = 1500 + Math.floor((Math.random() * 4000))
+    this.walkSpeed = 1.5 + Math.floor((Math.random() * 4))
   }
 
   update (currentTime) {

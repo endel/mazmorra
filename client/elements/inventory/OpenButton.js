@@ -1,4 +1,4 @@
-export default class InventoryIcon extends THREE.Object3D {
+export default class OpenInventoryButton extends THREE.Object3D {
 
   constructor () {
     super()

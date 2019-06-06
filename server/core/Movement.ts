@@ -51,9 +51,10 @@ export class Movement extends Position {
 
   moveTo (pending) {
     var now = Date.now()
+
     // force to move instantly if last move
-    if (now - this.lastMove > this.unit.walkSpeed) {
-      this.lastMove = now - this.unit.walkSpeed
+    if (now - this.lastMove > this.unit.getWalkSpeed()) {
+      this.lastMove = now - this.unit.getWalkSpeed();
     }
     this.pending = pending
   }
@@ -63,8 +64,8 @@ export class Movement extends Position {
       , moves = 0
       , pos = null
 
-    if (timeDiff > this.unit.walkSpeed) {
-      moves = Math.floor(timeDiff / this.unit.walkSpeed)
+    if (timeDiff > this.unit.getWalkSpeed()) {
+      moves = Math.floor(timeDiff / this.unit.getWalkSpeed())
 
       if (this.pending.length > 0) {
         this.touch(currentTime)
