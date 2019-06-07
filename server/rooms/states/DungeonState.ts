@@ -263,10 +263,11 @@ export class DungeonState extends Schema {
           moveEvent.cancel();
         }
 
+        // if unit has reached target point,
+        // try to pick/interact with other entity.
         if (
-          // targetEntity === entity &&
-          moveEvent.destiny.x === entity.position.x &&
-          moveEvent.destiny.y === entity.position.y
+          targetEntity.position.x === entity.position.x &&
+          targetEntity.position.y === entity.position.y
         ) {
           if (entity instanceof Item && entity.pick(unit, this)) {
             this.removeEntity(entity);
@@ -282,10 +283,6 @@ export class DungeonState extends Schema {
   }
 
   move (unit: Unit, destiny: Point, allowChangeTarget: boolean = true) {
-    // if (destiny.x == unit.position.y && destiny.y == unit.position.x) {
-    //   return false;
-    // }
-
     const targetEntity = this.gridUtils.getEntityAt(destiny.x, destiny.y);
     const allowedPath = this.pathgrid.clone();
 
