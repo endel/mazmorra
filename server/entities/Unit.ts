@@ -53,7 +53,6 @@ export class Unit extends Entity {
   @type("number") lvl = 1;
 
   @type("number") criticalBonus = 1.5; // damage * criticalBonus (on critical)
-  @type("number") walkSpeed = 1;
 
   // attack attributes
   @type("number") attackDistance = 1;
@@ -141,7 +140,7 @@ export class Unit extends Entity {
   }
 
   getWalkSpeed() {
-    return this.walkSpeed * BASE_WALKING_SPEED;
+    return (1 + this.statsModifiers.walkSpeed) * BASE_WALKING_SPEED;
   }
 
   getDamage() {
