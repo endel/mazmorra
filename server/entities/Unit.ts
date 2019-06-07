@@ -22,7 +22,7 @@ export type StatsModifiers = {
   intelligence: number;
   armor: number;
   damage: number;
-  walkSpeed: number;
+  movementSpeed: number;
   attackDistance: number;
   attackSpeed: number;
   evasion: number;
@@ -77,7 +77,7 @@ export class Unit extends Entity {
     armor: 0,
     damage: 0,
 
-    walkSpeed: 0,
+    movementSpeed: 0,
     attackDistance: 0,
     attackSpeed: 0,
 
@@ -139,8 +139,8 @@ export class Unit extends Entity {
     this.recalculateStatsModifiers();
   }
 
-  getWalkSpeed() {
-    return (1 + this.statsModifiers.walkSpeed) * BASE_WALKING_SPEED;
+  getMovementSpeed() {
+    return (1 + this.statsModifiers.movementSpeed) * BASE_WALKING_SPEED;
   }
 
   getDamage() {

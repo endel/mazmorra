@@ -20,15 +20,15 @@ export class NPC extends Player {
     this.attackSpeed = 1500
   }
 
-  updateWalkSpeed () {
-    this.statsModifiers.walkSpeed = (Math.random());
+  updateMovementSpeed () {
+    this.statsModifiers.movementSpeed = (Math.random());
   }
 
   update (currentTime) {
     super.update(currentTime);
 
     if (this.position.pending.length === 0) {
-      this.updateWalkSpeed();
+      this.updateMovementSpeed();
       this.state.move(this, this.state.roomUtils.getRandomPosition());
     }
   }
