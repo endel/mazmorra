@@ -3,15 +3,12 @@ import { RandomSeed } from "random-seed";
 import helpers from "../../shared/helpers";
 
 // entities
-import { Player }  from "../entities/Player";
 import { Enemy }  from "../entities/Enemy";
 import { NPC }  from "../entities/NPC";
-import { Unit }  from "../entities/Unit";
 import { Entity }  from "../entities/Entity";
 
 // entity types
 import { Item }  from "../entities/Item";
-import { Interactive }  from "../entities/Interactive";
 
 // items
 import { Gold }  from "../entities/items/Gold";
@@ -29,9 +26,7 @@ import { WeaponItem } from "../entities/items/equipable/WeaponItem";
 import { BootItem } from "../entities/items/equipable/BootItem";
 import { HelmetItem } from "../entities/items/equipable/HelmetItem";
 import { ArmorItem } from "../entities/items/equipable/ArmorItem";
-import { ConsumableItem } from "../entities/items/ConsumableItem";
 import { EquipableItem } from "../entities/items/EquipableItem";
-import { DBHero } from "../db/Hero";
 
 export class RoomUtils {
 

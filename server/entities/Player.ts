@@ -42,8 +42,6 @@ export class Player extends Unit {
     this.gold = hero.gold || 0;
     this.diamond = hero.diamond || 0;
 
-    this.attackSpeed = 1000;
-
     this.hpRegeneration = 1;
   }
 

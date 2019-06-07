@@ -16,12 +16,10 @@ export class NPC extends Player {
 
     this.type = helpers.ENTITIES.NPC;
     this.kind = kind;
-
-    this.attackSpeed = 1500
   }
 
   updateMovementSpeed () {
-    this.statsModifiers.movementSpeed = (Math.random());
+    this.statsModifiers.movementSpeed = -this.state.rand.intBetween(60, 80);
   }
 
   update (currentTime) {

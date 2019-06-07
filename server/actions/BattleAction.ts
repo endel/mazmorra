@@ -75,12 +75,12 @@ export class BattleAction extends Action {
 
   update(currentTime) {
     const timeDiff = currentTime - this.lastUpdateTime
-    const nextAttackAllowed = timeDiff > this.attacker.attackSpeed;
+    const nextAttackAllowed = timeDiff > this.attacker.getAttackSpeed();
 
     const active = this.isEligible && nextAttackAllowed;
 
     if (nextAttackAllowed) {
-      // attacks = Math.floor(timeDiff / this.attacker.attackSpeed)
+      // attacks = Math.floor(timeDiff / this.attacker.getAttackSpeed())
       // while (attacks--) {
       // this.attack()
       // }

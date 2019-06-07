@@ -11,8 +11,6 @@ import { BattleAction } from "../actions/BattleAction";
 import { DBHero } from "../db/Hero";
 import { Item } from "./Item";
 
-export const BASE_WALKING_SPEED = 400;
-
 export type Attribute = 'strength' | 'agility' | 'intelligence';
 export type InventoryType = 'inventory' | 'quickInventory';
 
@@ -140,7 +138,17 @@ export class Unit extends Entity {
   }
 
   getMovementSpeed() {
-    return (1 + this.statsModifiers.movementSpeed) * BASE_WALKING_SPEED;
+    // Max attack speed modifier: 32 (5 attacks per second)
+    // (10 * 25) = 250
+
+    return 400 - (this.statsModifiers.movementSpeed * 25);
+  }
+
+  getAttackSpeed() {
+    // Max attack speed modifier: 32 (5 attacks per second)
+    // (32 * 25) = 800
+
+    return 1000 - (this.statsModifiers.attackSpeed * 25);
   }
 
   getDamage() {
