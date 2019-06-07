@@ -56,6 +56,7 @@ export class Movement extends Position {
     if (now - this.lastMove > this.unit.getMovementSpeed()) {
       this.lastMove = now - this.unit.getMovementSpeed();
     }
+
     this.pending = pending
   }
 
@@ -90,7 +91,13 @@ export class Movement extends Position {
       const x = this.pending[0][0];
       const y = this.pending[0][1];
 
-      if (this.x < x) {
+      if (this.y > y && this.x < x) { // diagonal
+        this.unit.direction = 'left';
+
+      } else if (this.y < y && this.x > x) { // diagonal
+        this.unit.direction = 'right';
+
+      } else if (this.x < x) {
         this.unit.direction = 'bottom'
 
       } else if (this.x > x) {

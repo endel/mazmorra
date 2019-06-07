@@ -8,6 +8,8 @@ export class Entity extends Schema {
   @type("string") type: string;
   @type(Position) position = new Position();
 
+  walkable = false;
+
   state: DungeonState;
 
   constructor (id?: string) {

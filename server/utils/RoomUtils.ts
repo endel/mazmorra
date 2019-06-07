@@ -20,7 +20,7 @@ import { Door, DoorDestiny, DoorProgress }  from "../entities/interactive/Door";
 import { Chest }  from "../entities/interactive/Chest";
 import { Fountain }  from "../entities/interactive/Fountain";
 
-import { DungeonState } from "../rooms/states/DungeonState";
+import { DungeonState, Point } from "../rooms/states/DungeonState";
 import { ShieldItem } from "../entities/items/equipable/ShieldItem";
 import { WeaponItem } from "../entities/items/equipable/WeaponItem";
 import { BootItem } from "../entities/items/equipable/BootItem";
@@ -28,17 +28,24 @@ import { HelmetItem } from "../entities/items/equipable/HelmetItem";
 import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 import { EquipableItem } from "../entities/items/EquipableItem";
 
+export interface DungeonRoom {
+  position: Point;
+  size: Point;
+  tiles: any[];
+  walls: any[];
+}
+
 export class RoomUtils {
 
   rand: RandomSeed;
   state: DungeonState;
-  rooms: any;
-  cache = new WeakMap();
+  rooms: DungeonRoom[];
+  cache = new WeakMap<DungeonRoom, Point[]>();
 
   startPosition: any;
   endPosition: any;
 
-  constructor (rand, state, rooms) {
+  constructor (rand, state, rooms: DungeonRoom[]) {
     this.rand = rand
     this.state = state
 
@@ -50,7 +57,7 @@ export class RoomUtils {
     this.endPosition = this.getRandomDoorPosition(this.rooms[ this.rooms.length-1 ])
   }
 
-  getRandomDoorPosition (room) {
+  getRandomDoorPosition (room: DungeonRoom) {
     var possiblePositions = []
       , positions = this.cache.get(room)
 
@@ -97,15 +104,15 @@ export class RoomUtils {
     }
   }
 
-  getNumPositionsRemaining (room) {
+  getNumPositionsRemaining (room: DungeonRoom) {
     return this.cache.get(room).length
   }
 
-  hasPositionsRemaining (room) {
+  hasPositionsRemaining (room: DungeonRoom) {
     return this.getNumPositionsRemaining(room) > 0
   }
 
-  getNextAvailablePosition (room) {
+  getNextAvailablePosition (room: DungeonRoom) {
     let positions = this.cache.get(room)
     return positions.shift()
   }
@@ -130,7 +137,7 @@ export class RoomUtils {
     this.rooms.forEach(room => this.populateRoom(room))
   }
 
-  populateRoom (room) {
+  populateRoom (room: DungeonRoom) {
     this.populateEnemies(room)
 
     // this.populateAesthetics(room, Math.max(room.size.x, room.size.y) / 2)
@@ -166,7 +173,7 @@ export class RoomUtils {
       // this.state.addEntity(heal)
   }
 
-  populateLobby (rooms) {
+  populateLobby (rooms: DungeonRoom[]) {
     rooms.forEach(room => {
       this.populateNPCs(room);
 
@@ -183,9 +190,13 @@ export class RoomUtils {
     })
   }
 
-  populateEnemies (room) {
-    var numEnemies = Math.floor(this.rand.intBetween(0, this.state.difficulty * 2))
-    var enemyList = [
+  populateEnemies (room: DungeonRoom) {
+    // allow 0 enemies on room?
+    const minEnemies = (this.rand.intBetween(0, 3) === 0) ? 0 : 1;
+    const maxEnemies = (room.size.x * room.size.y) / 4; // this.state.progress * 2
+    let numEnemies = this.rand.intBetween(minEnemies, maxEnemies);
+
+    const enemyList = [
       'bat',
       'rat',
       'spider',
@@ -243,7 +254,7 @@ export class RoomUtils {
     }
   }
 
-  populateNPCs (room) {
+  populateNPCs (room: DungeonRoom) {
     // const npcs = ['village-old-man', 'village-man', 'village-man-2',
     //   'village-child', 'village-child-2', 'man', 'man-2', 'guard', 'village-woman',
     //   'woman', 'woman-2', 'woman-3'];
@@ -272,12 +283,12 @@ export class RoomUtils {
 
       var entity = new Entity()
       entity.type = helpers.ENTITIES.AESTHETICS
-      entity.position = this.getNextAvailablePosition(room)
+      entity.position.set(this.getNextAvailablePosition(room));
       this.state.addEntity(entity)
     }
   }
 
-  addEntity (room, getEntity) {
+  addEntity (room: DungeonRoom, getEntity) {
     if (this.hasPositionsRemaining(room)) {
       this.state.addEntity(getEntity(this.getNextAvailablePosition(room)))
     }
@@ -349,7 +360,7 @@ export class RoomUtils {
     }
   }
 
-  shuffle (array) {
+  shuffle (array: any[]) {
     for (var i = array.length - 1; i > 0; i--) {
       var j = this.rand.intBetween(0, i)
       var temp = array[i];

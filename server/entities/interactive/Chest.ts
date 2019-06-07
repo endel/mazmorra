@@ -7,6 +7,8 @@ import { Action } from "../../actions/Action";
 export class Chest extends Interactive {
   @type("string") kind: string;
 
+  walkable = true;
+
   constructor (position, kind: string) {
     super(helpers.ENTITIES.CHEST, position)
 

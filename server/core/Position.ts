@@ -9,4 +9,8 @@ export class Position extends Schema {
         this.x = newPosition.x;
         this.y = newPosition.y;
     }
+
+    equals(position: Point) {
+      return this.x === position.x && this.y === position.y;
+    }
 }

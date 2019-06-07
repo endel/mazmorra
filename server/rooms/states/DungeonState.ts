@@ -51,7 +51,7 @@ export class DungeonState extends Schema {
   roomUtils: RoomUtils;
 
   pathgrid: PF.Grid;
-  finder = new PF.AStarFinder(); // { allowDiagonal: true, dontCrossCorners: true }
+  finder = new PF.AStarFinder({ allowDiagonal: true } as any);
 
   constructor (progress, difficulty, daylight?: boolean) {
     super()
@@ -251,9 +251,9 @@ export class DungeonState extends Schema {
     }
   }
 
-  checkOverlapingEntities (moveEvent: MoveEvent, x, y) {
-    var entities = this.gridUtils.getAllEntitiesAt(y, x)
-      , unit = moveEvent.target
+  checkOverlapingEntities (targetEntity: Entity, moveEvent: MoveEvent, x, y) {
+    const entities = this.gridUtils.getAllEntitiesAt(y, x);
+    const unit = moveEvent.target;
 
     for (var i=0; i<entities.length; i++) {
       let entity = entities[i] as Entity;
@@ -264,6 +264,7 @@ export class DungeonState extends Schema {
         }
 
         if (
+          // targetEntity === entity &&
           moveEvent.destiny.x === entity.position.x &&
           moveEvent.destiny.y === entity.position.y
         ) {
@@ -281,24 +282,47 @@ export class DungeonState extends Schema {
   }
 
   move (unit: Unit, destiny: Point, allowChangeTarget: boolean = true) {
-    if (destiny.x == unit.position.y && destiny.y == unit.position.x) {
-      return false;
+    // if (destiny.x == unit.position.y && destiny.y == unit.position.x) {
+    //   return false;
+    // }
+
+    const targetEntity = this.gridUtils.getEntityAt(destiny.x, destiny.y);
+    const allowedPath = this.pathgrid.clone();
+
+    // Check which entities are walkable.
+    for (const id in this.entities) {
+      const entity: Entity = this.entities[id];
+
+      /*if (entity === targetEntity && !targetEntity.walkable && !targetEntity.position.equals(entity.position)) {
+        allowedPath.setWalkableAt(entity.position.x, entity.position.y, false);
+
+      } else*/ if (!entity.walkable && entity !== targetEntity) {
+        allowedPath.setWalkableAt(entity.position.x, entity.position.y, false);
+      }
     }
 
-    var moves = this.finder.findPath(
+    const moves = this.finder.findPath(
       unit.position.x, unit.position.y,
       destiny.y, destiny.x, // TODO: why need to invert x/y here?
-      this.pathgrid.clone() // FIXME: we shouldn't create leaks that way!
+      allowedPath, // FIXME: we shouldn't create leaks that way!
     );
 
-    moves.shift(); // first block is always the starting point, we don't need it
+    // first block is always the starting point.
+    // remove starting point if user have not clicked on it.
+    if (moves.length > 1) {
+      moves.shift();
+    }
 
     if (allowChangeTarget) {
       unit.position.target = this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit, 'isAlive')
-        || this.gridUtils.getEntityAt(destiny.x, destiny.y);
+        || targetEntity
 
       // TODO: refactor me
-      if (unit.position.target instanceof Unit && unit.position.target.isAlive) {
+      if (
+        unit.position.target instanceof Unit &&
+        unit.position.target.isAlive &&
+        unit.position.target !== unit // prevent user from attacking himself
+      ) {
         unit.attack(unit.position.target);
 
       } else {

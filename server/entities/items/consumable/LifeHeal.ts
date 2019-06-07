@@ -14,11 +14,15 @@ export class LifeHeal extends ConsumableItem {
   }
 
   use(player, state) {
-    const heal = this.modifiers[0].modifier;
-    player.hp.set(player.hp.current + heal);
-    state.createTextEvent("+" + heal, player.position, 'red', 100);
-    state.events.emit("sound", "potion", player);
-    return true;
+    if (player.hp.current > 0) {
+      const heal = this.modifiers[0].modifier;
+      player.hp.set(player.hp.current + heal);
+      state.createTextEvent("+" + heal, player.position, 'red', 100);
+      state.events.emit("sound", "potion", player);
+      return true;
+    }
+
+    return false;
   }
 
 }

@@ -139,16 +139,20 @@ export class Unit extends Entity {
 
   getMovementSpeed() {
     // Max attack speed modifier: 32 (5 attacks per second)
-    // (10 * 25) = 250
+    // (10 * 25) = 200
 
-    return 400 - (this.statsModifiers.movementSpeed * 25);
+    return 400 - (this.statsModifiers.movementSpeed * 20);
   }
 
   getAttackSpeed() {
     // Max attack speed modifier: 32 (5 attacks per second)
-    // (32 * 25) = 800
+    // (32 * 25) = 640
 
-    return 1000 - (this.statsModifiers.attackSpeed * 25);
+    return (
+      1000
+      - (this.statsModifiers.attackSpeed * 20)
+      - (this.attributes.agility * 10)
+    );
   }
 
   getDamage() {
@@ -241,7 +245,10 @@ export class Unit extends Entity {
     return damageTaken
   }
 
-  onDie () {}
+  onDie () {
+    console.log("unit died. set as walkable!");
+    this.walkable = true;
+  }
 
   onKill (unit) {
     // compute experience this unit received by killing another one

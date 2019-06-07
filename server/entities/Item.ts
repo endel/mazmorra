@@ -11,6 +11,7 @@ export class ItemModifier extends Schema {
 
 export abstract class Item extends Entity {
   @type([ItemModifier]) modifiers: ArraySchema<ItemModifier> = new ArraySchema<ItemModifier>();
+  walkable = true;
 
   constructor () {
     super()

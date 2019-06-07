@@ -25,7 +25,17 @@ export class BattleAction extends Action {
   }
 
   get isEligible() {
-    return this.defender.isAlive && (distance(this.attacker.position, this.defender.position) <= this.attacker.attackDistance)
+    let _distance = distance(this.attacker.position, this.defender.position);
+
+    // allow to attack in diagonal
+    if (
+      Math.abs(this.attacker.position.x - this.defender.position.x) === 1 &&
+      Math.abs(this.attacker.position.y - this.defender.position.y) === 1
+    ) {
+      _distance--;
+    }
+
+    return this.defender.isAlive && (_distance <= this.attacker.attackDistance)
   }
 
   attack() {
@@ -42,12 +52,9 @@ export class BattleAction extends Action {
 
     if (!this.missed) {
       let damage = this.attacker.getDamage();
-      console.log("raw damage from attacker:", damage);
 
       // reduce armor from damage
       damage -= this.defender.getArmor();
-
-      console.log("defender armor:", this.defender.getArmor());
 
       // prevent negative damage
       if (damage < 0) { damage = 0; }
@@ -60,7 +67,7 @@ export class BattleAction extends Action {
 
       // Defender take the damage
       this.defender.hp.current -= this.damage;
-      // let damageTaken = this.defender.takeDamage(this)
+      // this.defender.takeDamage(this)
 
       if (!this.defender.isAlive) {
         this.defender.onDie()

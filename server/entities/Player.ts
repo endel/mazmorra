@@ -96,7 +96,7 @@ export class Player extends Unit {
     super.onMove(moveEvent, prevX, prevY, currentX, currentY)
 
     if (this.position.target) {
-      this.state.checkOverlapingEntities(moveEvent, currentX, currentY)
+      this.state.checkOverlapingEntities(this.position.target, moveEvent, currentX, currentY)
     }
   }
 

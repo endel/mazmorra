@@ -35,14 +35,16 @@ export class Enemy extends Unit {
            || this.state.gridUtils.getEntityAt(this.position.y, this.position.x + 1, Player)
            || this.state.gridUtils.getEntityAt(this.position.y, this.position.x - 1, Player)
 
+           // diagonal
+           || this.state.gridUtils.getEntityAt(this.position.y - 1, this.position.x - 1, Player)
+           || this.state.gridUtils.getEntityAt(this.position.y - 1, this.position.x + 1, Player)
+           || this.state.gridUtils.getEntityAt(this.position.y + 1, this.position.x - 1, Player)
+           || this.state.gridUtils.getEntityAt(this.position.y + 1, this.position.x + 1, Player)
+
       if (closePlayer) {
         this.state.move(this, { x: closePlayer.position.y, y: closePlayer.position.x })
       }
     }
-  }
-
-  onDie () {
-    // this.state.pathgrid.setWalkableAt(this.position.x, this.position.y, true)
   }
 
   takeDamage (battleAction ) {

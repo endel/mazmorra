@@ -242,6 +242,8 @@ export default class Factory {
       tile.position.y = 1
       tile.rotation.x = Math.PI;
 
+      tile.userData.type = "wall";
+
       if (type & helpers.DIRECTION.NORTH) {
         tile.position.z += config.TILE_SIZE / 2 // - config.WALL_THICKNESS / 2
 
