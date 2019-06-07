@@ -234,11 +234,12 @@ export class RoomUtils {
       this.addEntity(room, (position) => {
         const enemyType = enemyList[Math.floor((Math.random() * enemyList.length))];
         const enemy = new Enemy(enemyType, {
-          strength: 1,
-          agility: 0,
-          intelligence: 0,
+          primaryAttribute: "strength",
+          strength: 3,
+          agility: 1,
+          intelligence: 1,
         }, {
-          damage: 2
+          // damage: 2
         });
         enemy.state = this.state
         enemy.position.set(position)

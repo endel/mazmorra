@@ -13,8 +13,8 @@ export class Enemy extends Unit {
     super(undefined, data);
     this.type = helpers.ENTITIES.ENEMY
 
-    this.kind = kind
-    this.lvl = 1
+    this.kind = kind;
+    this.lvl = data.lvl || 1;
 
     // enemy starts with a random direction
     const directions = ['bottom', 'left', 'top', 'right'];

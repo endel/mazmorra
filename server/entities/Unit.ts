@@ -52,8 +52,6 @@ export class Unit extends Entity {
   @type("string") primaryAttribute: Attribute;
   @type("number") lvl = 1;
 
-  @type("number") armor = 0;
-
   @type("number") criticalBonus = 1.5; // damage * criticalBonus (on critical)
   @type("number") walkSpeed = 1;
 
@@ -132,8 +130,8 @@ export class Unit extends Entity {
       }
     }
 
-    this.hp.max = (this.attributes.strength + this.statsModifiers['strength']) * 4;
-    this.mp.max = (this.attributes.intelligence + this.statsModifiers['intelligence']) * 2;
+    this.hp.max = (this.attributes.strength + this.statsModifiers['strength']) * 5;
+    this.mp.max = (this.attributes.intelligence + this.statsModifiers['intelligence']) * 3;
 
     console.log("stats modifiers recalculated!");
   }
@@ -148,17 +146,17 @@ export class Unit extends Entity {
 
   getDamage() {
     const minDamage = this.attributes[this.primaryAttribute] + this.statsModifiers[this.primaryAttribute];
-    const maxDamage = minDamage + this.statsModifiers['damage'];
+    const maxDamage = minDamage + this.statsModifiers.damage;
     return Math.floor(Math.random() * (maxDamage - minDamage + 1) + minDamage);
   }
 
   getArmor() {
     const baseArmor: {[id in Attribute]: number} = {
-      'strength': 0,
-      'agility': -1,
-      'intelligence': -2,
-    }
-    return this.armor + this.attributes.strength + baseArmor[this.primaryAttribute];
+      strength: 0,
+      agility: -1,
+      intelligence: -2
+    };
+    return this.statsModifiers.armor + (this.attributes.agility * 0.16) + baseArmor[this.primaryAttribute];
   }
 
   onMove(moveEvent: MoveEvent, prevX, prevY, currentX, currentY) {

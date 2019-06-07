@@ -31,6 +31,6 @@ router.post('/', jwtMiddleware, async (req, res) => {
     body: req.body.body,
 
     primaryAttribute,
-    [primaryAttribute]: ATTRIBUTE_BASE_VALUE + 1
+    [primaryAttribute]: ATTRIBUTE_BASE_VALUE + 3
   }));
 });

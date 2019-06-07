@@ -89,11 +89,7 @@ export class Player extends Unit {
     const inventory = this[inventoryType];
     const item: Item = inventory.getItem(itemId)
 
-    console.log("DROP ITEM!", inventoryType, item && item.toJSON());
-    console.log("itemId: ", itemId);
-
     if (item && inventory.remove(itemId)) {
-      console.log("YUP, DROPPED!");
       this.state.dropItemFrom(this, item.clone());
     }
   }

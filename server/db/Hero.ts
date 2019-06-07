@@ -80,7 +80,7 @@ export interface DBHero extends mongoose.Document {
   skills: any;
 };
 
-export const ATTRIBUTE_BASE_VALUE = 1;
+export const ATTRIBUTE_BASE_VALUE = 5;
 export const Hero = mongoose.model<DBHero>('Hero', new Schema<DBHero>({
   userId: Schema.Types.ObjectId,
 

@@ -41,17 +41,19 @@ export class BattleAction extends Action {
     this.critical = (percent >= 1 - this.defender.criticalStrikeChance);
 
     if (!this.missed) {
-      this.damage = this.attacker.getDamage();
+      let damage = this.attacker.getDamage();
 
       // reduce armor from damage
-      this.damage -= this.defender.getArmor();
+      damage -= this.defender.getArmor();
 
       // prevent negative damage
-      if (this.damage < 0) { this.damage = 0; }
+      if (damage < 0) { damage = 0; }
 
       if (this.critical) {
-        this.damage = Math.ceil(this.damage * this.attacker.criticalBonus)
+        damage *= this.attacker.criticalBonus;
       }
+
+      this.damage = Math.floor(damage);
 
       // Defender take the damage
       this.defender.hp.current -= this.damage;
