@@ -31,7 +31,7 @@ module.exports = {
   // player preferences
   classes: [
     'strength',
-    'inteligence',
+    'intelligence',
     'agility',
   ],
   hairs: [

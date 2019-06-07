@@ -332,7 +332,7 @@ export class RoomUtils {
 
   assignEquipableItemModifiers(item: Item) {
     if (item instanceof ShieldItem) {
-      const modifier = this.rand.intBetween(1, 2);
+      const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
       item.addModifier({ attr: "armor", modifier });
 
     } else if (item instanceof WeaponItem) {
@@ -340,15 +340,15 @@ export class RoomUtils {
       item.addModifier({ attr: "damage", modifier });
 
     } else if (item instanceof BootItem) {
-      const modifier = this.rand.intBetween(1, 2);
+      const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
       item.addModifier({ attr: "armor", modifier });
 
     } else if (item instanceof HelmetItem) {
-      const modifier = this.rand.intBetween(1, 2);
+      const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
       item.addModifier({ attr: "armor", modifier });
 
     } else if (item instanceof ArmorItem) {
-      const modifier = this.rand.intBetween(1, 3);
+      const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
       item.addModifier({ attr: "armor", modifier });
 
     }

@@ -15,7 +15,7 @@ export class ManaHeal extends ConsumableItem {
 
   use(player, state) {
     const heal = this.modifiers[0].modifier;
-    player.mp.current += heal;
+    player.mp.set(player.mp.current + heal);
     state.createTextEvent("+" + heal, player.position, 'blue', 100);
     state.events.emit("sound", "potion", player);
     return true;

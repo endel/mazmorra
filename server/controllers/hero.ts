@@ -14,7 +14,7 @@ router.post('/', jwtMiddleware, async (req, res) => {
     // see client/config.js for ordering
   const primaryAttributes = [
     'strength',
-    'inteligence',
+    'intelligence',
     'agility',
   ];
 

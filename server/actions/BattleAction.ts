@@ -42,9 +42,12 @@ export class BattleAction extends Action {
 
     if (!this.missed) {
       let damage = this.attacker.getDamage();
+      console.log("raw damage from attacker:", damage);
 
       // reduce armor from damage
       damage -= this.defender.getArmor();
+
+      console.log("defender armor:", this.defender.getArmor());
 
       // prevent negative damage
       if (damage < 0) { damage = 0; }

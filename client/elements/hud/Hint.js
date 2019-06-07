@@ -46,9 +46,9 @@ ${(
           <string>${modifier.attr}</strong> ${(modifier.modifier > 0) ? "+" : ""}
           ${modifier.modifier}
           ${(modifier.modifier > equipedModifier)
-            ? `<small class="increase">(+ ${modifier.modifier - equipedModifier})</small>`
+            ? `<small class="increase">(+ ${(modifier.modifier - equipedModifier).toFixed(2)})</small>`
             : (modifier.modifier < equipedModifier)
-              ? `<small class="decrease">(- ${Math.abs(modifier.modifier - equipedModifier)})</small>`
+              ? `<small class="decrease">(- ${(Math.abs(modifier.modifier - equipedModifier)).toFixed(2)})</small>`
               : "" }
         `;
       }).join("<br />") +
