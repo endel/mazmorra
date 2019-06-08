@@ -98,9 +98,10 @@ export default class Raycaster extends Behaviour {
         return;
       }
 
-      App.onMouseMove( touch )
+      App.onMouseMove(touch)
+      this.doRaycast();
 
-      this.onClick( e )
+      this.onClick(e);
       this.lastTapTarget = this.targetObject;
       this.lastTapTime = Date.now();
     }
