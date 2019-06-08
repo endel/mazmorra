@@ -7,8 +7,6 @@ export default class Character extends THREE.Object3D {
 
     this.userData = data
 
-    this.gender = 'man'
-
     this.composition = new Composition(data.properties)
     this.composition.position.y = 0.5
 

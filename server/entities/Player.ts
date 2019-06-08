@@ -43,6 +43,7 @@ export class Player extends Unit {
     this.diamond = hero.diamond || 0;
 
     this.hpRegeneration = 1;
+    this.direction = "bottom";
   }
 
   useItem(inventoryType: InventoryType, itemId: string) {

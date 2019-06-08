@@ -11,6 +11,7 @@ export class BattleAction extends Action {
   @type("number") damage: number;
   @type("boolean") critical: boolean;
   @type(Position) position = new Position();
+  @type("string") defenderId: string;
 
   attacker: Unit;
   defender: Unit;
@@ -18,10 +19,11 @@ export class BattleAction extends Action {
   events = new EventEmitter();
 
   constructor(attacker: Unit, defender: Unit) {
-    super()
+    super();
 
     this.attacker = attacker;
     this.defender = defender;
+    this.defenderId = defender.id;
   }
 
   get isEligible() {
@@ -49,6 +51,9 @@ export class BattleAction extends Action {
 
     this.missed = (percent <= this.defender.evasion);
     this.critical = (percent >= 1 - this.defender.criticalStrikeChance);
+
+    // force to update unit's direction towards defender
+    this.attacker.updateDirection(this.defender.position.x, this.defender.position.y);
 
     if (!this.missed) {
       let damage = this.attacker.getDamage();
@@ -94,14 +99,13 @@ export class BattleAction extends Action {
 
       this.active = active;
 
-
       if (this.active) {
         let attacks = 0, pos = null
 
         this.attack()
 
         // update attack position
-        this.position = this.defender.position.clone();
+        this.position.set(this.defender.position);
       }
 
       this.lastUpdateTime = currentTime;

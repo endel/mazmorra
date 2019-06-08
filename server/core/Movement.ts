@@ -91,26 +91,8 @@ export class Movement extends Position {
       const x = this.pending[0][0];
       const y = this.pending[0][1];
 
-      if (this.y > y && this.x < x) { // diagonal
-        this.unit.direction = 'left';
-
-      } else if (this.y < y && this.x > x) { // diagonal
-        this.unit.direction = 'right';
-
-      } else if (this.x < x) {
-        this.unit.direction = 'bottom'
-
-      } else if (this.x > x) {
-        this.unit.direction = 'top'
-
-      } else if (this.y > y) {
-        this.unit.direction = 'left'
-
-      } else if (this.y < y) {
-        this.unit.direction = 'right'
-      }
+      this.unit.updateDirection(x, y);
     }
-
   }
 
 }

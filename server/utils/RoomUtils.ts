@@ -193,7 +193,7 @@ export class RoomUtils {
   populateEnemies (room: DungeonRoom) {
     // allow 0 enemies on room?
     const minEnemies = (this.rand.intBetween(0, 3) === 0) ? 0 : 1;
-    const maxEnemies = (room.size.x * room.size.y) / 4; // this.state.progress * 2
+    const maxEnemies = (room.size.x * room.size.y) / 10; // this.state.progress * 2
     let numEnemies = this.rand.intBetween(minEnemies, maxEnemies);
 
     const enemyList = [
@@ -281,7 +281,7 @@ export class RoomUtils {
     for (let i=0; i<qty; i++) {
       if (!this.hasPositionsRemaining(room)) return
 
-      var entity = new Entity()
+      var entity = new Entity();
       entity.type = helpers.ENTITIES.AESTHETICS
       entity.position.set(this.getNextAvailablePosition(room));
       this.state.addEntity(entity)

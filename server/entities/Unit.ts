@@ -27,6 +27,8 @@ export type StatsModifiers = {
   criticalStrikeChance: number;
 }
 
+export type UnitDirection = 'bottom' | 'left' | 'top' | 'right';
+
 export class UnitAttributes extends Schema {
   @type("number") strength;
   @type("number") agility;
@@ -40,7 +42,7 @@ export class Unit extends Entity {
   @type(Inventory) quickInventory = new Inventory({ capacity: 6 });
   @type(BattleAction) action: BattleAction;
 
-  @type("string") direction = "bottom";
+  @type("string") direction: UnitDirection;
 
   @type(Bar) hp = new Bar(50);
   @type(Bar) mp = new Bar(0);
@@ -106,12 +108,14 @@ export class Unit extends Entity {
     this.mp.current = hero.mp || 0;
     this.xp.set(hero.xp || 0, 100); // TOOD: max xp must be a formula against `lvl`
 
+    const directions: UnitDirection[] = ['bottom', 'left', 'top', 'right'];
+    this.direction = directions[ Math.floor(Math.random() * directions.length) ];
+
     this.position = new Movement(this);// FIXME:
     this.position.events.on('move', this.onMove.bind(this));
   }
 
   recalculateStatsModifiers() {
-    console.log("will recalculate stats modifiers...");
     // re-set all stats modifiers
     for (const attr in this.statsModifiers) {
       this.statsModifiers[attr] = 0;
@@ -129,8 +133,6 @@ export class Unit extends Entity {
 
     this.hp.max = (this.attributes.strength + this.statsModifiers['strength']) * 5;
     this.mp.max = (this.attributes.intelligence + this.statsModifiers['intelligence']) * 3;
-
-    console.log("stats modifiers recalculated!");
   }
 
   onEquipedItemsChange(): void {
@@ -267,6 +269,27 @@ export class Unit extends Entity {
     }
 
     this.xp.current += xp
+  }
+
+  updateDirection(x: number, y: number) {
+    if (this.position.y > y && this.position.x < x) { // diagonal
+      this.direction = 'left';
+
+    } else if (this.position.y < y && this.position.x > x) { // diagonal
+      this.direction = 'right';
+
+    } else if (this.position.x < x) {
+      this.direction = 'bottom'
+
+    } else if (this.position.x > x) {
+      this.direction = 'top'
+
+    } else if (this.position.y > y) {
+      this.direction = 'left'
+
+    } else if (this.position.y < y) {
+      this.direction = 'right'
+    }
   }
 
   levelUp () {

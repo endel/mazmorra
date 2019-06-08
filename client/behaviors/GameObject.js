@@ -28,7 +28,7 @@ export default class GameObject extends Behaviour {
 
     if (this.object.userData.hp.current > 0) {
 
-      this.battleBehaviour = new BattleBehaviour
+      this.battleBehaviour = new BattleBehaviour();
       this.object.addBehaviour( this.battleBehaviour, this.factory )
 
     } else {
@@ -47,11 +47,11 @@ export default class GameObject extends Behaviour {
         , lerpTime = 0.09
 
       if (this.battleBehaviour && this.battleBehaviour.togglePosition) {
-        // destX += (this.battleBehaviour.attackingPoint.x - this.nextPoint.x) / 3
-        // destZ += (this.battleBehaviour.attackingPoint.z - this.nextPoint.z) / 3
+        destX += (this.battleBehaviour.attackingPoint.x - this.nextPoint.x) / 1.5
+        destZ += (this.battleBehaviour.attackingPoint.z - this.nextPoint.z) / 1.5
 
-        destX = this.battleBehaviour.attackingPoint.x;
-        destZ = this.battleBehaviour.attackingPoint.z;
+        // destX = this.battleBehaviour.attackingPoint.x;
+        // destZ = this.battleBehaviour.attackingPoint.z;
 
         lerpTime = 0.2
       }

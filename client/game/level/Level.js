@@ -93,7 +93,9 @@ export default class Level extends THREE.Object3D {
     state.entities.onAdd = (entity, key) => {
       // create new player
       const object = this.factory.createEntity(entity)
+
       object.userData = entity;
+      object.direction = entity.direction; // FIXME: this is duplicated.
 
       this.entities[object.userData.id] = object;
 
@@ -159,8 +161,8 @@ export default class Level extends THREE.Object3D {
               position: object.userData.position
             });
 
-          } else if (change.field === "position") {
-            object.getEntity().emit('nextPoint', this.factory.fixTilePosition(object.position.clone(), change.value.y, change.value.x));
+          // } else if (change.field === "position") {
+          //   object.getEntity().emit('nextPoint', this.factory.fixTilePosition(object.position.clone(), change.value.y, change.value.x));
 
           } else if (change.field === "direction") {
             object.direction = change.value;
@@ -175,6 +177,10 @@ export default class Level extends THREE.Object3D {
 
         }
       };
+      entity.position.onChange = (changes) => {
+        object.getEntity().emit('nextPoint', this.factory.fixTilePosition(object.position.clone(), entity.position.y, entity.position.x));
+      }
+      entity.position.triggerAll();
       // entity.triggerAll() ??
     };
     state.entities.triggerAll();
@@ -321,15 +327,16 @@ export default class Level extends THREE.Object3D {
 
   }
 
-  getEntityAt (position) {
-
+  getEntityAt (position, hasUserDataAttribute) {
     for (var id in this.entities) {
       if (this.entities[ id ].userData.position.x == position.x &&
-          this.entities[ id ].userData.position.y == position.y) {
-        return this.entities[ id ]
+          this.entities[ id ].userData.position.y == position.y && (
+            !hasUserDataAttribute ||
+            (this.entities[ id ].userData[hasUserDataAttribute])
+          )) {
+        return this.entities[ id ];
       }
     }
-
   }
 
   removeEntity (object) {

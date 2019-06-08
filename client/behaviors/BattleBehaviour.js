@@ -26,7 +26,6 @@ export default class BattleBehaviour extends Behaviour {
     this.on('attack', this.onAttack.bind(this))
     this.on('damage', this.onTakeDamage.bind(this))
     this.on('died', this.onDied.bind(this))
-
   }
 
   disable () {
@@ -34,16 +33,17 @@ export default class BattleBehaviour extends Behaviour {
     this.togglePosition = false
   }
 
-  onAttack (data) {
-    if (!data.type) { return this.disable(); }
+  onAttack (actionData) {
+    if (!actionData.type) { return this.disable(); }
 
     this.togglePosition = true
-    this.togglePositionTimeout = App.clock.setTimeout(() => { this.togglePosition = false }, 100)
+    this.togglePositionTimeout = App.clock.setTimeout(() => { this.togglePosition = false }, 100);
 
-    this.defender = this.factory.level.getEntityAt(data.position)
-    this.attackingPoint = this.defender.position;
+    this.defender = this.factory.level.entities[actionData.defenderId];
+    this.attackingPoint = this.defender.position.clone();
 
-    console.log("DEFENDER:", this.defender);
+    // this.attackingPoint = { x: 0, z: 0 };
+    // this.factory.fixTilePosition(this.attackingPoint, actionData.position.y, actionData.position.x)
 
     if (!this.isAttacking) {
       this.isAttacking = true
@@ -60,10 +60,10 @@ export default class BattleBehaviour extends Behaviour {
     playRandom(wooshSound)
 
     // show damage / miss / critical
-    let text = `-${ data.damage }`
+    let text = `-${ actionData.damage }`
       , kind = 'attention'
 
-    if (data.missed) {
+    if (actionData.missed) {
       kind = 'warn'
       text = 'miss'
 
@@ -77,8 +77,8 @@ export default class BattleBehaviour extends Behaviour {
       text: text,
       kind: kind,
       ttl: 100,
-      special: data.critical,
-      position: data.position
+      special: actionData.critical,
+      position: actionData.position
     })
   }
 

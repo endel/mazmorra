@@ -290,10 +290,7 @@ export class DungeonState extends Schema {
     for (const id in this.entities) {
       const entity: Entity = this.entities[id];
 
-      /*if (entity === targetEntity && !targetEntity.walkable && !targetEntity.position.equals(entity.position)) {
-        allowedPath.setWalkableAt(entity.position.x, entity.position.y, false);
-
-      } else*/ if (!entity.walkable && entity !== targetEntity) {
+      if (!entity.walkable && entity !== targetEntity) {
         allowedPath.setWalkableAt(entity.position.x, entity.position.y, false);
       }
     }
