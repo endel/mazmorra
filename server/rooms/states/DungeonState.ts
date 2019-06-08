@@ -313,10 +313,6 @@ export class DungeonState extends Schema {
         unit.position.target.isAlive &&
         unit.position.target !== unit // prevent user from attacking himself
       ) {
-        // prevent unit from moving towards attacking unit
-        // https://github.com/endel/mazmorra/issues/27
-        moves.pop();
-
         // create attack action
         unit.attack(unit.position.target);
 

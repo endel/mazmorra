@@ -253,6 +253,9 @@ export class Unit extends Entity {
   }
 
   onKill (unit) {
+    // clear pending movement
+    this.position.pending = [];
+
     // compute experience this unit received by killing another one
     // var xp =  unit.lvl / (this.lvl / 2)
     var xp =  unit.lvl / (this.lvl / 4)

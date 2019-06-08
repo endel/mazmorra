@@ -77,8 +77,8 @@ export class BattleAction extends Action {
       if (!this.defender.isAlive) {
         this.defender.onDie()
         this.attacker.onKill(this.defender)
-
       }
+
       //
       // TODO: use damageTaken for lifestealing or other modifiers
       //
