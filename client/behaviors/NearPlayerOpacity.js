@@ -4,7 +4,11 @@ import Activatable from './Activatable';
 export default class NearPlayerOpacity extends Behaviour {
 
   onAttach () {
-    if (IS_DAY) {
+    if (
+      IS_DAY ||
+      typeof(this.object.userData.hp) !== "undefined" && // if unit is already dead, dettach imediatelly.
+      this.object.userData.hp.current <= 0
+    ) {
       this.detach();
       return;
     }
