@@ -1,4 +1,5 @@
 import ItemSlot from './ItemSlot'
+import hint from "../hud/Hint"
 
 export default class EquipedItems extends THREE.Object3D {
 
@@ -48,6 +49,9 @@ export default class EquipedItems extends THREE.Object3D {
         this[slotName].item.userData.inventoryType = this.inventoryType;
       }
     }
+
+    // update hint when data has synched.
+    hint.update();
   }
 
 }

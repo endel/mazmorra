@@ -3,9 +3,18 @@ import config from "../../config";
 class Hint  {
   constructor() {
     this.el = document.querySelector("#hint");
+
+    this.isActive = false;
+
+    this.lastItem = undefined;
+    this.lastSprite = undefined;
   }
 
   show(item, sprite) {
+    this.lastItem = item;
+    this.lastSprite = sprite;
+    this.isActive = true;
+
     this.el.classList.add("active");
 
     let contents = "";
@@ -22,6 +31,12 @@ class Hint  {
     var position = this.toScreenPosition(sprite);
     this.el.style.left = (position.x - (config.HUD_SCALE * 5) - this.el.clientWidth - config.HUD_SCALE) + "px";
     this.el.style.top = (position.y - (config.HUD_SCALE * 5)) + "px";
+  }
+
+  update () {
+    if (this.isActive) {
+      this.show(this.lastItem, this.lastSprite);
+    }
   }
 
   getItemHTML(item, sprite) {
@@ -61,6 +76,7 @@ ${(
   }
 
   hide() {
+    this.isActive = false;
     this.el.classList.remove("active");
   }
 
