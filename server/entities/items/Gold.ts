@@ -2,10 +2,12 @@ import { Item } from "../Item";
 import helpers from "../../../shared/helpers";
 
 export class Gold extends Item {
+  amount: number;
 
-  constructor () {
+  constructor (amount: number) {
     super()
     this.type = helpers.ENTITIES.GOLD;
+    this.amount = amount;
   }
 
   // you cannot really use gold...
@@ -14,11 +16,11 @@ export class Gold extends Item {
   pick (player, state) {
     //
     // FIXME!
+    // This is necessary to preserve updated position of player.
     //
     setTimeout(() => {
-      let gold = Math.floor(Math.random() * 5) + 1
-      player.gold += gold;
-      state.createTextEvent("+" + gold, player.position, 'yellow', 100);
+      player.gold += this.amount;
+      state.createTextEvent("+" + this.amount, player.position, 'yellow', 100);
       state.events.emit("sound", "coin", player);
     }, 1);
 

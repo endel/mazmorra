@@ -295,42 +295,91 @@ export class RoomUtils {
   }
 
   createRandomItem () {
-    const index = this.rand.intBetween(0, 7);
+    // 10% nothing
+    // 40% gold
+    // 25% potion (70% hp / 25 % mp / 5% xp)
+    // 20% common item
+    // 4% rare item
+    // 0.5% unique item
+    // 0.5% diamonds!
+
+    const chance = this.rand.floatBetween(0, 1);
 
     let itemToDrop: Item;
 
-    switch (index) {
-      case 0: itemToDrop = new Gold(); break;
-      case 1: itemToDrop = new LifeHeal(); break;
-      case 2: itemToDrop = new ManaHeal(); break;
-      case 3:
-        itemToDrop = new ShieldItem();
-        itemToDrop.type = helpers.ENTITIES.SHIELD_WOOD;
-        break;
+    // 0~10% don't drop anything.
+    if (chance >= 0.1) {
 
-      case 4:
-        itemToDrop = new WeaponItem();
-        itemToDrop.type = helpers.ENTITIES.SWORD;
-        break;
+      // gold
+      if (chance < 0.5) {
+        const amount = this.rand.intBetween(this.state.progress, Math.floor(this.state.progress * 1.5));
+        itemToDrop = new Gold(amount);
 
-      case 5:
-        itemToDrop = new BootItem();
-        itemToDrop.type = helpers.ENTITIES.BOOTS_REGULAR;
-        break;
+      // potion
+      } else if (chance < 0.75) {
 
-      case 6:
-        itemToDrop = new HelmetItem();
-        itemToDrop.type = helpers.ENTITIES.HELMET_CAP;
-        break;
+        const potionChance = this.rand.floatBetween(0, 1);
+        if (potionChance < 0.7) {
+          return new LifeHeal();
 
-      // case 7:
-      //   itemToDrop = new ArmorItem();
-      //   itemToDrop.type = helpers.ENTITIES.SWORD;
-      //   break;
-    }
+        } else if (potionChance < 0.95) {
+          return new ManaHeal();
 
-    if (itemToDrop instanceof EquipableItem) {
-      this.assignEquipableItemModifiers(itemToDrop);
+        } else {
+          console.log("XP POTION");
+          // CREATE XP POTION
+          // return new ManaHeal();
+
+        }
+
+      // common item
+      } else if (chance < 0.99) {
+        const isRare = (chance >= 0.95);
+        const itemType = this.rand.intBetween(0, 5);
+
+        if (isRare) {
+          console.log("DROP RARE ITEM!");
+        }
+
+        switch (itemType) {
+          case 0:
+            itemToDrop = new ShieldItem();
+            itemToDrop.type = helpers.ENTITIES.SHIELD_WOOD;
+            break;
+
+          case 1:
+            itemToDrop = new WeaponItem();
+            itemToDrop.type = helpers.ENTITIES.SWORD;
+            break;
+
+          case 2:
+            itemToDrop = new BootItem();
+            itemToDrop.type = helpers.ENTITIES.BOOTS_REGULAR;
+            break;
+
+          case 3:
+            itemToDrop = new HelmetItem();
+            itemToDrop.type = helpers.ENTITIES.HELMET_CAP;
+            break;
+
+          case 4:
+            console.log("DROP ARMOR!");
+            // itemToDrop = new ArmorItem();
+            // itemToDrop.type = helpers.ENTITIES.SWORD;
+            break;
+        }
+
+        if (itemToDrop instanceof EquipableItem) {
+          this.assignEquipableItemModifiers(itemToDrop);
+        }
+
+      } else if (chance >= 0.99) {
+        // drop diamond!
+        console.log("DROP DIAMOND!");
+
+      }
+    } else {
+      console.log("EMPTY DROP");
     }
 
     return itemToDrop;
