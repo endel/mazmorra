@@ -176,16 +176,6 @@ export class Unit extends Entity {
 
     // check if target position has been changed
     if (this.position.target) {
-
-      // // TODO: improve me
-      // if (this.position.target instanceof Unit &&
-      //     this.position.target.isAlive &&
-      //     currentX === this.position.target.position.x &&
-      //     currentY === this.position.target.position.y) {
-      //   moveEvent.cancel()
-      //   return
-      // }
-
       if (
         this.position.destiny && (
           this.position.destiny.x !== this.position.target.position.x ||
@@ -248,8 +238,8 @@ export class Unit extends Entity {
   }
 
   onDie () {
-    console.log("unit died. set as walkable!");
     this.walkable = true;
+    this.drop();
   }
 
   onKill (unit) {
@@ -264,11 +254,6 @@ export class Unit extends Entity {
     if (this.xp.current + xp > this.xp.max) {
       xp = (this.xp.current + xp) - this.xp.max
       this.levelUp()
-    }
-
-    // killed unit may drop something
-    if (unit.state) {
-      unit.drop();
     }
 
     this.xp.current += xp

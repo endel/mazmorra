@@ -34,7 +34,7 @@ class Hint  {
   }
 
   update () {
-    if (this.isActive) {
+    if (this.isActive && this.lastItem && this.lastSprite) {
       this.show(this.lastItem, this.lastSprite);
     }
   }
@@ -42,9 +42,10 @@ class Hint  {
   getItemHTML(item, sprite) {
     const equipedItems = player.userData.equipedItems.slots;
 
+    // <img src="images/sprites/items-${item.type}.png" width="${sprite.item.scale.x}" height="${sprite.item.scale.y}" />
+
     return `
 <h2>
-  <!-- <img src="images/sprites/items-${item.type}.png" width="${sprite.item.scale.x}" height="${sprite.item.scale.y}" /> -->
   ${item.type}
 </h2>
 ${(

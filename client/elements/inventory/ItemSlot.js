@@ -1,4 +1,5 @@
 import hint from "../hud/Hint";
+import EquipedItems from "./EquipedItems";
 
 let draggingItem = null
   , draggingFrom = null
@@ -131,10 +132,17 @@ export default class ItemSlot extends THREE.Object3D {
     // EquipedItems: check if target slot accepts this type of item.
     //
     if (
-      draggingItem &&
-      draggingItem.userData.item.slotName &&
-      this.accepts &&
-      draggingItem.userData.item.slotName !== this.accepts
+      (
+        draggingItem &&
+        draggingItem.userData.item.slotName &&
+        this.accepts &&
+        draggingItem.userData.item.slotName !== this.accepts
+      ) ||
+      (
+        draggingItem &&
+        !draggingItem.userData.item.slotName &&
+        this.parent instanceof EquipedItems
+      )
     ) {
       // cancel drop if slotName doesn't match dropped slot.
       draggingFrom.item = draggingItem;

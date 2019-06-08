@@ -28,6 +28,14 @@ class Login extends EventEmitter {
     const heroes = await this.getHeroes();
 
     if (heroes.length === 0) {
+      // allow to press enter to submit form
+      this.credentials.querySelector("p.register input").addEventListener("keypress", (e) => {
+        if (e.which === 13) {
+          e.preventDefault();
+          this.credentials.querySelector("a.register").dispatchEvent(new Event("click"));
+        }
+      });
+
       this.credentials.querySelector("p.register.hidden").classList.remove("hidden");
       this.credentials.querySelector("a.register").addEventListener("click", (e) => {
         e.preventDefault();

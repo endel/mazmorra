@@ -66,6 +66,8 @@ export class Player extends Unit {
     if (item && switchItem) {
       // @colyseus/schema workaround
       if ((toInventory instanceof EquipedItems)) {
+        console.log(item.toJSON());
+        console.log("is EquipableItem??", item instanceof EquipableItem);
         if (item instanceof EquipableItem) {
           // item must be equipable!
           fromInventory.remove(itemId);
