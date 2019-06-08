@@ -252,17 +252,13 @@ export class DungeonState extends Schema {
   }
 
   checkOverlapingEntities (targetEntity: Entity, moveEvent: MoveEvent, x, y) {
-    const entities = this.gridUtils.getAllEntitiesAt(y, x);
     const unit = moveEvent.target;
 
+    const entities = this.gridUtils.getAllEntitiesAt(y, x);
     for (var i=0; i<entities.length; i++) {
       let entity = entities[i] as Entity;
 
       if (unit instanceof Unit) {
-        if (entity instanceof Enemy && entity.isAlive) {
-          moveEvent.cancel();
-        }
-
         // if unit has reached target point,
         // try to pick/interact with other entity.
         if (
@@ -317,6 +313,11 @@ export class DungeonState extends Schema {
         unit.position.target.isAlive &&
         unit.position.target !== unit // prevent user from attacking himself
       ) {
+        // prevent unit from moving towards attacking unit
+        // https://github.com/endel/mazmorra/issues/27
+        moves.pop();
+
+        // create attack action
         unit.attack(unit.position.target);
 
       } else {

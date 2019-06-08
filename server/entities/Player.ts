@@ -5,6 +5,7 @@ import { Item } from "./Item";
 import { DBHero } from "../db/Hero";
 import { MoveEvent } from "../core/Movement";
 import { EquipedItems } from "../core/EquipedItems";
+import { EquipableItem } from "./items/EquipableItem";
 
 export class SkinProperties extends Schema {
   @type("number") klass: number;
@@ -65,9 +66,12 @@ export class Player extends Unit {
     if (item && switchItem) {
       // @colyseus/schema workaround
       if ((toInventory instanceof EquipedItems)) {
-        fromInventory.remove(itemId);
-        fromInventory.add(switchItem);
-        toInventory.add(item, true);
+        if (item instanceof EquipableItem) {
+          // item must be equipable!
+          fromInventory.remove(itemId);
+          fromInventory.add(switchItem);
+          toInventory.add(item, true);
+        }
 
       } else {
         // without workaround: https://github.com/colyseus/schema/issues/26
