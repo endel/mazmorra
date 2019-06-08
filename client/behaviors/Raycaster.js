@@ -149,21 +149,27 @@ export default class Raycaster extends Behaviour {
 
   onContextMenu (e) {
     e.preventDefault();
-    console.log("TODO: simulate double click on context menu");
-    // this.onDoubleClick(e);
+    e.stopPropagation();
   }
 
-  onMouseDown() {
+  onMouseDown(e) {
     this.doRaycast();
 
     App.cursor.isDroppingItem = false;
 
     if (this.isTargetReachable) {
-      this.targetObject.dispatchEvent({
-        type: "mousedown",
-        bubbles: true,
-        path: this.path
-      })
+      if (e.which === 3) {
+        // right click!
+        this.onDoubleClick(e);
+
+      } else {
+        // left click!
+        this.targetObject.dispatchEvent({
+          type: "mousedown",
+          bubbles: true,
+          path: this.path
+        })
+      }
     }
   }
 
