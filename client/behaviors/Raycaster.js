@@ -1,7 +1,4 @@
 import { Behaviour } from 'behaviour.js'
-import { MeshText2D, SpriteText2D } from 'three-text2d';
-
-import Cursor from '../elements/hud/Cursor'
 
 export default class Raycaster extends Behaviour {
 
@@ -121,11 +118,11 @@ export default class Raycaster extends Behaviour {
     }
   }
 
-  onClick (e) {
-    console.log("onClick!");
-    this.doRaycast()
+  onClick(e) {
+    // `doRaycast()` is already called on "mousedown" and "mouseup"
+    // this.doRaycast()
 
-    if ( this.isTargetReachable ) {
+    if (this.isTargetReachable && !App.cursor.isDroppingItem) {
       e.preventDefault()
 
       this.targetObject.dispatchEvent({
@@ -136,10 +133,10 @@ export default class Raycaster extends Behaviour {
     }
   }
 
-  onDoubleClick (e) {
+  onDoubleClick(e) {
     this.doRaycast()
 
-    if ( this.isTargetReachable ) {
+    if (this.isTargetReachable) {
       e.preventDefault()
 
       this.targetObject.dispatchEvent({
@@ -156,8 +153,12 @@ export default class Raycaster extends Behaviour {
     // this.onDoubleClick(e);
   }
 
-  onMouseDown () {
-    if ( this.isTargetReachable ) {
+  onMouseDown() {
+    this.doRaycast();
+
+    App.cursor.isDroppingItem = false;
+
+    if (this.isTargetReachable) {
       this.targetObject.dispatchEvent({
         type: "mousedown",
         bubbles: true,
@@ -166,13 +167,20 @@ export default class Raycaster extends Behaviour {
     }
   }
 
-  onMouseUp () {
-    if ( this.isTargetReachable ) {
+  onMouseUp(e) {
+    if (this.isTargetReachable) {
       this.targetObject.dispatchEvent({
         type: "mouseup",
         bubbles: true,
         path: this.path
       })
+
+    } else if (App.cursor.isDragging) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      App.cursor.dispatchEvent({ type: "mouseup" });
+      App.cursor.isDroppingItem = true;
     }
   }
 

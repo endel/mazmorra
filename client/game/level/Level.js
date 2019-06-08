@@ -15,31 +15,31 @@ import { doorSound, playRandom } from '../../core/sound';
 export default class Level extends THREE.Object3D {
 
   constructor (hud, camera) {
+    super();
 
-    super()
-
-    this.hud = hud
-    this.camera = camera
+    this.hud = hud;
+    this.camera = camera;
 
     // this.room = this.enterRoom('grass')
-    this.room = this.enterRoom('dungeon')
+    this.room = this.enterRoom('dungeon');
 
-    this.entities = {}
+    this.entities = {};
     this.progress = 0;
 
     this.clickedTileLight = new THREE.SpotLight(config.COLOR_RED, 0.5, 30);
-    this.clickedTileLight.penumbra = 0.8
+    this.clickedTileLight.penumbra = 0.8;
 
     this.selectionLight = new THREE.SpotLight(0xffffff, 0.5, 30);
-    this.selectionLight.penumbra = 0.8
-    this.selection = new TileSelectionPreview(this.selectionLight, this.hud)
+    this.selectionLight.penumbra = 0.8;
+    this.selection = new TileSelectionPreview(this.selectionLight, this.hud);
 
-    this.factory = new Factory(this)
+    this.factory = new Factory(this);
 
-    this.addEventListener( "click", this.onClick.bind(this) )
-    this.addEventListener( "mouseover", this.onMouseOver.bind(this) )
-    this.addEventListener( "mouseout", this.onMouseOut.bind(this) )
+    this.addEventListener("click", this.onClick.bind(this));
+    this.addEventListener("mouseover", this.onMouseOver.bind(this));
+    this.addEventListener("mouseout", this.onMouseOut.bind(this));
 
+    App.cursor.addEventListener("mouseup", this.playerActionDrop.bind(this));
   }
 
   onClick (e) {
@@ -373,6 +373,10 @@ export default class Level extends THREE.Object3D {
       y: this.targetPosition.y,
     };
 
+    this.room.send(['move', moveCommand]);
+  }
+
+  playerActionDrop() {
     if (App.cursor.isDragging) {
       /**
        * Allow to drop item to the floor
@@ -408,7 +412,6 @@ export default class Level extends THREE.Object3D {
       return;
     }
 
-    this.room.send(['move', moveCommand]);
   }
 
   cleanup () {

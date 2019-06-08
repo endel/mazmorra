@@ -38,13 +38,13 @@ export default class Game {
     // this.camera.position.z = 30;
     this.camera.position.z = 50;
 
-    let hudRaycaster = new Raycaster
-    this.hud = new HUD()
-    this.hud.addBehaviour( hudRaycaster, this.hud.camera )
+    let hudRaycaster = new Raycaster();
+    this.hud = new HUD();
+    this.hud.addBehaviour(hudRaycaster, this.hud.camera);
 
     this.scene = new THREE.Scene();
     // this.scene.rotateY(-0.4)
-    this.scene.addBehaviour( new Raycaster, this.camera, hudRaycaster )
+    this.scene.addBehaviour(new Raycaster(), this.camera, hudRaycaster);
 
     // this.level = new Level(this.scene, this.hud, this.camera)
     // this.level.on('setup', this.onSetupLevel.bind(this))
