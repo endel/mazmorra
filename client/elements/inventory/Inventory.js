@@ -68,7 +68,9 @@ export default class Inventory extends THREE.Object3D {
       if (el instanceof ItemSlot && el.item) {
         App.tweens.add(el.item.material).wait(i * 15).to({ opacity: (targetOpacity > 0) ? 1 : 0 }, 500, Tweener.ease.quintOut)
 
-        if (targetOpacity > 0 && el.hasItem()) { targetOpacity = 1 }
+        if (targetOpacity > 0 && el.hasItem()) {
+          targetOpacity = ItemSlot.OCCUPIED_OPACITY;
+        }
       }
 
       App.tweens.add(el.material).wait(i * 15).to({ opacity: targetOpacity }, 500, Tweener.ease.quintOut)

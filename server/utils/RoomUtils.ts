@@ -241,7 +241,7 @@ export class RoomUtils {
         const enemyType = enemyList[Math.floor((Math.random() * enemyList.length))];
         const enemy = new Enemy(enemyType, {
           primaryAttribute: "strength",
-          strength: 3,
+          strength: 2,
           agility: 1,
           intelligence: 1,
         }, {

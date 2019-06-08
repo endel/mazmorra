@@ -5,6 +5,7 @@ let draggingItem = null
 
 export default class ItemSlot extends THREE.Object3D {
   static DEFAULT_OPACITY = 0.6;
+  static OCCUPIED_OPACITY = 1;
 
   constructor (options = { accepts: null }) {
     super()
@@ -17,13 +18,13 @@ export default class ItemSlot extends THREE.Object3D {
     var freeTex = ResourceManager.get("hud-item-slot-free")
     this.free = new THREE.Sprite(new THREE.SpriteMaterial({ map: freeTex, transparent: true }))
     this.free.scale.set(freeTex.frame.w *  config.HUD_SCALE, freeTex.frame.h *  config.HUD_SCALE, 1)
+    this.free.material.opacity = ItemSlot.DEFAULT_OPACITY
     this.add(this.free)
 
     var useTex = ResourceManager.get("hud-item-slot-use")
     this.use = new THREE.Sprite(new THREE.SpriteMaterial({ map: useTex, transparent: true }))
     this.use.scale.set(useTex.frame.w *  config.HUD_SCALE, useTex.frame.h *  config.HUD_SCALE, 1)
-
-    this.free.material.opacity = ItemSlot.DEFAULT_OPACITY
+    this.use.material.opacity = ItemSlot.OCCUPIED_OPACITY;
 
     this.width = useTex.frame.w *  config.HUD_SCALE
     this.height = useTex.frame.h *  config.HUD_SCALE
@@ -152,7 +153,7 @@ export default class ItemSlot extends THREE.Object3D {
       /**
        * dispatch "inventory-drag" event only for different types of inventories
        */
-      if (draggingFrom.parent.inventoryType !== this.parent.inventoryType) {
+      if (draggingFrom.parent && draggingFrom.parent.inventoryType !== this.parent.inventoryType) {
         this.dispatchEvent({
           type: "inventory-drag",
           bubbles: true,
