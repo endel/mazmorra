@@ -159,7 +159,9 @@ export default class Raycaster extends Behaviour {
 
     if (this.isTargetReachable) {
       if (e.which === 3) {
-        // right click!
+        // allow right click on HUD elements.
+        e.preventDefault();
+        e.stopPropagation();
         this.onDoubleClick(e);
 
       } else {

@@ -16,37 +16,36 @@ export class EquipedItems extends Inventory {
   }
 
   add (item: EquipableItem, force: boolean = false) {
-    const hasAvailability = this.isSlotAvailable(item.slotName);
-
     // FORCE is a workaround for a @colyseus/schema bug
-    if (hasAvailability || force) {
-      this.slots[item.slotName] = item.clone();
+    const hasAvailability = this.isSlotAvailable(item.slotName) || force;
 
+    if (hasAvailability) {
+      this.slots[item.slotName] = item.clone();
       this.events.emit('change');
     }
 
     return hasAvailability;
   }
 
-  getItem(itemId: string) {
-    if (this.slots[itemId]) {
+  getItem(itemIdOrSlotName: string) {
+    if (this.slots[itemIdOrSlotName]) {
       // allow to get item by slot name
-      return this.slots[itemId];
+      return this.slots[itemIdOrSlotName];
 
     } else {
       // allow to get item by id
       for (let slotName in this.slots) {
         const itemInSlot: Item = this.slots[slotName];
-        if (itemInSlot.id === itemId) {
+        if (itemInSlot.id === itemIdOrSlotName) {
           return itemInSlot;
         }
       }
     }
   }
 
-  remove(itemId: string) {
-    if (this.slots[itemId]) {
-      delete this.slots[itemId];
+  remove(itemIdOrSlotName: string) {
+    if (this.slots[itemIdOrSlotName]) {
+      delete this.slots[itemIdOrSlotName];
       this.events.emit('change');
       return true;
 
@@ -54,7 +53,7 @@ export class EquipedItems extends Inventory {
       for (let slotName in this.slots) {
         const itemInSlot: Item = this.slots[slotName];
 
-        if (itemInSlot.id === itemId) {
+        if (itemInSlot.id === itemIdOrSlotName) {
           delete this.slots[slotName];
           this.events.emit('change');
           return true;
