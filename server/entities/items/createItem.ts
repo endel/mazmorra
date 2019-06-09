@@ -2,8 +2,7 @@ import helpers from "../../../shared/helpers";
 
 import { Point } from "../../rooms/states/DungeonState";
 import { Item } from "../Item";
-import { LifeHeal } from "./consumable/LifeHeal";
-import { ManaHeal } from "./consumable/ManaHeal";
+import { Potion } from "./consumable/Potion";
 import { ShieldItem } from "./equipable/ShieldItem";
 import { WeaponItem } from "./equipable/WeaponItem";
 import { BootItem } from "./equipable/BootItem";
@@ -16,10 +15,25 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
 
   switch (data.type) {
     // Consumables
-    case helpers.ENTITIES.LIFE_HEAL: item = new LifeHeal(); break;
-    case helpers.ENTITIES.LIFE_POTION: item = new LifeHeal(); break;
-    case helpers.ENTITIES.MANA_HEAL: item = new ManaHeal(); break;
-    case helpers.ENTITIES.MANA_POTION: item = new ManaHeal(); break;
+    case helpers.ENTITIES.HP_POTION_1:
+    case helpers.ENTITIES.HP_POTION_2:
+    case helpers.ENTITIES.HP_POTION_3:
+    case helpers.ENTITIES.HP_POTION_4:
+    case helpers.ENTITIES.MP_POTION_1:
+    case helpers.ENTITIES.MP_POTION_2:
+    case helpers.ENTITIES.MP_POTION_3:
+    case helpers.ENTITIES.MP_POTION_4:
+    case helpers.ENTITIES.XP_POTION_1:
+    case helpers.ENTITIES.XP_POTION_2:
+    case helpers.ENTITIES.XP_POTION_3:
+    case helpers.ENTITIES.XP_POTION_4:
+    case helpers.ENTITIES.ELIXIR_POTION_1:
+    case helpers.ENTITIES.ELIXIR_POTION_2:
+    case helpers.ENTITIES.ELIXIR_POTION_3:
+    case helpers.ENTITIES.ELIXIR_POTION_4:
+      item = new Potion();
+      item.type = data.type;
+      break;
 
     case helpers.ENTITIES.SHIELD_WOOD:
       item = new ShieldItem();
@@ -51,7 +65,7 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
   /**
    * Assign item modifiers
    */
-  if (item instanceof EquipableItem && 'modifiers' in data) {
+  if ('modifiers' in data) {
     data.modifiers.forEach(modifier => {
       item.addModifier(modifier);
     });

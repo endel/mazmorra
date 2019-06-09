@@ -21,7 +21,7 @@ export default class Level extends THREE.Object3D {
     this.camera = camera;
 
     // this.room = this.enterRoom('grass')
-    this.room = this.enterRoom('dungeon');
+    this.room = this.enterRoom('dungeon', { progress: 1 });
 
     this.entities = {};
     this.progress = 0;

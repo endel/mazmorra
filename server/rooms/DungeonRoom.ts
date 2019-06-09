@@ -8,8 +8,7 @@ import { DoorProgress } from "../entities/interactive/Door";
 const TICK_RATE = 30
 
 export class DungeonRoom extends Room<DungeonState> {
-  autoDispose = false;
-  maxClients = 10;
+  maxClients = 8;
 
   progress: number;
   difficulty: number;
@@ -19,17 +18,17 @@ export class DungeonRoom extends Room<DungeonState> {
   clientMap = new WeakMap<Player, Client>();
 
   onInit (options) {
-    this.progress = options.progress || 1
-    this.difficulty = options.difficulty || 1
+    this.progress = options.progress || 1;
+    this.difficulty = options.difficulty || 1;
 
-    this.players = new WeakMap()
-    this.heroes = new WeakMap()
-    this.clientMap = new WeakMap()
+    this.players = new WeakMap();
+    this.heroes = new WeakMap();
+    this.clientMap = new WeakMap();
 
-    this.setState(new DungeonState(this.progress, this.difficulty))
+    this.setState(new DungeonState(this.progress, this.difficulty));
 
-    this.state.events.on('goto', this.onGoTo.bind(this))
-    this.state.events.on('sound', this.broadcastSound.bind(this))
+    this.state.events.on('goto', this.onGoTo.bind(this));
+    this.state.events.on('sound', this.broadcastSound.bind(this));
 
     setInterval( this.tick.bind(this), 1000 / TICK_RATE );
 
@@ -182,6 +181,8 @@ export class DungeonRoom extends Room<DungeonState> {
     this.clientMap.delete(player)
     this.heroes.delete(client)
     this.state.removePlayer(player)
+
+    this.resetAutoDisposeTimeout(60 * 2);
   }
 
   tick () {

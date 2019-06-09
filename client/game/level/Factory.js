@@ -92,64 +92,65 @@ export default class Factory {
         break;
 
       // TODO: refactor me.
-      // items
-      case helpers.ENTITIES.BOOK_BLUE:
-      case helpers.ENTITIES.BOOK_GREEN:
-      case helpers.ENTITIES.BOOK_RED:
-      case helpers.ENTITIES.BOOK_REGULAR:
-      case helpers.ENTITIES.BOOK_YELLOW:
-      case helpers.ENTITIES.BOOK:
-      case helpers.ENTITIES.BOOTS_BLUE:
-      case helpers.ENTITIES.BOOTS_GOLD_BLUE:
-      case helpers.ENTITIES.BOOTS_GOLD_GREEN:
-      case helpers.ENTITIES.BOOTS_GOLD_RED:
-      case helpers.ENTITIES.BOOTS_GOLD:
-      case helpers.ENTITIES.BOOTS_GREEN:
-      case helpers.ENTITIES.BOOTS_METAL_BLUE:
-      case helpers.ENTITIES.BOOTS_METAL_GOLD:
-      case helpers.ENTITIES.BOOTS_METAL_GREEN:
-      case helpers.ENTITIES.BOOTS_METAL_RED:
-      case helpers.ENTITIES.BTORCHOOTS_METAL:
-      case helpers.ENTITIES.BOOTS_RED:
-      case helpers.ENTITIES.BOOTS_REGULAR:
-      case helpers.ENTITIES.BOOTS_SUPERIOR:
-      case helpers.ENTITIES.BOOTS:
-      case helpers.ENTITIES.DIAMOND:
-      case helpers.ENTITIES.ELIXIR_HEAL:
-      case helpers.ENTITIES.ELIXIR_POTION:
-      case helpers.ENTITIES.GOLD_BAG:
-      case helpers.ENTITIES.GOLD:
-      case helpers.ENTITIES.HAT_SUPERIOR:
-      case helpers.ENTITIES.HAT:
-      case helpers.ENTITIES.HELMET_CAP:
-      case helpers.ENTITIES.HELMET_METAL_GOLD:
-      case helpers.ENTITIES.HELMET_METAL:
-      case helpers.ENTITIES.KNIFE_SUPERIOR:
-      case helpers.ENTITIES.KNIFE:
-      case helpers.ENTITIES.LIFE_HEAL:
-      case helpers.ENTITIES.LIFE_POTION:
-      case helpers.ENTITIES.LITTLE_MACE_SUPERIOR:
-      case helpers.ENTITIES.LITTLE_MACE:
-      case helpers.ENTITIES.LONG_SWORD_BLUE:
-      case helpers.ENTITIES.LONG_SWORD_GREEN:
-      case helpers.ENTITIES.LONG_SWORD_RED:
-      case helpers.ENTITIES.LONG_SWORD:
-      case helpers.ENTITIES.MANA_HEAL:
-      case helpers.ENTITIES.MANA_POTION:
-      case helpers.ENTITIES.SHIELD_METAL_GOLD:
-      case helpers.ENTITIES.SHIELD_METAL:
-      case helpers.ENTITIES.SHIELD_WOOD_METAL:
-      case helpers.ENTITIES.SHIELD_WOOD_SUPERIOR:
-      case helpers.ENTITIES.SHIELD_WOOD:
-      case helpers.ENTITIES.STICK_SUPERIOR:
-      case helpers.ENTITIES.STICK:
-      case helpers.ENTITIES.SWORD_BLUE:
-      case helpers.ENTITIES.SWORD_GREEN:
-      case helpers.ENTITIES.SWORD_RED:
-      case helpers.ENTITIES.SWORD:
-      case helpers.ENTITIES.TORCH:
+      // All the rest are items.
+      default:
         element = new Item(data)
         break;
+      // case helpers.ENTITIES.BOOK_BLUE:
+      // case helpers.ENTITIES.BOOK_GREEN:
+      // case helpers.ENTITIES.BOOK_RED:
+      // case helpers.ENTITIES.BOOK_REGULAR:
+      // case helpers.ENTITIES.BOOK_YELLOW:
+      // case helpers.ENTITIES.BOOK:
+      // case helpers.ENTITIES.BOOTS_BLUE:
+      // case helpers.ENTITIES.BOOTS_GOLD_BLUE:
+      // case helpers.ENTITIES.BOOTS_GOLD_GREEN:
+      // case helpers.ENTITIES.BOOTS_GOLD_RED:
+      // case helpers.ENTITIES.BOOTS_GOLD:
+      // case helpers.ENTITIES.BOOTS_GREEN:
+      // case helpers.ENTITIES.BOOTS_METAL_BLUE:
+      // case helpers.ENTITIES.BOOTS_METAL_GOLD:
+      // case helpers.ENTITIES.BOOTS_METAL_GREEN:
+      // case helpers.ENTITIES.BOOTS_METAL_RED:
+      // case helpers.ENTITIES.BTORCHOOTS_METAL:
+      // case helpers.ENTITIES.BOOTS_RED:
+      // case helpers.ENTITIES.BOOTS_REGULAR:
+      // case helpers.ENTITIES.BOOTS_SUPERIOR:
+      // case helpers.ENTITIES.BOOTS:
+      // case helpers.ENTITIES.DIAMOND:
+      // case helpers.ENTITIES.ELIXIR_HEAL:
+      // case helpers.ENTITIES.ELIXIR_POTION:
+      // case helpers.ENTITIES.MANA_HEAL:
+      // case helpers.ENTITIES.MANA_POTION:
+      // case helpers.ENTITIES.LIFE_HEAL:
+      // case helpers.ENTITIES.LIFE_POTION:
+      // case helpers.ENTITIES.GOLD_BAG:
+      // case helpers.ENTITIES.GOLD:
+      // case helpers.ENTITIES.HAT_SUPERIOR:
+      // case helpers.ENTITIES.HAT:
+      // case helpers.ENTITIES.HELMET_CAP:
+      // case helpers.ENTITIES.HELMET_METAL_GOLD:
+      // case helpers.ENTITIES.HELMET_METAL:
+      // case helpers.ENTITIES.KNIFE_SUPERIOR:
+      // case helpers.ENTITIES.KNIFE:
+      // case helpers.ENTITIES.LITTLE_MACE_SUPERIOR:
+      // case helpers.ENTITIES.LITTLE_MACE:
+      // case helpers.ENTITIES.LONG_SWORD_BLUE:
+      // case helpers.ENTITIES.LONG_SWORD_GREEN:
+      // case helpers.ENTITIES.LONG_SWORD_RED:
+      // case helpers.ENTITIES.LONG_SWORD:
+      // case helpers.ENTITIES.SHIELD_METAL_GOLD:
+      // case helpers.ENTITIES.SHIELD_METAL:
+      // case helpers.ENTITIES.SHIELD_WOOD_METAL:
+      // case helpers.ENTITIES.SHIELD_WOOD_SUPERIOR:
+      // case helpers.ENTITIES.SHIELD_WOOD:
+      // case helpers.ENTITIES.STICK_SUPERIOR:
+      // case helpers.ENTITIES.STICK:
+      // case helpers.ENTITIES.SWORD_BLUE:
+      // case helpers.ENTITIES.SWORD_GREEN:
+      // case helpers.ENTITIES.SWORD_RED:
+      // case helpers.ENTITIES.SWORD:
+      // case helpers.ENTITIES.TORCH:
     }
 
     this.fixTilePosition(element.position, data.position.y, data.position.x)

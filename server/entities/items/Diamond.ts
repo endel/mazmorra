@@ -1,26 +1,27 @@
 import { Item } from "../Item";
 import helpers from "../../../shared/helpers";
+import { Player } from "../Player";
 
-export class Gold extends Item {
+export class Diamond extends Item {
   amount: number;
 
   constructor (amount: number) {
     super()
-    this.type = (amount >= 100) ? helpers.ENTITIES.GOLD_BAG : helpers.ENTITIES.GOLD;
+    this.type = helpers.ENTITIES.DIAMOND;
     this.amount = amount;
   }
 
   // you cannot really use gold...
   use(player, state) { return true; }
 
-  pick (player, state) {
+  pick (player: Player, state) {
     //
     // FIXME!
     // This is necessary to preserve updated position of player.
     //
     setTimeout(() => {
-      player.gold += this.amount;
-      state.createTextEvent("+" + this.amount, player.position, 'yellow', 100);
+      player.diamond += this.amount;
+      state.createTextEvent("+" + this.amount, player.position, 'blue', 100);
       state.events.emit("sound", "coin", player);
     }, 1);
 

@@ -44,9 +44,9 @@ export class Unit extends Entity {
 
   @type("string") direction: UnitDirection;
 
-  @type(Bar) hp = new Bar(50);
-  @type(Bar) mp = new Bar(0);
-  @type(Bar) xp = new Bar(0, 10);
+  @type(Bar) hp = new Bar("hp", 50);
+  @type(Bar) mp = new Bar("mp", 0);
+  @type(Bar) xp = new Bar("xp", 0, 10);
 
   @type(UnitAttributes) attributes = new UnitAttributes();
   @type("string") primaryAttribute: Attribute;
@@ -106,13 +106,15 @@ export class Unit extends Entity {
     // hit | mana | experience points
     this.hp.current = hero.hp || 100;
     this.mp.current = hero.mp || 0;
-    this.xp.set(hero.xp || 0, 100); // TOOD: max xp must be a formula against `lvl`
+    this.xp.set(hero.xp || 0, 50); // TOOD: max xp must be a formula against `lvl`
 
     const directions: UnitDirection[] = ['bottom', 'left', 'top', 'right'];
     this.direction = directions[ Math.floor(Math.random() * directions.length) ];
 
     this.position = new Movement(this);// FIXME:
     this.position.events.on('move', this.onMove.bind(this));
+
+    this.xp.events.on("lvl-up", this.onLevelUp.bind(this));
   }
 
   recalculateStatsModifiers() {
@@ -248,15 +250,7 @@ export class Unit extends Entity {
 
     // compute experience this unit received by killing another one
     // var xp =  unit.lvl / (this.lvl / 2)
-    var xp =  unit.lvl / (this.lvl / 4)
-
-    // level up!
-    if (this.xp.current + xp > this.xp.max) {
-      xp = (this.xp.current + xp) - this.xp.max
-      this.levelUp()
-    }
-
-    this.xp.current += xp
+    this.xp.increment(unit.lvl / (this.lvl / 4));
   }
 
   updateDirection(x: number, y: number) {
@@ -267,20 +261,20 @@ export class Unit extends Entity {
       this.direction = 'right';
 
     } else if (this.position.x < x) {
-      this.direction = 'bottom'
+      this.direction = 'bottom';
 
     } else if (this.position.x > x) {
-      this.direction = 'top'
+      this.direction = 'top';
 
     } else if (this.position.y > y) {
-      this.direction = 'left'
+      this.direction = 'left';
 
     } else if (this.position.y < y) {
-      this.direction = 'right'
+      this.direction = 'right';
     }
   }
 
-  levelUp () {
+  onLevelUp () {
     this.lvl ++
 
     // upgrade attributes

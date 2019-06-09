@@ -47,6 +47,30 @@ var helpers = {
 
       NPC: '20',
 
+      GOLD: 'gold',
+      GOLD_BAG: 'gold-bag',
+      DIAMOND: 'diamond',
+
+      HP_POTION_1: 'hp-potion-1',
+      HP_POTION_2: 'hp-potion-2',
+      HP_POTION_3: 'hp-potion-3',
+      HP_POTION_4: 'hp-potion-4',
+
+      MP_POTION_1: 'mp-potion-1',
+      MP_POTION_2: 'mp-potion-2',
+      MP_POTION_3: 'mp-potion-3',
+      MP_POTION_4: 'mp-potion-4',
+
+      XP_POTION_1: 'xp-potion-1',
+      XP_POTION_2: 'xp-potion-2',
+      XP_POTION_3: 'xp-potion-3',
+      XP_POTION_4: 'xp-potion-4',
+
+      ELIXIR_POTION_1: 'elixir-potion-1',
+      ELIXIR_POTION_2: 'elixir-potion-2',
+      ELIXIR_POTION_3: 'elixir-potion-3',
+      ELIXIR_POTION_4: 'elixir-potion-4',
+
       // items 100~400
       BOOK_BLUE: 'book-blue',
       BOOK_GREEN: 'book-green',
@@ -67,11 +91,7 @@ var helpers = {
       BOOTS_RED: 'boots-red',
       BOOTS_REGULAR: 'boots-regular',
       BOOTS_SUPERIOR: 'boots-superior',
-      DIAMOND: 'diamond',
-      ELIXIR_HEAL: 'elixir-heal',
-      ELIXIR_POTION: 'elixir-potion',
-      GOLD_BAG: 'gold-bag',
-      GOLD: 'gold',
+
       HAT_SUPERIOR: 'hat-superior',
       HAT: 'hat',
       HELMET_METAL_GOLD: 'helmet-metal-gold',
@@ -79,16 +99,12 @@ var helpers = {
       HELMET_CAP: 'helmet-cap',
       KNIFE_SUPERIOR: 'knife-superior',
       KNIFE: 'knife',
-      LIFE_HEAL: 'hp-potion-1',
-      LIFE_POTION: 'hp-potion-2',
       LITTLE_MACE_SUPERIOR: 'little-mace-superior',
       LITTLE_MACE: 'little-mace',
       LONG_SWORD_BLUE: 'long-sword-blue',
       LONG_SWORD_GREEN: 'long-sword-green',
       LONG_SWORD_RED: 'long-sword-red',
       LONG_SWORD: 'long-sword',
-      MANA_HEAL: 'mana-potion-1',
-      MANA_POTION: 'mana-potion-2',
       SHIELD_METAL_GOLD: 'shield-metal-gold',
       SHIELD_METAL: 'shield-metal',
       SHIELD_WOOD_METAL: 'shield-wood-metal',

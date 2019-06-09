@@ -12,8 +12,7 @@ import { Item }  from "../entities/Item";
 
 // items
 import { Gold }  from "../entities/items/Gold";
-import { LifeHeal }  from "../entities/items/consumable/LifeHeal";
-import { ManaHeal }  from "../entities/items/consumable/ManaHeal";
+import { Potion }  from "../entities/items/consumable/Potion";
 
 // interactive
 import { Door, DoorDestiny, DoorProgress }  from "../entities/interactive/Door";
@@ -27,6 +26,7 @@ import { BootItem } from "../entities/items/equipable/BootItem";
 import { HelmetItem } from "../entities/items/equipable/HelmetItem";
 import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 import { EquipableItem } from "../entities/items/EquipableItem";
+import { Diamond } from "../entities/items/Diamond";
 
 export interface DungeonRoom {
   position: Point;
@@ -303,7 +303,8 @@ export class RoomUtils {
     // 0.5% unique item
     // 0.5% diamonds!
 
-    const chance = this.rand.floatBetween(0, 1);
+    // const chance = this.rand.floatBetween(0, 1);
+    let chance = 0.6
 
     let itemToDrop: Item;
 
@@ -318,17 +319,17 @@ export class RoomUtils {
       // potion
       } else if (chance < 0.75) {
 
+        itemToDrop = new Potion();
         const potionChance = this.rand.floatBetween(0, 1);
+
         if (potionChance < 0.7) {
-          return new LifeHeal();
+          itemToDrop.addModifier({ attr: "hp", modifier: 10 });
 
         } else if (potionChance < 0.95) {
-          return new ManaHeal();
+          itemToDrop.addModifier({ attr: "mp", modifier: 10 });
 
         } else {
-          console.log("XP POTION");
-          // CREATE XP POTION
-          // return new ManaHeal();
+          itemToDrop.addModifier({ attr: "xp", modifier: 10 });
 
         }
 
@@ -375,7 +376,8 @@ export class RoomUtils {
 
       } else if (chance >= 0.99) {
         // drop diamond!
-        console.log("DROP DIAMOND!");
+        const amount = this.rand.intBetween(1, 2);
+        itemToDrop = new Diamond(amount);
 
       }
     } else {
