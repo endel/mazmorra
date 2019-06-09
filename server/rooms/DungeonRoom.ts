@@ -134,7 +134,14 @@ export class DungeonRoom extends Room<DungeonState> {
 
   broadcastSound (soundName, player) {
     if (player) {
-      this.send(this.clientMap.get(player), ["sound", soundName]);
+      const client = this.clientMap.get(player);
+
+      if (client) {
+        this.send(this.clientMap.get(player), ["sound", soundName]);
+
+      } else {
+        console.log("trying to broadcast sound to NPC. skip.");
+      }
 
     } else {
       this.broadcast(["sound", soundName]);
