@@ -2,7 +2,7 @@ import { ConsumableItem } from "../ConsumableItem";
 import helpers from "../../../../shared/helpers";
 import { Unit } from "../../Unit";
 import { DungeonState } from "../../../rooms/states/DungeonState";
-import { Entity } from "../../Entity";
+import { Door, DoorDestiny, DoorProgress } from "../../interactive/Door";
 
 export class Scroll extends ConsumableItem {
 
@@ -13,16 +13,18 @@ export class Scroll extends ConsumableItem {
   }
 
   use(unit: Unit, state: DungeonState) {
-    console.log("PROGRESS:", state.progress);
+    if (state.progress === 1) {
+      console.log("CANNOT USE SCROLL ON THE VILLAGE.");
+      return false;
+    }
 
-    if (unit.mp.current > 10 && state.progress !== 1) {
-
-      const portal = new Entity();
+    if (unit.mp.current > 10) {
+      const portal = new Door(unit.position, new DoorDestiny({
+        progress: DoorProgress.HOME
+      }));
       portal.type = helpers.ENTITIES.PORTAL;
-      portal.position.set(unit.position);
 
       state.entities[portal.id] = portal;
-
       return true;
 
     } else {

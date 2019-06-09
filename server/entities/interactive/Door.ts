@@ -12,8 +12,8 @@ export enum DoorProgress {
 }
 
 interface DoorDestinyOptions {
-  difficulty: number;
   progress: number;
+  difficulty?: number;
   identifier?: string;
   mapkind?: string;
 }

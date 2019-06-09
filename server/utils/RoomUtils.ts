@@ -246,11 +246,11 @@ export class RoomUtils {
           agility: 1,
           intelligence: 1,
         }, {
-          // damage: 2
+          damage: this.rand.intBetween(0, 1)
         });
-        enemy.state = this.state
-        enemy.position.set(position)
-        return enemy
+        enemy.state = this.state;
+        enemy.position.set(position);
+        return enemy;
       })
     }
   }
