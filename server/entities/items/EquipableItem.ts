@@ -35,7 +35,7 @@ export abstract class EquipableItem extends Item {
   pick (unit: Unit, state: DungeonState) {
     let success = false;
 
-    if (this.use(unit, state)) {
+    if (unit.equipedItems.isSlotAvailable(this.slotName) && this.use(unit, state)) {
       success = true;
 
     } else {
