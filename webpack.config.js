@@ -1,16 +1,16 @@
-var path = require('path')
-var webpack = require('webpack')
+const path = require('path')
+const webpack = require('webpack')
 
-var SpritesheetPlugin = require('./webpack/SpritesheetPlugin')
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var AudioSprite = require("audiosprite-loader");
+const SpritesheetPlugin = require('./webpack/SpritesheetPlugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const AudioSprite = require("audiosprite-loader");
 
 // var stylusLoader = ExtractTextPlugin.extract("style-loader", "css-loader!stylus-loader");
-var stylusLoader = ExtractTextPlugin.extract({ fallback: "style-loader", use: ["css-loader", "stylus-loader"] })
-
+const stylusLoader = ExtractTextPlugin.extract({ fallback: "style-loader", use: ["css-loader", "stylus-loader"] })
+const mode = process.env.NODE_ENV || "development";
 
 module.exports = {
-  mode: "development",
+  mode,
   entry: './client/main.js',
 
   output: {
