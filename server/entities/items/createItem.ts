@@ -9,9 +9,12 @@ import { BootItem } from "./equipable/BootItem";
 import { HelmetItem } from "./equipable/HelmetItem";
 import { DBItem } from "../../db/Hero";
 import { EquipableItem } from "./EquipableItem";
+import { Scroll } from "./consumable/Scroll";
 
 export function createItem(data: Item | DBItem, position?: Point): Item {
   let item: Item;
+
+  console.log("createItem: ", data.type);
 
   switch (data.type) {
     // Consumables
@@ -32,27 +35,26 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
     case helpers.ENTITIES.ELIXIR_POTION_3:
     case helpers.ENTITIES.ELIXIR_POTION_4:
       item = new Potion();
-      item.type = data.type;
       break;
 
     case helpers.ENTITIES.SHIELD_WOOD:
       item = new ShieldItem();
-      item.type = data.type;
     break;
 
     case helpers.ENTITIES.SWORD:
       item = new WeaponItem();
-      item.type = data.type;
     break;
 
     case helpers.ENTITIES.BOOTS_REGULAR:
       item = new BootItem();
-      item.type = data.type;
     break;
 
     case helpers.ENTITIES.HELMET_CAP:
       item = new HelmetItem();
-      item.type = data.type;
+    break;
+
+    case helpers.ENTITIES.SCROLL:
+      item = new Scroll();
     break;
 
     // // Default
@@ -71,6 +73,7 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
     });
   }
 
+  item.type = data.type;
   item.position.set(position);
 
   return item;

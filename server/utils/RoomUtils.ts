@@ -27,6 +27,7 @@ import { HelmetItem } from "../entities/items/equipable/HelmetItem";
 import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 import { EquipableItem } from "../entities/items/EquipableItem";
 import { Diamond } from "../entities/items/Diamond";
+import { Scroll } from "../entities/items/consumable/Scroll";
 
 export interface DungeonRoom {
   position: Point;
@@ -303,13 +304,13 @@ export class RoomUtils {
     // 0.5% unique item
     // 0.5% diamonds!
 
-    // const chance = this.rand.floatBetween(0, 1);
-    let chance = 0.6
+    const chance = this.rand.floatBetween(0, 1);
 
-    let itemToDrop: Item;
+    let itemToDrop: Item = new Scroll();
 
     // 0~10% don't drop anything.
-    if (chance >= 0.1) {
+    if (false) {
+    // if (chance >= 0.1) {
 
       // gold
       if (chance < 0.5) {

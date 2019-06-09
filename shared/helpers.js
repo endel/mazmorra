@@ -47,36 +47,45 @@ var helpers = {
 
       NPC: '20',
 
+      // gold / diamond
       GOLD: 'gold',
       GOLD_BAG: 'gold-bag',
       DIAMOND: 'diamond',
 
+      // potions
       HP_POTION_1: 'hp-potion-1',
       HP_POTION_2: 'hp-potion-2',
       HP_POTION_3: 'hp-potion-3',
       HP_POTION_4: 'hp-potion-4',
-
       MP_POTION_1: 'mp-potion-1',
       MP_POTION_2: 'mp-potion-2',
       MP_POTION_3: 'mp-potion-3',
       MP_POTION_4: 'mp-potion-4',
-
       XP_POTION_1: 'xp-potion-1',
       XP_POTION_2: 'xp-potion-2',
       XP_POTION_3: 'xp-potion-3',
       XP_POTION_4: 'xp-potion-4',
-
       ELIXIR_POTION_1: 'elixir-potion-1',
       ELIXIR_POTION_2: 'elixir-potion-2',
       ELIXIR_POTION_3: 'elixir-potion-3',
       ELIXIR_POTION_4: 'elixir-potion-4',
 
-      // items 100~400
-      BOOK_BLUE: 'book-blue',
-      BOOK_GREEN: 'book-green',
+      // scrolls / books
+      SCROLL: 'scroll-regular',
+      SCROLL_RED: 'scroll-red',
+      SCROLL_GREEN: 'scroll-green',
+      SCROLL_BLUE: 'scroll-blue',
+
+      BOOK: 'book-regular',
       BOOK_RED: 'book-red',
-      BOOK_REGULAR: 'book-regular',
+      BOOK_GREEN: 'book-green',
+      BOOK_BLUE: 'book-blue',
       BOOK_YELLOW: 'book-yellow',
+
+      // skills
+      PORTAL: 'portal',
+
+      // BOOTS
       BOOTS_BLUE: 'boots-blue',
       BOOTS_GOLD_BLUE: 'boots-gold-blue',
       BOOTS_GOLD_GREEN: 'boots-gold-green',
@@ -92,11 +101,14 @@ var helpers = {
       BOOTS_REGULAR: 'boots-regular',
       BOOTS_SUPERIOR: 'boots-superior',
 
+      // HATS
       HAT_SUPERIOR: 'hat-superior',
       HAT: 'hat',
       HELMET_METAL_GOLD: 'helmet-metal-gold',
       HELMET_METAL: 'helmet-metal',
       HELMET_CAP: 'helmet-cap',
+
+      // WEAPONS
       KNIFE_SUPERIOR: 'knife-superior',
       KNIFE: 'knife',
       LITTLE_MACE_SUPERIOR: 'little-mace-superior',

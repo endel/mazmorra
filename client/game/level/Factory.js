@@ -14,6 +14,7 @@ import Aesthetic from '../../elements/Aesthetic'
 import LightPole from '../../elements/LightPole'
 import Door from '../../elements/Door'
 import TextEvent from '../../elements/TextEvent'
+import Portal from '../../elements/Portal';
 
 import { getClientId } from '../../core/network'
 
@@ -53,48 +54,52 @@ export default class Factory {
         break;
 
       case helpers.ENTITIES.ENEMY:
-        element = new Enemy(data)
+        element = new Enemy(data);
         break;
 
       case helpers.ENTITIES.PLAYER:
-        element = new Character(data)
+        element = new Character(data);
         if (data.id !== getClientId()) {
-          element.addBehaviour(new HasLifebar, this)
+          element.addBehaviour(new HasLifebar, this);
         }
         break;
 
       case helpers.ENTITIES.NPC:
-        element = new NPC(data)
+        element = new NPC(data);
         break;
 
       case helpers.ENTITIES.LIGHT:
-        element = new LightPole()
+        element = new LightPole();
+        break;
+
+      case helpers.ENTITIES.PORTAL:
+        element = new Portal(data);
         break;
 
       case helpers.ENTITIES.AESTHETICS:
-        element = new Aesthetic()
+        element = new Aesthetic();
         break;
 
       case helpers.ENTITIES.ROCK:
-        element = new Rock()
+        element = new Rock();
         break;
 
       case helpers.ENTITIES.CHEST:
-        element = new Chest(data)
+        element = new Chest(data);
         break;
 
       case helpers.ENTITIES.FOUNTAIN:
-        element = new Fountain(data)
+        element = new Fountain(data);
         break;
 
       case helpers.ENTITIES.TEXT_EVENT:
-        element = new TextEvent(data)
+        element = new TextEvent(data);
         break;
 
       // TODO: refactor me.
       // All the rest are items.
       default:
-        element = new Item(data)
+        element = new Item(data);
         break;
       // case helpers.ENTITIES.BOOK_BLUE:
       // case helpers.ENTITIES.BOOK_GREEN:
