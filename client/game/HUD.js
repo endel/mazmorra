@@ -69,7 +69,7 @@ export default class HUD extends THREE.Scene {
 
     // Label
     this.levelText = new MeshText2D("Village", {
-      font: config.SMALL_FONT,
+      font: config.DEFAULT_FONT,
       fillStyle: '#fff',
       align: textAlign.right,
       antialias: false
