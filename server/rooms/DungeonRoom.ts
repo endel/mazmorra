@@ -93,6 +93,10 @@ export class DungeonRoom extends Room<DungeonState> {
       const { inventoryType, itemId } = value;
       player.useItem(inventoryType, itemId);
 
+    } else if (key == 'cast') {
+      const { inventoryType, itemId, position } = value;
+      player.castItem(inventoryType, itemId, position);
+
     } else if (key == 'drop-item') {
       const { inventoryType, itemId } = value;
       player.dropItem(inventoryType, itemId);

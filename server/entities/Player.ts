@@ -6,6 +6,8 @@ import { DBHero } from "../db/Hero";
 import { MoveEvent } from "../core/Movement";
 import { EquipedItems } from "../core/EquipedItems";
 import { EquipableItem } from "./items/EquipableItem";
+import { Point } from "../rooms/states/DungeonState";
+import { CastableItem } from "./items/CastableItem";
 
 export class SkinProperties extends Schema {
   @type("number") klass: number;
@@ -52,6 +54,17 @@ export class Player extends Unit {
     const item: Item = inventory.slots[itemId];
 
     if (item && item.use(this, this.state)) {
+      inventory.remove(itemId);
+    }
+  }
+
+  castItem(inventoryType: InventoryType, itemId: string, position: Point) {
+    const inventory = this[inventoryType];
+    const item: CastableItem = inventory.slots[itemId];
+
+    console.log({ inventoryType, itemId, position });
+
+    if (item && item.cast(this, this.state, position)) {
       inventory.remove(itemId);
     }
   }

@@ -6,8 +6,13 @@ import LightOscillator from '../behaviors/LightOscillator'
 class PortalBehaviour extends Behaviour {
   onAttach() {
     const light = new THREE.PointLight(0x1c80e4, 2, 15);
-    light.addBehaviour(new LightOscillator, 0.8, 1.2);
     light.position.set(0, 1.5, 0);
+
+    App.tweens.
+      add(light).
+      from({ intensity: 0 }, 800, Tweener.ease.quartOut).
+      then(() => light.addBehaviour(new LightOscillator, 0.8, 1.2));
+
     this.object.add(light);
 
     var currentTexture = 0;
@@ -46,11 +51,11 @@ export default class Portal extends THREE.Object3D {
     // animate portal
     App.tweens.
       add(this.sprite.material).
-      from({ opacity: 0 }, 500, Tweener.ease.cubicInOut);
+      from({ opacity: 0 }, 500, Tweener.ease.quartOut);
 
     App.tweens.
       add(this.sprite.position).
-      from({y: -1.5}, 700, Tweener.ease.cubicOut);
+      from({y: -1.5}, 1000, Tweener.ease.quartOut);
 
     this.sprite.scale.normalizeWithTexture(this.frames[0])
     this.addBehaviour(new PortalBehaviour());

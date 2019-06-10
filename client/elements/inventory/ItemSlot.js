@@ -100,6 +100,11 @@ export default class ItemSlot extends THREE.Object3D {
   onDragStart(e) {
     hint.hide();
 
+    if (App.cursor.isPerformingCast()) {
+      draggingFrom.item = App.cursor.castingItem;
+      App.cursor.cancelItemCast();
+    }
+
     let targetSlot = e.target
     if (targetSlot.item) {
 
@@ -181,16 +186,26 @@ export default class ItemSlot extends THREE.Object3D {
   }
 
   onDoubleClick(e) {
-    let targetSlot = e.target
+    const targetSlot = e.target;
+    const item = targetSlot.item;
 
-    if (targetSlot.item) {
-      // attach inventory type for sending to room handler.
-      this.dispatchEvent({
-        type: "use-item",
-        bubbles: true,
-        itemId: targetSlot.item.userData.itemId,
-        inventoryType: this.parent.inventoryType
-      });
+    if (item) {
+      const itemData = item.userData.item;
+
+      if (itemData.isCastable) {
+        draggingFrom = targetSlot;
+        App.cursor.prepareItemCast(item, itemData);
+
+      } else {
+        // attach inventory type for sending to room handler.
+        this.dispatchEvent({
+          type: "use-item",
+          bubbles: true,
+          itemId: targetSlot.item.userData.itemId,
+          inventoryType: this.parent.inventoryType
+        });
+
+      }
 
     } else {
       e.stopPropagation = true;

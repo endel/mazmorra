@@ -364,16 +364,33 @@ export default class Level extends THREE.Object3D {
   playerAction (targetPosition) {
     if (!this.targetPosition) return;
 
-    this.clickedTileLight.intensity = 1
-    this.clickedTileLight.position.copy(this.selectionLight.position)
-    this.clickedTileLight.target = this.selectionLight.target
+    if (App.cursor.isPerformingCast()) {
+      const castingItem = App.cursor.castingItem;
 
-    const moveCommand = {
-      x: this.targetPosition.x,
-      y: this.targetPosition.y,
-    };
+      this.room.send(['cast', {
+        inventoryType: castingItem.userData.inventoryType,
+        itemId: castingItem.userData.itemId,
+        position: {
+          // FIXME: why need to invert here?
+          x: this.targetPosition.y,
+          y: this.targetPosition.x,
+        }
+      }]);
 
-    this.room.send(['move', moveCommand]);
+      App.cursor.performItemCast();
+
+    } else {
+      this.clickedTileLight.intensity = 1
+      this.clickedTileLight.position.copy(this.selectionLight.position)
+      this.clickedTileLight.target = this.selectionLight.target
+
+      const moveCommand = {
+        x: this.targetPosition.x,
+        y: this.targetPosition.y,
+      };
+
+      this.room.send(['move', moveCommand]);
+    }
   }
 
   playerActionDrop() {

@@ -1,10 +1,10 @@
-import { ConsumableItem } from "../ConsumableItem";
 import helpers from "../../../../shared/helpers";
 import { Unit } from "../../Unit";
-import { DungeonState } from "../../../rooms/states/DungeonState";
+import { DungeonState, Point } from "../../../rooms/states/DungeonState";
 import { Door, DoorDestiny, DoorProgress } from "../../interactive/Door";
+import { CastableItem } from "../CastableItem";
 
-export class Scroll extends ConsumableItem {
+export class Scroll extends CastableItem {
 
   constructor () {
     super();
@@ -12,16 +12,14 @@ export class Scroll extends ConsumableItem {
     this.type = helpers.ENTITIES.SCROLL;
   }
 
-  use(unit: Unit, state: DungeonState) {
+  cast (unit: Unit, state: DungeonState, position?: Point) {
     if (state.progress === 1) {
       console.log("CANNOT USE SCROLL ON THE VILLAGE.");
       return false;
     }
 
     if (unit.mp.current > 10) {
-      const portal = new Door(unit.position, new DoorDestiny({
-        progress: DoorProgress.HOME
-      }));
+      const portal = new Door(position, new DoorDestiny({ progress: DoorProgress.HOME }));
       portal.type = helpers.ENTITIES.PORTAL;
 
       state.entities[portal.id] = portal;
@@ -33,5 +31,8 @@ export class Scroll extends ConsumableItem {
 
     return false;
   }
+
+  // you cannot use this.
+  use(player, state) { return false; }
 
 }
