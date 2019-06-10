@@ -30,7 +30,6 @@ export class Scroll extends CastableItem {
       return true;
 
     } else {
-      console.log("TODO: NOT ENOUGH MANA!");
       state.createTextEvent(`Not enough mana`, unit.position, 'white', 100);
     }
 

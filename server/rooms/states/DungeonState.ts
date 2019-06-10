@@ -46,6 +46,7 @@ export class DungeonState extends Schema {
 
   rooms: any;
   players: {[id: string]: Player} = {};
+  isPVPAllowed = false;
 
   gridUtils: GridUtils;
   roomUtils: RoomUtils;
@@ -308,12 +309,22 @@ export class DungeonState extends Schema {
       unit.position.target = this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit, 'isAlive')
         || targetEntity
 
-      // TODO: refactor me
-      if (
+      let isValidBattleAction = (
         unit.position.target instanceof Unit &&
         unit.position.target.isAlive &&
         unit.position.target !== unit // prevent user from attacking himself
+      );
+
+      // prevent player-vs-player attacks
+      if (
+        !this.isPVPAllowed &&
+        unit instanceof Player &&
+        unit.position.target instanceof Player
       ) {
+        isValidBattleAction = false;
+      }
+
+      if (isValidBattleAction) {
         // create attack action
         unit.attack(unit.position.target);
 
