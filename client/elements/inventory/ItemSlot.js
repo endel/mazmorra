@@ -101,7 +101,6 @@ export default class ItemSlot extends THREE.Object3D {
     hint.hide();
 
     if (App.cursor.isPerformingCast()) {
-      draggingFrom.item = App.cursor.castingItem;
       App.cursor.cancelItemCast();
     }
 
@@ -194,7 +193,7 @@ export default class ItemSlot extends THREE.Object3D {
 
       if (itemData.isCastable) {
         draggingFrom = targetSlot;
-        App.cursor.prepareItemCast(item, itemData);
+        App.cursor.prepareItemCast(item, draggingFrom);
 
       } else {
         // attach inventory type for sending to room handler.

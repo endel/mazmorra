@@ -18,9 +18,13 @@ export class Scroll extends CastableItem {
       return false;
     }
 
-    if (unit.mp.current > 10) {
+    const mpCost = 10;
+
+    if (unit.mp.current >= mpCost) {
       const portal = new Door(position, new DoorDestiny({ progress: DoorProgress.HOME }));
       portal.type = helpers.ENTITIES.PORTAL;
+
+      unit.mp.increment(-mpCost);
 
       state.entities[portal.id] = portal;
       return true;

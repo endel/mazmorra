@@ -54,14 +54,16 @@ export default class Cursor extends THREE.Object3D {
     return this.castingItem !== undefined;
   }
 
-  prepareItemCast(item) {
+  prepareItemCast(item, itemSlot) {
     this.onUpdateCursor({ kind: "magic" });
     this.add(item);
     this.castingItem = item;
+    this.castingItemSlot = itemSlot;
   }
 
   performItemCast() {
     this.remove(this.castingItem);
+    this.castingItemSlot.item = this.castingItem;
     this.castingItem = undefined;
     this.onUpdateCursor({ kind: "pointer" });
   }
