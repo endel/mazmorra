@@ -1,4 +1,5 @@
 import config from "../../config";
+import { humanize } from "../../utils";
 
 class Hint  {
   constructor() {
@@ -45,9 +46,7 @@ class Hint  {
     // <img src="images/sprites/items-${item.type}.png" width="${sprite.item.scale.x}" height="${sprite.item.scale.y}" />
 
     return `
-<h2>
-  ${item.type}
-</h2>
+<h2>${humanize(item.type)}</h2>
 ${(
 (item.modifiers && item.modifiers.length > 0)
   ?
@@ -59,7 +58,7 @@ ${(
           : equipedItemModifier.modifier;
 
         return `
-          <string>${modifier.attr}</strong> ${(modifier.modifier > 0) ? "+" : ""}
+          <string>${humanize(modifier.attr)}</strong> ${(modifier.modifier > 0) ? "+" : ""}
           ${modifier.modifier}
           ${(modifier.modifier > equipedModifier)
             ? `<small class="increase">(+ ${(modifier.modifier - equipedModifier).toFixed(2)})</small>`

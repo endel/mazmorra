@@ -346,22 +346,22 @@ export class RoomUtils {
         switch (itemType) {
           case 0:
             itemToDrop = new ShieldItem();
-            itemToDrop.type = helpers.ENTITIES.SHIELD_WOOD;
+            itemToDrop.type = helpers.ENTITIES.SHIELD_1;
             break;
 
           case 1:
             itemToDrop = new WeaponItem();
-            itemToDrop.type = helpers.ENTITIES.SWORD;
+            itemToDrop.type = helpers.ENTITIES.WEAPON_1;
             break;
 
           case 2:
             itemToDrop = new BootItem();
-            itemToDrop.type = helpers.ENTITIES.BOOTS_REGULAR;
+            itemToDrop.type = helpers.ENTITIES.BOOTS_1;
             break;
 
           case 3:
             itemToDrop = new HelmetItem();
-            itemToDrop.type = helpers.ENTITIES.HELMET_CAP;
+            itemToDrop.type = helpers.ENTITIES.HELMET_1;
             break;
 
           case 4:
