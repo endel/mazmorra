@@ -95,7 +95,7 @@ export default class HUD extends THREE.Scene {
     this.overlay.visible = false
 
     window.hud = this;
-    window.addEventListener("keypress", this.onKeyPress.bind(this));
+    window.addEventListener("keydown", this.onKeyPress.bind(this));
 
     this.resize()
   }
@@ -120,7 +120,12 @@ export default class HUD extends THREE.Scene {
   onKeyPress (e) {
     if (
       e.which === Keycode.I + 32 || e.which === Keycode.I ||
-      e.which === Keycode.B + 32 || e.which === Keycode.B
+      e.which === Keycode.B + 32 || e.which === Keycode.B ||
+      (
+        // close the inventory hitting ESC if  {
+        this.openInventoryButton.isOpen &&
+        e.key === "Escape"
+      )
     ) {
       // open inventory pressing "i" or "b"
       this.openInventoryButton.onClick();
