@@ -15,6 +15,12 @@ export type Attribute = 'strength' | 'agility' | 'intelligence';
 export type InventoryType = 'inventory' | 'quickInventory';
 
 export type StatsModifiers = {
+  // temporary
+  hp?: number;
+  mp?: number;
+  xp?: number;
+
+  // permanent
   strength: number;
   agility: number;
   intelligence: number;

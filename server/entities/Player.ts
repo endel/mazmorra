@@ -62,8 +62,6 @@ export class Player extends Unit {
     const inventory = this[inventoryType];
     const item: CastableItem = inventory.slots[itemId];
 
-    console.log({ inventoryType, itemId, position });
-
     if (item && item.cast(this, this.state, position)) {
       inventory.remove(itemId);
     }

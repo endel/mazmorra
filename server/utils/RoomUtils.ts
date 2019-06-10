@@ -306,11 +306,11 @@ export class RoomUtils {
 
     const chance = this.rand.floatBetween(0, 1);
 
-    let itemToDrop: Item = new Scroll();
+    let itemToDrop: Item;
+    // itemToDrop = new Scroll();
 
     // 0~10% don't drop anything.
-    if (false) {
-    // if (chance >= 0.1) {
+    if (chance >= 0.1) {
 
       // gold
       if (chance < 0.5) {
@@ -395,11 +395,13 @@ export class RoomUtils {
 
     } else if (item instanceof WeaponItem) {
       const modifier = this.rand.intBetween(1, 2);
+      item.addModifier({ attr: "attackSpeed", modifier: 10 });
       item.addModifier({ attr: "damage", modifier });
 
     } else if (item instanceof BootItem) {
       const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
       item.addModifier({ attr: "armor", modifier });
+      item.addModifier({ attr: "movementSpeed", modifier: 5 });
 
     } else if (item instanceof HelmetItem) {
       const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;

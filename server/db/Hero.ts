@@ -1,13 +1,14 @@
 import { ObjectId, mongoose } from "@colyseus/social";
-import { Attribute } from "../entities/Unit";
+import { Attribute, StatsModifiers } from "../entities/Unit";
 
 const Schema = mongoose.Schema
+
 
 /**
  * Attribute modifier
  */
 export interface DBAttributeModifier {
-  attr: string,
+  attr: keyof StatsModifiers,
   modifier: number
 }
 

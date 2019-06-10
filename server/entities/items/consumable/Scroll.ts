@@ -14,7 +14,7 @@ export class Scroll extends CastableItem {
 
   cast (unit: Unit, state: DungeonState, position?: Point) {
     if (state.progress === 1) {
-      console.log("CANNOT USE SCROLL ON THE VILLAGE.");
+      state.createTextEvent(`Not allowed.`, unit.position, 'white', 100);
       return false;
     }
 
