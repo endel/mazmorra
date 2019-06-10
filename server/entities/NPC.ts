@@ -19,7 +19,7 @@ export class NPC extends Player {
   }
 
   updateMovementSpeed () {
-    this.statsModifiers.movementSpeed = -this.state.rand.intBetween(60, 80);
+    this.statsModifiers.movementSpeed = -this.state.rand.intBetween(200, 300);
   }
 
   update (currentTime) {
