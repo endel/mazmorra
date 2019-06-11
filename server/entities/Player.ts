@@ -78,6 +78,7 @@ export class Player extends Unit {
 
     if (item && switchItem) {
       // @colyseus/schema workaround
+      // without workaround: https://github.com/colyseus/schema/issues/26
       if ((toInventory instanceof EquipedItems)) {
         console.log(item.toJSON());
         console.log("is EquipableItem??", item instanceof EquipableItem);
@@ -89,7 +90,6 @@ export class Player extends Unit {
         }
 
       } else {
-        // without workaround: https://github.com/colyseus/schema/issues/26
         fromInventory.remove(itemId);
         toInventory.remove(switchItemId);
 
