@@ -26,6 +26,8 @@ export class Player extends Unit {
 
   @type("number") latestProgress: number;
 
+  shouldSaveCoords: boolean = false;
+
   constructor (id, hero: DBHero) {
     super(id, hero)
     this.type = helpers.ENTITIES.PLAYER

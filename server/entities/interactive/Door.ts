@@ -44,6 +44,12 @@ export class Door extends Interactive {
 
   interact (moveEvent, player, state) {
     state.events.emit('goto', player, this.destiny);
+
+    // remove portal when using it.
+    if (this.type === helpers.ENTITIES.PORTAL) {
+      player.shouldSaveCoords = true;
+      state.removeEntity(this);
+    }
   }
 
 }

@@ -229,11 +229,18 @@ export class DungeonState extends Schema {
     var player = new Player(client.id, hero)
     player.state = this
 
-    if (hero.currentProgress <= this.progress) {
+    if (
+      this.progress !== 1 &&
+      hero.currentCoords &&
+      this.roomUtils.isValidTile(hero.currentCoords) // room may have been expired
+    ) {
+      player.position.set(hero.currentCoords);
+
+    } else if (hero.currentProgress <= this.progress) {
       player.position.set(this.roomUtils.startPosition)
 
     } else {
-      player.position.set(this.roomUtils.endPosition)
+      player.position.set(this.roomUtils.endPosition);
     }
 
     this.addEntity(player)
@@ -248,9 +255,12 @@ export class DungeonState extends Schema {
   }
 
   dropItemFrom (unit: Unit, item?: Item) {
-    if (unit instanceof Player && this.isPVPAllowed) {
+    if (unit instanceof Player ) {
+
       // drop one equipped item from player
-      item = unit.equipedItems.dropRandomItem();
+      if (this.isPVPAllowed) {
+        item = unit.equipedItems.dropRandomItem();
+      }
 
     } else if (!item) {
       // create random drop item
@@ -292,6 +302,9 @@ export class DungeonState extends Schema {
   }
 
   move (unit: Unit, destiny: Point, allowChangeTarget: boolean = true) {
+    // dead units cannot move!
+    if (!unit.isAlive) { return; }
+
     const targetEntity = this.gridUtils.getEntityAt(destiny.x, destiny.y);
     const allowedPath = this.pathgrid.clone();
 

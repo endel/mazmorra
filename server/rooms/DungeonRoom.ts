@@ -165,6 +165,15 @@ export class DungeonRoom extends Room<DungeonState> {
     const inventory = Object.values(player.inventory.slots).map(slot => slot.toJSON());
     const equipedItems = Object.values(player.equipedItems.slots).map(slot => slot.toJSON());
 
+    const additionalData: {[id: string]: any} = { quickInventory, inventory, equipedItems };
+
+    if (this.state.progress !== 1) {
+    // saved coords are used when entering Portals.
+      additionalData.currentCoords = (player.shouldSaveCoords)
+        ? { x: player.position.x, y: player.position.y }
+        : null;
+    }
+
     // sync
     await Hero.updateOne({ _id: hero._id }, {
       $set: {
@@ -175,9 +184,7 @@ export class DungeonRoom extends Room<DungeonState> {
         mp: player.mp.current,
         xp: player.xp.current,
 
-        quickInventory,
-        inventory,
-        equipedItems
+        ...additionalData
       }
     });
 

@@ -59,6 +59,11 @@ export class RoomUtils {
     this.endPosition = this.getRandomDoorPosition(this.rooms[ this.rooms.length-1 ])
   }
 
+  isValidTile(position: Point) {
+    const tile = this.state.grid[position.x + this.state.width * position.y]
+    return tile & helpers.TILE_TYPE.FLOOR;
+  }
+
   getRandomDoorPosition (room: DungeonRoom) {
     var possiblePositions = []
       , positions = this.cache.get(room)
