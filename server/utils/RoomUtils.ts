@@ -28,6 +28,7 @@ import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 import { EquipableItem } from "../entities/items/EquipableItem";
 import { Diamond } from "../entities/items/Diamond";
 import { Scroll } from "../entities/items/consumable/Scroll";
+import { MONSTERS_BY_MAP, MONSTER_BASE_ATTRIBUTES } from "./ProgressionConfig";
 
 export interface DungeonRoom {
   position: Point;
@@ -197,62 +198,47 @@ export class RoomUtils {
     const maxEnemies = (room.size.x * room.size.y) / 10; // this.state.progress * 2
     let numEnemies = this.rand.intBetween(minEnemies, maxEnemies);
 
-    const enemyList = [
-      'bat',
-      'rat',
-      'spider',
-      // 'spider-medium',
-      // 'spider-giant',
-      // 'slime',
-      // 'slime-cube',
-      // 'slime-2',
-      // 'slime-big',
+    const daylightMonsters = MONSTERS_BY_MAP[this.state.mapkind].day;
+    const nightMonsters = MONSTERS_BY_MAP[this.state.mapkind].night;
 
-      // 'eye',
-      // 'fairy',
-      // 'fat-zombie',
-      // 'flying-eye',
-      // 'frog',
-      // 'spider-giant',
-      // 'glass-eye',
-      // 'goblin-2',
-      // 'goblin-3',
-      // 'goblin-boss',
-      // 'goblin',
-      // 'golem',
-      // 'lava-ogre',
-      // 'lava-totem',
-      // 'minion',
-      // 'monkey',
-      // 'octopus-boss',
-      // 'owl',
-      // 'rabbit',
-      // 'scorpio-boss',
-      // 'skeleton-2',
-      // 'skeleton',
-      // 'snow-goblin-boss',
-      // 'snow-minion-2',
-      // 'snow-minion',
-      // 'witch',
-      // 'zombie'
-    ];
+    const enemyList = (this.state.daylight)
+      ? daylightMonsters
+      : daylightMonsters.concat(nightMonsters);
 
     while (numEnemies--) {
       this.addEntity(room, (position) => {
-        const enemyType = enemyList[Math.floor((Math.random() * enemyList.length))];
-        const enemy = new Enemy(enemyType, {
-          primaryAttribute: "strength",
-          strength: 3,
-          agility: 1,
-          intelligence: 1,
-        }, {
-          damage: this.rand.intBetween(0, 1)
-        });
+        const enemyType = enemyList[this.rand.intBetween(0, enemyList.length-1)];
+
+        const enemyMinLevel = Math.ceil(this.state.progress / 6);
+        const enemyLevel = this.rand.intBetween(enemyMinLevel, enemyMinLevel + 1);
+
+        const enemy = this.createEnemy(enemyType, enemyLevel);
         enemy.state = this.state;
         enemy.position.set(position);
         return enemy;
       })
     }
+  }
+
+  createEnemy(type: string, lvl: number) {
+    const attributes = MONSTER_BASE_ATTRIBUTES[type];
+
+    const baseAttributes = {...attributes.base};
+    const modifiers = {...attributes.modifiers};
+
+    baseAttributes.lvl = lvl;
+
+    // level up enemy attributes
+    for (let i = 0; i < lvl; i++) {
+      baseAttributes.strength += 1;
+      baseAttributes.intelligence += 1;
+      baseAttributes.agility += 1;
+      baseAttributes[baseAttributes.primaryAttribute] += 1;
+    }
+
+    // TODO: generate better modififers.
+
+    return new Enemy(type, baseAttributes, modifiers);
   }
 
   populateNPCs (room: DungeonRoom) {
@@ -346,26 +332,30 @@ export class RoomUtils {
 
         switch (itemType) {
           case 0:
+            itemToDrop = new Scroll();
+            break;
+
+          case 1:
             itemToDrop = new ShieldItem();
             itemToDrop.type = helpers.ENTITIES.SHIELD_1;
             break;
 
-          case 1:
+          case 2:
             itemToDrop = new WeaponItem();
             itemToDrop.type = helpers.ENTITIES.WEAPON_1;
             break;
 
-          case 2:
+          case 3:
             itemToDrop = new BootItem();
             itemToDrop.type = helpers.ENTITIES.BOOTS_1;
             break;
 
-          case 3:
+          case 4:
             itemToDrop = new HelmetItem();
             itemToDrop.type = helpers.ENTITIES.HELMET_1;
             break;
 
-          case 4:
+          case 5:
             itemToDrop = new ArmorItem();
             itemToDrop.type = helpers.ENTITIES.ARMOR_1;
             break;

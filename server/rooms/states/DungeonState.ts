@@ -21,8 +21,9 @@ import { Item } from "../../entities/Item";
 import { TextEvent } from "../../entities/ephemeral/TextEvent";
 import { Interactive } from "../../entities/Interactive";
 import { Entity } from "../../entities/Entity";
-import { MoveEvent, Movement } from "../../core/Movement";
+import { MoveEvent } from "../../core/Movement";
 import { DBHero } from "../../db/Hero";
+import { MapType } from "../../utils/ProgressionConfig";
 
 export interface Point {
   x: number;
@@ -37,7 +38,7 @@ export class DungeonState extends Schema {
   @type("number") progress: number;
   @type("number") difficulty: number;
   @type("boolean") daylight: boolean;
-  @type("string") mapkind: string;
+  @type("string") mapkind: MapType;
 
   @type(["number"]) grid = new ArraySchema<number>();
   @type("number") width: number;
@@ -60,13 +61,14 @@ export class DungeonState extends Schema {
     this.progress = progress;
     this.difficulty = difficulty;
 
-    const serverMinutes = (new Date()).getMinutes();
-    this.daylight = (serverMinutes >= 30);
+    // const serverMinutes = (new Date()).getMinutes();
+    // this.daylight = (serverMinutes >= 30);
+    this.daylight = ((Math.floor(this.progress / 15)) % 2 === 0)
 
     let grid, rooms;
 
     if (progress === 1) {
-      this.mapkind = "castle";
+      this.mapkind = MapType.CASTLE;
       this.width = 12;
       this.height = 12;
       [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, { x: 10, y: 10}, { x: 12, y: 12 }, 1);
@@ -74,7 +76,7 @@ export class DungeonState extends Schema {
     } else {
       // ['grass', 'rock', 'ice', 'inferno', 'castle']
 
-      this.mapkind = 'rock';
+      this.mapkind = MapType.ROCK;
       // this.mapkind = 'rock-2';
       // this.mapkind = 'ice';
       // this.mapkind = 'grass';
@@ -220,10 +222,7 @@ export class DungeonState extends Schema {
   createPlayer (client, hero: DBHero) {
     // prevent hero from starting the game dead
     // when he dies and returns to lobby
-    if (
-      hero.hp <= 0 &&
-      this.progress === 1
-    ) {
+    if (hero.hp <= 0 && this.progress === 1) {
       hero.hp = 1;
     }
 
@@ -248,8 +247,15 @@ export class DungeonState extends Schema {
     this.removeEntity(player)
   }
 
-  dropItemFrom (unit, item?: Item) {
-    item = item || this.roomUtils.createRandomItem();
+  dropItemFrom (unit: Unit, item?: Item) {
+    if (unit instanceof Player && this.isPVPAllowed) {
+      // drop one equipped item from player
+      item = unit.equipedItems.dropRandomItem();
+
+    } else if (!item) {
+      // create random drop item
+      item = this.roomUtils.createRandomItem();
+    }
 
     // may not drop anything...
     if (item) {

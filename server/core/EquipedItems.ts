@@ -43,6 +43,23 @@ export class EquipedItems extends Inventory {
     }
   }
 
+  dropRandomItem() {
+    const equippedSlots: EquipmentSlot[] = [
+      EquipmentSlot.HEAD,
+      EquipmentSlot.BODY,
+      EquipmentSlot.LEFT,
+      EquipmentSlot.RIGHT,
+      EquipmentSlot.FEET
+    ].filter(slotName => this.isSlotAvailable(slotName));
+
+    const dropItemFromSlot = equippedSlots[Math.floor(Math.random() * equippedSlots.length)];
+
+    const item = this.getItem(dropItemFromSlot);
+    this.remove(dropItemFromSlot);
+
+    return item;
+  }
+
   remove(itemIdOrSlotName: string) {
     if (this.slots[itemIdOrSlotName]) {
       delete this.slots[itemIdOrSlotName];
