@@ -10,6 +10,7 @@ import { HelmetItem } from "./equipable/HelmetItem";
 import { DBItem } from "../../db/Hero";
 import { EquipableItem } from "./EquipableItem";
 import { Scroll } from "./consumable/Scroll";
+import { ArmorItem } from "./equipable/ArmorItem";
 
 export function createItem(data: Item | DBItem, position?: Point): Item {
   let item: Item;
@@ -71,6 +72,15 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
     case helpers.ENTITIES.WEAPON_7:
     case helpers.ENTITIES.WEAPON_8:
     case helpers.ENTITIES.WEAPON_9:
+    case helpers.ENTITIES.WEAPON_10:
+    case helpers.ENTITIES.BOW_1:
+    case helpers.ENTITIES.BOW_2:
+    case helpers.ENTITIES.BOW_3:
+    case helpers.ENTITIES.BOW_4:
+    case helpers.ENTITIES.WAND_1:
+    case helpers.ENTITIES.WAND_2:
+    case helpers.ENTITIES.WAND_3:
+    case helpers.ENTITIES.WAND_4:
       item = new WeaponItem();
     break;
 
@@ -81,6 +91,15 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
     case helpers.ENTITIES.BOOTS_5:
     case helpers.ENTITIES.BOOTS_6:
       item = new BootItem();
+    break;
+
+    case helpers.ENTITIES.ARMOR_1:
+    case helpers.ENTITIES.ARMOR_2:
+    case helpers.ENTITIES.ARMOR_3:
+    case helpers.ENTITIES.ARMOR_4:
+    case helpers.ENTITIES.ARMOR_5:
+    case helpers.ENTITIES.ARMOR_6:
+      item = new ArmorItem();
     break;
 
     case helpers.ENTITIES.HELMET_1:

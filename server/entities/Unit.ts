@@ -60,10 +60,6 @@ export class Unit extends Entity {
 
   @type("number") criticalBonus = 1.5; // damage * criticalBonus (on critical)
 
-  // attack attributes
-  @type("number") attackDistance = 1;
-  @type("number") attackSpeed = 1500;
-
   // 0~1
   evasion: number = 0.001;
   criticalStrikeChance: number = 0.1;
@@ -163,6 +159,10 @@ export class Unit extends Entity {
       - (this.statsModifiers.attackSpeed * 20)
       - (this.attributes.agility * 10)
     );
+  }
+
+  getAttackDistance() {
+    return 1 + this.statsModifiers.attackDistance;
   }
 
   getDamage() {

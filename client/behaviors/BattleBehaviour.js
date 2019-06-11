@@ -18,6 +18,7 @@ export default class BattleBehaviour extends Behaviour {
     this.isAttacking = false
     this.attackingPoint = { x: 0, z: 0 }
     this.defender = null
+    this.attackDistance = 1;
 
     if (this.object.sprite) {
       this.originalColor = this.object.sprite.material.color.getHex()
@@ -41,6 +42,7 @@ export default class BattleBehaviour extends Behaviour {
 
     this.defender = this.factory.level.entities[actionData.defenderId];
     this.attackingPoint = this.defender.position.clone();
+    this.attackDistance = actionData.attackDistance;
 
     // this.attackingPoint = { x: 0, z: 0 };
     // this.factory.fixTilePosition(this.attackingPoint, actionData.position.y, actionData.position.x)

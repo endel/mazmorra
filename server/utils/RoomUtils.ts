@@ -309,6 +309,12 @@ export class RoomUtils {
     let itemToDrop: Item;
     // itemToDrop = new Scroll();
 
+    itemToDrop = new WeaponItem();
+    itemToDrop.type = helpers.ENTITIES.BOW_1;
+    itemToDrop.addModifier({ attr: "attackDistance", modifier: 2 });
+    return itemToDrop;
+
+
     // 0~10% don't drop anything.
     if (chance >= 0.1) {
 
@@ -365,9 +371,8 @@ export class RoomUtils {
             break;
 
           case 4:
-            console.log("DROP ARMOR!");
-            // itemToDrop = new ArmorItem();
-            // itemToDrop.type = helpers.ENTITIES.SWORD;
+            itemToDrop = new ArmorItem();
+            itemToDrop.type = helpers.ENTITIES.ARMOR_1;
             break;
         }
 

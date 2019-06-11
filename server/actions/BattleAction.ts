@@ -12,6 +12,7 @@ export class BattleAction extends Action {
   @type("boolean") critical: boolean;
   @type(Position) position = new Position();
   @type("string") defenderId: string;
+  @type("number") attackDistance: number;
 
   attacker: Unit;
   defender: Unit;
@@ -24,6 +25,8 @@ export class BattleAction extends Action {
     this.attacker = attacker;
     this.defender = defender;
     this.defenderId = defender.id;
+
+    this.attackDistance = this.attacker.getAttackDistance();
   }
 
   get isEligible() {
@@ -31,13 +34,13 @@ export class BattleAction extends Action {
 
     // allow to attack in diagonal
     if (
-      Math.abs(this.attacker.position.x - this.defender.position.x) === 1 &&
-      Math.abs(this.attacker.position.y - this.defender.position.y) === 1
+      Math.abs(this.attacker.position.x - this.defender.position.x) >= 1 &&
+      Math.abs(this.attacker.position.y - this.defender.position.y) >= 1
     ) {
       _distance--;
     }
 
-    return this.defender.isAlive && (_distance <= this.attacker.attackDistance)
+    return this.defender.isAlive && (_distance <= this.attackDistance);
   }
 
   attack() {

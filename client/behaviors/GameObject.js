@@ -47,17 +47,17 @@ export default class GameObject extends Behaviour {
         , lerpTime = 0.09
 
       if (this.battleBehaviour && this.battleBehaviour.togglePosition) {
-        destX += (this.battleBehaviour.attackingPoint.x - this.nextPoint.x) / 1.5
-        destZ += (this.battleBehaviour.attackingPoint.z - this.nextPoint.z) / 1.5
+        const diffX = (this.battleBehaviour.attackingPoint.x - this.nextPoint.x);
+        const diffY = (this.battleBehaviour.attackingPoint.z - this.nextPoint.z);
 
-        // destX = this.battleBehaviour.attackingPoint.x;
-        // destZ = this.battleBehaviour.attackingPoint.z;
+        destX += diffX / (this.battleBehaviour.attackDistance + 0.5);
+        destZ += diffY / (this.battleBehaviour.attackDistance + 0.5);
 
         lerpTime = 0.2
       }
 
-      this.object.position.x = lerp(this.object.position.x, destX, lerpTime)
-      this.object.position.z = lerp(this.object.position.z, destZ, lerpTime)
+      this.object.position.x = lerp(this.object.position.x, destX, lerpTime);
+      this.object.position.z = lerp(this.object.position.z, destZ, lerpTime);
     }
   }
 

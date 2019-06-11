@@ -168,6 +168,27 @@ var helpers = {
       WEAPON_7: 'weapon-7',
       WEAPON_8: 'weapon-8',
       WEAPON_9: 'weapon-9',
+      WEAPON_10: 'weapon-10',
+
+      // BOWS
+      BOW_1: 'bow-1',
+      BOW_2: 'bow-2',
+      BOW_3: 'bow-3',
+      BOW_4: 'bow-4',
+
+      // WANDS
+      WAND_1: 'wand-1',
+      WAND_2: 'wand-2',
+      WAND_3: 'wand-3',
+      WAND_4: 'wand-4',
+
+      // ARMOR
+      ARMOR_1: 'armor-1',
+      ARMOR_2: 'armor-2',
+      ARMOR_3: 'armor-3',
+      ARMOR_4: 'armor-4',
+      ARMOR_5: 'armor-5',
+      ARMOR_6: 'armor-6',
 
       // SWORD: 'weapon-1',
       // LONG_SWORD_BLUE: 'long-sword-blue',
