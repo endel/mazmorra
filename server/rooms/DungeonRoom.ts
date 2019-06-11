@@ -82,6 +82,11 @@ export class DungeonRoom extends Room<DungeonState> {
       return
     }
 
+    if (!player.isAlive) {
+      console.log("a dead player cannot perform actions!");
+      return;
+    }
+
     if (key == 'move') {
       this.state.move(player, value, true)
 
