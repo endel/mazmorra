@@ -24,6 +24,7 @@ import { Entity } from "../../entities/Entity";
 import { MoveEvent } from "../../core/Movement";
 import { DBHero } from "../../db/Hero";
 import { MapType } from "../../utils/ProgressionConfig";
+import { NPC } from "../../entities/NPC";
 
 export interface Point {
   x: number;
@@ -297,9 +298,11 @@ export class DungeonState extends Schema {
         ) {
           if (entity instanceof Item && entity.pick(unit, this)) {
             this.removeEntity(entity);
-          }
 
-          if (entity instanceof Interactive) {
+          } else if (entity instanceof Interactive) {
+            entity.interact(moveEvent, unit, this);
+
+          } else if (entity instanceof NPC) {
             entity.interact(moveEvent, unit, this);
           }
         }

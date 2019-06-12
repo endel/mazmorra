@@ -23,6 +23,21 @@ export class NPC extends Player {
     this.statsModifiers.movementSpeed = -this.state.rand.intBetween(200, 300);
   }
 
+  interact (moveEvent, player, state) {
+    moveEvent.cancel();
+    this.updateDirection(player.position.x, player.position.y);
+
+    const genericMessages = [
+      "Take care out there",
+      "You gotta be stronger than them",
+      `We believe in your ${player.primaryAttribute}`
+    ]
+    state.createTextEvent(genericMessages[Math.floor(Math.random() * genericMessages.length)], this.position, 'white', 1000);
+
+    // prevent NPC from moving right after talking.
+    this.position.lastMove += 500;
+  }
+
   update (currentTime) {
     super.update(currentTime);
 
