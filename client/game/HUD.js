@@ -123,7 +123,7 @@ export default class HUD extends THREE.Scene {
       e.which === Keycode.B + 32 || e.which === Keycode.B ||
       (
         // close the inventory hitting ESC if  {
-        this.openInventoryButton.isOpen &&
+        this.isInventoryOpen() &&
         e.key === "Escape"
       )
     ) {
@@ -133,8 +133,11 @@ export default class HUD extends THREE.Scene {
     }
   }
 
-  onToggleInventory () {
+  isInventoryOpen () {
+    return this.openInventoryButton.isOpen;
+  }
 
+  onToggleInventory () {
     if (this.inventory.isOpen) {
       this.hideOverlay();
       inventorySound.close.play();

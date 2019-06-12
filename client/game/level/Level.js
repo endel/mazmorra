@@ -364,6 +364,12 @@ export default class Level extends THREE.Object3D {
   playerAction (targetPosition) {
     if (!this.targetPosition) return;
 
+    // force to close inventory if it's open.
+    if (this.hud.isInventoryOpen()) {
+      this.hud.openInventoryButton.onClick();
+      this.hud.onToggleInventory();
+    }
+
     if (App.cursor.isPerformingCast()) {
       const castingItem = App.cursor.castingItem;
 
