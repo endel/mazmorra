@@ -69,9 +69,16 @@ export class DungeonState extends Schema {
 
     if (progress === 1) {
       this.mapkind = MapType.CASTLE;
-      this.width = 12;
-      this.height = 12;
-      [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, { x: 10, y: 10}, { x: 12, y: 12 }, 1);
+      this.width = 11;
+      this.height = 11;
+
+      [grid, rooms] = dungeon.generate(
+        this.rand,
+        { x: this.width, y: this.height },
+        { x: this.width, y: this.height },
+        { x: this.width, y: this.height },
+        1
+      );
 
     } else {
       // ['grass', 'rock', 'ice', 'inferno', 'castle']

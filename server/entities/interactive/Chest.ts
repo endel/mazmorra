@@ -9,10 +9,14 @@ export class Chest extends Interactive {
 
   walkable = true;
 
-  constructor (position, kind: string) {
+  constructor (position, kind: string, isOpen = false) {
     super(helpers.ENTITIES.CHEST, position)
 
     this.kind = kind;
+
+    if (isOpen) {
+      this.action = new Action("open", false);
+    }
   }
 
   interact (moveEvent, player, state) {

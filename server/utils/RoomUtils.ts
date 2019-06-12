@@ -182,18 +182,67 @@ export class RoomUtils {
 
   populateLobby (rooms: DungeonRoom[]) {
     rooms.forEach(room => {
-      this.populateNPCs(room);
+      /**
+       * Marchant
+       */
+      const merchant = new NPC('merchant');
+      merchant.wanderer = false;
+      merchant.state = this.state;
+      merchant.position.set(room.position.x + Math.floor(room.size.x / 2), 1);
+      this.state.addEntity(merchant);
+
+      const merchantChest = new Chest({
+        x: merchant.position.x + 1,
+        y: merchant.position.y
+      }, 'chest', true);
+      merchantChest.walkable = false;
+      this.state.addEntity(merchantChest);
+
+      /**
+       * Elder
+       */
+      const elder = new NPC('elder');
+      elder.wanderer = false;
+      elder.state = this.state;
+      elder.position.set(1, room.position.y + Math.floor(room.size.y / 2));
+      this.state.addEntity(elder);
+
+      const elderChest = new Chest({
+        x: elder.position.x,
+        y: elder.position.y + 1
+      }, 'bucket', true);
+      elderChest.walkable = false;
+      this.state.addEntity(elderChest);
+
+      this.endPosition = {
+        x: elder.position.x,
+        y: elder.position.y - 3
+      };
 
       // add door
-      this.state.addEntity(new Door(this.endPosition, new DoorDestiny({
+      const door = new Door(this.endPosition, new DoorDestiny({
         difficulty: 1,
         progress: DoorProgress.LATEST
-      })));
+      }));
+      this.state.addEntity(door);
 
-      // create 3 fountains
-      for (let i=0; i<3; i++) {
-        this.addEntity(room, (position) => new Fountain(position))
-      }
+      // add guards and lady
+      ['guard', 'lady', 'woman'].forEach(kind => {
+        this.addEntity(room, (position) => {
+          var npc = new NPC(kind)
+          npc.state = this.state
+          npc.position.set(position)
+          return npc
+        })
+      });
+
+      // add 5 fountains in the center.
+      const centerY = Math.floor(room.size.y / 2);
+      this.state.addEntity(new Fountain({ x: room.position.x + room.size.x - 2, y: room.position.y + centerY }));
+      this.state.addEntity(new Fountain({ x: room.position.x + room.size.x - 2, y: room.position.y + centerY-1 }));
+      this.state.addEntity(new Fountain({ x: room.position.x + room.size.x - 2, y: room.position.y + centerY-2 }));
+      this.state.addEntity(new Fountain({ x: room.position.x + room.size.x - 2, y: room.position.y + centerY+1 }));
+      this.state.addEntity(new Fountain({ x: room.position.x + room.size.x - 2, y: room.position.y + centerY+2 }));
     })
   }
 
@@ -244,29 +293,6 @@ export class RoomUtils {
     // TODO: generate better modififers.
 
     return new Enemy(type, baseAttributes, modifiers);
-  }
-
-  populateNPCs (room: DungeonRoom) {
-    // const npcs = ['village-old-man', 'village-man', 'village-man-2',
-    //   'village-child', 'village-child-2', 'man', 'man-2', 'guard', 'village-woman',
-    //   'woman', 'woman-2', 'woman-3'];
-
-    const npcs = [
-      'merchant',
-      'elder',
-      'lady',
-      'guard',
-      'guard',
-    ];
-
-    npcs.forEach(kind => {
-      this.addEntity(room, (position) => {
-        var npc = new NPC(kind)
-        npc.state = this.state
-        npc.position.set(position)
-        return npc
-      })
-    });
   }
 
   populateAesthetics (room, qty) {

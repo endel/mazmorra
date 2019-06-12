@@ -7,6 +7,7 @@ import { Player } from "./Player";
 
 export class NPC extends Player {
   @type("string") kind: string;
+  wanderer: boolean = true;
 
   constructor (kind, npcHero = {}) {
     super(undefined, npcHero as any)
@@ -25,9 +26,14 @@ export class NPC extends Player {
   update (currentTime) {
     super.update(currentTime);
 
-    if (this.position.pending.length === 0) {
+    if (this.position.pending.length === 0 && this.wanderer) {
       this.updateMovementSpeed();
-      this.state.move(this, this.state.roomUtils.getRandomPosition());
+      const nextPosition = this.state.roomUtils.getRandomPosition();
+
+      // NPC's shouldn't walk over each other.
+      if (!this.state.gridUtils.getEntityAt(nextPosition.x, nextPosition.y)) {
+        this.state.move(this, nextPosition);
+      }
     }
   }
 
