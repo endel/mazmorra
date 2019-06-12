@@ -1,6 +1,6 @@
-import hint from "../hud/Hint"
+import hint from "./Hint"
 
-export default class BottleBar extends THREE.Object3D {
+export default class VerticalBar extends THREE.Object3D {
 
   constructor (type = 'hp') {
     super()
@@ -11,24 +11,24 @@ export default class BottleBar extends THREE.Object3D {
     this.attribute = type;
 
     this.bg = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: ResourceManager.get("hud-bar-bg"),
+      map: ResourceManager.get(`hud-bar-bg`),
       transparent: true
-    }))
-    this.bg.material.opacity = 0.6
-    this.add(this.bg)
+    }));
+    this.bg.material.opacity = 0.6;
+    this.add(this.bg);
 
     this.fg = new THREE.Sprite(new THREE.SpriteMaterial({
       map: ResourceManager.get("hud-" + type + "-bar-fill"),
       transparent: true
     }))
-    this.fg.scale.set(1, 2, 1)
-    this.fg.material.opacity = 0.85
-    this.add(this.fg)
+    this.fg.scale.set(1, 2, 1);
+    this.fg.material.opacity = 0.85;
+    this.add(this.fg);
 
-    this.scale.set(this.bg.material.map.frame.w * config.HUD_SCALE, this.bg.material.map.frame.h * config.HUD_SCALE, 1)
+    this.scale.set(this.bg.material.map.frame.w * config.HUD_SCALE, this.bg.material.map.frame.h * config.HUD_SCALE, 1);
 
-    this.width = this.bg.material.map.frame.w * config.HUD_SCALE
-    this.height = this.bg.material.map.frame.h * config.HUD_SCALE
+    this.width = this.bg.material.map.frame.w * config.HUD_SCALE;
+    this.height = this.bg.material.map.frame.h * config.HUD_SCALE;
 
     this.initialOffset = this.fg.material.map.offset.y
 

@@ -15,6 +15,10 @@ export default class Game {
 
 
     this.renderer = new THREE.WebGLRenderer();
+
+    // Use clipping for health bars?
+    // this.renderer.localClippingEnabled = true;
+
     // this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio( window.devicePixelRatio );
     this.renderer.setSize( window.innerWidth, window.innerHeight );

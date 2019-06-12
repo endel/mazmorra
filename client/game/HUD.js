@@ -2,8 +2,7 @@ import * as Keycode from "keycode.js";
 import Resources from '../elements/hud/Resources'
 
 import Character from '../elements/hud/Character'
-import BottleBar from '../elements/hud/BottleBar'
-import ExpBar from '../elements/hud/ExpBar'
+import HorizontalBar from '../elements/hud/HorizontalBar'
 import Cursor from '../elements/hud/Cursor'
 
 import HUDController from '../behaviors/HUDController'
@@ -30,12 +29,12 @@ export default class HUD extends THREE.Scene {
     this.add(this.cursor)
 
     // Expose cursor globally on app
-    App.cursor = this.cursor
+    App.cursor = this.cursor;
 
     // Life / Mana / Expr
-    this.manabar = new BottleBar('mp')
-    this.lifebar = new BottleBar('hp')
-    this.expbar = new ExpBar()
+    this.manabar = new HorizontalBar('mp');
+    this.lifebar = new HorizontalBar('hp');
+    this.expbar = new HorizontalBar('xp');
 
     // Inventory
     this.inventory = new Inventory()
@@ -81,10 +80,6 @@ export default class HUD extends THREE.Scene {
     // Character
     this.character = new Character()
 
-    // // Level Up Button
-    // this.levelUpButton = new LevelUpButton()
-    // this.add(this.levelUpButton)
-
     this.overlay = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({
       color: 0x000000,
       side: THREE.FrontSide,
@@ -101,20 +96,20 @@ export default class HUD extends THREE.Scene {
   }
 
   init () {
-    this.add( this.overlay )
-    this.add( this.manabar )
-    this.add( this.lifebar )
-    this.add( this.expbar )
-    this.add( this.selectionText )
-    this.add( this.levelText )
-    this.add( this.resources )
-    this.add( this.character )
+    this.add(this.overlay);
+    this.add(this.manabar);
+    this.add(this.lifebar);
+    this.add(this.expbar);
+    this.add(this.selectionText);
+    this.add(this.levelText);
+    this.add(this.resources);
+    this.add(this.character);
 
-    this.add( this.inventory )
-    this.add( this.quickInventory )
-    // this.add( this.skillsInventory )
+    this.add(this.inventory);
+    this.add(this.quickInventory);
+    // this.add(this.skillsInventory);
 
-    this.add( this.openInventoryButton )
+    this.add(this.openInventoryButton);
   }
 
   onKeyPress (e) {
@@ -133,10 +128,6 @@ export default class HUD extends THREE.Scene {
     }
   }
 
-  isInventoryOpen () {
-    return this.openInventoryButton.isOpen;
-  }
-
   onToggleInventory () {
     if (this.inventory.isOpen) {
       this.hideOverlay();
@@ -148,6 +139,10 @@ export default class HUD extends THREE.Scene {
     }
 
     this.inventory.toggleOpen()
+  }
+
+  isInventoryOpen () {
+    return this.openInventoryButton.isOpen;
   }
 
   showOverlay (duration = 200) {
@@ -208,8 +203,6 @@ export default class HUD extends THREE.Scene {
       0
     )
 
-    // this.levelUpButton.position.set( this.character.position.x + margin, this.character.position.y - this.levelUpButton.height + ( config.HUD_SCALE/3 * config.HUD_SCALE), 1)
-
     this.skillsInventory.position.x = - window.innerWidth / 2 + this.skillsInventory.width/2 + margin
     this.skillsInventory.position.y = - window.innerHeight / 2 + this.skillsInventory.slotSize/2 + margin
 
@@ -220,21 +213,22 @@ export default class HUD extends THREE.Scene {
       window.innerWidth / 2 - this.resources.width * config.HUD_MARGIN,
       window.innerHeight / 2 - this.resources.height * config.HUD_MARGIN,
       0
-    )
+    );
     this.openInventoryButton.position.set(
       this.resources.position.x,
       this.resources.position.y - this.resources.height - this.openInventoryButton.height - config.HUD_MARGIN - config.HUD_SCALE,
       0
-    )
-    this.quickInventory.position.x = this.resources.position.x - (margin/2)
+    );
+    this.quickInventory.position.x = this.resources.position.x - (margin/2);
     this.quickInventory.position.y = this.openInventoryButton.position.y - this.quickInventory.height - margin;
 
     //
     // BOTTOM
     //
-    this.lifebar.position.set(-this.lifebar.width -  config.HUD_SCALE * ( config.HUD_MARGIN * 3 ), - window.innerHeight / 2 + this.lifebar.height, 0)
-    this.manabar.position.set(this.manabar.width +  config.HUD_SCALE * ( config.HUD_MARGIN * 3 ), - window.innerHeight / 2 + this.lifebar.height, 0)
-    this.expbar.position.set(- config.HUD_SCALE/2, - window.innerHeight / 2 + this.expbar.height + ( config.HUD_MARGIN * 3), 0)
+    const bottom = - window.innerHeight / 2 + this.expbar.height + (config.HUD_MARGIN * 3);
+    this.lifebar.position.set(- config.HUD_SCALE / 2, bottom + this.lifebar.height + this.expbar.height + (config.HUD_MARGIN + config.HUD_SCALE), 0);
+    this.manabar.position.set(- config.HUD_SCALE / 2, bottom + this.expbar.height + (config.HUD_MARGIN + config.HUD_SCALE), 0);
+    this.expbar.position.set(- config.HUD_SCALE / 2, bottom, 0);
 
     // update orthogonal camera aspect ratio / projection matrix
     this.camera.aspect = window.innerWidth / window.innerHeight;
