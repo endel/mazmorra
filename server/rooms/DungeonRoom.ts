@@ -5,7 +5,7 @@ import { Hero, DBHero } from "../db/Hero";
 import { Player } from "../entities/Player";
 import { DoorProgress } from "../entities/interactive/Door";
 
-const TICK_RATE = 30
+const TICK_RATE = 20 // 20 ticks per second
 
 export class DungeonRoom extends Room<DungeonState> {
   maxClients = 8;
@@ -30,9 +30,7 @@ export class DungeonRoom extends Room<DungeonState> {
     this.state.events.on('goto', this.onGoTo.bind(this));
     this.state.events.on('sound', this.broadcastSound.bind(this));
 
-    setInterval( this.tick.bind(this), 1000 / TICK_RATE );
-
-    // this.setSimulationInterval( this.tick.bind(this), 1000 / TICK_RATE )
+    this.setSimulationInterval(() => this.tick(), 1000 / TICK_RATE);
   }
 
   async onAuth (options) {
