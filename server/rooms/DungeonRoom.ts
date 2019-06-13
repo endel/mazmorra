@@ -181,8 +181,13 @@ export class DungeonRoom extends Room<DungeonState> {
     await Hero.updateOne({ _id: hero._id }, {
       $set: {
         lvl: player.lvl,
+        strength: player.attributes.strength,
+        agility: player.attributes.agility,
+        intelligence: player.attributes.intelligence,
+
         gold: player.gold,
         diamond: player.diamond,
+
         hp: player.hp.current,
         mp: player.mp.current,
         xp: player.xp.current,
