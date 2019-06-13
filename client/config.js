@@ -27,7 +27,7 @@ module.exports = {
   HUD_SCALE: 6 / window.devicePixelRatio,
 
   DEFAULT_FONT: (Math.floor((7.5 / window.devicePixelRatio) * 5)) + "px primary",
-  SMALL_FONT: (Math.floor((5 / window.devicePixelRatio) * 5)) + "px primary",
+  SMALL_FONT: (Math.floor((5.5 / window.devicePixelRatio) * 5)) + "px primary",
 
   // player preferences
   classes: [

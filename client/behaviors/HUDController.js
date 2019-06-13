@@ -18,7 +18,7 @@ export default class HUDController extends Behaviour {
     // TODO: only update texts when they really change
     this.object.resources.goldAmount.text = this.playerObject.userData.gold.toString();
     this.object.resources.diamondAmount.text = this.playerObject.userData.diamond.toString();
-    this.object.character.levelText.text = "lvl: " + this.playerObject.userData.lvl;
+    this.object.character.update(this.playerObject.userData);
 
     this.setPercentage(this.object.lifebar, this.playerObject.userData.hp.current / this.playerObject.userData.hp.max, 'x');
     this.setPercentage(this.object.manabar, this.playerObject.userData.mp.current / this.playerObject.userData.mp.max, 'x');

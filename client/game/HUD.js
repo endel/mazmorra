@@ -130,10 +130,12 @@ export default class HUD extends THREE.Scene {
 
   onToggleInventory () {
     if (this.inventory.isOpen) {
+      this.character.onCloseInventory();
       this.hideOverlay();
       inventorySound.close.play();
 
     } else {
+      this.character.onOpenInventory();
       this.showOverlay();
       inventorySound.open.play();
     }
@@ -147,7 +149,7 @@ export default class HUD extends THREE.Scene {
 
   showOverlay (duration = 200) {
     this.overlay.visible = true
-    App.tweens.add(this.overlay.material).to({ opacity: 0.5 }, duration);
+    App.tweens.add(this.overlay.material).to({ opacity: 0.8 }, duration);
   }
 
   hideOverlay(duration = 200) {
