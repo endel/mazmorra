@@ -184,6 +184,7 @@ export class DungeonRoom extends Room<DungeonState> {
         strength: player.attributes.strength,
         agility: player.attributes.agility,
         intelligence: player.attributes.intelligence,
+        pointsToDistribute: player.pointsToDistribute,
 
         gold: player.gold,
         diamond: player.diamond,

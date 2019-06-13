@@ -74,6 +74,7 @@ export interface DBHero extends mongoose.Document {
   strength: number;
   agility: number;
   intelligence: number;
+  pointsToDistribute: number;
 
   inventory: DBItem[];
   equipedItems: DBItem[];
@@ -120,6 +121,7 @@ export const Hero = mongoose.model<DBHero>('Hero', new Schema<DBHero>({
   strength: { type: Number, default: ATTRIBUTE_BASE_VALUE },
   agility: { type: Number, default: ATTRIBUTE_BASE_VALUE },
   intelligence: { type: Number, default: ATTRIBUTE_BASE_VALUE },
+  pointsToDistribute: { type: Number, default: 0 },
 
   inventory: { type: [Item], default: [] },
   equipedItems: { type: [Item], default: [] },

@@ -1,5 +1,7 @@
 import { MeshText2D, textAlign } from 'three-text2d'
 import { MAX_CHAR_WIDTH, MAX_CHAR_HEIGHT, Resources } from '../character/Resources'
+import LevelUpButton from './LevelUpButton';
+import NearPlayerOpacity from '../../behaviors/NearPlayerOpacity';
 
 export default class Character extends THREE.Object3D {
 
@@ -87,9 +89,14 @@ export default class Character extends THREE.Object3D {
     this.attackDistanceText.position.x = margin * config.HUD_SCALE;
     this.attackDistanceText.position.y = this.attackDistanceIcon.position.y + this.attackDistanceIcon.height / 2;
 
+    // Level up button
+    this.lvlUpButton = new LevelUpButton();
+    this.lvlUpButton.position.y = this.attackDistanceIcon.position.y - this.attackDistanceIcon.height - (margin * 2);
+    this.lvlUpButton.addEventListener("click", () => this.onLevelUpClick());
+
     // Strength
     this.strIcon = ResourceManager.getHUDElement("icons-red");
-    this.strIcon.position.y = this.attackDistanceIcon.position.y - this.attackDistanceIcon.height - margin;
+    this.strIcon.position.y = this.attackDistanceIcon.position.y - this.attackDistanceIcon.height - (margin * 2);
 
     this.strText = new MeshText2D("0", {
       align: textAlign.left,
@@ -126,6 +133,25 @@ export default class Character extends THREE.Object3D {
     this.intText.position.x = margin * config.HUD_SCALE;
     this.intText.position.y = this.intIcon.position.y + this.intIcon.height / 2;
 
+    // Atribute lvl ups
+    this.strUpButton = new LevelUpButton();
+    this.strUpButton.position.x = this.strText.position.x + this.strText.width * config.HUD_SCALE;
+    this.strUpButton.position.y = this.strText.position.y - this.strIcon.height / 2;
+    this.strUpButton.addEventListener("click", this.onIncreaseAttribute.bind('strength'));
+    this.strUpButton.show();
+
+    this.agiUpButton = new LevelUpButton();
+    this.agiUpButton.position.x = this.agiText.position.x + this.agiText.width * config.HUD_SCALE;
+    this.agiUpButton.position.y = this.agiText.position.y - this.agiIcon.height / 2;
+    this.agiUpButton.addEventListener("click", this.onIncreaseAttribute.bind('agility'));
+    this.agiUpButton.show();
+
+    this.intUpButton = new LevelUpButton();
+    this.intUpButton.position.x = this.intText.position.x + this.intText.width * config.HUD_SCALE;
+    this.intUpButton.position.y = this.intText.position.y - this.intIcon.height / 2;
+    this.intUpButton.addEventListener("click", this.onIncreaseAttribute.bind('intelligence'));
+    this.intUpButton.show();
+
     this.add(this.sprite)
     this.add(this.levelText);
 
@@ -139,6 +165,14 @@ export default class Character extends THREE.Object3D {
     this.add(this.movementSpeedText);
     this.add(this.attackDistanceIcon)
     this.add(this.attackDistanceText);
+
+    this.lvlUpButton.show();
+
+    // lvl up buttons
+    this.add(this.lvlUpButton);
+    this.add(this.strUpButton);
+    this.add(this.agiUpButton);
+    this.add(this.intUpButton);
   }
 
   update (data) {
@@ -190,6 +224,19 @@ export default class Character extends THREE.Object3D {
     this.intText.text = intelligence;
   }
 
+  onLevelUpClick () {
+    const hud = this.parent;
+
+    if (!hud.inventory.isOpen) {
+      hud.openInventoryButton.onClick();// FIXME: this is repeated on at least 3 places.
+      hud.onToggleInventory();
+      this.onOpenInventory();
+    }
+  }
+
+  onIncreaseAttribute (attribute) {
+  }
+
   onOpenInventory () {
     this.add(this.strIcon)
     this.add(this.strText);
@@ -197,6 +244,15 @@ export default class Character extends THREE.Object3D {
     this.add(this.agiText);
     this.add(this.intIcon)
     this.add(this.intText);
+
+
+    if (this.lvlUpButton.isActive) {
+      this.lvlUpButton.hide();
+      this.strUpButton.show();
+      this.agiUpButton.show();
+      this.intUpButton.show();
+    }
+
     // this.add(this.attackSpeedIcon)
     // this.add(this.attackSpeedText);
     // this.add(this.movementSpeedIcon)
@@ -212,6 +268,11 @@ export default class Character extends THREE.Object3D {
     this.remove(this.agiText);
     this.remove(this.intIcon)
     this.remove(this.intText);
+
+    this.strUpButton.hide();
+    this.agiUpButton.hide();
+    this.intUpButton.hide();
+
     // this.remove(this.attackSpeedIcon)
     // this.remove(this.attackSpeedText);
     // this.remove(this.movementSpeedIcon)

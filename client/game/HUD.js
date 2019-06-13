@@ -75,19 +75,19 @@ export default class HUD extends THREE.Scene {
     })
 
     // Resources
-    this.resources = new Resources()
+    this.resources = new Resources();
 
     // Character
-    this.character = new Character()
+    this.character = new Character();
 
     this.overlay = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({
       color: 0x000000,
       side: THREE.FrontSide,
       transparent: true
     }));
-    this.overlay.position.z = -1
-    this.overlay.material.opacity = 0
-    this.overlay.visible = false
+    this.overlay.position.z = -1;
+    this.overlay.material.opacity = 0;
+    this.overlay.visible = false;
 
     window.hud = this;
     window.addEventListener("keydown", this.onKeyPress.bind(this));
