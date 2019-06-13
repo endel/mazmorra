@@ -88,6 +88,10 @@ export class DungeonRoom extends Room<DungeonState> {
     if (key == 'move') {
       this.state.move(player, value, true)
 
+    } else if (key == 'distribute-point') {
+      const { attribute } = value;
+      player.distributePoint(attribute);
+
     } else if (key == 'inventory-drag') {
       const { fromInventoryType, toInventoryType, itemId, switchItemId } = value;
       player.inventoryDrag(fromInventoryType, toInventoryType, itemId, switchItemId);

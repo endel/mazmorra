@@ -7,18 +7,23 @@ export default class HUDController extends Behaviour {
     this.playerObject = playerObject
 
     // events
-    this.on("update-inventory", this.onUpdateInventory.bind(this))
+    this.on("update-inventory", this.onUpdateInventory.bind(this));
+    this.on("update-attributes", this.onUpdateAttributes.bind(this));
   }
 
   onUpdateInventory(inventoryType) {
     this.object[inventoryType].updateItems();
   }
 
+  onUpdateAttributes (data) {
+    this.object.character.update(data);
+    // this.object.character.updateAttribute(attribute, value);
+  }
+
   update () {
     // TODO: only update texts when they really change
     this.object.resources.goldAmount.text = this.playerObject.userData.gold.toString();
     this.object.resources.diamondAmount.text = this.playerObject.userData.diamond.toString();
-    this.object.character.update(this.playerObject.userData);
 
     this.setPercentage(this.object.lifebar, this.playerObject.userData.hp.current / this.playerObject.userData.hp.max, 'x');
     this.setPercentage(this.object.manabar, this.playerObject.userData.mp.current / this.playerObject.userData.mp.max, 'x');

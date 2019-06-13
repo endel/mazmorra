@@ -129,7 +129,11 @@ export default class HUD extends THREE.Scene {
   }
 
   onToggleInventory () {
-    if (this.inventory.isOpen) {
+    const isOpen = this.inventory.isOpen;
+
+    this.inventory.toggleOpen();
+
+    if (isOpen) {
       this.character.onCloseInventory();
       this.hideOverlay();
       inventorySound.close.play();
@@ -139,8 +143,6 @@ export default class HUD extends THREE.Scene {
       this.showOverlay();
       inventorySound.open.play();
     }
-
-    this.inventory.toggleOpen()
   }
 
   isInventoryOpen () {

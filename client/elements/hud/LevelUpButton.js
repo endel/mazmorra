@@ -46,12 +46,18 @@ export default class LevelUpButton extends THREE.Object3D {
   }
 
   show () {
+    // skip if already active.
+    if (this.isActive) { return; }
+
     this.userData.hud = true;
     App.tweens.add(this.position).from({ x: this.position.x - 20 }, 300, Tweener.ease.cubicOut);
     App.tweens.add(this.sprite.material).to({ opacity: 1 }, 500, Tweener.ease.quadOut);
   }
 
   hide () {
+    // skip if not active already.
+    if (!this.isActive) { return; }
+
     this.userData.hud = undefined;
     App.tweens.add(this.sprite.material).to({ opacity: 0 }, 200, Tweener.ease.quadOut);
   }

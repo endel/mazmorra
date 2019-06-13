@@ -40,6 +40,7 @@ export default class Level extends THREE.Object3D {
     this.addEventListener("mouseout", this.onMouseOut.bind(this));
 
     App.cursor.addEventListener("mouseup", this.playerActionDrop.bind(this));
+    App.cursor.addEventListener("distribute-point", this.distributePoint.bind(this));
   }
 
   onClick (e) {
@@ -103,6 +104,9 @@ export default class Level extends THREE.Object3D {
         // SET GLOBAL CURRENT PLAYER OBJECT
         window.player = object;
         this.createPlayerBehaviour(object, entity);
+
+        // FIXME: this piece of code is duplicated.
+        this.hud.getEntity().emit('update-attributes', entity);
 
         /**
          * update inventory
@@ -173,6 +177,11 @@ export default class Level extends THREE.Object3D {
 
           } else if (change.field === "active" && change.value !== change.previousValue) {
             object.getEntity().emit('active', change.value);
+
+          } else if (change.field === "pointsToDistribute" && object.userData.id === getClientId()) {
+            // this.hud.getEntity().emit('update-attribute', 'pointsToDistribute', change.value);
+            // FIXME: this piece of code is duplicated
+            this.hud.getEntity().emit('update-attributes', entity);
           }
 
         }
@@ -397,6 +406,10 @@ export default class Level extends THREE.Object3D {
 
       this.room.send(['move', moveCommand]);
     }
+  }
+
+  distributePoint (event) {
+    this.room.send(['distribute-point', { attribute: event.attribute }]);
   }
 
   playerActionDrop() {

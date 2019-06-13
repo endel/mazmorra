@@ -25,6 +25,7 @@ export class Player extends Unit {
   @type("number") diamond: number;
 
   @type("number") latestProgress: number;
+  @type("number") pointsToDistribute: number;
 
   shouldSaveCoords: boolean = false;
 
@@ -47,6 +48,8 @@ export class Player extends Unit {
     this.gold = hero.gold || 0;
     this.diamond = hero.diamond || 0;
 
+    this.pointsToDistribute = hero.pointsToDistribute;
+
     this.hpRegeneration = 1;
     this.direction = "bottom";
   }
@@ -66,6 +69,17 @@ export class Player extends Unit {
 
     if (item && item.cast(this, this.state, position)) {
       inventory.remove(itemId);
+    }
+  }
+
+  distributePoint (attribute: string) {
+    if (
+      this.pointsToDistribute > 0 &&
+      typeof (this.attributes[attribute]) !== undefined
+    ) {
+      this.attributes[attribute]++;
+      console.log("INCREMENT", attribute, this.attributes[attribute]);
+      this.pointsToDistribute--;
     }
   }
 

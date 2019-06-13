@@ -57,7 +57,6 @@ export class Unit extends Entity {
   @type("number") lvl = 1;
   @type("string") primaryAttribute: Attribute;
   @type(UnitAttributes) attributes = new UnitAttributes();
-  pointsToDistribute: number;
 
   @type("number") criticalBonus = 1.5; // damage * criticalBonus (on critical)
 
