@@ -12,7 +12,7 @@ import { Item }  from "../entities/Item";
 
 // items
 import { Gold }  from "../entities/items/Gold";
-import { Potion }  from "../entities/items/consumable/Potion";
+import { Potion, POTION_1_MODIFIER }  from "../entities/items/consumable/Potion";
 
 // interactive
 import { Door, DoorDestiny, DoorProgress }  from "../entities/interactive/Door";
@@ -28,7 +28,7 @@ import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 import { EquipableItem } from "../entities/items/EquipableItem";
 import { Diamond } from "../entities/items/Diamond";
 import { Scroll } from "../entities/items/consumable/Scroll";
-import { MONSTERS_BY_MAP, MONSTER_BASE_ATTRIBUTES } from "./ProgressionConfig";
+import { MONSTER_BASE_ATTRIBUTES } from "./ProgressionConfig";
 
 export interface DungeonRoom {
   position: Point;
@@ -249,16 +249,22 @@ export class RoomUtils {
     const maxEnemies = (room.size.x * room.size.y) / 10; // this.state.progress * 2
     let numEnemies = this.rand.intBetween(minEnemies, maxEnemies);
 
-    const daylightMonsters = MONSTERS_BY_MAP[this.state.mapkind].day;
-    const nightMonsters = MONSTERS_BY_MAP[this.state.mapkind].night;
+    const enemyList = this.state.config.enemies;
+    const enemyNames = Object.keys(enemyList);
 
-    const enemyList = (this.state.daylight)
-      ? daylightMonsters
-      : daylightMonsters.concat(nightMonsters);
+    let currentRange = 0;
+    const enemyRange = [];
+    enemyNames.forEach((enemyId) => {
+      currentRange += enemyList[enemyId];
+      enemyRange.push(currentRange);
+    });
 
     while (numEnemies--) {
       this.addEntity(room, (position) => {
-        const enemyType = enemyList[this.rand.intBetween(0, enemyList.length-1)];
+        const rand = this.rand.floatBetween(0, 1);
+
+        const enemyTypeIndex = enemyRange.findIndex(range => rand <= range);
+        const enemyType = enemyNames[enemyTypeIndex];
 
         const enemyMinLevel = Math.ceil(this.state.progress / 6);
         const enemyLevel = this.rand.intBetween(enemyMinLevel, enemyMinLevel + 1);
@@ -339,13 +345,13 @@ export class RoomUtils {
         const potionChance = this.rand.floatBetween(0, 1);
 
         if (potionChance < 0.7) {
-          itemToDrop.addModifier({ attr: "hp", modifier: 10 });
+          itemToDrop.addModifier({ attr: "hp", modifier: POTION_1_MODIFIER });
 
         } else if (potionChance < 0.95) {
-          itemToDrop.addModifier({ attr: "mp", modifier: 10 });
+          itemToDrop.addModifier({ attr: "mp", modifier: POTION_1_MODIFIER });
 
         } else {
-          itemToDrop.addModifier({ attr: "xp", modifier: 10 });
+          itemToDrop.addModifier({ attr: "xp", modifier: POTION_1_MODIFIER });
 
         }
 

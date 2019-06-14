@@ -81,7 +81,6 @@ export default class Level extends THREE.Object3D {
         doorSound.play();
 
       } else if (evt === "trading-items") {
-        console.log(evt, data);
 
         // FIXME: this piece of code is repeated in many places!
         // force to open inventory if it's closed
@@ -90,7 +89,7 @@ export default class Level extends THREE.Object3D {
           this.hud.onToggleInventory();
         }
 
-        this.hud.inventory.setNPCTradingItems(data);
+        this.hud.inventory.setTradingItems(data);
 
       } else if (evt === "sound") {
         this.playSound(data);

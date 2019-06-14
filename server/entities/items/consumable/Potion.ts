@@ -3,6 +3,11 @@ import helpers from "../../../../shared/helpers";
 import { DBAttributeModifier } from "../../../db/Hero";
 import { Bar } from "../../../core/Bar";
 
+export const POTION_1_MODIFIER = 30;
+export const POTION_2_MODIFIER = 60;
+export const POTION_3_MODIFIER = 120;
+export const POTION_4_MODIFIER = 150;
+
 export class Potion extends ConsumableItem {
 
   constructor () {
@@ -12,13 +17,13 @@ export class Potion extends ConsumableItem {
   addModifier(modifier: DBAttributeModifier) {
     if (modifier.attr == "hp") {
 
-      if (modifier.modifier <= 10) {
+      if (modifier.modifier <= POTION_1_MODIFIER) {
         this.type = helpers.ENTITIES.HP_POTION_1;
 
-      } else if (modifier.modifier <= 40) {
+      } else if (modifier.modifier <= POTION_2_MODIFIER) {
         this.type = helpers.ENTITIES.HP_POTION_2;
 
-      } else if (modifier.modifier <= 80) {
+      } else if (modifier.modifier <= POTION_3_MODIFIER) {
         this.type = helpers.ENTITIES.HP_POTION_3;
 
       } else {
@@ -26,13 +31,13 @@ export class Potion extends ConsumableItem {
       }
 
     } else if (modifier.attr == "mp") {
-      if (modifier.modifier <= 10) {
+      if (modifier.modifier <= POTION_1_MODIFIER) {
         this.type = helpers.ENTITIES.MP_POTION_1;
 
-      } else if (modifier.modifier <= 40) {
+      } else if (modifier.modifier <= POTION_2_MODIFIER) {
         this.type = helpers.ENTITIES.MP_POTION_2;
 
-      } else if (modifier.modifier <= 80) {
+      } else if (modifier.modifier <= POTION_3_MODIFIER) {
         this.type = helpers.ENTITIES.MP_POTION_3;
 
       } else {
@@ -40,13 +45,13 @@ export class Potion extends ConsumableItem {
       }
 
     } else if (modifier.attr == "xp") {
-      if (modifier.modifier <= 10) {
+      if (modifier.modifier <= POTION_1_MODIFIER) {
         this.type = helpers.ENTITIES.XP_POTION_1;
 
-      } else if (modifier.modifier <= 40) {
+      } else if (modifier.modifier <= POTION_2_MODIFIER) {
         this.type = helpers.ENTITIES.XP_POTION_2;
 
-      } else if (modifier.modifier <= 80) {
+      } else if (modifier.modifier <= POTION_3_MODIFIER) {
         this.type = helpers.ENTITIES.XP_POTION_3;
 
       } else {

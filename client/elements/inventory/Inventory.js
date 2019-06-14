@@ -41,9 +41,12 @@ export default class Inventory extends THREE.Object3D {
     this.height = this.equipedItems.height;
   }
 
-  setNPCTradingItems (items) {
+  setTradingItems (items) {
+    console.log("ITEMS:", items);
+
     this.add(this.exchangeSymbol);
     this.add(this.purchaseSlots);
+
     this.isTrading = true;
   }
 

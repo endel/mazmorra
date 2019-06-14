@@ -89,7 +89,7 @@ export default class Cursor extends THREE.Object3D {
 
   onUpdateCursor (e) {
     // skip if on cast magic mode.
-    if (this.castingItem) {
+    if (this.castingItem || this.isDragging) {
       return false;
     }
 

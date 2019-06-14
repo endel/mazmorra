@@ -1,7 +1,7 @@
 import { DBHero } from "../db/Hero";
 import { StatsModifiers } from "../entities/Unit";
 
-export enum MapType {
+export enum MapKind {
   ROCK = 'rock',
   ROCK_2 = 'rock-2',
   ICE = 'ice',
@@ -49,40 +49,48 @@ export enum MapType {
 //   'zombie'
 // ];
 
-export type MapMonsterList = { day: string[], night: string[], boss?: string[] };
+export type MapMonsterList = {
+  day: {regular: string[], boss?: string[]},
+  night: { regular: string[], boss ?: string[] },
+};
 
-export const MONSTERS_BY_MAP: { [key in MapType]: MapMonsterList } = {
-  [MapType.ROCK]: {
-    day: ['bat', 'rat', 'spider'],
-    night: ['spider-medium', 'slime-cube'],
+export type MapConfig = {
+  daylight: boolean,
+  mapkind: MapKind,
+  enemies: {[id: string]: number},
+  boss?: string[]
+};
+
+export function getMapConfig(progress: number) {
+  if (progress === 1) {
+    // village / lobby!
+    return {
+      daylight: true,
+      mapkind: MapKind.CASTLE,
+      enemies: {}
+    }
+  } else {
+    const index = Math.floor(progress / 10);
+    return MAP_CONFIGS[index];
+  }
+}
+
+export const MAP_CONFIGS: MapConfig[] = [
+  {
+    daylight: true,
+    mapkind: MapKind.ROCK,
+    enemies: { 'bat': 0.33, 'rat': 0.33, 'spider': 0.33, 'spider-medium': 0.01 },
     boss: ['spider-giant']
   },
 
-  [MapType.ROCK_2]: {
-    day: [],
-    night: [],
+  {
+    daylight: false,
+    mapkind: MapKind.ROCK,
+    enemies: { 'slime': 0.33, 'slime-2': 0.33, 'skeleton': 0.33, 'slime-cube': 0.01, },
+    boss: ['slime-big']
   },
 
-  [MapType.ICE]: {
-    day: [],
-    night: [],
-  },
-
-  [MapType.GRASS]: {
-    day: [],
-    night: [],
-  },
-
-  [MapType.INFERNO]: {
-    day: [],
-    night: [],
-  },
-
-  [MapType.CASTLE]: {
-    day: [],
-    night: [],
-  },
-}
+];
 
 export const MONSTER_BASE_ATTRIBUTES: {
   [id: string]: {
@@ -139,6 +147,42 @@ export const MONSTER_BASE_ATTRIBUTES: {
     }
   },
 
+  'spider-giant': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 6,
+      agility: 3,
+      intelligence: 1,
+    },
+    modifiers: {
+      damage: 3
+    }
+  },
+
+  'slime': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 3,
+      agility: 2,
+      intelligence: 1,
+    },
+    modifiers: {
+      damage: 2
+    }
+  },
+
+  'slime-2': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 3,
+      agility: 2,
+      intelligence: 1,
+    },
+    modifiers: {
+      damage: 2
+    }
+  },
+
   'slime-cube': {
     base: {
       primaryAttribute: "strength",
@@ -151,15 +195,27 @@ export const MONSTER_BASE_ATTRIBUTES: {
     }
   },
 
-  'spider-giant': {
+  'slime-big': {
     base: {
       primaryAttribute: "strength",
-      strength: 6,
+      strength: 8,
+      agility: 2,
+      intelligence: 1,
+    },
+    modifiers: {
+      damage: 5
+    }
+  },
+
+  'skeleton': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 2,
       agility: 3,
       intelligence: 1,
     },
     modifiers: {
-      damage: 3
+      damage: 2
     }
   },
 

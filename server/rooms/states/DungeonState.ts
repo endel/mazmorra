@@ -23,7 +23,7 @@ import { Interactive } from "../../entities/Interactive";
 import { Entity } from "../../entities/Entity";
 import { MoveEvent } from "../../core/Movement";
 import { DBHero } from "../../db/Hero";
-import { MapType } from "../../utils/ProgressionConfig";
+import { MapKind, MapConfig, getMapConfig } from "../../utils/ProgressionConfig";
 import { NPC } from "../../entities/NPC";
 
 export interface Point {
@@ -36,10 +36,12 @@ export class DungeonState extends Schema {
   rand = gen.create();
   events = new EventEmitter();
 
+  config: MapConfig;
+
   @type("number") progress: number;
   @type("number") difficulty: number;
   @type("boolean") daylight: boolean;
-  @type("string") mapkind: MapType;
+  @type("string") mapkind: MapKind;
 
   @type(["number"]) grid = new ArraySchema<number>();
   @type("number") width: number;
@@ -62,14 +64,13 @@ export class DungeonState extends Schema {
     this.progress = progress;
     this.difficulty = difficulty;
 
-    // const serverMinutes = (new Date()).getMinutes();
-    // this.daylight = (serverMinutes >= 30);
-    this.daylight = ((Math.floor(this.progress / 10)) % 2 === 0)
+    this.config = getMapConfig(this.progress);
+    this.daylight = this.config.daylight;
+    this.mapkind = this.config.mapkind;
 
     let grid, rooms;
 
     if (progress === 1) {
-      this.mapkind = MapType.CASTLE;
       this.width = 11;
       this.height = 11;
 
@@ -84,7 +85,6 @@ export class DungeonState extends Schema {
     } else {
       // ['grass', 'rock', 'ice', 'inferno', 'castle']
 
-      this.mapkind = MapType.ROCK;
       // this.mapkind = 'rock-2';
       // this.mapkind = 'ice';
       // this.mapkind = 'grass';
