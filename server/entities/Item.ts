@@ -37,7 +37,7 @@ export abstract class Item extends Entity {
   }
 
   getPrice() {
-    return 10;
+    return 20;
   }
 
 }

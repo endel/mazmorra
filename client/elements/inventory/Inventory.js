@@ -44,6 +44,7 @@ export default class Inventory extends THREE.Object3D {
   setNPCTradingItems (items) {
     this.add(this.exchangeSymbol);
     this.add(this.purchaseSlots);
+    this.isTrading = true;
   }
 
   updateItems () {
@@ -66,9 +67,9 @@ export default class Inventory extends THREE.Object3D {
 
     } else {
       // remove trading UI
+      this.isTrading = false;
       this.remove(this.exchangeSymbol);
       this.remove(this.purchaseSlots);
-
     }
 
     //

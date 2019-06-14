@@ -33,11 +33,14 @@ export class NPC extends Player {
       const items = [];
       state.events.emit("send", player, ["trading-items", items]);
 
-    } else if (this.kind === "merchnat") {
+    } else if (this.kind === "merchant") {
+      const items = [];
+      state.events.emit("send", player, ["trading-items", items]);
 
     } else {
       const genericMessages = [
         `Take care out there`,
+        `Be safe!`,
         `You gotta be stronger than them`,
         `Save us from their curse!`,
         `We believe in your ${player.primaryAttribute}`
