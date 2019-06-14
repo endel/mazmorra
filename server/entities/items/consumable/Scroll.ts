@@ -14,7 +14,7 @@ export class Scroll extends CastableItem {
 
   cast (unit: Unit, state: DungeonState, position?: Point) {
     if (state.progress === 1) {
-      state.createTextEvent(`Not allowed.`, unit.position, 'white', 100);
+      state.createTextEvent(`Not allowed here.`, unit.position, 'white', 100);
       return false;
     }
 
@@ -30,7 +30,7 @@ export class Scroll extends CastableItem {
       return true;
 
     } else {
-      state.createTextEvent(`Not enough mana`, unit.position, 'white', 100);
+      state.createTextEvent(`Not enough mana.`, unit.position, 'white', 100);
     }
 
     return false;

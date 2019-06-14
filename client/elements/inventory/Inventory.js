@@ -8,6 +8,7 @@ export default class Inventory extends THREE.Object3D {
     super()
 
     this.isOpen = false
+    this.isTrading = false;
 
     this.equipedItems = new EquipedItems()
     this.slots = new SlotStrip({ slots: 12, columns: 4, inventoryType: "inventory" })
@@ -19,16 +20,30 @@ export default class Inventory extends THREE.Object3D {
 
     // this.exchangeSlots.position.x = this.equipedItems.position.x + (this.equipedItems.width/2 + this.slots.slotSize / 2 +  config.HUD_SCALE * 2) + (this.exchangeSlots.width / 2)
     // this.exchangeSlots.position.y = -this.exchangeSlots.height
-    // this.exchangeSymbol = ResourceManager.getHUDElement('hud-exchange-icon')
-    // this.exchangeSymbol.position.x = this.slots.position.x + this.slots.width/2 - this.exchangeSymbol.width/2
+
+    this.exchangeSymbol = ResourceManager.getHUDElement('hud-exchange-icon')
+    this.exchangeSymbol.position.y = - this.slots.height / 2 - this.exchangeSymbol.height;
+
+    this.purchaseSlots = new SlotStrip({
+      slots: 6,
+      columns: 6,
+      inventoryType: "purchase",
+      accepts: "sell"
+    });
+    this.purchaseSlots.position.x = this.equipedItems.position.x - this.slots.slotSize / 2;
+    this.purchaseSlots.position.y = this.exchangeSymbol.position.y - this.purchaseSlots.height;
 
     this.add(this.equipedItems)
     this.add(this.slots)
-    // this.add(this.exchangeSymbol)
     // this.add(this.exchangeSlots)
 
-    this.width = this.equipedItems.width + this.slots.position.x + this.slots.width
-    this.height = this.equipedItems.height
+    this.width = this.equipedItems.width + this.slots.position.x + this.slots.width;
+    this.height = this.equipedItems.height;
+  }
+
+  setNPCTradingItems (items) {
+    this.add(this.exchangeSymbol);
+    this.add(this.purchaseSlots);
   }
 
   updateItems () {
@@ -48,6 +63,12 @@ export default class Inventory extends THREE.Object3D {
 
     if (this.isOpen) {
       this.visible = true
+
+    } else {
+      // remove trading UI
+      this.remove(this.exchangeSymbol);
+      this.remove(this.purchaseSlots);
+
     }
 
     //

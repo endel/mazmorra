@@ -185,9 +185,8 @@ export class RoomUtils {
       /**
        * Marchant
        */
-      const merchant = new NPC('merchant');
+      const merchant = new NPC('merchant', {}, this.state);
       merchant.wanderer = false;
-      merchant.state = this.state;
       merchant.position.set(room.position.x + Math.floor(room.size.x / 2), 1);
       this.state.addEntity(merchant);
 
@@ -201,9 +200,8 @@ export class RoomUtils {
       /**
        * Elder
        */
-      const elder = new NPC('elder');
+      const elder = new NPC('elder', {}, this.state);
       elder.wanderer = false;
-      elder.state = this.state;
       elder.position.set(1, room.position.y + Math.floor(room.size.y / 2));
       this.state.addEntity(elder);
 
@@ -227,10 +225,9 @@ export class RoomUtils {
       this.state.addEntity(door);
 
       // add guards and lady
-      ['guard', 'lady', 'woman'].forEach(kind => {
+      ['guard', 'lady', 'woman', 'majesty'].forEach(kind => {
         this.addEntity(room, (position) => {
-          var npc = new NPC(kind)
-          npc.state = this.state
+          var npc = new NPC(kind, {}, this.state);
           npc.position.set(position)
           return npc
         })

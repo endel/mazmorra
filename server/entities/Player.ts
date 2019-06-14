@@ -29,8 +29,8 @@ export class Player extends Unit {
 
   shouldSaveCoords: boolean = false;
 
-  constructor (id, hero: DBHero) {
-    super(id, hero)
+  constructor (id, hero: DBHero, state?) {
+    super(id, hero, state)
     this.type = helpers.ENTITIES.PLAYER
 
     this.latestProgress = hero.latestProgress;
@@ -52,6 +52,7 @@ export class Player extends Unit {
 
     this.hpRegeneration = 1;
     this.direction = "bottom";
+    this.walkable = true;
   }
 
   useItem(inventoryType: InventoryType, itemId: string) {
@@ -113,6 +114,20 @@ export class Player extends Unit {
     } else if (item && toInventory.hasAvailability()) {
       fromInventory.remove(itemId);
       toInventory.add(item);
+    }
+  }
+
+  inventorySell(fromInventoryType: InventoryType, itemId: string) {
+    const fromInventory = this[fromInventoryType];
+    const item = fromInventory.getItem(itemId);
+
+    if (item) {
+      // selling price is half of buying price
+      const price = Math.floor(item.getPrice() / 2);
+      this.state.createTextEvent("+" + price, this.position, 'yellow', 100);
+
+      this.gold += price;
+      fromInventory.remove(itemId);
     }
   }
 

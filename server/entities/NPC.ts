@@ -9,14 +9,16 @@ export class NPC extends Player {
   @type("string") kind: string;
   wanderer: boolean = true;
 
-  constructor (kind, npcHero = {}) {
-    super(undefined, npcHero as any)
+  constructor (kind, npcHero = {}, state?) {
+    super(undefined, npcHero as any, state);
 
     // // only used for Player
     // delete this['properties'];
 
     this.type = helpers.ENTITIES.NPC;
     this.kind = kind;
+
+    this.walkable = false;
   }
 
   updateMovementSpeed () {
@@ -27,12 +29,21 @@ export class NPC extends Player {
     moveEvent.cancel();
     this.updateDirection(player.position.x, player.position.y);
 
-    const genericMessages = [
-      "Take care out there",
-      "You gotta be stronger than them",
-      `We believe in your ${player.primaryAttribute}`
-    ]
-    state.createTextEvent(genericMessages[Math.floor(Math.random() * genericMessages.length)], this.position, 'white', 1000);
+    if (this.kind === "elder") {
+      const items = [];
+      state.events.emit("send", player, ["trading-items", items]);
+
+    } else if (this.kind === "merchnat") {
+
+    } else {
+      const genericMessages = [
+        `Take care out there`,
+        `You gotta be stronger than them`,
+        `Save us from their curse!`,
+        `We believe in your ${player.primaryAttribute}`
+      ]
+      state.createTextEvent(genericMessages[Math.floor(Math.random() * genericMessages.length)], this.position, 'white', 1000);
+    }
 
     // prevent NPC from moving right after talking.
     this.position.lastMove += 500;

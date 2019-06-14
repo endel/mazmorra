@@ -8,14 +8,14 @@ export class Entity extends Schema {
   @type("string") type: string;
   @type(Position) position = new Position();
 
-  walkable = false;
-
+  walkable: boolean;
   state: DungeonState;
 
   constructor (id?: string) {
     super();
 
     this.id = id || shortid.generate()
+    this.walkable = false;
   }
 
   update(currentTime?: number) {

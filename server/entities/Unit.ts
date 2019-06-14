@@ -88,9 +88,10 @@ export class Unit extends Entity {
     criticalStrikeChance: 0,
   };
 
-  constructor(id?: string, hero: Partial<DBHero> = {}) {
+  constructor(id?: string, hero: Partial<DBHero> = {}, state?) {
     super(id)
 
+    this.state = state;
     this.action = null;
 
     this.quickInventory.set(hero.quickInventory || []);
@@ -107,9 +108,18 @@ export class Unit extends Entity {
     this.recalculateStatsModifiers();
 
     // hit | mana | experience points
-    this.hp.current = hero.hp || 100;
-    this.mp.current = hero.mp || 0;
+    this.hp.current = hero.hp;
+    this.mp.current = hero.mp;
     this.xp.set(hero.xp || 0, this.xpMax); // TOOD: max xp must be a formula against `lvl`
+
+    // prevent hero from starting the game dead
+    // when he dies and returns to lobby
+    if (!this.isAlive) {
+      this.hp.current = this.hp.max;
+      this.mp.current = this.mp.max;
+
+      hero.hp = this.hp.current;
+    }
 
     const directions: UnitDirection[] = ['bottom', 'left', 'top', 'right'];
     this.direction = directions[ Math.floor(Math.random() * directions.length) ];

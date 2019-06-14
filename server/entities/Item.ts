@@ -36,4 +36,8 @@ export abstract class Item extends Entity {
     this.modifiers.push(mod);
   }
 
+  getPrice() {
+    return 10;
+  }
+
 }

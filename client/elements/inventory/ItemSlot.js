@@ -133,6 +133,20 @@ export default class ItemSlot extends THREE.Object3D {
     let targetSlot = e.target
 
     //
+    // Sell!
+    //
+    if (draggingItem && this.accepts === "sell") {
+      this.dispatchEvent({
+        type: "inventory-sell",
+        bubbles: true,
+        fromInventoryType: draggingFrom.parent.inventoryType,
+        itemId: draggingItem.userData.itemId,
+      });
+
+      return;
+    }
+
+    //
     // EquipedItems: check if target slot accepts this type of item.
     //
     if (

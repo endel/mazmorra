@@ -80,6 +80,18 @@ export default class Level extends THREE.Object3D {
         this.room.leave()
         doorSound.play();
 
+      } else if (evt === "trading-items") {
+        console.log(evt, data);
+
+        // FIXME: this piece of code is repeated in many places!
+        // force to open inventory if it's closed
+        if (!this.hud.isInventoryOpen()) {
+          this.hud.openInventoryButton.onClick();
+          this.hud.onToggleInventory();
+        }
+
+        this.hud.inventory.setNPCTradingItems(data);
+
       } else if (evt === "sound") {
         this.playSound(data);
       }
@@ -222,6 +234,14 @@ export default class Level extends THREE.Object3D {
         toInventoryType: e.toInventoryType,
         itemId: e.itemId,
         switchItemId: e.switchItemId,
+      }]);
+    });
+
+    this.hud.addEventListener("inventory-sell", (e) => {
+      e.stopPropagation = true;
+      this.room.send(["inventory-sell", {
+        fromInventoryType: e.fromInventoryType,
+        itemId: e.itemId
       }]);
     });
 

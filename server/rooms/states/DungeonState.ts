@@ -228,14 +228,7 @@ export class DungeonState extends Schema {
   }
 
   createPlayer (client, hero: DBHero) {
-    // prevent hero from starting the game dead
-    // when he dies and returns to lobby
-    if (hero.hp <= 0 && this.progress === 1) {
-      hero.hp = 1;
-    }
-
-    var player = new Player(client.id, hero)
-    player.state = this
+    var player = new Player(client.id, hero, this);
 
     if (
       this.progress !== 1 &&
