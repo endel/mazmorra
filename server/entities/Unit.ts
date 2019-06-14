@@ -57,6 +57,7 @@ export class Unit extends Entity {
   @type("number") lvl = 1;
   @type("string") primaryAttribute: Attribute;
   @type(UnitAttributes) attributes = new UnitAttributes();
+  pointsToDistribute: number;
 
   @type("number") criticalBonus = 1.5; // damage * criticalBonus (on critical)
 
@@ -108,7 +109,7 @@ export class Unit extends Entity {
     // hit | mana | experience points
     this.hp.current = hero.hp || 100;
     this.mp.current = hero.mp || 0;
-    this.xp.set(hero.xp || 0, 50); // TOOD: max xp must be a formula against `lvl`
+    this.xp.set(hero.xp || 0, this.xpMax); // TOOD: max xp must be a formula against `lvl`
 
     const directions: UnitDirection[] = ['bottom', 'left', 'top', 'right'];
     this.direction = directions[ Math.floor(Math.random() * directions.length) ];
@@ -280,17 +281,19 @@ export class Unit extends Entity {
     }
   }
 
+  get xpMax () {
+    return this.lvl * 50;
+  }
+
   onLevelUp () {
-    this.lvl ++
+    this.lvl++;
 
-    // upgrade attributes
-    this.attributes.strength++;
-    this.attributes.agility++;
-    this.attributes.intelligence++;
+    this.pointsToDistribute += 2;
 
-    this.hp.current = this.hp.max
-    this.mp.current = this.mp.max
-    this.xp.current = 0
+    this.hp.current = this.hp.max;
+    this.mp.current = this.mp.max;
+    this.xp.current = 0;
+    this.xp.max = this.xpMax;
   }
 
 

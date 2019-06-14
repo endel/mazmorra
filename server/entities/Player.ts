@@ -78,7 +78,6 @@ export class Player extends Unit {
       typeof (this.attributes[attribute]) !== undefined
     ) {
       this.attributes[attribute]++;
-      console.log("INCREMENT", attribute, this.attributes[attribute]);
       this.pointsToDistribute--;
     }
   }

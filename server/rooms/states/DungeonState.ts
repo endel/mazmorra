@@ -64,7 +64,7 @@ export class DungeonState extends Schema {
 
     // const serverMinutes = (new Date()).getMinutes();
     // this.daylight = (serverMinutes >= 30);
-    this.daylight = ((Math.floor(this.progress / 15)) % 2 === 0)
+    this.daylight = ((Math.floor(this.progress / 10)) % 2 === 0)
 
     let grid, rooms;
 
