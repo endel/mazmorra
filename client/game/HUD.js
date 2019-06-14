@@ -119,7 +119,7 @@ export default class HUD extends THREE.Scene {
       (
         // close the inventory hitting ESC if  {
         this.isInventoryOpen() &&
-        e.key === "Escape"
+        (e.key === "Escape" || e.key === " ")
       )
     ) {
       // open inventory pressing "i" or "b"
