@@ -5,7 +5,8 @@ import { Unit, StatsModifiers } from "./Unit";
 import { Player } from "./Player";
 import { type } from "@colyseus/schema";
 import { DBHero } from "../db/Hero";
-import { BattleAction } from "../actions/BattleAction";
+import { WeaponItem } from "./items/equipable/WeaponItem";
+import { ItemModifier } from "./Item";
 
 export class Enemy extends Unit {
   @type("string") kind: string;
@@ -18,8 +19,18 @@ export class Enemy extends Unit {
     this.lvl = data.lvl || 1;
 
     // apply stats modifiers
-    for (const statName in modifiers) {
-      this.statsModifiers[statName] = modifiers[statName];
+    if (Object.keys(modifiers).length > 0) {
+      // equip dummy item to allow stats calculation.
+      const item = new WeaponItem();
+      for (const statName in modifiers) {
+        const modifier = new ItemModifier();
+        modifier.attr = statName;
+        modifier.modifier = modifiers[statName];
+        item.modifiers.push(modifier);
+      }
+      this.equipedItems.add(item);
+
+      this.recalculateStatsModifiers();
     }
   }
 

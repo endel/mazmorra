@@ -73,6 +73,9 @@ export class Unit extends Entity {
 
   // list of stats modifiers
   statsModifiers: StatsModifiers = {
+    hp: 0,
+    mp: 0,
+
     strength: 0,
     agility: 0,
     intelligence: 0,
@@ -146,8 +149,13 @@ export class Unit extends Entity {
       }
     }
 
-    this.hp.max = (this.attributes.strength + this.statsModifiers['strength']) * 5;
-    this.mp.max = (this.attributes.intelligence + this.statsModifiers['intelligence']) * 3;
+    const hpPercent = this.hp.current / this.hp.max;
+    this.hp.max = (this.attributes.strength + this.statsModifiers['strength'] + this.statsModifiers['hp']) * 5;
+    this.hp.current = this.hp.max * hpPercent;
+
+    const mpPercent = this.mp.current / this.mp.max;
+    this.mp.max = (this.attributes.intelligence + this.statsModifiers['intelligence'] + this.statsModifiers['mp']) * 3;
+    this.mp.current = this.mp.max * mpPercent;
   }
 
   onEquipedItemsChange(): void {
@@ -212,7 +220,9 @@ export class Unit extends Entity {
 
   update(currentTime) {
     // a dead unit can't do much, I guess
-    if (!this.isAlive) return
+    if (!this.isAlive) {
+      return;
+    }
 
     if (currentTime > this.lastHpRegenerationTime + this.hpRegenerationInterval) {
       this.hp.set( this.hp.current + this.hpRegeneration )

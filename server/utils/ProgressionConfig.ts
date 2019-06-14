@@ -150,12 +150,13 @@ export const MONSTER_BASE_ATTRIBUTES: {
   'spider-giant': {
     base: {
       primaryAttribute: "strength",
-      strength: 6,
-      agility: 3,
+      strength: 15,
+      agility: 4,
       intelligence: 1,
     },
     modifiers: {
-      damage: 3
+      damage: 5,
+      hp: 50
     }
   },
 

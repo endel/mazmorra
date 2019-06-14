@@ -259,6 +259,13 @@ export class RoomUtils {
       enemyRange.push(currentRange);
     });
 
+    // this.addEntity(room, (position) => {
+    //   const enemy = this.createEnemy('spider-giant', 1);
+    //   enemy.state = this.state;
+    //   enemy.position.set(position);
+    //   return enemy;
+    // });
+
     while (numEnemies--) {
       this.addEntity(room, (position) => {
         const rand = this.rand.floatBetween(0, 1);
