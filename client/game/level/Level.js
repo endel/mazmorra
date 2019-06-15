@@ -215,6 +215,22 @@ export default class Level extends THREE.Object3D {
 
   createPlayerBehaviour (object, data) {
     object.addBehaviour(new CharacterController, this.camera, this.room)
+
+    //
+    // // TODO: BOSS EFFECT
+    //
+    // setTimeout(() => {
+    //   const allEntities = Object.keys(this.entities);
+    //   const enemy = this.entities[allEntities.find(name => this.entities[name].constructor.name === "Enemy")];
+    //   if (!enemy) return;
+    //   object.getEntity().emit('target', enemy);
+    //   object.getEntity().emit('rotate', true);
+    //   setTimeout(() => {
+    //     object.getEntity().emit('target', player);
+    //     object.getEntity().emit('rotate', false);
+    //   }, 2000);
+    // }, 2000);
+
     this.hud.setPlayerObject(object, data);
 
     // allow to consume items!
