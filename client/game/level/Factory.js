@@ -81,6 +81,7 @@ export default class Factory {
         element = new Aesthetic();
         break;
 
+      case helpers.ENTITIES.PROJECTILE_MAGIC:
       case helpers.ENTITIES.PROJECTILE_ARROW_1:
         element = new Projectile(data);
         break;

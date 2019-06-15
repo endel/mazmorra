@@ -60,8 +60,12 @@ export default class BattleBehaviour extends Behaviour {
 
     // create projectile
     if (this.attackDistance > 1) {
+      const projectileType = (this.object.userData.primaryAttribute === "intelligence")
+        ? helpers.ENTITIES.PROJECTILE_MAGIC
+        : helpers.ENTITIES.PROJECTILE_ARROW_1;
+
       this.factory.createEntity({
-        type: helpers.ENTITIES.PROJECTILE_ARROW_1,
+        type: projectileType,
         position: this.object.userData.position,
         source: this.object,
         target: this.defender

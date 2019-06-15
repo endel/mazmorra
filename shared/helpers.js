@@ -209,6 +209,7 @@ var helpers = {
       FOUNTAIN: 'fountain',
 
       // PROJECTILES
+      PROJECTILE_MAGIC: 'projectile-magic',
       PROJECTILE_ARROW_1: 'projectile-arrow-1',
 
       // non-interactive / aesthetics

@@ -139,6 +139,11 @@ export class Unit extends Entity {
       this.statsModifiers[attr] = 0;
     }
 
+    // intelligence heros can attack by 1 tile distance.
+    if (this.primaryAttribute === "intelligence") {
+      this.statsModifiers.attackDistance++;
+    }
+
     // cache all equiped items modifiers
     for (const slotName in this.equipedItems.slots) {
       const item: Item = this.equipedItems.slots[slotName];
