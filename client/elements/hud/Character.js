@@ -183,21 +183,39 @@ export default class Character extends THREE.Object3D {
   }
 
   update (data) {
-    if (!data) {
-      return;
-    }
+    if (!data) { return; }
 
-    const statsModifiers = {};
+    const statsModifiers = {
+      hp: 0,
+      mp: 0,
+
+      strength: 0,
+      agility: 0,
+      intelligence: 0,
+
+      armor: 0,
+      damage: 0,
+
+      movementSpeed: 0,
+      attackDistance: 0,
+      attackSpeed: 0,
+
+      evasion: 0,
+      criticalStrikeChance: 0,
+    };
+
     for (const slotName in data.equipedItems.slots) {
       const item = data.equipedItems.slots[slotName];
       if (item) {
         item.modifiers.forEach(modifier => {
-          if (statsModifiers[modifier.attr] === undefined) {
-            statsModifiers[modifier.attr] = 0;
-          }
           statsModifiers[modifier.attr] += modifier.modifier;
         });
       }
+    }
+
+    // intelligence heros have 1 attackDistance bonus.
+    if (data.primaryAttribute === "intelligence") {
+      statsModifiers.attackDistance++;
     }
 
     // var hpMax = (data.attributes.strength + statsModifiers['strength']) * 5;
@@ -205,17 +223,19 @@ export default class Character extends THREE.Object3D {
 
     this.levelText.text = "Level " + data.lvl;
 
-    this.movementSpeedText.text = (statsModifiers.movementSpeed || 0).toFixed(1);
-    this.attackSpeedText.text = (data.attributes.agility * 0.5 + (statsModifiers.attackSpeed || 0)).toFixed(1);
-    this.attackDistanceText.text = 1 + (statsModifiers.attackDistance || 0);
+    this.movementSpeedText.text = statsModifiers.movementSpeed.toFixed(1);
+    this.attackSpeedText.text = (data.attributes.agility * 0.5 + statsModifiers.attackSpeed).toFixed(1);
+
+    console.log("ATTACK DISTANCE:", statsModifiers.attackDistance);
+    this.attackDistanceText.text = statsModifiers.attackDistance;
 
     // damage
-    let damage = data.attributes[data.primaryAttribute] + (statsModifiers[data.primaryAttribute] || 0);
+    let damage = data.attributes[data.primaryAttribute] + statsModifiers[data.primaryAttribute];
     if (statsModifiers.damage) { damage = `${damage}-${damage + statsModifiers.damage}` }
     this.damageText.text = damage;
 
     const baseArmor = { strength: 0, agility: -1, intelligence: -2 };
-    this.armorText.text = ((statsModifiers.armor || 0) + (data.attributes.agility * 0.16) + baseArmor[data.primaryAttribute]).toFixed(1);
+    this.armorText.text = (statsModifiers.armor + (data.attributes.agility * 0.16) + baseArmor[data.primaryAttribute]).toFixed(1);
 
     // base attributes
     let strength = data.attributes.strength;
@@ -230,7 +250,6 @@ export default class Character extends THREE.Object3D {
     if (statsModifiers.intelligence) { intelligence += `+${statsModifiers.intelligence}` }
     this.intText.text = intelligence;
 
-    console.log("Character#update()");
     this.updateLevelUpButtons();
     this.pointsToDistributeText.text = data.pointsToDistribute;
   }

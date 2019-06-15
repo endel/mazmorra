@@ -189,7 +189,10 @@ export default class Level extends THREE.Object3D {
           } else if (change.field === "active" && change.value !== change.previousValue) {
             object.getEntity().emit('active', change.value);
 
-          } else if (change.field === "pointsToDistribute" && object.userData.id === getClientId()) {
+          } else if (
+            (change.field === "pointsToDistribute" || change.field === "equipedItems") &&
+            object.userData.id === getClientId()
+          ) {
             // this.hud.getEntity().emit('update-attribute', 'pointsToDistribute', change.value);
             // FIXME: this piece of code is duplicated
             this.hud.getEntity().emit('update-attributes', entity);
