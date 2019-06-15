@@ -208,6 +208,9 @@ var helpers = {
       ROCK: 'rock',
       FOUNTAIN: 'fountain',
 
+      // PROJECTILES
+      PROJECTILE_ARROW_1: 'projectile-arrow-1',
+
       // non-interactive / aesthetics
       AESTHETICS: 'aesthetics',
 

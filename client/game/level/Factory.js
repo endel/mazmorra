@@ -15,6 +15,7 @@ import LightPole from '../../elements/LightPole'
 import Door from '../../elements/Door'
 import TextEvent from '../../elements/TextEvent'
 import Portal from '../../elements/Portal';
+import Projectile from '../../elements/effects/Projectile';
 
 import { getClientId } from '../../core/network'
 
@@ -80,6 +81,10 @@ export default class Factory {
         element = new Aesthetic();
         break;
 
+      case helpers.ENTITIES.PROJECTILE_ARROW_1:
+        element = new Projectile(data);
+        break;
+
       case helpers.ENTITIES.ROCK:
         element = new Rock();
         break;
@@ -106,7 +111,14 @@ export default class Factory {
     this.fixTilePosition(element.position, data.position.y, data.position.x)
     this.level.add(element)
 
-    element.addBehaviour(new GameObject, this)
+    if (
+      element instanceof Enemy ||
+      element instanceof NPC ||
+      element instanceof Character
+    ) {
+      element.addBehaviour(new GameObject, this)
+    }
+
     element.userData = data
     return element
   }

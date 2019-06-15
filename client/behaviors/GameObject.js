@@ -29,7 +29,7 @@ export default class GameObject extends Behaviour {
     if (this.object.userData.hp.current > 0) {
 
       this.battleBehaviour = new BattleBehaviour();
-      this.object.addBehaviour( this.battleBehaviour, this.factory )
+      this.object.addBehaviour(this.battleBehaviour, this.factory);
 
     } else {
       // TODO: refactor me
@@ -47,6 +47,8 @@ export default class GameObject extends Behaviour {
         , lerpTime = 0.09
 
       if (this.battleBehaviour && this.battleBehaviour.togglePosition) {
+        const isRanged = this.battleBehaviour.attackDistance > 1;
+
         const diffX = (this.battleBehaviour.attackingPoint.x - this.nextPoint.x);
         const diffY = (this.battleBehaviour.attackingPoint.z - this.nextPoint.z);
 

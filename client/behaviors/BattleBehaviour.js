@@ -58,8 +58,22 @@ export default class BattleBehaviour extends Behaviour {
       }
     }
 
-    // play "woosh"
-    playRandom(wooshSound)
+    // create projectile
+    if (this.attackDistance > 1) {
+      this.factory.createEntity({
+        type: helpers.ENTITIES.PROJECTILE_ARROW_1,
+        position: this.object.userData.position,
+        source: this.object,
+        target: this.defender
+      });
+
+      // TODO: play arrow sound.
+      playRandom(wooshSound)
+
+    } else {
+      // play "woosh"
+      playRandom(wooshSound)
+    }
 
     // show damage / miss / critical
     let text = `-${ actionData.damage }`

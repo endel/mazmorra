@@ -16,3 +16,24 @@ export function humanize (value) {
   //   .replace(/[_\s]+/g, ' ')
   //   .replace(/^[a-z]/, function (m) { return m.toUpperCase(); });
 }
+
+
+export function toScreenPosition(camera, obj) {
+  var vector = new THREE.Vector3();
+
+  var widthHalf = 0.5 * window.innerWidth;
+  var heightHalf = 0.5 * window.innerHeight;
+
+  obj.updateMatrixWorld();
+  vector.setFromMatrixPosition(obj.matrixWorld);
+  vector.project(camera);
+
+  vector.x = (vector.x * widthHalf) + widthHalf;
+  vector.y = - (vector.y * heightHalf) + heightHalf;
+
+  return {
+    x: vector.x,
+    y: vector.y
+  };
+
+}

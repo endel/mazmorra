@@ -1,5 +1,5 @@
 import config from "../../config";
-import { humanize } from "../../utils";
+import { humanize, toScreenPosition } from "../../utils";
 
 class Hint  {
   constructor() {
@@ -29,7 +29,7 @@ class Hint  {
 
     this.el.innerHTML = contents;
 
-    var position = this.toScreenPosition(sprite);
+    var position = toScreenPosition(hud.camera, sprite);
     this.el.style.left = (position.x - (config.HUD_SCALE * 5) - this.el.clientWidth - config.HUD_SCALE) + "px";
     this.el.style.top = (position.y - (config.HUD_SCALE * 5)) + "px";
   }
@@ -80,26 +80,6 @@ ${(
     this.el.classList.remove("active");
   }
 
-  toScreenPosition(obj) {
-    var camera = hud.camera;
-    var vector = new THREE.Vector3();
-
-    var widthHalf = 0.5 * window.innerWidth;
-    var heightHalf = 0.5 * window.innerHeight;
-
-    obj.updateMatrixWorld();
-    vector.setFromMatrixPosition(obj.matrixWorld);
-    vector.project(camera);
-
-    vector.x = (vector.x * widthHalf) + widthHalf;
-    vector.y = - (vector.y * heightHalf) + heightHalf;
-
-    return {
-      x: vector.x,
-      y: vector.y
-    };
-
-  }
 
 }
 

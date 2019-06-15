@@ -365,7 +365,7 @@ export class RoomUtils {
       // common item
       } else if (chance < 0.99) {
         const isRare = (chance >= 0.95);
-        const itemType = this.rand.intBetween(0, 5);
+        const itemType = this.rand.intBetween(0, 6);
 
         if (isRare) {
           console.log("DROP RARE ITEM!");
@@ -387,16 +387,24 @@ export class RoomUtils {
             break;
 
           case 3:
+            itemToDrop = new WeaponItem();
+            itemToDrop.type = helpers.ENTITIES.BOW_1;
+
+            const attackDistance = this.rand.intBetween(1, 2);
+            itemToDrop.addModifier({ attr: "attackDistance", modifier: attackDistance });
+            break;
+
+          case 4:
             itemToDrop = new BootItem();
             itemToDrop.type = helpers.ENTITIES.BOOTS_1;
             break;
 
-          case 4:
+          case 5:
             itemToDrop = new HelmetItem();
             itemToDrop.type = helpers.ENTITIES.HELMET_1;
             break;
 
-          case 5:
+          case 6:
             itemToDrop = new ArmorItem();
             itemToDrop.type = helpers.ENTITIES.ARMOR_1;
             break;

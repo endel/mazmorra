@@ -29,8 +29,10 @@ export default class Game {
     // this.camera.updateProjectionMatrix()
 
     this.camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -1, 1000 );
-    this.camera.zoom = config.ZOOM
-    this.camera.updateProjectionMatrix()
+    this.camera.zoom = config.ZOOM;
+    this.camera.updateProjectionMatrix();
+
+    window.camera = this.camera;
 
     // ORTOGRAPHIC
     // this.camera.position.y = 10;

@@ -25,6 +25,8 @@ ResourceManager.load(() => {
   login.init();
 })
 
+window.THREE = THREE;
+
 //
 // TODO patch three.js
 //
@@ -36,34 +38,25 @@ THREE.Object3D.prototype.dispatchEvent = function (event) {
 }
 
 THREE.EventDispatcher.prototype.dispatchEvent = function (event) {
-    // TODO: patch this!
-    if (!event.target) { event.target = this; }
+  // TODO: patch this!
+  if (!event.target) { event.target = this; }
+  if (this._listeners === undefined) return;
 
-		if ( this._listeners === undefined ) return;
+  var listeners = this._listeners;
+  var listenerArray = listeners[event.type];
 
-		var listeners = this._listeners;
-		var listenerArray = listeners[ event.type ];
+  if (listenerArray !== undefined) {
+    event.currentTarget = this
 
-		if ( listenerArray !== undefined ) {
+    var array = [];
+    var length = listenerArray.length;
 
-      event.currentTarget = this
+    for (var i = 0; i < length; i++) {
+      array[i] = listenerArray[i];
+    }
 
-			var array = [];
-			var length = listenerArray.length;
-
-			for ( var i = 0; i < length; i ++ ) {
-
-				array[ i ] = listenerArray[ i ];
-
-			}
-
-			for ( var i = 0; i < length; i ++ ) {
-
-				array[ i ].call( this, event );
-
-			}
-
-		}
-
-
+    for (var i = 0; i < length; i++) {
+      array[i].call(this, event);
+    }
+  }
 }
