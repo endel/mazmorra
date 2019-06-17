@@ -8,7 +8,6 @@ import { WeaponItem } from "./equipable/WeaponItem";
 import { BootItem } from "./equipable/BootItem";
 import { HelmetItem } from "./equipable/HelmetItem";
 import { DBItem } from "../../db/Hero";
-import { EquipableItem } from "./EquipableItem";
 import { Scroll } from "./consumable/Scroll";
 import { ArmorItem } from "./equipable/ArmorItem";
 
@@ -82,6 +81,8 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
     case helpers.ENTITIES.WAND_3:
     case helpers.ENTITIES.WAND_4:
       item = new WeaponItem();
+      (item as WeaponItem).damageAttribute = (data as DBItem).damageAttribute;
+      (item as WeaponItem).manaCost = (data as DBItem).manaCost;
     break;
 
     case helpers.ENTITIES.BOOTS_1:

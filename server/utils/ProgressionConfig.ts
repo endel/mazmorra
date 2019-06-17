@@ -70,7 +70,7 @@ export function getMapConfig(progress: number) {
       enemies: {}
     }
   } else {
-    const index = Math.floor(progress / 10);
+    const index = Math.floor(progress / 12);
     return MAP_CONFIGS[index];
   }
 }
@@ -86,9 +86,24 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: false,
     mapkind: MapKind.ROCK,
-    enemies: { 'slime': 0.33, 'slime-2': 0.33, 'skeleton': 0.33, 'slime-cube': 0.01, },
+    enemies: { 'slime': 0.33, 'slime-2': 0.33, 'skeleton-1': 0.33, 'slime-cube': 0.01, },
     boss: ['slime-big']
   },
+
+  {
+    daylight: true,
+    mapkind: MapKind.GRASS,
+    enemies: { 'skeleton-1': 0.33, 'skeleton-2': 0.33, 'skeleton-3': 0.33, 'spider-medium': 0.01 },
+    boss: ['necromancer']
+  },
+
+  {
+    daylight: false,
+    mapkind: MapKind.GRASS,
+    enemies: { 'goblin': 0.33, 'goblin-2': 0.33, 'goblin-3': 0.33, 'skeleton-2': 0.01 },
+    boss: ['goblin-boss']
+  },
+
 
 ];
 
@@ -207,18 +222,99 @@ export const MONSTER_BASE_ATTRIBUTES: {
       damage: 5
     }
   },
+  //////////
 
-  'skeleton': {
+
+  'skeleton-1': {
     base: {
       primaryAttribute: "strength",
-      strength: 2,
-      agility: 3,
-      intelligence: 1,
+      strength: 5,
+      agility: 2,
+      intelligence: 1
+    },
+    modifiers: {}
+  },
+  'skeleton-2': {
+    base: {
+      primaryAttribute: "agility",
+      strength: 5,
+      agility: 2,
+      intelligence: 1
     },
     modifiers: {
-      damage: 2
+      attackDistance: 2
     }
   },
+  'skeleton-3': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 6,
+      agility: 3,
+      intelligence: 2
+    },
+    modifiers: {
+      damage: 3
+    }
+  },
+  'necromancer': {
+    base: {
+      primaryAttribute: "intelligence",
+      strength: 2,
+      agility: 3,
+      intelligence: 5
+    },
+    modifiers: {
+      damage: 5,
+      hp: 100
+    }
+  },
+  //////////
 
-  // MapType.ROCK_2
+  'goblin': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 6,
+      agility: 2,
+      intelligence: 1
+    },
+    modifiers: {
+      damage: 4
+    }
+  },
+  'goblin-2': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 5,
+      agility: 2,
+      intelligence: 1
+    },
+    modifiers: {}
+  },
+  'goblin-3': {
+    base: {
+      primaryAttribute: "agility",
+      strength: 4,
+      agility: 6,
+      intelligence: 2
+    },
+    modifiers: {
+      movementSpeed: 5,
+      attackSpeed: 5
+    }
+  },
+  'goblin-boss': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 10,
+      agility: 5,
+      intelligence: 3
+    },
+    modifiers: {
+      damage: 10,
+      hp: 200,
+      movementSpeed: 2,
+      attackSpeed: 3
+    }
+  }
+  //////////
 }

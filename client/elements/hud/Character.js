@@ -182,6 +182,14 @@ export default class Character extends THREE.Object3D {
     this.add(this.intUpButton);
   }
 
+  getDamageAttribute() {
+    return (
+      player.userData.equipedItems.slots.left &&
+      player.userData.equipedItems.slots.left.damageAttribute ||
+      player.userData.primaryAttribute
+    );
+  }
+
   update (data) {
     if (!data) { return; }
 
@@ -213,11 +221,6 @@ export default class Character extends THREE.Object3D {
       }
     }
 
-    // intelligence heros have 1 attackDistance bonus.
-    if (data.primaryAttribute === "intelligence") {
-      statsModifiers.attackDistance++;
-    }
-
     // var hpMax = (data.attributes.strength + statsModifiers['strength']) * 5;
     // var mpMax = (data.attributes.intelligence + statsModifiers['intelligence']) * 3;
 
@@ -226,11 +229,11 @@ export default class Character extends THREE.Object3D {
     this.movementSpeedText.text = statsModifiers.movementSpeed.toFixed(1);
     this.attackSpeedText.text = (data.attributes.agility * 0.5 + statsModifiers.attackSpeed).toFixed(1);
 
-    console.log("ATTACK DISTANCE:", statsModifiers.attackDistance);
-    this.attackDistanceText.text = statsModifiers.attackDistance;
+    this.attackDistanceText.text = statsModifiers.attackDistance.toString();
 
     // damage
-    let damage = data.attributes[data.primaryAttribute] + statsModifiers[data.primaryAttribute];
+    const damageAttribute = this.getDamageAttribute();
+    let damage = data.attributes[damageAttribute] + statsModifiers[damageAttribute];
     if (statsModifiers.damage) { damage = `${damage}-${damage + statsModifiers.damage}` }
     this.damageText.text = damage;
 
@@ -251,7 +254,7 @@ export default class Character extends THREE.Object3D {
     this.intText.text = intelligence;
 
     this.updateLevelUpButtons();
-    this.pointsToDistributeText.text = data.pointsToDistribute;
+    this.pointsToDistributeText.text = data.pointsToDistribute.toString();
   }
 
   onLevelUpClick () {

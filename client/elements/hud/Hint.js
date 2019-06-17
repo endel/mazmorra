@@ -47,6 +47,14 @@ class Hint  {
 
     return `
 <h2>${humanize(item.type)}</h2>
+${(item.damageAttribute)
+  ? `<p>Damage attribute: <span class="${item.damageAttribute}">${humanize(item.damageAttribute)}</span></p>`
+  : "" }
+
+${(item.manaCost > 0)
+  ? `<p>Mana cost: ${item.manaCost.toFixed(1)}</p>`
+  : "" }
+
 ${(
 (item.modifiers && item.modifiers.length > 0)
   ?

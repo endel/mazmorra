@@ -23,11 +23,21 @@ const AttributeModifier = new mongoose.Schema<DBAttributeModifier>({
 export interface DBItem {
   type: string,
   modifiers?: DBAttributeModifier[]
+  damageAttribute?: Attribute,
+  manaCost?: number,
+  isRare?: boolean,
+  isMagical?: boolean,
 }
 
 const Item = new mongoose.Schema<DBItem>({
   type: String,
-  modifiers: [AttributeModifier]
+  modifiers: [AttributeModifier],
+
+  // for weapons
+  isRare: Boolean,
+  isMagical: Boolean,
+  damageAttribute: String,
+  manaCost: Number,
 }, { _id: false });
 
 /**

@@ -10,6 +10,7 @@ import { EquipedItems } from "../core/EquipedItems";
 import { BattleAction } from "../actions/BattleAction";
 import { DBHero } from "../db/Hero";
 import { Item } from "./Item";
+import { WeaponItem } from "./items/equipable/WeaponItem";
 
 export type Attribute = 'strength' | 'agility' | 'intelligence';
 export type InventoryType = 'inventory' | 'quickInventory';
@@ -139,11 +140,6 @@ export class Unit extends Entity {
       this.statsModifiers[attr] = 0;
     }
 
-    // intelligence heros can attack by 1 tile distance.
-    if (this.primaryAttribute === "intelligence") {
-      this.statsModifiers.attackDistance++;
-    }
-
     // cache all equiped items modifiers
     for (const slotName in this.equipedItems.slots) {
       const item: Item = this.equipedItems.slots[slotName];
@@ -165,6 +161,10 @@ export class Unit extends Entity {
 
   onEquipedItemsChange(): void {
     this.recalculateStatsModifiers();
+  }
+
+  getWeapon(): WeaponItem {
+    return this.equipedItems.slots['left'];
   }
 
   getMovementSpeed() {
@@ -190,9 +190,13 @@ export class Unit extends Entity {
   }
 
   getDamage() {
-    const minDamage = this.attributes[this.primaryAttribute] + this.statsModifiers[this.primaryAttribute];
+    const weapon = this.getWeapon();
+    const damageAttribute = (weapon && weapon.damageAttribute || this.primaryAttribute);
+
+    const minDamage = this.attributes[damageAttribute] + this.statsModifiers[damageAttribute];
     const maxDamage = minDamage + this.statsModifiers.damage;
-    return Math.floor(Math.random() * (maxDamage - minDamage + 1) + minDamage);
+
+    return this.state.rand.intBetween(minDamage, maxDamage);
   }
 
   getArmor() {

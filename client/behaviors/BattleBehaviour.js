@@ -34,6 +34,14 @@ export default class BattleBehaviour extends Behaviour {
     this.togglePosition = false
   }
 
+  getDamageAttribute() {
+    return (
+      this.object.userData.equipedItems.slots.left &&
+      this.object.userData.equipedItems.slots.left.damageAttribute ||
+      this.object.userData.primaryAttribute
+    );
+  }
+
   onAttack (actionData) {
     if (!actionData.type) { return this.disable(); }
 
@@ -60,7 +68,7 @@ export default class BattleBehaviour extends Behaviour {
 
     // create projectile
     if (this.attackDistance > 1) {
-      const projectileType = (this.object.userData.primaryAttribute === "intelligence")
+      const projectileType = (this.getDamageAttribute() === "intelligence")
         ? helpers.ENTITIES.PROJECTILE_MAGIC
         : helpers.ENTITIES.PROJECTILE_ARROW_1;
 

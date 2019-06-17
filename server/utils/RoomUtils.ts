@@ -3,6 +3,7 @@ import { RandomSeed } from "random-seed";
 import helpers from "../../shared/helpers";
 
 // entities
+import { Attribute }  from "../entities/Unit";
 import { Enemy }  from "../entities/Enemy";
 import { NPC }  from "../entities/NPC";
 import { Entity }  from "../entities/Entity";
@@ -154,6 +155,7 @@ export class RoomUtils {
     // }
 
     // const chestTypes = ['chest', 'chest2', 'bucket'];
+    // const chestKind = 'bucket';
     const chestKind = 'bucket';
 
     this.addEntity(room, (position) => new Chest(position, chestKind))
@@ -365,11 +367,11 @@ export class RoomUtils {
       // common item
       } else if (chance < 0.99) {
         const isRare = (chance >= 0.95);
-        const itemType = this.rand.intBetween(0, 6);
+        const isMagical = (chance >= 0.985);
+        const itemType = this.rand.intBetween(0, 5);
 
-        if (isRare) {
-          console.log("DROP RARE ITEM!");
-        }
+        if (isRare) { console.log("DROP RARE ITEM!"); }
+        if (isMagical) { console.log("AND IT'S MAGICAL!!"); }
 
         switch (itemType) {
           case 0:
@@ -377,42 +379,29 @@ export class RoomUtils {
             break;
 
           case 1:
-            itemToDrop = new ShieldItem();
-            itemToDrop.type = helpers.ENTITIES.SHIELD_1;
+            itemToDrop = this.createShield();
             break;
 
           case 2:
-            itemToDrop = new WeaponItem();
-            itemToDrop.type = helpers.ENTITIES.WEAPON_1;
+            itemToDrop = this.createWeapon();
             break;
 
           case 3:
-            itemToDrop = new WeaponItem();
-            itemToDrop.type = helpers.ENTITIES.BOW_1;
-
-            const attackDistance = this.rand.intBetween(1, 2);
-            itemToDrop.addModifier({ attr: "attackDistance", modifier: attackDistance });
+            itemToDrop = this.createBoot();
             break;
 
           case 4:
-            itemToDrop = new BootItem();
-            itemToDrop.type = helpers.ENTITIES.BOOTS_1;
+            itemToDrop = this.createHelmet();
             break;
 
           case 5:
-            itemToDrop = new HelmetItem();
-            itemToDrop.type = helpers.ENTITIES.HELMET_1;
-            break;
-
-          case 6:
-            itemToDrop = new ArmorItem();
-            itemToDrop.type = helpers.ENTITIES.ARMOR_1;
+            itemToDrop = this.createArmor();
             break;
         }
 
-        if (itemToDrop instanceof EquipableItem) {
-          this.assignEquipableItemModifiers(itemToDrop);
-        }
+        // if (itemToDrop instanceof EquipableItem) {
+        //   this.assignEquipableItemModifiers(itemToDrop);
+        // }
 
       } else if (chance >= 0.99) {
         // drop diamond!
@@ -427,30 +416,77 @@ export class RoomUtils {
     return itemToDrop;
   }
 
-  assignEquipableItemModifiers(item: Item) {
-    if (item instanceof ShieldItem) {
-      const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
-      item.addModifier({ attr: "armor", modifier });
+  getRandomPrimaryAttribute() {
+    const attributes = ['strength', 'agility', 'intelligence'];
+    return attributes[this.rand.intBetween(0, 2)] as Attribute;
+  }
 
-    } else if (item instanceof WeaponItem) {
-      const modifier = this.rand.intBetween(1, 2);
-      item.addModifier({ attr: "attackSpeed", modifier: 10 });
-      item.addModifier({ attr: "damage", modifier });
+  createWeapon() {
+    const item = new WeaponItem();
+    item.damageAttribute = this.getRandomPrimaryAttribute();
 
-    } else if (item instanceof BootItem) {
-      const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
-      item.addModifier({ attr: "armor", modifier });
-      item.addModifier({ attr: "movementSpeed", modifier: 5 });
+    if (item.damageAttribute === "strength") {
+      item.type = helpers.ENTITIES.WEAPON_1;
 
-    } else if (item instanceof HelmetItem) {
-      const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
-      item.addModifier({ attr: "armor", modifier });
+    } else if (item.damageAttribute === "agility") {
+      item.type = helpers.ENTITIES.BOW_1;
 
-    } else if (item instanceof ArmorItem) {
-      const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
-      item.addModifier({ attr: "armor", modifier });
+      const attackDistance = this.rand.intBetween(1, 2);
+      item.addModifier({ attr: "attackDistance", modifier: attackDistance });
 
+    } else if (item.damageAttribute === "intelligence") {
+      item.type = helpers.ENTITIES.WAND_1;
+      item.manaCost = 5;
+
+      const attackDistance = this.rand.intBetween(1, 2);
+      item.addModifier({ attr: "attackDistance", modifier: attackDistance });
     }
+
+    const modifier = this.rand.intBetween(1, 2);
+    item.addModifier({ attr: "damage", modifier });
+
+    return item;
+  }
+
+  createShield () {
+    const item = new ShieldItem();
+    item.type = helpers.ENTITIES.SHIELD_1;
+
+    const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
+    item.addModifier({ attr: "armor", modifier });
+
+    return item;
+  }
+
+  createBoot() {
+    const item = new BootItem();
+    item.type = helpers.ENTITIES.BOOTS_1;
+
+    const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
+    item.addModifier({ attr: "armor", modifier });
+    item.addModifier({ attr: "movementSpeed", modifier: 5 });
+
+    return item;
+  }
+
+  createHelmet() {
+    const item = new HelmetItem();
+    item.type = helpers.ENTITIES.HELMET_1;
+
+    const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
+    item.addModifier({ attr: "armor", modifier });
+
+    return item;
+  }
+
+  createArmor() {
+    const item = new ArmorItem();
+    item.type = helpers.ENTITIES.ARMOR_1;
+
+    const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
+    item.addModifier({ attr: "armor", modifier });
+
+    return item;
   }
 
   shuffle (array: any[]) {

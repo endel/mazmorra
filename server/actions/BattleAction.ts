@@ -92,13 +92,27 @@ export class BattleAction extends Action {
     const timeDiff = currentTime - this.lastUpdateTime
     const nextAttackAllowed = timeDiff > this.attacker.getAttackSpeed();
 
-    const active = this.isEligible && nextAttackAllowed;
+    let active = this.isEligible && nextAttackAllowed;
 
     if (nextAttackAllowed) {
       // attacks = Math.floor(timeDiff / this.attacker.getAttackSpeed())
       // while (attacks--) {
       // this.attack()
       // }
+
+      //
+      // Use mana, if applicable
+      //
+      const weapon = this.attacker.getWeapon();
+      const manaCost = (weapon && weapon.manaCost) || 0;
+      if (this.attacker.mp.current >= manaCost) {
+        this.attacker.mp.increment(-manaCost);
+
+      } else {
+        // NOT ENOUGH MANA
+        // this.attacker.state.createTextEvent(`Not enough mana.`, this.attacker.position, 'white', 100);
+        active = false;
+      }
 
       this.active = active;
 

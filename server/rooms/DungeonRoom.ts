@@ -5,6 +5,8 @@ import { Hero, DBHero } from "../db/Hero";
 import { Player } from "../entities/Player";
 import { DoorProgress } from "../entities/interactive/Door";
 
+import WebSocket from "ws";
+
 const TICK_RATE = 20 // 20 ticks per second
 
 export class DungeonRoom extends Room<DungeonState> {
