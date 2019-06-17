@@ -1,0 +1,129 @@
+# AdinPlay.com ads.txt - 04-03-19  
+##################################
+
+#Google
+google.com, pub-3282547114800347, RESELLER, f08c47fec0942fa0
+
+#Appnexus
+appnexus.com, 8631, RESELLER, f5ab79cb980f11d1
+
+#Index
+indexexchange.com, 186547, RESELLER, 50b1c356f2c5c8fc
+indexexchange.com, 187218, RESELLER, 50b1c356f2c5c8fc
+
+#Pulsepoint
+contextweb.com, 561767, RESELLER, 89ff185a4c4e857c
+
+#Pubmatic
+pubmatic.com, 156975, RESELLER, 5d62403b186f2ace
+pubmatic.com, 156857, RESELLER, 5d62403b186f2ace
+
+#OpenX
+openx.com, 540164985, RESELLER, 6a698e2ec38604c6
+openx.com, 540010967, RESELLER, 6a698e2ec38604c6
+
+
+#Sovrn
+sovrn.com, 264160, DIRECT, fafdf38b16bf6b2b
+lijit.com, 264160, DIRECT, fafdf38b16bf6b2b
+appnexus.com, 1360, RESELLER, f5ab79cb980f11d1
+gumgum.com, 11645, RESELLER, ffdef49475d318a9
+openx.com, 538959099, RESELLER, 6a698e2ec38604c6
+openx.com, 539924617, RESELLER, 6a698e2ec38604c6
+pubmatic.com, 137711, RESELLER, 5d62403b186f2ace
+pubmatic.com, 156212, RESELLER, 5d62403b186f2ace
+pubmatic.com, 156700, RESELLER, 5d62403b186f2ace
+rubiconproject.com, 17960, RESELLER, 0bfd66d529a55807
+
+#Oath
+adtech.com, 4929, DIRECT
+coxmt.com, 2000067907202, RESELLER
+pubmatic.com, 156377, RESELLER, 5d62403b186f2ace #banner
+pubmatic.com, 156078, RESELLER, 5d62403b186f2ace #banner
+pubmatic.com, 155967, RESELLER, 5d62403b186f2ace #banner
+openx.com, 537143344, RESELLER
+indexexchange.com, 175407, RESELLER, 50b1c356f2c5c8fc
+openx.com, 537125356, RESELLER, a698e2ec38604c6
+
+#Rhythmone
+rhythmone.com, 1432377581,DIRECT, a670c89d4a324e47
+rhythmone.com, 665259327, DIRECT, a670c89d4a324e47
+rhythmone.com,2451244104,DIRECT,a670c89d4a324e47
+
+
+#Gumgum
+gumgum.com,13543,DIRECT,ffdef49475d318a9
+adtech.com,9904,reseller,
+aolcloud.net,9904,reseller,
+appnexus.com,1001,reseller,f5ab79cb980f11d1
+appnexus.com,1942,reseller,f5ab79cb980f11d1
+appnexus.com,2758,reseller,f5ab79cb980f11d1
+appnexus.com,3135,reseller,f5ab79cb980f11d1
+bidtellect.com,1407,reseller,1c34aa2d85d45e93
+contextweb.com,558355,reseller,
+criteo.com,109412,direct,9fac4a4a87c2a44f
+openx.com,537120563,reseller,6a698e2ec38604c6
+openx.com,537149485,reseller,6a698e2ec38604c6
+pubmatic.com,50758,reseller,5d62403b186f2ace
+revcontent.com,76611,reseller,
+smaato.com,1100033117,reseller,
+spotx.tv,147949,reseller,7842df1d2fe2db34
+spotxchange.com,147949,reseller,7842df1d2fe2db34
+google.com,pub-9557089510405422,reseller,f08c47fec0942fa0
+google.com,pub-3848273848634341,reseller,f08c47fec0942fa0
+rhythmone.com,78519861,reseller,
+outbrain.com,01a755b08c8c22b15d46a8b753ab6955d4,reseller,
+outbrain.com,01a755b08c8c22b15d46a8b753ab6955d4,direct,
+appnexus.com,7597,reseller,f5ab79cb980f11d1
+springserve.com,686,direct,a24eb641fc82e93d
+lkqd.com,470,reseller,59c49fa9598a0117
+lkqd.net,470,reseller,59c49fa9598a0117
+advertising.com,16736,reseller,
+openx.com,540003333,reseller,6a698e2ec38604c6
+indexexchange.com,177754,reseller,50b1c356f2c5c8fc
+33across.com,0013300001r0t9mAAA,reseller,
+
+
+#Amazon
+aps.amazon.com,53b902f9-cf9c-4605-aec3-2c8ce65042b8,DIRECT
+pubmatic.com,157150,RESELLER,5d62403b186f2ace
+openx.com,540191398,RESELLER,6a698e2ec38604c6
+rubiconproject.com,18020,RESELLER,0bfd66d529a55807
+appnexus.com,1908,RESELLER,f5ab79cb980f11d1
+yldbt.com,5b522cc167f6b300b89dc6d3,RESELLER,cd184cb30abaabb5
+coxmt.com,2000068024302,RESELLER
+districtm.io,100962,RESELLER
+adtech.com,12068,RESELLER
+rhythmone.com,1654642120,RESELLER,a670c89d4a324e47
+
+
+# 33Across 
+33across.com,0010b00002KcjhXAAR,DIRECT,bbea06d9c4d2853c #display
+rubiconproject.com,16414,RESELLER,0bfd66d529a55807 #display
+pubmatic.com,156423,RESELLER,5d62403b186f2ace #display
+appnexus.com,10239,RESELLER,f5ab79cb980f11d1 #display
+appnexus.com,1001,RESELLER,f5ab79cb980f11d1 #display
+appnexus.com,3135,RESELLER,f5ab79cb980f11d1 #display
+openx.com,537120563,RESELLER,6a698e2ec38604c6 #display
+openx.com,539392223,RESELLER,6a698e2ec38604c6 #display
+rhythmone.com,2439829435,RESELLER,a670c89d4a324e47 #display
+indexexchange.com,185506,RESELLER  #display
+appnexus.com,1356,RESELLER,f5ab79cb980f11d1 #display
+emxdgt.com,326,RESELLER,1e1d41537f7cad7f #display
+google.com,pub-9557089510405422,RESELLER,f08c47fec0942fa0 #display
+criteo.com,3450,RESELLER #display
+adtech.com,9993,RESELLER #display
+aolcloud.net,9993,RESELLER #display
+
+# Springserve
+springserve.com, 905, DIRECT, a24eb641fc82e93d
+beachfront.com, 4969, RESELLER, e2541279e8e2ca4d
+advertising.com, 26282, RESELLER
+pubmatic.com, 157310, RESELLER, 5d62403b186f2ace
+rhythmone.com, 2968119028, RESELLER, a670c89d4a324e47
+spotxchange.com, 239904, RESELLER, 7842df1d2fe2db34
+spotx.tv, 239904, RESELLER, 7842df1d2fe2db34
+contextweb.com, 561910, RESELLER, 89ff185a4c4e857c
+openx.com, 540226160, RESELLER, 6a698e2ec38604c6
+openx.com, 540255318, RESELLER, 6a698e2ec38604c6
+ssp.ynxs.io, 185, RESELLER
