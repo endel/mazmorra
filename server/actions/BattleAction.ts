@@ -77,6 +77,15 @@ export class BattleAction extends Action {
       this.defender.hp.current -= this.damage;
       // this.defender.takeDamage(this)
 
+      // make defender move to attacker, if he's not doing anything.
+      if (!this.defender.action || !this.defender.action.isEligible) {
+        console.log("take damage, let's move to", this.defender.position.toJSON());
+        this.defender.state.move(this.defender, {
+          x: this.attacker.position.y,
+          y: this.attacker.position.x,
+        }, true);
+      }
+
       if (!this.defender.isAlive) {
         this.defender.onDie()
         this.attacker.onKill(this.defender)

@@ -266,14 +266,14 @@ export class Unit extends Entity {
     return this.action && (this.action instanceof BattleAction && this.action.defender === unit)
   }
 
-  takeDamage (battleAction) {
-    var damageTaken = battleAction.damage
+  // takeDamage (battleAction: BattleAction) {
+  //   var damageTaken = battleAction.damage
 
-    // TODO: consider attributes to reduce damage
-    this.hp.current -= damageTaken
+  //   // TODO: consider attributes to reduce damage
+  //   this.hp.current -= damageTaken
 
-    return damageTaken
-  }
+  //   return damageTaken
+  // }
 
   onDie () {
     this.walkable = true;
