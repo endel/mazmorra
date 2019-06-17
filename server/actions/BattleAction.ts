@@ -79,7 +79,6 @@ export class BattleAction extends Action {
 
       // make defender move to attacker, if he's not doing anything.
       if (!this.defender.action || !this.defender.action.isEligible) {
-        console.log("take damage, let's move to", this.defender.position.toJSON());
         this.defender.state.move(this.defender, {
           x: this.attacker.position.y,
           y: this.attacker.position.x,

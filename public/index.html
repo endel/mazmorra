@@ -39,6 +39,27 @@
       gtag('config', 'UA-112311879-2');
     </script>
 
+    <!-- Facebook Auth -->
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '423509175166200',
+          cookie     : true,
+          xfbml      : true,
+          version    : 'v3.3'
+        });
+        FB.AppEvents.logPageView();
+      };
+
+      (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
+
     <section class="modal speak-modal">
       <form action="/">
         <input type="text" placeholder="Chat" maxlength="14" />

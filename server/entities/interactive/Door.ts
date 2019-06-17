@@ -35,6 +35,8 @@ export class DoorDestiny extends Schema implements DoorDestinyOptions {
 
 export class Door extends Interactive {
   @type(DoorDestiny) destiny: DoorDestiny;
+  @type("boolean") isLocked: boolean = false;
+
   walkable = true;
 
   constructor (position: Point, destiny: DoorDestiny) {

@@ -7,9 +7,14 @@ import { type } from "@colyseus/schema";
 import { DBHero } from "../db/Hero";
 import { WeaponItem } from "./items/equipable/WeaponItem";
 import { ItemModifier } from "./Item";
+import { distance } from "../helpers/Math";
 
 export class Enemy extends Unit {
   @type("string") kind: string;
+
+  aiDistance: number = 3;
+  aiUpdateTime = 500;
+  lastUpdateTime = Date.now();
 
   constructor (kind, data: Partial<DBHero>, modifiers: Partial<StatsModifiers> = {}) {
     super(undefined, data);
@@ -37,20 +42,26 @@ export class Enemy extends Unit {
   update (currentTime) {
     super.update(currentTime)
 
-    // TODO: better close-to-player unit detection.
-    const closePlayer = this.state.gridUtils.getEntityAt(this.position.y - 1, this.position.x, Player)
-          || this.state.gridUtils.getEntityAt(this.position.y + 1, this.position.x, Player)
-          || this.state.gridUtils.getEntityAt(this.position.y, this.position.x + 1, Player)
-          || this.state.gridUtils.getEntityAt(this.position.y, this.position.x - 1, Player)
+    const timeDiff = currentTime - this.lastUpdateTime
+    const aiAllowed = timeDiff > this.aiUpdateTime
 
-          // diagonal
-          || this.state.gridUtils.getEntityAt(this.position.y - 1, this.position.x - 1, Player)
-          || this.state.gridUtils.getEntityAt(this.position.y - 1, this.position.x + 1, Player)
-          || this.state.gridUtils.getEntityAt(this.position.y + 1, this.position.x - 1, Player)
-          || this.state.gridUtils.getEntityAt(this.position.y + 1, this.position.x + 1, Player)
+    if (aiAllowed && (!this.action || !this.action.isEligible)) {
+      let closePlayer: Player;
 
-    if (closePlayer && !this.isBattlingAgainst(closePlayer)) {
-      this.state.move(this, { x: closePlayer.position.y, y: closePlayer.position.x })
+      for (let sessionId in this.state.players) {
+        const player: Player = this.state.players[sessionId];
+
+        if (distance(this.position, player.position) <= this.aiDistance) {
+          closePlayer = player;
+          break;
+        }
+      }
+
+      if (closePlayer) {
+        this.state.move(this, { x: closePlayer.position.y, y: closePlayer.position.x })
+      }
+
+      this.lastUpdateTime = currentTime;
     }
   }
 
