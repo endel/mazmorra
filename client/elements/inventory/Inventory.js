@@ -1,6 +1,7 @@
 import EquipedItems from './EquipedItems'
 import SlotStrip from './SlotStrip'
 import ItemSlot from './ItemSlot'
+import { SpriteText2D, textAlign } from 'three-text2d'
 
 export default class Inventory extends THREE.Object3D {
 
@@ -9,6 +10,19 @@ export default class Inventory extends THREE.Object3D {
 
     this.isOpen = false
     this.isTrading = false;
+
+    this.title = ResourceManager.getHUDElement('hud-big-title-regular');
+    this.title.position.y = this.title.height * 2;
+    this.add(this.title);
+    window.bg = this.title;
+
+    this.titleText = new SpriteText2D("Inventory", {
+      align: textAlign.center ,
+      font: config.FONT_TITLE,
+      fillStyle: "#282828"
+    });
+    this.titleText.position.y = this.title.position.y - 8;
+    this.add(this.titleText);
 
     this.equipedItems = new EquipedItems()
     this.slots = new SlotStrip({ slots: 12, columns: 4, inventoryType: "inventory" })
@@ -79,8 +93,8 @@ export default class Inventory extends THREE.Object3D {
     // fade all element materials separately
     // (THREE.js can't change opacity of containers)
     //
-    const elementsToFade = this.equipedItems.children.
-      concat(this.slots.children);
+    const elementsToFade = this.equipedItems.children
+      .concat(this.slots.children);
       // concat(this.exchangeSlots.children).
       // concat(this.exchangeSymbol)
 
@@ -99,7 +113,11 @@ export default class Inventory extends THREE.Object3D {
       }
 
       App.tweens.add(el.material).wait(i * 15).to({ opacity: targetOpacity }, 500, Tweener.ease.quintOut)
-    })
+    });
+
+    const opacity = ((this.isOpen) ? 1 : 0);
+    App.tweens.add(this.title.material).to({ opacity: opacity }, 500, Tweener.ease.quintOut);
+    App.tweens.add(this.titleText.material).to({ opacity: opacity }, 500, Tweener.ease.quintOut);
 
     // scale container
     App.tweens.remove(this.scale)

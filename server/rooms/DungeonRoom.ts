@@ -216,10 +216,10 @@ export class DungeonRoom extends Room<DungeonState> {
       }
     });
 
-    this.players.delete(client)
-    this.clientMap.delete(player)
-    this.heroes.delete(client)
-    this.state.removePlayer(player)
+    this.players.delete(client);
+    this.clientMap.delete(player);
+    this.heroes.delete(client);
+    this.state.removePlayer(player);
 
     this.resetAutoDisposeTimeout(60 * 2);
   }

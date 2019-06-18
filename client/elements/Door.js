@@ -7,24 +7,20 @@ export default class Door extends THREE.Object3D {
     super()
 
     this.userData = data
+    this.mapkind = mapkind;
     this.currentProgress = currentProgress
 
-    const doorStyle = (this.isLocked)
-      ? "locked"
-      : (this.userData.destiny.progress <= 0) ? "up" : "down";
-
-    const type = 'door-' + mapkind + "-" + doorStyle;
-
-    let material = new THREE.MeshPhongMaterial( {
+    this.material = new THREE.MeshPhongMaterial( {
         shading: THREE.FlatShading,
-        map: ResourceManager.get('billboards-' + type),
+        map: this.getTexture(),
         side: THREE.FrontSide,
         transparent: true
       })
       // +2.8 for the pillars
       // , geometry = new THREE.PlaneGeometry(config.TILE_SIZE + 2.8, config.TILE_SIZE + 2.8)
-      , geometry = new THREE.PlaneGeometry(config.TILE_SIZE, config.TILE_SIZE)
-      , mesh = new THREE.Mesh(geometry, material)
+
+    const geometry = new THREE.PlaneGeometry(config.TILE_SIZE, config.TILE_SIZE)
+    const mesh = new THREE.Mesh(geometry, this.material)
 
     if (gridTile & helpers.DIRECTION.NORTH) {
       this.position.y = 0.5;
@@ -38,8 +34,8 @@ export default class Door extends THREE.Object3D {
       mesh.rotateY(Math.PI/2);
     }
 
-    mesh.scale.normalizeWithTexture(material.map, true)
-    this.add(mesh)
+    mesh.scale.normalizeWithTexture(this.material.map, true)
+    this.add(mesh);
 
     window.door = this;
 
@@ -51,10 +47,24 @@ export default class Door extends THREE.Object3D {
 
     this.getEntity().on('mouseover', this.onMouseOver.bind(this))
     this.getEntity().on('mouseout', this.onMouseOut.bind(this))
+
+    this.getEntity().on('update', this.onUpdate.bind(this));
+  }
+
+  getTexture() {
+    const doorStyle = (this.isLocked)
+      ? "locked"
+      : (this.userData.destiny.progress <= 0) ? "up" : "down";
+
+    return ResourceManager.get('billboards-door-' + this.mapkind + "-" + doorStyle);
   }
 
   get isLocked () {
     return this.userData.isLocked;
+  }
+
+  onUpdate () {
+    this.material.map = this.getTexture();
   }
 
   get label () {

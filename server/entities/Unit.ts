@@ -260,7 +260,7 @@ export class Unit extends Entity {
 
   attack (defender) {
     if (defender === null || !defender.isAlive) {
-      this.action = null
+      this.action = null;
 
     } else if (!this.isBattlingAgainst(defender)) {
       this.action = new BattleAction(this, defender)

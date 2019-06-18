@@ -49,9 +49,10 @@ export default class Portal extends THREE.Object3D {
       map: this.frames[0],
       color: 0xffffff,
     }))
-
+    this.sprite.scale.normalizeWithTexture(this.frames[0])
     this.sprite.position.y = 0.55;
     this.add(this.sprite);
+
 
     // animate portal
     App.tweens.
@@ -59,10 +60,9 @@ export default class Portal extends THREE.Object3D {
       from({ opacity: 0 }, 500, Tweener.ease.quartOut);
 
     App.tweens.
-      add(this.sprite.position).
-      from({y: -1.5}, 1000, Tweener.ease.quartOut);
+      add(this.sprite.scale).
+      from({x: 0, y: 0, z: 0}, 1000, Tweener.ease.quartOut);
 
-    this.sprite.scale.normalizeWithTexture(this.frames[0])
     this.addBehaviour(new PortalBehaviour());
   }
 

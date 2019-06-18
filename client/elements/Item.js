@@ -13,9 +13,9 @@ export default class Item extends THREE.Object3D {
 
     this.userData = data
 
-    this.item = ResourceManager.getSprite( "items-" + data.type )
-    this.item.position.y = 0.5
-    this.add(this.item)
+    this.sprite = ResourceManager.getSprite( "items-" + data.type )
+    this.sprite.position.y = 0.5
+    this.add(this.sprite)
 
     //
     // TODO: add "rarity" to rare items.
@@ -37,7 +37,7 @@ export default class Item extends THREE.Object3D {
       this.addBehaviour(new NearPlayerOpacity)
     }
 
-    this.item.addBehaviour(new Pickable)
+    this.sprite.addBehaviour(new Pickable)
 
     this.getEntity().on('mouseover', this.onMouseOver.bind(this))
     this.getEntity().on('mouseout', this.onMouseOut.bind(this))

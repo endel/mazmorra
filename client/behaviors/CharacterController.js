@@ -1,8 +1,5 @@
 import { Behaviour } from 'behaviour.js'
-import Keycode from 'keycode.js'
-
 import Chat from './Chat'
-
 import lerp from 'lerp'
 
 export default class CharacterController extends Behaviour {
@@ -10,6 +7,7 @@ export default class CharacterController extends Behaviour {
   onAttach (camera, room) {
     this.camera = camera
     this.room = room
+    this.zoom = config.ZOOM;
 
     this.target = this.object;
     this.rotation = false;
@@ -33,6 +31,7 @@ export default class CharacterController extends Behaviour {
 
     this.on('target', (newTarget) => this.target = newTarget);
     this.on('rotate', (isRotating) => this.isRotating = isRotating);
+    this.on('zoom', (ratio) => this.zoom = config.ZOOM * ratio);
   }
 
   update () {
@@ -59,7 +58,7 @@ export default class CharacterController extends Behaviour {
       // this.lookAtTarget.x = this.target.position.x;
       // this.lookAtTarget.y = this.target.position.y;
       // this.lookAtTarget.z = this.target.position.z;
-      this.camera.zoom = lerp(this.camera.zoom, config.ZOOM, 0.05);
+      this.camera.zoom = lerp(this.camera.zoom, this.zoom, 0.05);
       this.camera.updateProjectionMatrix();
 
     } else {

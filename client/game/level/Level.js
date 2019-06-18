@@ -20,9 +20,6 @@ export default class Level extends THREE.Object3D {
     this.hud = hud;
     this.camera = camera;
 
-    // this.room = this.enterRoom('grass')
-    this.room = this.enterRoom('dungeon', { progress: 1 });
-
     this.entities = {};
     this.progress = 0;
 
@@ -34,6 +31,9 @@ export default class Level extends THREE.Object3D {
     this.selection = new TileSelectionPreview(this.selectionLight, this.hud);
 
     this.factory = new Factory(this);
+
+    // this.room = this.enterRoom('grass')
+    this.room = this.enterRoom('dungeon', { progress: 1 });
 
     this.addEventListener("click", this.onClick.bind(this));
     this.addEventListener("mouseover", this.onMouseOver.bind(this));
@@ -64,20 +64,28 @@ export default class Level extends THREE.Object3D {
   }
 
   enterRoom (name, options = {}) {
+    this.cleanup();
+
     this.room = enterRoom(name, options)
 
     // first level setup
     this.room.onStateChange.addOnce((state) => this.setInitialState(state));
 
     this.room.onError.add((err) => console.error(err));
-    this.room.onLeave.add(() => this.cleanup());
+    // this.room.onLeave.add(() => this.cleanup());
 
     this.room.onMessage.add((payload) => {
-      const [ evt, data ] = payload
-      if (evt === "goto") {
-        this.room.onLeave.addOnce(() => this.room = this.enterRoom('dungeon', data))
+      const [ evt, data ] = payload;
 
-        this.room.leave()
+      if (evt === "goto") {
+        player.getEntity().emit('zoom', 2);
+
+        this.room.onLeave.addOnce(() => {
+          setTimeout(() => this.room = this.enterRoom('dungeon', data), 500);
+        });
+
+        setTimeout(() => this.room.leave(), 200);
+
         doorSound.play();
 
       } else if (evt === "trading-items") {
@@ -188,6 +196,10 @@ export default class Level extends THREE.Object3D {
 
           } else if (change.field === "active" && change.value !== change.previousValue) {
             object.getEntity().emit('active', change.value);
+
+          } else if (change.field === "isLocked") {
+            // change locked
+            object.getEntity().emit('update');
 
           } else if (
             (change.field === "pointsToDistribute" || change.field === "equipedItems") &&
@@ -390,10 +402,22 @@ export default class Level extends THREE.Object3D {
 
     // entity may already be removed by this client somehow (text event?)
     if (object.parent) {
-      object.parent.remove(object)
+      if (object.sprite) {
+        // fade out objects with sprite
+        App.tweens.add(object.sprite.scale)
+          .to({
+            x: 0,
+            y: 0,
+            z: 0,
+          }, 100, Tweener.ease.quadOut)
+          .then(() => object.parent.remove(object));
+
+      } else {
+        object.parent.remove(object);
+      }
     }
 
-    object.getEntity().destroy()
+    object.getEntity().destroy();
 
   }
 

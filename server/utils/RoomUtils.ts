@@ -143,7 +143,9 @@ export class RoomUtils {
       progress: DoorProgress.FORWARD
     }), true));
 
+    //
     // create a key in a random room.
+    //
     const randomRoom = this.rand.intBetween(0, this.rooms.length - 1);
     this.addEntity(this.rooms[randomRoom], (position) => {
       const key = new ConsumableItem();
