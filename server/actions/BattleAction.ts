@@ -86,10 +86,10 @@ export class BattleAction extends Action {
           !this.defender.action.isEligible
         )
       ) {
-        // this.defender.state.move(this.defender, {
-        //   x: this.attacker.position.y,
-        //   y: this.attacker.position.x,
-        // }, true);
+        this.defender.state.move(this.defender, {
+          x: this.attacker.position.y,
+          y: this.attacker.position.x,
+        }, true);
       }
 
       if (!this.defender.isAlive) {
@@ -115,19 +115,19 @@ export class BattleAction extends Action {
       // this.attack()
       // }
 
-      // //
-      // // Use mana, if applicable
-      // //
-      // const weapon = this.attacker.getWeapon();
-      // const manaCost = (weapon && weapon.manaCost) || 0;
-      // if (this.attacker.mp.current >= manaCost) {
-      //   this.attacker.mp.increment(-manaCost);
+      //
+      // Use mana, if applicable
+      //
+      const weapon = this.attacker.getWeapon();
+      const manaCost = (weapon && weapon.manaCost) || 0;
+      if (this.attacker.mp.current >= manaCost) {
+        this.attacker.mp.increment(-manaCost);
 
-      // } else {
-      //   // NOT ENOUGH MANA
-      //   // this.attacker.state.createTextEvent(`Not enough mana.`, this.attacker.position, 'white', 100);
-      //   active = false;
-      // }
+      } else {
+        // NOT ENOUGH MANA
+        // this.attacker.state.createTextEvent(`Not enough mana.`, this.attacker.position, 'white', 100);
+        active = false;
+      }
 
       this.active = active;
 
