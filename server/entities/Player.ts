@@ -8,6 +8,7 @@ import { EquipedItems } from "../core/EquipedItems";
 import { EquipableItem } from "./items/EquipableItem";
 import { Point } from "../rooms/states/DungeonState";
 import { CastableItem } from "./items/CastableItem";
+import { Inventory } from "../core/Inventory";
 
 export class SkinProperties extends Schema {
   @type("number") klass: number;
@@ -55,12 +56,34 @@ export class Player extends Unit {
     this.walkable = true;
   }
 
+  getItemByType(type: string) {
+    const inventoriesToSearchFor: InventoryType[] = ['inventory', 'quickInventory'];
+
+    let inventoryType;
+    let itemId;
+
+    for (let i = 0; i < inventoriesToSearchFor.length; i++) {
+      const _inventoryType = inventoriesToSearchFor[i];
+      const inventory: Inventory = this[_inventoryType];
+      for (const _itemId in inventory.slots) {
+        const item: Item = inventory.slots[_itemId];
+        if (item.type === type) {
+          inventoryType = _inventoryType;
+          itemId = _itemId;
+          break;
+        }
+      }
+    }
+
+    return { inventoryType, itemId };
+  }
+
   useItem(inventoryType: InventoryType, itemId: string) {
     const inventory = this[inventoryType];
     const item: Item = inventory.slots[itemId];
 
     if (item && item.use(this, this.state)) {
-      inventory.remove(itemId);
+      return inventory.remove(itemId);
     }
   }
 

@@ -39,12 +39,29 @@ export class Door extends Interactive {
 
   walkable = true;
 
-  constructor (position: Point, destiny: DoorDestiny) {
+  constructor (position: Point, destiny: DoorDestiny, isLocked: boolean = false) {
     super(helpers.ENTITIES.DOOR, position);
     this.destiny = destiny;
+    this.isLocked = isLocked;
   }
 
   interact (moveEvent, player, state) {
+    if (this.isLocked) {
+      const { inventoryType, itemId } = player.getItemByType(helpers.ENTITIES.KEY_1);
+
+      // use key to unlock door
+      if (
+        !inventoryType ||
+        !itemId ||
+        !player.useItem(inventoryType, itemId)
+      ) {
+        return;
+
+      } else {
+        this.isLocked = false;
+      }
+    }
+
     state.events.emit('goto', player, this.destiny);
 
     // remove portal when using it.

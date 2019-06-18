@@ -10,6 +10,7 @@ import { HelmetItem } from "./equipable/HelmetItem";
 import { DBItem } from "../../db/Hero";
 import { Scroll } from "./consumable/Scroll";
 import { ArmorItem } from "./equipable/ArmorItem";
+import { ConsumableItem } from "./ConsumableItem";
 
 export function createItem(data: Item | DBItem, position?: Point): Item {
   let item: Item;
@@ -35,6 +36,13 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
     case helpers.ENTITIES.ELIXIR_POTION_3:
     case helpers.ENTITIES.ELIXIR_POTION_4:
       item = new Potion();
+      break;
+
+    // Generic consumables
+    case helpers.ENTITIES.KEY_1:
+    case helpers.ENTITIES.KEY_2:
+    case helpers.ENTITIES.KEY_3:
+      item = new ConsumableItem();
       break;
 
     case helpers.ENTITIES.SHIELD_1:

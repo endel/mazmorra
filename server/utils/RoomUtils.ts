@@ -30,6 +30,7 @@ import { EquipableItem } from "../entities/items/EquipableItem";
 import { Diamond } from "../entities/items/Diamond";
 import { Scroll } from "../entities/items/consumable/Scroll";
 import { MONSTER_BASE_ATTRIBUTES } from "./ProgressionConfig";
+import { ConsumableItem } from "../entities/items/ConsumableItem";
 
 export interface DungeonRoom {
   position: Point;
@@ -140,7 +141,16 @@ export class RoomUtils {
       mapkind: 'grass',
       difficulty: 1,
       progress: DoorProgress.FORWARD
-    })));
+    }), true));
+
+    // create a key in a random room.
+    const randomRoom = this.rand.intBetween(0, this.rooms.length - 1);
+    this.addEntity(this.rooms[randomRoom], (position) => {
+      const key = new ConsumableItem();
+      key.type = helpers.ENTITIES.KEY_1;
+      key.position.set(position);
+      return key;
+    })
 
     this.rooms.forEach(room => this.populateRoom(room))
   }

@@ -82,6 +82,11 @@ var helpers = {
       BOOK_BLUE: 'book-blue',
       BOOK_YELLOW: 'book-yellow',
 
+      // KEYS
+      KEY_1: 'key-1',
+      KEY_2: 'key-2',
+      KEY_3: 'key-3',
+
       // skills
       PORTAL: 'portal',
 

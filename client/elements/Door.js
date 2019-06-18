@@ -9,7 +9,10 @@ export default class Door extends THREE.Object3D {
     this.userData = data
     this.currentProgress = currentProgress
 
-    const doorStyle = (this.userData.destiny.progress <= 0) ? "up" : "down";
+    const doorStyle = (this.isLocked)
+      ? "locked"
+      : (this.userData.destiny.progress <= 0) ? "up" : "down";
+
     const type = 'door-' + mapkind + "-" + doorStyle;
 
     let material = new THREE.MeshPhongMaterial( {
@@ -48,6 +51,10 @@ export default class Door extends THREE.Object3D {
 
     this.getEntity().on('mouseover', this.onMouseOver.bind(this))
     this.getEntity().on('mouseout', this.onMouseOut.bind(this))
+  }
+
+  get isLocked () {
+    return this.userData.isLocked;
   }
 
   get label () {

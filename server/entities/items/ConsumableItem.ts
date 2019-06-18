@@ -1,7 +1,9 @@
 import { Item } from "../Item";
 import { Player } from "../Player";
 
-export abstract class ConsumableItem extends Item {
+export class ConsumableItem extends Item {
+
+  use(player, state) { return true; }
 
   pick (player: Player, state) {
     let success: boolean = false;
