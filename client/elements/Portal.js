@@ -2,18 +2,22 @@
 
 import { Behaviour } from 'behaviour.js'
 import LightOscillator from '../behaviors/LightOscillator'
+import { getLightFromPool, removeLight } from '../utils';
 
 class PortalBehaviour extends Behaviour {
   onAttach() {
-    const light = new THREE.PointLight(0x1c80e4, 2, 15);
-    light.position.set(0, 1.5, 0);
+    this.light = getLightFromPool();
+    this.light.intensity = 2;
+    this.light.distance = 15;
+    this.light.color = new THREE.Color(0x1c80e4);
+    this.light.position.set(0, 1.5, 0);
 
     App.tweens.
-      add(light).
+      add(this.light).
       from({ intensity: 0 }, 800, Tweener.ease.quartOut).
-      then(() => light.addBehaviour(new LightOscillator, 0.8, 1.2));
+      then(() => this.light.addBehaviour(new LightOscillator, 0.8, 1.2));
 
-    this.object.add(light);
+    this.object.add(this.light);
 
     var currentTexture = 0;
     this.interval = setInterval(() => {
@@ -23,6 +27,7 @@ class PortalBehaviour extends Behaviour {
   }
 
   onDetach() {
+    removeLight(this.light);
     clearInterval(this.interval);
   }
 

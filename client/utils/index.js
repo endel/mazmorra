@@ -18,16 +18,16 @@ export function humanize (value) {
 }
 
 const lightPool = [
-  new THREE.PointLight(0x1c80e4, 1, 5),
-  new THREE.PointLight(0x1c80e4, 1, 5),
-  new THREE.PointLight(0x1c80e4, 1, 5),
-  new THREE.PointLight(0x1c80e4, 1, 5),
-  new THREE.PointLight(0x1c80e4, 1, 5),
-  new THREE.PointLight(0x1c80e4, 1, 5),
-  new THREE.PointLight(0x1c80e4, 1, 5),
-  new THREE.PointLight(0x1c80e4, 1, 5),
-  new THREE.PointLight(0x1c80e4, 1, 5),
-  new THREE.PointLight(0x1c80e4, 1, 5),
+  new THREE.PointLight(0x1c80e4, 0, 0),
+  new THREE.PointLight(0x1c80e4, 0, 0),
+  new THREE.PointLight(0x1c80e4, 0, 0),
+  new THREE.PointLight(0x1c80e4, 0, 0),
+  new THREE.PointLight(0x1c80e4, 0, 0),
+  new THREE.PointLight(0x1c80e4, 0, 0),
+  new THREE.PointLight(0x1c80e4, 0, 0),
+  new THREE.PointLight(0x1c80e4, 0, 0),
+  new THREE.PointLight(0x1c80e4, 0, 0),
+  // new THREE.PointLight(0x1c80e4, 0, 0),
 ];
 let currentLight = 0;
 
@@ -41,7 +41,9 @@ export function getLightPoolCount() {
 }
 
 export function removeLight(light) {
-  light.position.y = -1000;
+  light.getEntity().detachAll();
+  light.intensity = 0;
+  light.distance = 0;
   window.scene.add(light);
 }
 

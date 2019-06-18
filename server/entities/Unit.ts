@@ -65,6 +65,7 @@ export class Unit extends Entity {
   // 0~1
   evasion: number = 0.001;
   criticalStrikeChance: number = 0.1;
+  movementSpeed: number = 1000;
 
   lastHpRegenerationTime: number = 0;
   hpRegeneration: number = 0
@@ -171,7 +172,11 @@ export class Unit extends Entity {
     // Max attack speed modifier: 32 (5 attacks per second)
     // (10 * 25) = 200
 
-    return 400 - (this.statsModifiers.movementSpeed * 20);
+    return (
+      this.movementSpeed
+      - (this.statsModifiers.movementSpeed * 20)
+      - (this.attributes.agility * 20)
+    );
   }
 
   getAttackSpeed() {

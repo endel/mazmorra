@@ -87,6 +87,7 @@ export default class Projectile extends THREE.Object3D {
       this.light = getLightFromPool();
       this.light.position.y = 1;
       this.light.intensity = 0.5;
+      this.light.distance = 5;
       this.add(this.light);
     }
 

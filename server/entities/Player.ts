@@ -28,6 +28,7 @@ export class Player extends Unit {
   @type("number") latestProgress: number;
   @type("number") pointsToDistribute: number;
 
+  movementSpeed = 800;
   shouldSaveCoords: boolean = false;
 
   constructor (id, hero: DBHero, state?) {
