@@ -17,6 +17,33 @@ export function humanize (value) {
   //   .replace(/^[a-z]/, function (m) { return m.toUpperCase(); });
 }
 
+const lightPool = [
+  new THREE.PointLight(0x1c80e4, 1, 5),
+  new THREE.PointLight(0x1c80e4, 1, 5),
+  new THREE.PointLight(0x1c80e4, 1, 5),
+  new THREE.PointLight(0x1c80e4, 1, 5),
+  new THREE.PointLight(0x1c80e4, 1, 5),
+  new THREE.PointLight(0x1c80e4, 1, 5),
+  new THREE.PointLight(0x1c80e4, 1, 5),
+  new THREE.PointLight(0x1c80e4, 1, 5),
+  new THREE.PointLight(0x1c80e4, 1, 5),
+  new THREE.PointLight(0x1c80e4, 1, 5),
+];
+let currentLight = 0;
+
+export function getLightFromPool() {
+  currentLight = (currentLight + 1) % lightPool.length;
+  return lightPool[currentLight];
+}
+
+export function getLightPoolCount() {
+  return lightPool.length;
+}
+
+export function removeLight(light) {
+  light.position.y = -1000;
+  window.scene.add(light);
+}
 
 export function toScreenPosition(camera, obj) {
   var vector = new THREE.Vector3();

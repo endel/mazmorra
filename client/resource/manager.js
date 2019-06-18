@@ -121,12 +121,21 @@ class ResourceManager {
           texture.repeat.set(2, 2)
           texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 
-          this.materials[ name ] = new THREE.MeshPhongMaterial({
+          // TODO: use this material for "ice" map
+          // THREE.MeshStandardMaterial
+
+          // Default:
+          // MeshPhongMaterial
+
+          // I like this one!
+          // THREE.MeshLambertMaterial
+
+          this.materials[ name ] = new THREE.MeshPhongMaterial({ //new THREE.MeshBasicMaterial({
             // color: 0xa0adaf,
             // specular: 0x111111,
             // shininess: 60,
-            // flatShading: false,
-            shading: THREE.FlatShading,
+            // flatShading: true,
+            // shading: THREE.FlatShading,
             map: texture,
             side: THREE.DoubleSide,
             // depthWrite: false

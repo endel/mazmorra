@@ -6,6 +6,7 @@ import Raycaster from '../behaviors/Raycaster'
 import login from '../web/login'
 
 import config from '../config'
+import { getLightPoolCount, getLightFromPool, removeLight } from '../utils';
 
 export default class Game {
 
@@ -23,6 +24,9 @@ export default class Game {
     this.renderer.setPixelRatio( window.devicePixelRatio );
     this.renderer.setSize( window.innerWidth, window.innerHeight );
     this.renderer.autoClear = false;
+
+    // this.renderer.shadowMap.enabled = false;
+    // this.renderer.shadowMap.autoUpdate = false;
 
     // this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 20000 );
     // this.camera.zoom = config.ZOOM / 15
@@ -51,6 +55,11 @@ export default class Game {
     this.scene = new THREE.Scene();
     // this.scene.rotateY(-0.4)
     this.scene.addBehaviour(new Raycaster(), this.camera, hudRaycaster);
+
+    window.scene = this.scene;
+    for (let i=0;i<getLightPoolCount();i++) {
+      removeLight(getLightFromPool());
+    }
 
     // this.level = new Level(this.scene, this.hud, this.camera)
     // this.level.on('setup', this.onSetupLevel.bind(this))

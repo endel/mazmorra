@@ -43,7 +43,8 @@ export class Enemy extends Unit {
     super.update(currentTime)
 
     const timeDiff = currentTime - this.lastUpdateTime
-    const aiAllowed = timeDiff > this.aiUpdateTime
+    // const aiAllowed = timeDiff > this.aiUpdateTime
+    const aiAllowed = false;
 
     if (aiAllowed && (!this.action || !this.action.isEligible)) {
       let closePlayer: Player;
