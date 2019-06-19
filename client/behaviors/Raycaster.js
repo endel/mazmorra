@@ -14,7 +14,7 @@ export default class Raycaster extends Behaviour {
     this.lastTapTime = Date.now();
 
     // do raycast at every 200ms
-    setInterval(() => this.doRaycast(), 200);
+    setInterval(() => this.doRaycast(true), 200);
 
     window.addEventListener("mousemove", this.doRaycast.bind(this), false);
     window.addEventListener("touchstart", this.onTouchStart.bind(this), false);
@@ -38,7 +38,7 @@ export default class Raycaster extends Behaviour {
     return this.targetObject && !this.isParentLayerActive
   }
 
-  doRaycast () {
+  doRaycast (forceUpdate) {
 
     // skip if parent layer (HUD) is active
     if ( this.isParentLayerActive ) { return }
@@ -63,7 +63,10 @@ export default class Raycaster extends Behaviour {
       }
     }
 
-    if (this.targetObject !== nextTargetObject) {
+    if (
+      this.targetObject !== nextTargetObject
+      || forceUpdate // workaround for https://github.com/endel/mazmorra/issues/56
+    ) {
 
       // mouseout
       if (this.targetObject) {
