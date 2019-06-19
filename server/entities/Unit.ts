@@ -55,7 +55,7 @@ export class Unit extends Entity {
   @type(Bar) mp = new Bar("mp", 0);
   @type(Bar) xp = new Bar("xp", 0, 10);
 
-  @type("number") lvl = 1;
+  @type("number") lvl: number;
   @type("string") primaryAttribute: Attribute;
   @type(UnitAttributes) attributes = new UnitAttributes();
   pointsToDistribute: number;
@@ -104,6 +104,8 @@ export class Unit extends Entity {
 
     this.equipedItems.set(hero.equipedItems || []);
     this.equipedItems.events.on('change', () => this.onEquipedItemsChange());
+
+    this.lvl = hero.lvl || 1;
 
     this.primaryAttribute = hero.primaryAttribute || "strength";
     this.attributes.strength = hero.strength || 1;
@@ -285,7 +287,7 @@ export class Unit extends Entity {
     this.drop();
   }
 
-  onKill (unit) {
+  onKill (unit: Unit) {
     // clear pending movement
     this.position.pending = [];
 

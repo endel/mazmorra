@@ -20,7 +20,7 @@ export default class TileSelectionPreview extends THREE.Object3D {
       side: THREE.DoubleSide,
       // fog: true
     })
-    this.material.opacity = 0.6
+    this.material.opacity = 0.8
     this.geometry = new THREE.PlaneGeometry(config.TILE_SIZE, config.TILE_SIZE)
 
     this.mesh = new THREE.Mesh(this.geometry, this.material)

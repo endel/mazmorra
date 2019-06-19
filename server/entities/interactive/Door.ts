@@ -53,7 +53,7 @@ export class Door extends Interactive {
       if (
         !inventoryType ||
         !itemId ||
-        !player.useItem(inventoryType, itemId)
+        !player.useItem(inventoryType, itemId, true)
       ) {
         setTimeout(() => {
           state.createTextEvent(`Door is locked!`, player.position, "white", 100);

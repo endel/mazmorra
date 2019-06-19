@@ -130,7 +130,7 @@ class ResourceManager {
           // I like this one!
           // THREE.MeshLambertMaterial
 
-          this.materials[ name ] = new THREE.MeshPhongMaterial({ //new THREE.MeshBasicMaterial({
+          this.materials[ name ] = new THREE.MeshLambertMaterial({ //new THREE.MeshBasicMaterial({
             // color: 0xa0adaf,
             // specular: 0x111111,
             // shininess: 60,

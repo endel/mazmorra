@@ -3,7 +3,7 @@ import { Player } from "../Player";
 
 export class ConsumableItem extends Item {
 
-  use(player, state) { return true; }
+  use(player, state, force: boolean = false) { return force; }
 
   pick (player: Player, state) {
     let success: boolean = false;

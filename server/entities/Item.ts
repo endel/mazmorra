@@ -17,7 +17,7 @@ export abstract class Item extends Entity {
     super()
   }
 
-  abstract use(player: Unit, state: DungeonState): boolean;
+  abstract use(player: Unit, state: DungeonState, force?:boolean): boolean;
 
   pick (unit: Unit, state: DungeonState) {
     const success = unit.inventory.add(this);

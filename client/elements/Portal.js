@@ -53,6 +53,8 @@ export default class Portal extends THREE.Object3D {
     this.sprite.position.y = 0.55;
     this.add(this.sprite);
 
+    this.initialScale = this.sprite.scale.clone();
+    this.sprite.scale.set(0, 0, 0);
 
     // animate portal
     App.tweens.
@@ -61,7 +63,7 @@ export default class Portal extends THREE.Object3D {
 
     App.tweens.
       add(this.sprite.scale).
-      from({x: 0, y: 0, z: 0}, 1000, Tweener.ease.quartOut);
+      to(this.initialScale, 1000, Tweener.ease.quartOut);
 
     this.addBehaviour(new PortalBehaviour());
   }

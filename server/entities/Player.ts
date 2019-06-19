@@ -79,11 +79,11 @@ export class Player extends Unit {
     return { inventoryType, itemId };
   }
 
-  useItem(inventoryType: InventoryType, itemId: string) {
+  useItem(inventoryType: InventoryType, itemId: string, force: boolean = false) {
     const inventory = this[inventoryType];
     const item: Item = inventory.slots[itemId];
 
-    if (item && item.use(this, this.state)) {
+    if (item && item.use(this, this.state, force)) {
       return inventory.remove(itemId);
     }
   }

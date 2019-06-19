@@ -58,7 +58,7 @@ export default class CharacterController extends Behaviour {
       // this.lookAtTarget.x = this.target.position.x;
       // this.lookAtTarget.y = this.target.position.y;
       // this.lookAtTarget.z = this.target.position.z;
-      this.camera.zoom = lerp(this.camera.zoom, this.zoom, 0.05);
+      this.camera.zoom = lerp(this.camera.zoom, this.zoom, 0.02);
       this.camera.updateProjectionMatrix();
 
     } else {

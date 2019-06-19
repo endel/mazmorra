@@ -3,7 +3,7 @@ module.exports = {
   WALL_THICKNESS: 0.7,
 
   COLOR_RED: new THREE.Color(0xd00000),
-  COLOR_GREEN: new THREE.Color(0x6ca018),
+  COLOR_GREEN: new THREE.Color(0x7cac20),
   COLOR_YELLOW: new THREE.Color(0xfcf458),
   COLOR_WHITE: new THREE.Color(0xffffff),
   COLOR_BLUE: new THREE.Color(0x185090),
