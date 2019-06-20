@@ -57,6 +57,12 @@ export type MapMonsterList = {
 export type MapConfig = {
   daylight: boolean,
   mapkind: MapKind,
+
+  getMapWidth: (progress: number) => number,
+  getMapHeight: (progress: number) => number,
+  minRoomSize: {x: number, y: number},
+  maxRoomSize: {x: number, y: number},
+
   enemies: {[id: string]: number},
   boss?: string[]
 };
@@ -64,9 +70,14 @@ export type MapConfig = {
 export function getMapConfig(progress: number) {
   if (progress === 1) {
     // village / lobby!
+    const size = 9;
     return {
       daylight: true,
       mapkind: MapKind.CASTLE,
+      getMapWidth: (progress: number) => size,
+      getMapHeight: (progress: number) => size,
+      minRoomSize: { x: size, y: size },
+      maxRoomSize: { x: size, y: size },
       enemies: {}
     }
   } else {
@@ -79,6 +90,10 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: true,
     mapkind: MapKind.ROCK,
+    getMapWidth: (progress: number) => 15 + progress,
+    getMapHeight: (progress: number) => 15 + progress,
+    minRoomSize: { x: 6, y: 6 },
+    maxRoomSize: { x: 7, y: 7 },
     enemies: { 'bat': 0.33, 'rat': 0.33, 'spider': 0.33, 'spider-medium': 0.01 },
     boss: ['spider-giant']
   },
@@ -86,6 +101,10 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: false,
     mapkind: MapKind.ROCK,
+    getMapWidth: (progress: number) => 15 + progress,
+    getMapHeight: (progress: number) => 15 + progress,
+    minRoomSize: { x: 6, y: 6 },
+    maxRoomSize: { x: 9, y: 9 },
     enemies: { 'slime': 0.33, 'slime-2': 0.33, 'skeleton-1': 0.33, 'slime-cube': 0.01, },
     boss: ['slime-big']
   },
@@ -93,6 +112,10 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: true,
     mapkind: MapKind.GRASS,
+    getMapWidth: (progress: number) => 15 + progress,
+    getMapHeight: (progress: number) => 15 + progress,
+    minRoomSize: { x: 6, y: 6 },
+    maxRoomSize: { x: 9, y: 9 },
     enemies: { 'skeleton-1': 0.33, 'skeleton-2': 0.33, 'skeleton-3': 0.33, 'spider-medium': 0.01 },
     boss: ['necromancer']
   },
@@ -100,10 +123,13 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: false,
     mapkind: MapKind.GRASS,
+    getMapWidth: (progress: number) => 15 + progress,
+    getMapHeight: (progress: number) => 15 + progress,
+    minRoomSize: { x: 6, y: 6 },
+    maxRoomSize: { x: 9, y: 9 },
     enemies: { 'goblin': 0.33, 'goblin-2': 0.33, 'goblin-3': 0.33, 'skeleton-2': 0.01 },
     boss: ['goblin-boss']
   },
-
 
 ];
 

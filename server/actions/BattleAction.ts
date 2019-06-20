@@ -120,7 +120,7 @@ export class BattleAction extends Action {
       //
       const weapon = this.attacker.getWeapon();
       const manaCost = (weapon && weapon.manaCost) || 0;
-      if (this.attacker.mp.current >= manaCost) {
+      if (active && this.attacker.mp.current >= manaCost) {
         this.attacker.mp.increment(-manaCost);
 
       } else {
