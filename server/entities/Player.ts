@@ -104,6 +104,7 @@ export class Player extends Unit {
     ) {
       this.attributes[attribute]++;
       this.pointsToDistribute--;
+      this.recalculateStatsModifiers();
     }
   }
 

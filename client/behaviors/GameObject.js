@@ -44,7 +44,7 @@ export default class GameObject extends Behaviour {
     if (this.nextPoint) {
       let destX = this.nextPoint.x
         , destZ = this.nextPoint.z
-        , lerpTime = 0.09
+        , lerpTime = 0.07;
 
       if (this.battleBehaviour && this.battleBehaviour.togglePosition) {
         const isRanged = this.battleBehaviour.attackDistance > 1;

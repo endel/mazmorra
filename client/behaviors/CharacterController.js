@@ -47,7 +47,7 @@ export default class CharacterController extends Behaviour {
       // this.camera.position.y = lerp(this.camera.position.y, this.originalY + 40, 0.1)
 
       this.camera.position.x = lerp(this.camera.position.x, this.target.position.x + 90 * Math.cos(1), 0.05) // + (window.innerWidth / window.innerHeight)
-      this.camera.position.z = lerp(this.camera.position.z, this.target.position.z + 40, 0.1)
+      this.camera.position.z = lerp(this.camera.position.z, this.target.position.z + 40, 0.05)
       this.camera.position.y = lerp(this.camera.position.y, this.originalY + 50, 0.05)
 
       // // Perspective
@@ -58,7 +58,7 @@ export default class CharacterController extends Behaviour {
       // this.lookAtTarget.x = this.target.position.x;
       // this.lookAtTarget.y = this.target.position.y;
       // this.lookAtTarget.z = this.target.position.z;
-      this.camera.zoom = lerp(this.camera.zoom, this.zoom, 0.02);
+      this.camera.zoom = lerp(this.camera.zoom, this.zoom, 0.03);
       this.camera.updateProjectionMatrix();
 
     } else {
@@ -80,9 +80,9 @@ export default class CharacterController extends Behaviour {
     }
 
     //  + 30 * Math.cos( 1 )
-    this.lookAtTarget.x = lerp(this.lookAtTarget.x, this.target.position.x, 0.1)
-    this.lookAtTarget.y = lerp(this.lookAtTarget.y, this.target.position.y, 0.1)
-    this.lookAtTarget.z = lerp(this.lookAtTarget.z, this.target.position.z, 0.1)
+    this.lookAtTarget.x = lerp(this.lookAtTarget.x, this.target.position.x, 0.02);
+    this.lookAtTarget.y = lerp(this.lookAtTarget.y, this.target.position.y, 0.02);
+    this.lookAtTarget.z = lerp(this.lookAtTarget.z, this.target.position.z, 0.02);
 
     this.camera.lookAt(this.lookAtTarget)
 

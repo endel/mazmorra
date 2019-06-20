@@ -31,9 +31,9 @@ export default class HUDController extends Behaviour {
     this.object.resources.goldAmount.text = data.gold.toString();
     this.object.resources.diamondAmount.text = data.diamond.toString();
 
-    this.object.lifeText.text = data.hp.current + "/" + data.hp.max;
-    this.object.manaText.text = data.mp.current + "/" + data.mp.max;
-    this.object.expText.text = data.xp.current.toFixed(1) + "/" + data.xp.max;
+    this.object.lifeText.text = Math.ceil(data.hp.current) + "/" + data.hp.max;
+    this.object.manaText.text = Math.ceil(data.mp.current) + "/" + data.mp.max;
+    this.object.expText.text = Math.ceil(data.xp.current) + "/" + data.xp.max;
   }
 
   update() {

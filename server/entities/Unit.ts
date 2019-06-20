@@ -158,7 +158,7 @@ export class Unit extends Entity {
     this.hp.current = this.hp.max * hpPercent;
 
     const mpPercent = this.mp.current / this.mp.max;
-    this.mp.max = (this.attributes.intelligence + this.statsModifiers['intelligence'] + this.statsModifiers['mp']) * 3;
+    this.mp.max = (this.attributes.intelligence + this.statsModifiers['intelligence'] + this.statsModifiers['mp']) * 5;
     this.mp.current = this.mp.max * mpPercent;
   }
 
