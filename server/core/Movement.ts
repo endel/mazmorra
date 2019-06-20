@@ -1,4 +1,3 @@
-import { type, Schema } from "@colyseus/schema";
 import { EventEmitter } from "events";
 import { Position } from "./Position";
 import { Point } from "../rooms/states/DungeonState";

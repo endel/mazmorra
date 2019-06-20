@@ -23,16 +23,9 @@ export class GridUtils {
   }
 
   getAllEntitiesAt (x, y) {
-    var entities = [ ]
-
-    for (var id in this.entities) {
-      if (this.entities[ id ].position.y == x && this.entities[ id ].position.x == y) {
-        entities.push(this.entities[ id ])
-      }
-    }
-
-    return entities
+    return Object.values(this.entities).filter(entity => {
+      return (entity.position.y == x && entity.position.x == y);
+    });
   }
-
 
 }

@@ -28,7 +28,8 @@ export class Player extends Unit {
   @type("number") latestProgress: number;
   @type("number") pointsToDistribute: number;
 
-  movementSpeed = 700;
+  movementSpeed = 600;
+  attackSpeed = 900;
   shouldSaveCoords: boolean = false;
 
   constructor (id, hero: DBHero, state?) {
@@ -162,14 +163,6 @@ export class Player extends Unit {
 
     if (item && inventory.remove(itemId)) {
       this.state.dropItemFrom(this, item.clone());
-    }
-  }
-
-  onMove (moveEvent: MoveEvent, prevX, prevY, currentX, currentY) {
-    super.onMove(moveEvent, prevX, prevY, currentX, currentY)
-
-    if (this.position.target) {
-      this.state.checkOverlapingEntities(this.position.target, moveEvent, currentX, currentY)
     }
   }
 

@@ -65,7 +65,9 @@ export class Unit extends Entity {
   // 0~1
   evasion: number = 0.001;
   criticalStrikeChance: number = 0.1;
+
   movementSpeed: number = 1200;
+  attackSpeed: number = 1000;
 
   lastHpRegenerationTime: number = 0;
   hpRegeneration: number = 0
@@ -171,9 +173,6 @@ export class Unit extends Entity {
   }
 
   getMovementSpeed() {
-    // Max attack speed modifier: 32 (5 attacks per second)
-    // (10 * 25) = 200
-
     return (
       this.movementSpeed
       - ((this.attributes.agility + this.statsModifiers.movementSpeed) * 10)
@@ -181,13 +180,9 @@ export class Unit extends Entity {
   }
 
   getAttackSpeed() {
-    // Max attack speed modifier: 32 (5 attacks per second)
-    // (32 * 25) = 640
-
     return (
-      1000
-      - (this.statsModifiers.attackSpeed * 20)
-      - (this.attributes.agility * 10)
+      this.attackSpeed
+      - ((this.statsModifiers.attackSpeed + this.attributes.agility) * 10)
     );
   }
 
@@ -215,19 +210,20 @@ export class Unit extends Entity {
   }
 
   onMove(moveEvent: MoveEvent, prevX, prevY, currentX, currentY) {
-
-    // check if target position has been changed
     if (this.position.target) {
+      // check if target position has been changed
       if (
         this.position.destiny && (
           this.position.destiny.x !== this.position.target.position.x ||
           this.position.destiny.y !== this.position.target.position.y
         )
       ) {
-        this.position.x = currentX
-        this.position.y = currentY
-        this.state.move(this, { x: this.position.target.position.x, y: this.position.target.position.y }, false)
+        this.position.x = currentX;
+        this.position.y = currentY;
+        this.state.move(this, this.position.target.position, false);
       }
+
+      this.state.checkOverlapingEntities(this.position.target, moveEvent, currentX, currentY)
     }
   }
 

@@ -282,7 +282,16 @@ export class DungeonState extends Schema {
     for (var i=0; i<entities.length; i++) {
       let entity = entities[i] as Entity;
 
-      if (unit instanceof Unit) {
+      if (unit instanceof Enemy && entity instanceof Unit) {
+        if (
+          targetEntity.position.x === entity.position.x &&
+          targetEntity.position.y === entity.position.y
+        ) {
+          moveEvent.cancel();
+          return;
+        }
+
+      } else if (unit instanceof Unit) {
         // if unit has reached target point,
         // try to pick/interact with other entity.
         if (
@@ -308,7 +317,12 @@ export class DungeonState extends Schema {
     // dead units cannot move!
     if (!unit.isAlive) { return; }
 
-    const targetEntity = this.gridUtils.getEntityAt(destiny.x, destiny.y);
+    let targetEntity = this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit);
+
+    if (!targetEntity) {
+      targetEntity = this.gridUtils.getEntityAt(destiny.x, destiny.y)
+    }
+
     const allowedPath = this.pathgrid.clone();
 
     // Check which entities are walkable.
@@ -342,13 +356,24 @@ export class DungeonState extends Schema {
         unit.position.target !== unit // prevent user from attacking himself
       );
 
-      // prevent player-vs-player attacks
-      if (
-        !this.isPVPAllowed &&
-        unit instanceof Player &&
-        unit.position.target instanceof Player
-      ) {
-        isValidBattleAction = false;
+      if (unit instanceof Player) {
+        // prevent player-vs-player attacks
+        if (
+          !this.isPVPAllowed &&
+          unit instanceof Player &&
+          unit.position.target instanceof Player
+        ) {
+          isValidBattleAction = false;
+        }
+
+      } else if (unit instanceof Enemy) {
+        // prevent enemy-vs-enemy attacks
+        if (
+          unit instanceof Enemy &&
+          unit.position.target instanceof Enemy
+        ) {
+          isValidBattleAction = false;
+        }
       }
 
       if (isValidBattleAction) {
