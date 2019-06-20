@@ -200,7 +200,7 @@ export class DungeonState extends Schema {
 
     } else {
       // regular room
-      this.roomUtils.createEntities()
+      this.roomUtils.populateRooms()
     }
 
     // 0 = walkable, 1 = blocked
@@ -317,6 +317,7 @@ export class DungeonState extends Schema {
     // dead units cannot move!
     if (!unit.isAlive) { return; }
 
+    // prioritize getting Unit entities before
     let targetEntity = this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit);
 
     if (!targetEntity) {

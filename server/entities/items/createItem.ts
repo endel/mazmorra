@@ -15,8 +15,6 @@ import { ConsumableItem } from "./ConsumableItem";
 export function createItem(data: Item | DBItem, position?: Point): Item {
   let item: Item;
 
-  console.log("createItem: ", data.type);
-
   switch (data.type) {
     // Consumables
     case helpers.ENTITIES.HP_POTION_1:

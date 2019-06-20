@@ -126,7 +126,7 @@ export class RoomUtils {
     return positions.shift()
   }
 
-  createEntities () {
+  populateRooms () {
     // entrance
     this.state.addEntity(new Door(this.startPosition, new DoorDestiny({
       identifier: 'grass',

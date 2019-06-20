@@ -33,7 +33,7 @@ module.exports = {
         loader: 'babel-loader',
       },
       { test: /\.styl$/, loader: stylusLoader },
-      { test: /\.(woff|woff2|eot|ttf|svg)$/, loader: 'file-loader?limit=1024&name=[name].[ext]' },
+      { test: /\.(woff|woff2|eot|ttf|svg|jpg)$/, loader: 'file-loader?limit=1024&name=[name].[ext]' },
       { test: /\.(wav|ogg|mp3|aif)$/, loader: AudioSprite.loader() }
     ],
 

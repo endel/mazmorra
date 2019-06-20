@@ -14,7 +14,8 @@ class Login extends EventEmitter {
 
   hideLogin() {
     this.credentials = document.querySelector('#credentials')
-    this.credentials.classList.remove('active')
+    this.credentials.parentNode.removeChild(this.credentials);
+    // this.credentials.classList.remove('active')
   }
 
   async init () {
