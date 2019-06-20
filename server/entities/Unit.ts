@@ -65,7 +65,7 @@ export class Unit extends Entity {
   // 0~1
   evasion: number = 0.001;
   criticalStrikeChance: number = 0.1;
-  movementSpeed: number = 1000;
+  movementSpeed: number = 1200;
 
   lastHpRegenerationTime: number = 0;
   hpRegeneration: number = 0
@@ -176,8 +176,7 @@ export class Unit extends Entity {
 
     return (
       this.movementSpeed
-      - (this.statsModifiers.movementSpeed * 20)
-      - (this.attributes.agility * 20)
+      - ((this.attributes.agility + this.statsModifiers.movementSpeed) * 10)
     );
   }
 
@@ -245,12 +244,18 @@ export class Unit extends Entity {
       this.lastHpRegenerationTime = currentTime;
     }
 
-    if (this.action && this.action.isEligible)  {
-      this.action.update(currentTime)
-      this.position.touch(currentTime)
+    if (this.action)  {
+      this.action.update(currentTime);
+
+      if (this.action.isEligible) {
+        this.position.touch(currentTime);
+
+      } else {
+        this.position.update(currentTime);
+      }
 
     } else {
-      this.position.update(currentTime)
+      this.position.update(currentTime);
     }
   }
 

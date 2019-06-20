@@ -60,6 +60,8 @@ export class Movement extends Position {
     this.pending = pending
   }
 
+
+
   update (currentTime) {
     var timeDiff = currentTime - this.lastMove
       , moves = 0

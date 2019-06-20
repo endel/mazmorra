@@ -261,14 +261,11 @@ export class RoomUtils {
     // allow 0 enemies on room?
     const minEnemies = (this.rand.intBetween(0, 3) === 0) ? 0 : 1;
 
-    console.log("progress: ", this.state.progress);
-
-    const maxEnemies = (this.state.progress <= 5)
-      ? Math.min(this.state.progress, (room.size.x * room.size.y) / 15)
-      : (room.size.x * room.size.y) / 15;
+    const maxEnemies = (this.state.progress <= 8)
+      ? 1
+      : Math.min(this.state.progress, (room.size.x * room.size.y) / 15);
 
     let numEnemies = this.rand.intBetween(minEnemies, maxEnemies);
-    console.log({ minEnemies, maxEnemies, numEnemies });
 
     const enemyList = this.state.config.enemies;
     const enemyNames = Object.keys(enemyList);
@@ -455,7 +452,7 @@ export class RoomUtils {
 
     } else if (item.damageAttribute === "intelligence") {
       item.type = helpers.ENTITIES.WAND_1;
-      item.manaCost = 5;
+      item.manaCost = 2;
 
       const attackDistance = this.rand.intBetween(1, 2);
       item.addModifier({ attr: "attackDistance", modifier: attackDistance });
