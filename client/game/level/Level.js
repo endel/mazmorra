@@ -33,7 +33,9 @@ export default class Level extends THREE.Object3D {
     this.factory = new Factory(this);
 
     // this.room = this.enterRoom('grass')
-    this.room = this.enterRoom('dungeon', { progress: 1 });
+    this.enterRoom('dungeon', { progress: 1 }).then(room => {
+      this.room = room;
+    });
 
     this.addEventListener("click", this.onClick.bind(this));
     this.addEventListener("mouseover", this.onMouseOver.bind(this));
@@ -63,8 +65,10 @@ export default class Level extends THREE.Object3D {
     this.setTileSelection(null)
   }
 
-  enterRoom (name, options = {}) {
+  async enterRoom (name, options = {}) {
     this.cleanup();
+
+    await this.checkAdPreRoll();
 
     this.room = enterRoom(name, options)
 
@@ -81,7 +85,7 @@ export default class Level extends THREE.Object3D {
         player.getEntity().emit('zoom', 2);
 
         this.room.onLeave.addOnce(() => {
-          setTimeout(() => this.room = this.enterRoom('dungeon', data), 500);
+          setTimeout(async () => this.room = await this.enterRoom('dungeon', data), 500);
         });
 
         setTimeout(() => this.room.leave(), 200);
@@ -104,7 +108,7 @@ export default class Level extends THREE.Object3D {
       }
     });
 
-    return this.room
+    return this.room;
   }
 
   setupStateCallbacks () {
@@ -552,6 +556,31 @@ export default class Level extends THREE.Object3D {
       this.remove(object)
     }
 
+  }
+
+  async checkAdPreRoll() {
+    return new Promise((resolve, reject) => {
+      if (!this.totalSessions) {
+        this.totalSessions = Number(window.localStorage.getItem("totalSessions") || 0);
+      }
+
+      this.totalSessions++;
+
+      if (this.totalSessions % 5 === 0) {
+        window.adPrerollComplete = () => {
+          window.localStorage.setItem("totalSessions", this.totalSessions);
+          resolve();
+        };
+
+        aiptag.cmd.player.push(function () {
+          adplayer.startPreRoll();
+        });
+
+      } else {
+        window.localStorage.setItem("totalSessions", this.totalSessions);
+        resolve();
+      }
+    });
   }
 
 }
