@@ -9,6 +9,12 @@ export default class HUDController extends Behaviour {
     // events
     this.on("update-inventory", this.onUpdateInventory.bind(this));
     this.on("update-attributes", this.onUpdateAttributes.bind(this));
+    this.on("update-bars", this.onUpdateBars.bind(this));
+
+    this.on("update-all", (data) => {
+      this.onUpdateAttributes(data);
+      this.onUpdateBars(data);
+    });
   }
 
   onUpdateInventory(inventoryType) {
@@ -20,11 +26,17 @@ export default class HUDController extends Behaviour {
     // this.object.character.updateAttribute(attribute, value);
   }
 
-  update () {
+  onUpdateBars (data) {
     // TODO: only update texts when they really change
-    this.object.resources.goldAmount.text = this.playerObject.userData.gold.toString();
-    this.object.resources.diamondAmount.text = this.playerObject.userData.diamond.toString();
+    this.object.resources.goldAmount.text = data.gold.toString();
+    this.object.resources.diamondAmount.text = data.diamond.toString();
 
+    this.object.lifeText.text = data.hp.current + "/" + data.hp.max;
+    this.object.manaText.text = data.mp.current + "/" + data.mp.max;
+    this.object.expText.text = data.xp.current.toFixed(1) + "/" + data.xp.max;
+  }
+
+  update() {
     this.setPercentage(this.object.lifebar, this.playerObject.userData.hp.current / this.playerObject.userData.hp.max, 'x');
     this.setPercentage(this.object.manabar, this.playerObject.userData.mp.current / this.playerObject.userData.mp.max, 'x');
     this.setPercentage(this.object.expbar, this.playerObject.userData.xp.current / this.playerObject.userData.xp.max, 'x');

@@ -36,6 +36,24 @@ export default class HUD extends THREE.Scene {
     this.lifebar = new HorizontalBar('hp');
     this.expbar = new HorizontalBar('xp');
 
+    this.lifeText = new MeshText2D("0/0", {
+      font: config.SMALL_FONT,
+      fillStyle: '#fff',
+      antialias: false
+    })
+
+    this.manaText = new MeshText2D("0/0", {
+      font: config.SMALL_FONT,
+      fillStyle: '#fff',
+      antialias: false
+    })
+
+    this.expText = new MeshText2D("0/0", {
+      font: config.SMALL_FONT,
+      fillStyle: '#fff',
+      antialias: false
+    })
+
     // Inventory
     this.inventory = new Inventory()
     this.inventory.visible = false
@@ -104,6 +122,10 @@ export default class HUD extends THREE.Scene {
     this.add(this.levelText);
     this.add(this.resources);
     this.add(this.character);
+
+    this.add(this.lifeText);
+    this.add(this.manaText);
+    this.add(this.expText);
 
     this.add(this.inventory);
     this.add(this.quickInventory);
@@ -233,6 +255,24 @@ export default class HUD extends THREE.Scene {
     this.lifebar.position.set(- config.HUD_SCALE / 2, bottom + this.lifebar.height + this.expbar.height + (config.HUD_MARGIN + config.HUD_SCALE), 0);
     this.manabar.position.set(- config.HUD_SCALE / 2, bottom + this.expbar.height + (config.HUD_MARGIN + config.HUD_SCALE), 0);
     this.expbar.position.set(- config.HUD_SCALE / 2, bottom, 0);
+
+    this.lifeText.position.set(
+      this.lifebar.position.x,
+      this.lifebar.position.y + this.lifeText.height / 2.5,
+      this.lifebar.position.z
+    );
+
+    this.manaText.position.set(
+      this.manabar.position.x,
+      this.manabar.position.y + this.manaText.height / 2.5,
+      this.manabar.position.z
+    );
+
+    this.expText.position.set(
+      this.expbar.position.x,
+      this.expbar.position.y + this.expText.height / 2.5,
+      this.expbar.position.z
+    );
 
     // update orthogonal camera aspect ratio / projection matrix
     this.camera.aspect = window.innerWidth / window.innerHeight;

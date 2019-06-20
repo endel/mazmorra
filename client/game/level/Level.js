@@ -125,7 +125,7 @@ export default class Level extends THREE.Object3D {
         this.createPlayerBehaviour(object, entity);
 
         // FIXME: this piece of code is duplicated.
-        this.hud.getEntity().emit('update-attributes', entity);
+        this.hud.getEntity().emit('update-all', entity);
 
         /**
          * update inventory
@@ -201,13 +201,24 @@ export default class Level extends THREE.Object3D {
             // change locked
             object.getEntity().emit('update');
 
-          } else if (
-            (change.field === "pointsToDistribute" || change.field === "equipedItems") &&
-            object.userData.id === getClientId()
-          ) {
-            // this.hud.getEntity().emit('update-attribute', 'pointsToDistribute', change.value);
-            // FIXME: this piece of code is duplicated
-            this.hud.getEntity().emit('update-attributes', entity);
+          } else if (object.userData.id === getClientId()) {
+            if (
+              change.field === "pointsToDistribute" ||
+              change.field === "equipedItems"
+            )  {
+              // this.hud.getEntity().emit('update-attribute', 'pointsToDistribute', change.value);
+              // FIXME: this piece of code is duplicated
+              this.hud.getEntity().emit('update-attributes', entity);
+
+            } else if (
+              change.field === "hp" ||
+              change.field === "mp" ||
+              change.field === "xp" ||
+              change.field === "gold" ||
+              change.field === "diamond"
+            ) {
+              this.hud.getEntity().emit('update-bars', entity);
+            }
           }
 
         }
