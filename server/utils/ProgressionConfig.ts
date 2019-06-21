@@ -67,6 +67,8 @@ export type MapConfig = {
   boss?: string[]
 };
 
+const NUM_LEVELS_PER_MAP = 12;
+
 export function getMapConfig(progress: number) {
   if (progress === 1) {
     // village / lobby!
@@ -81,9 +83,15 @@ export function getMapConfig(progress: number) {
       enemies: {}
     }
   } else {
-    const index = Math.floor(progress / 12);
+    const index = Math.floor(progress / NUM_LEVELS_PER_MAP);
     return MAP_CONFIGS[index];
   }
+}
+
+export function isBossMap(progress: number) {
+  // is the last level for this map config?
+  const index = Math.floor(progress / NUM_LEVELS_PER_MAP);
+  return NUM_LEVELS_PER_MAP - (index * NUM_LEVELS_PER_MAP) === 0;
 }
 
 export const MAP_CONFIGS: MapConfig[] = [

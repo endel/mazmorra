@@ -129,6 +129,14 @@ export default class ItemSlot extends THREE.Object3D {
     }
   }
 
+  dispatchSell(itemData) {
+      this.dispatchEvent({
+        type: "inventory-sell",
+        bubbles: true,
+        ...itemData
+      });
+  }
+
   onDragEnd(e) {
     let targetSlot = e.target
 
@@ -136,13 +144,10 @@ export default class ItemSlot extends THREE.Object3D {
     // Sell!
     //
     if (draggingItem && this.accepts === "sell") {
-      this.dispatchEvent({
-        type: "inventory-sell",
-        bubbles: true,
+      this.dispatchSell({
         fromInventoryType: draggingFrom.parent.inventoryType,
-        itemId: draggingItem.userData.itemId,
-      });
-
+        itemId: draggingItem.userData.itemId
+      })
       return;
     }
 
@@ -205,7 +210,13 @@ export default class ItemSlot extends THREE.Object3D {
     if (item) {
       const itemData = item.userData.item;
 
-      if (itemData.isCastable) {
+      if (hud.inventory.isTrading) {
+        this.dispatchSell({
+          fromInventoryType: this.parent.inventoryType,
+          itemId: targetSlot.item.userData.itemId
+        });
+
+      } else if (itemData.isCastable) {
         draggingFrom = targetSlot;
         App.cursor.prepareItemCast(item, draggingFrom);
 

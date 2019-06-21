@@ -29,7 +29,7 @@ import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 import { EquipableItem } from "../entities/items/EquipableItem";
 import { Diamond } from "../entities/items/Diamond";
 import { Scroll } from "../entities/items/consumable/Scroll";
-import { MONSTER_BASE_ATTRIBUTES } from "./ProgressionConfig";
+import { MONSTER_BASE_ATTRIBUTES, isBossMap } from "./ProgressionConfig";
 import { ConsumableItem } from "../entities/items/ConsumableItem";
 
 export interface DungeonRoom {
@@ -127,6 +127,9 @@ export class RoomUtils {
   }
 
   populateRooms () {
+    const isBossDungeon = isBossMap(this.state.progress);
+    const isLocked = isBossDungeon;
+
     // entrance
     this.state.addEntity(new Door(this.startPosition, new DoorDestiny({
       identifier: 'grass',
@@ -136,23 +139,26 @@ export class RoomUtils {
     })));
 
     // out
+    // obs: door is locked on boss dungeons!
     this.state.addEntity(new Door(this.endPosition, new DoorDestiny({
       identifier: 'grass',
       mapkind: 'grass',
       difficulty: 1,
       progress: DoorProgress.FORWARD
-    }), true));
+    }), isLocked));
 
     //
     // create a key in a random room.
     //
-    const randomRoom = this.rand.intBetween(0, this.rooms.length - 1);
-    this.addEntity(this.rooms[randomRoom], (position) => {
-      const key = new ConsumableItem();
-      key.type = helpers.ENTITIES.KEY_1;
-      key.position.set(position);
-      return key;
-    })
+    if (isLocked) {
+      const randomRoom = this.rand.intBetween(0, this.rooms.length - 1);
+      this.addEntity(this.rooms[randomRoom], (position) => {
+        const key = new ConsumableItem();
+        key.type = helpers.ENTITIES.KEY_1;
+        key.position.set(position);
+        return key;
+      })
+    }
 
     this.rooms.forEach(room => this.populateRoom(room))
   }

@@ -39,6 +39,7 @@ export class NPC extends Player {
 
     } else {
       const genericMessages = [
+        `Hello traveler`,
         `Take care out there`,
         `Be safe!`,
         `You gotta be stronger than them`,
