@@ -17,6 +17,8 @@ export class Enemy extends Unit {
   aiUpdateTime = 500;
   lastUpdateTime = Date.now();
 
+  isMoving: boolean = false;
+
   constructor (kind, data: Partial<DBHero>, modifiers: Partial<StatsModifiers> = {}) {
     super(undefined, data);
     this.type = helpers.ENTITIES.ENEMY

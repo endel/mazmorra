@@ -1,5 +1,6 @@
 import { DBHero } from "../db/Hero";
 import { StatsModifiers } from "../entities/Unit";
+import { UnitSpawner } from "../entities/Boss";
 
 export enum MapKind {
   ROCK = 'rock',
@@ -143,7 +144,8 @@ export const MAP_CONFIGS: MapConfig[] = [
 export const MONSTER_BASE_ATTRIBUTES: {
   [id: string]: {
     base: Partial<DBHero>,
-    modifiers: Partial<StatsModifiers>
+    modifiers: Partial<StatsModifiers>,
+    spawner?: UnitSpawner
   }
 } = {
   // MapType.ROCK
@@ -204,7 +206,11 @@ export const MONSTER_BASE_ATTRIBUTES: {
     },
     modifiers: {
       damage: 5,
-      // hp: -50
+      hp: 100
+    },
+    spawner: {
+      type: 'spider',
+      lvl: 1
     }
   },
 

@@ -157,6 +157,15 @@ export class Player extends Unit {
     }
   }
 
+  drop () {
+    if (!this.state) { return; }
+
+    if (this.state.isPVPAllowed) {
+      // players will drop a random equipped item, if PVP is allowed.
+      this.willDropItem = this.equipedItems.dropRandomItem();
+    }
+  }
+
   dropItem(inventoryType: InventoryType, itemId: string) {
     const inventory = this[inventoryType];
     const item: Item = inventory.getItem(itemId)

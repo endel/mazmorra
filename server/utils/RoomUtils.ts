@@ -3,8 +3,9 @@ import { RandomSeed } from "random-seed";
 import helpers from "../../shared/helpers";
 
 // entities
-import { Attribute }  from "../entities/Unit";
+import { Attribute, Unit }  from "../entities/Unit";
 import { Enemy }  from "../entities/Enemy";
+import { Boss }  from "../entities/Boss";
 import { NPC }  from "../entities/NPC";
 import { Entity }  from "../entities/Entity";
 
@@ -26,7 +27,6 @@ import { WeaponItem } from "../entities/items/equipable/WeaponItem";
 import { BootItem } from "../entities/items/equipable/BootItem";
 import { HelmetItem } from "../entities/items/equipable/HelmetItem";
 import { ArmorItem } from "../entities/items/equipable/ArmorItem";
-import { EquipableItem } from "../entities/items/EquipableItem";
 import { Diamond } from "../entities/items/Diamond";
 import { Scroll } from "../entities/items/consumable/Scroll";
 import { MONSTER_BASE_ATTRIBUTES, isBossMap } from "./ProgressionConfig";
@@ -154,9 +154,10 @@ export class RoomUtils {
 
     // create the BOSS for the dungeon.
     if (isBossDungeon) {
-      const boss = this.createEnemy(this.state.config.boss[0]);
-      boss.isBoss = true;
+      const bossType = this.state.config.boss[0];
+      const boss = this.createEnemy(bossType, Boss) as Boss;
       boss.position.set(this.endPosition);
+      boss.unitSpawner = MONSTER_BASE_ATTRIBUTES[bossType].spawner;
 
       // define the item the boss will drop
       // for now, he only drops the key for the next level.
@@ -319,16 +320,18 @@ export class RoomUtils {
         const enemyTypeIndex = enemyRange.findIndex(range => rand <= range);
         const enemyType = enemyNames[enemyTypeIndex];
 
-        const enemy = this.createEnemy(enemyType);
+        const enemy = this.createEnemy(enemyType, Enemy);
         enemy.position.set(position);
         return enemy;
       })
     }
   }
 
-  createEnemy(type: string) {
-    const minLvl = Math.ceil(this.state.progress / 6);
-    const lvl = this.rand.intBetween(minLvl, minLvl + 1);
+  createEnemy(type: string, enemyKlass: new (...args: any[]) => Enemy, lvl?: number): Enemy {
+    if (!lvl) {
+      const minLvl = Math.ceil(this.state.progress / 6);
+      lvl = this.rand.intBetween(minLvl, minLvl + 1);
+    }
 
     const attributes = MONSTER_BASE_ATTRIBUTES[type];
 
@@ -347,7 +350,7 @@ export class RoomUtils {
 
     // TODO: generate better modififers.
 
-    const enemy = new Enemy(type, baseAttributes, modifiers);
+    const enemy = new enemyKlass(type, baseAttributes, modifiers);
     enemy.state = this.state;
 
     return enemy;
