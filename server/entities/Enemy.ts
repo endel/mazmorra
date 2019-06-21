@@ -11,6 +11,7 @@ import { distance } from "../helpers/Math";
 
 export class Enemy extends Unit {
   @type("string") kind: string;
+  @type("boolean") isBoss?: boolean;
 
   aiDistance: number = 3;
   aiUpdateTime = 500;

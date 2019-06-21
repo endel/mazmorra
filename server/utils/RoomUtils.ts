@@ -46,7 +46,9 @@ export class RoomUtils {
   rooms: DungeonRoom[];
   cache = new WeakMap<DungeonRoom, Point[]>();
 
+  startRoom: DungeonRoom;
   startPosition: any;
+  endRoom: DungeonRoom;
   endPosition: any;
 
   constructor (rand, state, rooms: DungeonRoom[]) {
@@ -57,8 +59,11 @@ export class RoomUtils {
 
     this.cacheRoomData()
 
-    this.startPosition = this.getRandomDoorPosition(this.rooms[0]);
-    this.endPosition = this.getRandomDoorPosition(this.rooms[ this.rooms.length-1 ])
+    this.startRoom = this.rooms[0];
+    this.endRoom = this.rooms[ this.rooms.length-1 ];
+
+    this.startPosition = this.getRandomDoorPosition(this.startRoom);
+    this.endPosition = this.getRandomDoorPosition(this.endRoom);
   }
 
   isValidTile(position: Point) {
@@ -114,7 +119,7 @@ export class RoomUtils {
   }
 
   getNumPositionsRemaining (room: DungeonRoom) {
-    return this.cache.get(room).length
+    return this.cache.get(room).length;
   }
 
   hasPositionsRemaining (room: DungeonRoom) {
@@ -147,20 +152,29 @@ export class RoomUtils {
       progress: DoorProgress.FORWARD
     }), isLocked));
 
-    //
-    // create a key in a random room.
-    //
-    if (isLocked) {
-      const randomRoom = this.rand.intBetween(0, this.rooms.length - 1);
-      this.addEntity(this.rooms[randomRoom], (position) => {
-        const key = new ConsumableItem();
-        key.type = helpers.ENTITIES.KEY_1;
-        key.position.set(position);
-        return key;
-      })
+    // create the BOSS for the dungeon.
+    if (isBossDungeon) {
+      const boss = this.createEnemy(this.state.config.boss[0]);
+      boss.isBoss = true;
+      boss.position.set(this.endPosition);
+
+      // define the item the boss will drop
+      // for now, he only drops the key for the next level.
+      const key = new ConsumableItem();
+      key.type = helpers.ENTITIES.KEY_1;
+      boss.willDropItem = key;
+
+      this.state.addEntity(boss);
     }
 
-    this.rooms.forEach(room => this.populateRoom(room))
+    this.rooms.forEach(room => {
+      if (isBossDungeon && room === this.endRoom) {
+        this.populateBossRoom(room);
+
+      } else {
+        this.populateRoom(room);
+      }
+    });
   }
 
   populateRoom (room: DungeonRoom) {
@@ -181,7 +195,10 @@ export class RoomUtils {
     this.addEntity(room, (position) => new Chest(position, chestKind))
     this.addEntity(room, (position) => new Chest(position, chestKind))
 
-    if (this.rand.intBetween(0, 6) === 6) {
+    if (
+      this.state.progress % 3 === 0 && // fountains CAN appear only each 3 levels
+      this.rand.intBetween(0, 6) === 6
+    ) {
       this.addEntity(room, (position) => new Fountain(position))
     }
 
@@ -198,6 +215,11 @@ export class RoomUtils {
       //   y: room.position.x + 1 + this.rand.intBetween(0, room.size.x - 3)
       // })
       // this.state.addEntity(heal)
+  }
+
+  populateBossRoom(room: DungeonRoom) {
+    this.addEntity(room, (position) => new Chest(position, 'chest2'));
+    this.addEntity(room, (position) => new Chest(position, 'chest2'));
   }
 
   populateLobby (rooms: DungeonRoom[]) {
@@ -297,18 +319,17 @@ export class RoomUtils {
         const enemyTypeIndex = enemyRange.findIndex(range => rand <= range);
         const enemyType = enemyNames[enemyTypeIndex];
 
-        const enemyMinLevel = Math.ceil(this.state.progress / 6);
-        const enemyLevel = this.rand.intBetween(enemyMinLevel, enemyMinLevel + 1);
-
-        const enemy = this.createEnemy(enemyType, enemyLevel);
-        enemy.state = this.state;
+        const enemy = this.createEnemy(enemyType);
         enemy.position.set(position);
         return enemy;
       })
     }
   }
 
-  createEnemy(type: string, lvl: number) {
+  createEnemy(type: string) {
+    const minLvl = Math.ceil(this.state.progress / 6);
+    const lvl = this.rand.intBetween(minLvl, minLvl + 1);
+
     const attributes = MONSTER_BASE_ATTRIBUTES[type];
 
     const baseAttributes = {...attributes.base};
@@ -326,7 +347,10 @@ export class RoomUtils {
 
     // TODO: generate better modififers.
 
-    return new Enemy(type, baseAttributes, modifiers);
+    const enemy = new Enemy(type, baseAttributes, modifiers);
+    enemy.state = this.state;
+
+    return enemy;
   }
 
   populateAesthetics (room, qty) {

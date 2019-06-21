@@ -95,6 +95,8 @@ export class Unit extends Entity {
     criticalStrikeChance: 0,
   };
 
+  willDropItem: Item;
+
   constructor(id?: string, hero: Partial<DBHero> = {}, state?) {
     super(id)
 
@@ -256,9 +258,22 @@ export class Unit extends Entity {
   }
 
   drop () {
-    if (!this.state) return
+    if (!this.state) { return; }
 
-    this.state.dropItemFrom(this)
+    if (!this.willDropItem) {
+      if (this.state.isPVPAllowed) {
+        // players will drop a random equipped item, if PVP is allowed.
+        this.willDropItem = this.equipedItems.dropRandomItem();
+
+      } else {
+        this.willDropItem = this.state.roomUtils.createRandomItem();
+      }
+    }
+
+    if (this.willDropItem) {
+      this.willDropItem.position.set(this.position);
+      this.state.addEntity(this.willDropItem);
+    }
   }
 
   attack (defender) {

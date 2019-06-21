@@ -2,6 +2,8 @@ import { Behaviour } from 'behaviour.js'
 import Chat from './Chat'
 import lerp from 'lerp'
 
+const DEFAULT_LOOK_AT_TARGET_SPEED = 0.02;
+
 export default class CharacterController extends Behaviour {
 
   onAttach (camera, room) {
@@ -15,6 +17,7 @@ export default class CharacterController extends Behaviour {
 
     this.originalY = this.object.position.y
     this.lookAtTarget = this.target.position.clone()
+    this.lookAtTargetSpeed = DEFAULT_LOOK_AT_TARGET_SPEED;
 
     this.lightDistance = 8;
 
@@ -30,7 +33,10 @@ export default class CharacterController extends Behaviour {
     }
 
     this.on('target', (newTarget) => this.target = newTarget);
-    this.on('rotate', (isRotating) => this.isRotating = isRotating);
+    this.on('rotate', (isRotating) => {
+      this.isRotating = isRotating;
+      this.lookAtTargetSpeed = (isRotating) ? 0.015 : DEFAULT_LOOK_AT_TARGET_SPEED;
+    });
     this.on('zoom', (ratio) => this.zoom = config.ZOOM * ratio);
   }
 
@@ -80,11 +86,11 @@ export default class CharacterController extends Behaviour {
     }
 
     //  + 30 * Math.cos( 1 )
-    this.lookAtTarget.x = lerp(this.lookAtTarget.x, this.target.position.x, 0.02);
-    this.lookAtTarget.y = lerp(this.lookAtTarget.y, this.target.position.y, 0.02);
-    this.lookAtTarget.z = lerp(this.lookAtTarget.z, this.target.position.z, 0.02);
+    this.lookAtTarget.x = lerp(this.lookAtTarget.x, this.target.position.x, this.lookAtTargetSpeed);
+    this.lookAtTarget.y = lerp(this.lookAtTarget.y, this.target.position.y, this.lookAtTargetSpeed);
+    this.lookAtTarget.z = lerp(this.lookAtTarget.z, this.target.position.z, this.lookAtTargetSpeed);
 
-    this.camera.lookAt(this.lookAtTarget)
+    this.camera.lookAt(this.lookAtTarget);
 
     if (this.isRotating && this.rotation > 0) {
       this.rotation -= 0.01;

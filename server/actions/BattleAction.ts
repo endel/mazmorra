@@ -41,7 +41,11 @@ export class BattleAction extends Action {
       _distance--;
     }
 
-    return this.defender.isAlive && (_distance <= this.attackDistance);
+    return (
+      this.attacker.state.entities[this.defender.id] &&
+      this.defender.isAlive &&
+      _distance <= this.attackDistance
+    );
   }
 
   attack() {
@@ -107,7 +111,7 @@ export class BattleAction extends Action {
     const timeDiff = currentTime - this.lastUpdateTime
     const nextAttackAllowed = timeDiff > this.attacker.getAttackSpeed();
 
-    let active = this.isEligible && nextAttackAllowed;
+    let active = nextAttackAllowed && this.isEligible;
 
     if (nextAttackAllowed) {
       // attacks = Math.floor(timeDiff / this.attacker.getAttackSpeed())

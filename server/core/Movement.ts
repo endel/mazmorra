@@ -88,7 +88,10 @@ export class Movement extends Position {
     this.lastMove = currentTime
 
     // change direction
-    if (this.pending.length > 0) {
+    if (
+      (!this.unit.action || !this.unit.action.isEligible) && // fix unit's direction while attacking.
+      this.pending.length > 0
+    ) {
       const x = this.pending[0][0];
       const y = this.pending[0][1];
 

@@ -90,8 +90,7 @@ export function getMapConfig(progress: number) {
 
 export function isBossMap(progress: number) {
   // is the last level for this map config?
-  const index = Math.floor(progress / NUM_LEVELS_PER_MAP);
-  return NUM_LEVELS_PER_MAP - (index * NUM_LEVELS_PER_MAP) === 0;
+  return ((progress + 1) % NUM_LEVELS_PER_MAP) === 0;
 }
 
 export const MAP_CONFIGS: MapConfig[] = [
@@ -205,7 +204,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
     },
     modifiers: {
       damage: 5,
-      hp: 50
+      // hp: -50
     }
   },
 

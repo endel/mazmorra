@@ -23,7 +23,7 @@ import { Interactive } from "../../entities/Interactive";
 import { Entity } from "../../entities/Entity";
 import { MoveEvent } from "../../core/Movement";
 import { DBHero } from "../../db/Hero";
-import { MapKind, MapConfig, getMapConfig } from "../../utils/ProgressionConfig";
+import { MapKind, MapConfig, getMapConfig, isBossMap } from "../../utils/ProgressionConfig";
 import { NPC } from "../../entities/NPC";
 
 export interface Point {
@@ -215,13 +215,13 @@ export class DungeonState extends Schema {
     var player = new Player(client.id, hero, this);
 
     if (
-      this.progress !== 1 &&
+      this.progress > 1 &&
       hero.currentCoords &&
-      this.roomUtils.isValidTile(hero.currentCoords) // room may have been expired
+      this.roomUtils.isValidTile(hero.currentCoords) // original room may have been expired
     ) {
       player.position.set(hero.currentCoords);
 
-    } else if (hero.currentProgress <= this.progress) {
+    } else if (hero.currentProgress <= this.progress || isBossMap(this.progress)) {
       player.position.set(this.roomUtils.startPosition)
 
     } else {
@@ -234,20 +234,13 @@ export class DungeonState extends Schema {
     return player
   }
 
-  removePlayer (player) {
-    delete this.players[ player.id ]
-    this.removeEntity(player)
+  removePlayer (player: Player) {
+    delete this.players[ player.id ];
+    this.removeEntity(player);
   }
 
   dropItemFrom (unit: Unit, item?: Item) {
-    if (unit instanceof Player ) {
-
-      // drop one equipped item from player
-      if (this.isPVPAllowed) {
-        item = unit.equipedItems.dropRandomItem();
-      }
-
-    } else if (!item) {
+    if (!item) {
       // create random drop item
       item = this.roomUtils.createRandomItem();
     }
@@ -255,7 +248,7 @@ export class DungeonState extends Schema {
     // may not drop anything...
     if (item) {
       item.position.set(unit.position);
-      this.addEntity(item)
+      this.addEntity(item);
     }
   }
 
@@ -275,7 +268,7 @@ export class DungeonState extends Schema {
           return;
         }
 
-      } else if (unit instanceof Unit) {
+      } else if (unit instanceof Player) {
         // if unit has reached target point,
         // try to pick/interact with other entity.
         if (

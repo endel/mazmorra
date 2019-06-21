@@ -242,7 +242,7 @@ export default class HUD extends THREE.Scene {
     );
     this.openInventoryButton.position.set(
       this.resources.position.x,
-      this.resources.position.y - this.resources.height - this.openInventoryButton.height - config.HUD_MARGIN - config.HUD_SCALE,
+      this.resources.position.y - this.resources.height - this.openInventoryButton.height - (config.HUD_MARGIN * config.HUD_SCALE),
       0
     );
     this.quickInventory.position.x = this.resources.position.x - (margin/2);

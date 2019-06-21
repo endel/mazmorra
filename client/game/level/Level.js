@@ -82,7 +82,7 @@ export default class Level extends THREE.Object3D {
       const [ evt, data ] = payload;
 
       if (evt === "goto") {
-        player.getEntity().emit('zoom', 2);
+        player.getEntity().emit('zoom', 1.5);
 
         this.room.onLeave.addOnce(() => {
           setTimeout(async () => this.room = await this.enterRoom('dungeon', data), 500);
@@ -152,6 +152,17 @@ export default class Level extends THREE.Object3D {
             if (change.field === "current") {
               if (change.value <= 0) {
                 object.getEntity().emit('died');
+
+                // kill boss camera effect!
+                if (entity.isBoss) {
+                  player.getEntity().emit('target', object);
+                  player.getEntity().emit('zoom', 2);
+
+                  setTimeout(() => {
+                    player.getEntity().emit('target', player);
+                    player.getEntity().emit('zoom', 1);
+                  }, 2000);
+                }
 
                 // Go back to lobby if current player has died
                 // (After 5 seconds)
@@ -227,10 +238,27 @@ export default class Level extends THREE.Object3D {
 
         }
       };
+
       entity.position.onChange = (changes) => {
         object.getEntity().emit('nextPoint', this.factory.fixTilePosition(object.position.clone(), entity.position.y, entity.position.x));
       }
+
       entity.position.triggerAll();
+
+
+      // boss camera effect
+      if (entity.isBoss && entity.hp.current > 0) {
+        setTimeout(() => {
+          player.getEntity().emit('target', object);
+          player.getEntity().emit('rotate', true);
+
+          setTimeout(() => {
+            player.getEntity().emit('target', player);
+            player.getEntity().emit('rotate', false);
+          }, 2000);
+        }, 1000);
+      }
+
       // entity.triggerAll() ??
     };
     state.entities.triggerAll();
@@ -245,21 +273,6 @@ export default class Level extends THREE.Object3D {
 
   createPlayerBehaviour (object, data) {
     object.addBehaviour(new CharacterController, this.camera, this.room)
-
-    //
-    // // TODO: BOSS EFFECT
-    //
-    // setTimeout(() => {
-    //   const allEntities = Object.keys(this.entities);
-    //   const enemy = this.entities[allEntities.find(name => this.entities[name].constructor.name === "Enemy")];
-    //   if (!enemy) return;
-    //   object.getEntity().emit('target', enemy);
-    //   object.getEntity().emit('rotate', true);
-    //   setTimeout(() => {
-    //     object.getEntity().emit('target', player);
-    //     object.getEntity().emit('rotate', false);
-    //   }, 2000);
-    // }, 2000);
 
     this.hud.setPlayerObject(object, data);
 
