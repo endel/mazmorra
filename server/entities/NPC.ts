@@ -4,7 +4,7 @@ import helpers from "../../shared/helpers";
 
 // Entities
 import { Player } from "./Player";
-import { Potion, POTION_1_MODIFIER } from "./items/consumable/Potion";
+import { Potion, POTION_1_MODIFIER, POTION_2_MODIFIER } from "./items/consumable/Potion";
 import { Scroll } from "./items/consumable/Scroll";
 
 export class NPC extends Player {
@@ -76,12 +76,36 @@ export class NPC extends Player {
       state.events.emit("send", player, ["trading-items", player.purchase.slots]);
 
     } else if (this.kind === "majesty") {
-      const genericMessages = [
-        `Bring me something special!`,
-        `The prophecy is true.`,
-        `Demons are amongst us`,
-      ]
-      state.createTextEvent(genericMessages[Math.floor(Math.random() * genericMessages.length)], this.position, 'white', 1000);
+      if (this.state.rand.intBetween(0, 5) === 0) {
+        state.createTextEvent("I've got you a deal.", this.position, 'white', 1000);
+
+        setTimeout(() => {
+          const items = [];
+
+          const potion = new Potion();
+          potion.addModifier({ attr: "xp", modifier: POTION_2_MODIFIER });
+          items.push(potion);
+
+          player.purchase.clear();
+          player.purchase.set(items);
+
+          // populate item prices
+          for (let itemId in player.purchase.slots) {
+            player.purchase.slots[itemId].price = 500;
+          }
+
+          state.events.emit("send", player, ["trading-items", player.purchase.slots]);
+        }, 500);
+
+      } else {
+        const genericMessages = [
+          `Bring me something special!`,
+          `The prophecy is true.`,
+          `Demons are amongst us`,
+        ];
+        state.createTextEvent(genericMessages[Math.floor(Math.random() * genericMessages.length)], this.position, 'white', 1000);
+
+      }
 
     } else {
       const genericMessages = [
