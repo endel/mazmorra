@@ -35,7 +35,7 @@ export default class CharacterController extends Behaviour {
     this.on('target', (newTarget) => this.target = newTarget);
     this.on('rotate', (isRotating) => {
       this.isRotating = isRotating;
-      this.lookAtTargetSpeed = (isRotating) ? 0.015 : DEFAULT_LOOK_AT_TARGET_SPEED;
+      this.lookAtTargetSpeed = (isRotating) ? 0.05 : DEFAULT_LOOK_AT_TARGET_SPEED;
     });
     this.on('zoom', (ratio) => this.zoom = config.ZOOM * ratio);
   }

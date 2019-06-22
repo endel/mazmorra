@@ -261,13 +261,7 @@ export class Unit extends Entity {
     if (!this.state) { return; }
 
     if (!this.willDropItem) {
-      if (this.state.isPVPAllowed) {
-        // players will drop a random equipped item, if PVP is allowed.
-        this.willDropItem = this.equipedItems.dropRandomItem();
-
-      } else {
-        this.willDropItem = this.state.roomUtils.createRandomItem();
-      }
+      this.willDropItem = this.state.roomUtils.createRandomItem();
     }
 
     if (this.willDropItem) {
