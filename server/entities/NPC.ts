@@ -95,7 +95,7 @@ export class NPC extends Player {
           }
 
           state.events.emit("send", player, ["trading-items", player.purchase.slots]);
-        }, 500);
+        }, 1000);
 
       } else {
         const genericMessages = [

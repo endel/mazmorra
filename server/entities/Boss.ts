@@ -22,7 +22,7 @@ export class Boss extends Enemy {
   update (currentTime) {
     super.update(currentTime);
 
-    if (this.unitSpawner) {
+    if (this.unitSpawner && this.isAlive) {
       const timeDiff = currentTime - this.lastUnitSpawnTime;
       const spawnAllowed = timeDiff > this.unitSpawnTime
 
