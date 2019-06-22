@@ -27,7 +27,9 @@ class PortalBehaviour extends Behaviour {
   }
 
   onDetach() {
+    App.tweens.remove(this.light);
     removeLight(this.light);
+
     clearInterval(this.interval);
   }
 
