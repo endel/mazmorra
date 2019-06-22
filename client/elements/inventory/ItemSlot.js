@@ -140,8 +140,10 @@ export default class ItemSlot extends THREE.Object3D {
   onDragEnd(e) {
     let targetSlot = e.target
 
+    const isPurchasing = (draggingFrom && draggingFrom.parent && draggingFrom.parent.inventoryType === "purchase");
+
     //
-    // Sell!
+    // Sell item!
     //
     if (draggingItem && this.accepts === "sell") {
       this.dispatchSell({
@@ -168,8 +170,7 @@ export default class ItemSlot extends THREE.Object3D {
       )
     ) {
       // cancel drop if slotName doesn't match dropped slot.
-      draggingFrom.item = draggingItem;
-      this._revertDraggingItem();
+      this._revertDraggingItem(true);
       return;
     }
 
@@ -195,28 +196,35 @@ export default class ItemSlot extends THREE.Object3D {
         });
       }
 
-      targetSlot.item = draggingItem
+      if (!isPurchasing) {
+        targetSlot.item = draggingItem
+      };
 
-      this._revertDraggingItem();
+      this._revertDraggingItem(isPurchasing);
     }
 
     this._showHint();
   }
 
   onDoubleClick(e) {
+    console.log("DOUBLE CLICK / RIGHT CLICK");
     const targetSlot = e.target;
     const item = targetSlot.item;
 
     if (item) {
       const itemData = item.userData.item;
 
-      if (hud.inventory.isTrading) {
+      if (
+        hud.inventory.isTrading &&
+        this.parent.inventoryType !== "purchase"
+      ) {
+        // Sell item!
         this.dispatchSell({
           fromInventoryType: this.parent.inventoryType,
           itemId: targetSlot.item.userData.itemId
         });
 
-      } else if (itemData.isCastable) {
+      } else if (itemData.isCastable && !hud.inventory.isTrading) {
         draggingFrom = targetSlot;
         App.cursor.prepareItemCast(item, draggingFrom);
 
@@ -242,7 +250,11 @@ export default class ItemSlot extends THREE.Object3D {
     }
   }
 
-  _revertDraggingItem() {
+  _revertDraggingItem(cancelDrop) {
+    if (cancelDrop) {
+      draggingFrom.item = draggingItem;
+    }
+
     App.cursor.dispatchEvent({
       type: "drag",
       item: false

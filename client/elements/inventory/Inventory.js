@@ -56,7 +56,10 @@ export default class Inventory extends THREE.Object3D {
   }
 
   setTradingItems (items) {
-    console.log("ITEMS:", items);
+    this.titleText.text = "Trade";
+
+    this.purchaseSlots.userData.slots = items;
+    this.purchaseSlots.updateItems();
 
     this.add(this.exchangeSymbol);
     this.add(this.purchaseSlots);
@@ -80,6 +83,7 @@ export default class Inventory extends THREE.Object3D {
     this.scale.set(scaleFrom, scaleFrom, scaleFrom)
 
     if (this.isOpen) {
+      this.titleText.text = "Inventory";
       this.visible = true
 
     } else {

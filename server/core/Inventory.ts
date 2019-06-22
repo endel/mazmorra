@@ -24,6 +24,12 @@ export class Inventory extends Schema {
     }
   }
 
+  clear() {
+    for (let id in this.slots) {
+      delete this.slots[id];
+    }
+  }
+
   set (items: Item[] | DBItem[]) {
     for (let i=0; i<items.length; i++) {
       // TODO: fix position

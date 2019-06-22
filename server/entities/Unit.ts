@@ -260,7 +260,8 @@ export class Unit extends Entity {
   drop () {
     if (!this.state) { return; }
 
-    if (!this.willDropItem) {
+    // willDropItem = null means no drop allowed!
+    if (this.willDropItem === undefined) {
       this.willDropItem = this.state.roomUtils.createRandomItem();
     }
 

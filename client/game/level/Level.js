@@ -43,6 +43,33 @@ export default class Level extends THREE.Object3D {
 
     App.cursor.addEventListener("mouseup", this.playerActionDrop.bind(this));
     App.cursor.addEventListener("distribute-point", this.distributePoint.bind(this));
+
+    // allow to consume items!
+    this.hud.addEventListener("use-item", (e) => {
+      e.stopPropagation = true;
+      this.room.send(["use-item", {
+        inventoryType: e.inventoryType,
+        itemId: e.itemId
+      }]);
+    });
+
+    this.hud.addEventListener("inventory-drag", (e) => {
+      e.stopPropagation = true;
+      this.room.send(["inventory-drag", {
+        fromInventoryType: e.fromInventoryType,
+        toInventoryType: e.toInventoryType,
+        itemId: e.itemId,
+        switchItemId: e.switchItemId,
+      }]);
+    });
+
+    this.hud.addEventListener("inventory-sell", (e) => {
+      e.stopPropagation = true;
+      this.room.send(["inventory-sell", {
+        fromInventoryType: e.fromInventoryType,
+        itemId: e.itemId
+      }]);
+    });
   }
 
   onClick (e) {
@@ -275,34 +302,6 @@ export default class Level extends THREE.Object3D {
     object.addBehaviour(new CharacterController, this.camera, this.room)
 
     this.hud.setPlayerObject(object, data);
-
-    // allow to consume items!
-    this.hud.addEventListener("use-item", (e) => {
-      e.stopPropagation = true;
-      this.room.send(["use-item", {
-        inventoryType: e.inventoryType,
-        itemId: e.itemId
-      }]);
-    });
-
-    this.hud.addEventListener("inventory-drag", (e) => {
-      e.stopPropagation = true;
-      this.room.send(["inventory-drag", {
-        fromInventoryType: e.fromInventoryType,
-        toInventoryType: e.toInventoryType,
-        itemId: e.itemId,
-        switchItemId: e.switchItemId,
-      }]);
-    });
-
-    this.hud.addEventListener("inventory-sell", (e) => {
-      e.stopPropagation = true;
-      this.room.send(["inventory-sell", {
-        fromInventoryType: e.fromInventoryType,
-        itemId: e.itemId
-      }]);
-    });
-
   }
 
   setInitialState (state) {

@@ -9,6 +9,7 @@ import { EquipableItem } from "./items/EquipableItem";
 import { Point } from "../rooms/states/DungeonState";
 import { CastableItem } from "./items/CastableItem";
 import { Inventory } from "../core/Inventory";
+import { generateId } from "colyseus";
 
 export class SkinProperties extends Schema {
   @type("number") klass: number;
@@ -27,6 +28,8 @@ export class Player extends Unit {
 
   @type("number") latestProgress: number;
   @type("number") pointsToDistribute: number;
+
+  purchase: Inventory = new Inventory({ capacity: 12 });
 
   movementSpeed = 600;
   attackSpeed = 900;
@@ -84,6 +87,11 @@ export class Player extends Unit {
     const inventory = this[inventoryType];
     const item: Item = inventory.slots[itemId];
 
+    // buying items!
+    if (inventory === this.purchase) {
+      return this.inventoryBuy(item);
+    }
+
     if (item && item.use(this, this.state, force)) {
       return inventory.remove(itemId);
     }
@@ -116,12 +124,15 @@ export class Player extends Unit {
     const item = fromInventory.getItem(itemId);
     const switchItem = toInventory.getItem(switchItemId);
 
+    // buying items!
+    if (fromInventory === this.purchase) {
+      return this.inventoryBuy(item, toInventory);
+    }
+
     if (item && switchItem) {
       // @colyseus/schema workaround
       // without workaround: https://github.com/colyseus/schema/issues/26
       if ((toInventory instanceof EquipedItems)) {
-        console.log(item.toJSON());
-        console.log("is EquipableItem??", item instanceof EquipableItem);
         if (item instanceof EquipableItem) {
           // item must be equipable!
           fromInventory.remove(itemId);
@@ -157,6 +168,32 @@ export class Player extends Unit {
     }
   }
 
+  inventoryBuy (item: Item, toInventory?: Inventory) {
+    console.log("LETS BUY!", item.toJSON());
+    if (!toInventory) {
+      if (this.quickInventory.hasAvailability()) {
+        toInventory = this.quickInventory;
+
+      } else if (this.inventory.hasAvailability()) {
+        toInventory = this.inventory;
+      }
+    }
+
+    console.log("TO INVENTORY:", toInventory);
+    console.log("CAN BUY?!", this.gold, item.getPrice(), this.gold >= item.getPrice());
+
+    if (
+      toInventory &&
+      toInventory.hasAvailability() &&
+      this.gold >= item.getPrice()
+    ) {
+      this.gold -= item.getPrice();
+
+      item.id = generateId();
+      toInventory.add(item);
+    }
+  }
+
   drop () {
     if (!this.state) { return; }
 
@@ -169,6 +206,11 @@ export class Player extends Unit {
   dropItem(inventoryType: InventoryType, itemId: string) {
     const inventory = this[inventoryType];
     const item: Item = inventory.getItem(itemId)
+
+    // skip when trying to drop from trade
+    if (inventory === this.purchase) {
+      return;
+    }
 
     if (item && inventory.remove(itemId)) {
       this.state.dropItemFrom(this, item.clone());

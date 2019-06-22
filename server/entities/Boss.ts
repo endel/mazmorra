@@ -53,6 +53,9 @@ export class Boss extends Enemy {
             y: availablePosition[0]
           });
 
+          // disable drop for this unit.
+          enemy.willDropItem = null;
+
           this.state.addEntity(enemy);
         }
 

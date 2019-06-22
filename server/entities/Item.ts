@@ -13,6 +13,8 @@ export abstract class Item extends Entity {
   @type([ItemModifier]) modifiers: ArraySchema<ItemModifier> = new ArraySchema<ItemModifier>();
   walkable = true;
 
+  @type("number") price: number;
+
   constructor () {
     super()
   }

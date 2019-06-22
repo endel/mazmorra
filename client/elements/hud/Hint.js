@@ -46,7 +46,13 @@ class Hint  {
     // <img src="images/sprites/items-${item.type}.png" width="${sprite.item.scale.x}" height="${sprite.item.scale.y}" />
 
     return `
-<h2>${humanize(item.type)}</h2>
+<h2>
+${humanize(item.type)}
+${(item.price !== undefined)
+  ? `<small class="gold">(${item.price} gold)</small>`
+  : ""}
+</h2>
+
 ${(item.damageAttribute)
   ? `<p>Damage attribute: <span class="${item.damageAttribute}">${humanize(item.damageAttribute)}</span></p>`
   : "" }
@@ -66,7 +72,7 @@ ${(
           : equipedItemModifier.modifier;
 
         return `
-          <string>${humanize(modifier.attr)}</strong> ${(modifier.modifier > 0) ? "+" : ""}
+          <strong>${humanize(modifier.attr)}</strong> ${(modifier.modifier > 0) ? "+" : ""}
           ${modifier.modifier}
           ${(modifier.modifier > equipedModifier)
             ? `<small class="increase">(+ ${(modifier.modifier - equipedModifier).toFixed(2)})</small>`

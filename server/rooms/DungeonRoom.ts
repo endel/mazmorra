@@ -95,6 +95,7 @@ export class DungeonRoom extends Room<DungeonState> {
 
     } else if (key == 'inventory-drag') {
       const { fromInventoryType, toInventoryType, itemId, switchItemId } = value;
+      console.log({ fromInventoryType, toInventoryType, itemId, switchItemId });
       player.inventoryDrag(fromInventoryType, toInventoryType, itemId, switchItemId);
 
     } else if (key == 'inventory-sell') {

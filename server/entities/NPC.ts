@@ -4,6 +4,8 @@ import helpers from "../../shared/helpers";
 
 // Entities
 import { Player } from "./Player";
+import { Potion, POTION_1_MODIFIER } from "./items/consumable/Potion";
+import { Scroll } from "./items/consumable/Scroll";
 
 export class NPC extends Player {
   @type("string") kind: string;
@@ -25,13 +27,33 @@ export class NPC extends Player {
     this.statsModifiers.movementSpeed = -this.state.rand.intBetween(200, 300);
   }
 
-  interact (moveEvent, player, state) {
+  interact (moveEvent, player: Player, state) {
     moveEvent.cancel();
     this.updateDirection(player.position.x, player.position.y);
 
     if (this.kind === "elder") {
       const items = [];
-      state.events.emit("send", player, ["trading-items", items]);
+
+      const hpPotion = new Potion();
+      hpPotion.addModifier({ attr: "hp", modifier: POTION_1_MODIFIER });
+      items.push(hpPotion);
+
+      const mpPotion = new Potion();
+      mpPotion.addModifier({ attr: "mp", modifier: POTION_1_MODIFIER });
+      items.push(mpPotion);
+
+      const scroll = new Scroll();
+      items.push(scroll);
+
+      player.purchase.clear();
+      player.purchase.set(items);
+
+      // populate item prices
+      for (let itemId in player.purchase.slots) {
+        player.purchase.slots[itemId].price = player.purchase.slots[itemId].getPrice();
+      }
+
+      state.events.emit("send", player, ["trading-items", player.purchase.slots]);
 
     } else if (this.kind === "merchant") {
       const items = [];

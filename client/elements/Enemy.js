@@ -39,8 +39,8 @@ export default class Enemy extends THREE.Object3D {
       this.addBehaviour(new HasLifebar)
     }
 
-    App.tweens.add(this.sprite.position).from({ y: -1 }, 200, Tweener.ease.quadOut);
-    App.tweens.add(this.sprite.material).from({ opacity: 0 }, 200, Tweener.ease.quadOut);
+    App.tweens.add(this.sprite.position).from({ y: -1.5 }, 300, Tweener.ease.quadOut);
+    App.tweens.add(this.sprite.material).from({ opacity: 0 }, 300, Tweener.ease.quadOut);
 
     this.addBehaviour(new NearPlayerOpacity)
   }
