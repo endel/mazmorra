@@ -68,7 +68,7 @@ export type MapConfig = {
   boss?: string[]
 };
 
-const NUM_LEVELS_PER_MAP = 12;
+const NUM_LEVELS_PER_MAP = 15;
 
 export function getMapConfig(progress: number) {
   if (progress === 1) {

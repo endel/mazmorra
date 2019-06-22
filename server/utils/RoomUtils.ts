@@ -470,9 +470,9 @@ export class RoomUtils {
     return attributes[this.rand.intBetween(0, 2)] as Attribute;
   }
 
-  createWeapon() {
+  createWeapon(damageAttribute?: Attribute) {
     const item = new WeaponItem();
-    item.damageAttribute = this.getRandomPrimaryAttribute();
+    item.damageAttribute = damageAttribute || this.getRandomPrimaryAttribute();
 
     if (item.damageAttribute === "strength") {
       item.type = helpers.ENTITIES.WEAPON_1;

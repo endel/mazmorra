@@ -87,6 +87,8 @@ export class Player extends Unit {
     const inventory = this[inventoryType];
     const item: Item = inventory.slots[itemId];
 
+    console.log("useItem:", { inventoryType, itemId, inventory, item });
+
     // buying items!
     if (inventory === this.purchase) {
       return this.inventoryBuy(item);
@@ -165,11 +167,14 @@ export class Player extends Unit {
 
       this.gold += price;
       fromInventory.remove(itemId);
+
+      // this.state.events.emit('sound', 'buy', this);
     }
   }
 
   inventoryBuy (item: Item, toInventory?: Inventory) {
-    console.log("LETS BUY!", item.toJSON());
+    console.log("inventoryBuy!", { item, toInventory });
+
     if (!toInventory) {
       if (this.quickInventory.hasAvailability()) {
         toInventory = this.quickInventory;
@@ -178,9 +183,6 @@ export class Player extends Unit {
         toInventory = this.inventory;
       }
     }
-
-    console.log("TO INVENTORY:", toInventory);
-    console.log("CAN BUY?!", this.gold, item.getPrice(), this.gold >= item.getPrice());
 
     if (
       toInventory &&
@@ -191,6 +193,8 @@ export class Player extends Unit {
 
       item.id = generateId();
       toInventory.add(item);
+
+      // this.state.events.emit('sound', 'buy', this);
     }
   }
 

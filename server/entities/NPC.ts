@@ -29,6 +29,7 @@ export class NPC extends Player {
 
   interact (moveEvent, player: Player, state) {
     moveEvent.cancel();
+
     this.updateDirection(player.position.x, player.position.y);
 
     if (this.kind === "elder") {
@@ -56,8 +57,31 @@ export class NPC extends Player {
       state.events.emit("send", player, ["trading-items", player.purchase.slots]);
 
     } else if (this.kind === "merchant") {
-      const items = [];
-      state.events.emit("send", player, ["trading-items", items]);
+      const items = [
+        this.state.roomUtils.createArmor(),
+        this.state.roomUtils.createBoot(),
+        this.state.roomUtils.createHelmet(),
+        this.state.roomUtils.createShield(),
+        this.state.roomUtils.createWeapon(player.primaryAttribute),
+      ];
+
+      player.purchase.clear();
+      player.purchase.set(items);
+
+      // populate item prices
+      for (let itemId in player.purchase.slots) {
+        player.purchase.slots[itemId].price = player.purchase.slots[itemId].getPrice();
+      }
+
+      state.events.emit("send", player, ["trading-items", player.purchase.slots]);
+
+    } else if (this.kind === "majesty") {
+      const genericMessages = [
+        `Bring me something special!`,
+        `The prophecy is true.`,
+        `Demons are amongst us`,
+      ]
+      state.createTextEvent(genericMessages[Math.floor(Math.random() * genericMessages.length)], this.position, 'white', 1000);
 
     } else {
       const genericMessages = [
