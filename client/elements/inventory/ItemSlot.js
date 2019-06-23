@@ -145,7 +145,7 @@ export default class ItemSlot extends THREE.Object3D {
     //
     // Sell item!
     //
-    if (draggingItem && this.accepts === "sell") {
+    if (draggingItem && this.accepts === "sell" && !isPurchasing) {
       this.dispatchSell({
         fromInventoryType: draggingFrom.parent.inventoryType,
         itemId: draggingItem.userData.itemId

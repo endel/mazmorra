@@ -90,7 +90,7 @@ export class Player extends Unit {
     console.log("useItem:", { inventoryType, itemId, inventory, item });
 
     // buying items!
-    if (inventory === this.purchase) {
+    if (item && inventory === this.purchase) {
       return this.inventoryBuy(item);
     }
 
@@ -160,7 +160,7 @@ export class Player extends Unit {
     const fromInventory = this[fromInventoryType];
     const item = fromInventory.getItem(itemId);
 
-    if (item) {
+    if (item && fromInventory !== this.purchase) {
       // selling price is half of buying price
       const price = Math.floor(item.getPrice() / 2);
       this.state.createTextEvent("+" + price, this.position, 'yellow', 100);
