@@ -54,7 +54,7 @@ export class Enemy extends Unit {
       for (let sessionId in this.state.players) {
         const player: Player = this.state.players[sessionId];
 
-        if (distance(this.position, player.position) <= this.aiDistance) {
+        if (player.isAlive && distance(this.position, player.position) <= this.aiDistance) {
           closePlayer = player;
           break;
         }
