@@ -15,7 +15,7 @@ export const soundtrack = {
 
 window.soundtrack = soundtrack;
 
-export const doorSound = require('../resource/sounds/door.wav');
+export const doorSound = require('../resource/sounds/door.mp3');
 
 export const hitSound = [
   require('../resource/sounds/hit1.mp3'),
@@ -61,7 +61,9 @@ export const levelUpSound = require('../resource/sounds/levelup.aif');
 
 export const bossSound = require('../resource/sounds/boss/boss.mp3');
 export const killBossSound = require('../resource/sounds/boss/kill-boss.mp3');
+
 export const spellSound = require('../resource/sounds/spells/generic.mp3');
+export const enterPortal = require('../resource/sounds/spells/portal-enter.mp3');
 
 /**
  * Weapons

@@ -2,7 +2,7 @@ import { Behaviour } from 'behaviour.js'
 import helpers from '../../shared/helpers'
 
 import { getClientId } from '../core/network';
-import { battleStartSound, wooshSound, hitSound, playRandom, deathSound, deathStingerSound, bowSound } from '../core/sound';
+import { battleStartSound, wooshSound, hitSound, playRandom, deathSound, deathStingerSound, bowSound, staffSound } from '../core/sound';
 
 export const DEAD_ENTITY_OPACITY = 0.45;
 
@@ -68,6 +68,8 @@ export default class BattleBehaviour extends Behaviour {
       }
     }
 
+    let soundToPlay;
+
     // create projectile
     if (this.attackDistance > 1) {
       const projectileType = (this.damageAttribute === "intelligence")
@@ -81,17 +83,15 @@ export default class BattleBehaviour extends Behaviour {
         target: this.defender
       });
 
-      const soundToPlay = (this.damageAttribute === "intelligence")
+      soundToPlay = (this.damageAttribute === "intelligence")
         ? staffSound
         : bowSound;
 
-      // TODO: play arrow sound.
-      playRandom(soundToPlay);
-
     } else {
-      // play "woosh"
-      playRandom(wooshSound)
+      soundToPlay = wooshSound;
     }
+
+    playRandom(soundToPlay)
 
     // show damage / miss / critical
     let text = `-${ actionData.damage }`

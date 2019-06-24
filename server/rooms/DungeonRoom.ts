@@ -121,7 +121,7 @@ export class DungeonRoom extends Room<DungeonState> {
     }
   }
 
-  onGoTo (player, data) {
+  onGoTo (player, data, isPortal) {
     const client = this.clientMap.get(player);
     const hero = this.heroes.get(client);
 
@@ -145,7 +145,7 @@ export class DungeonRoom extends Room<DungeonState> {
       progress = 1;
     }
 
-    this.send(this.clientMap.get(player), ['goto', { progress }]);
+    this.send(this.clientMap.get(player), ['goto', { progress }, isPortal]);
   }
 
   sendToPlayer (player, data) {

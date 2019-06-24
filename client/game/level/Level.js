@@ -122,6 +122,8 @@ export default class Level extends THREE.Object3D {
       const [ evt, data ] = payload;
 
       if (evt === "goto") {
+        const isPortal = payload[2];
+
         player.getEntity().emit('zoom', 1.5);
 
         this.room.onLeave.addOnce(() => {
@@ -130,7 +132,12 @@ export default class Level extends THREE.Object3D {
 
         setTimeout(() => this.room.leave(), 200);
 
-        doorSound.play();
+        if (isPortal) {
+          sounds.enterPortal.play();
+
+        } else {
+          doorSound.play();
+        }
 
       } else if (evt === "trading-items") {
 

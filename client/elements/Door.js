@@ -10,12 +10,13 @@ export default class Door extends THREE.Object3D {
     this.mapkind = mapkind;
     this.currentProgress = currentProgress
 
-    this.material = new THREE.MeshPhongMaterial( {
-        shading: THREE.FlatShading,
-        map: this.getTexture(),
-        side: THREE.FrontSide,
-        transparent: true
-      })
+    this.material = new THREE.MeshPhongMaterial({
+      flatShading: true,
+      map: this.getTexture(),
+      side: THREE.FrontSide,
+      transparent: true
+    });
+
       // +2.8 for the pillars
       // , geometry = new THREE.PlaneGeometry(config.TILE_SIZE + 2.8, config.TILE_SIZE + 2.8)
 

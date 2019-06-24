@@ -133,9 +133,8 @@ class ResourceManager {
           this.materials[ name ] = new THREE.MeshPhongMaterial({ //new THREE.MeshBasicMaterial({
             // color: 0xa0adaf,
             // specular: 0x111111,
-            // shininess: 60,
+            shininess: 60,
             // flatShading: true,
-            // shading: THREE.FlatShading,
             map: texture,
             side: THREE.DoubleSide,
             // depthWrite: false

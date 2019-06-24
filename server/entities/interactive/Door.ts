@@ -65,13 +65,15 @@ export class Door extends Interactive {
       }
     }
 
-    state.events.emit('goto', player, this.destiny);
+    const isPortal = this.type === helpers.ENTITIES.PORTAL;
 
     // remove portal when using it.
-    if (this.type === helpers.ENTITIES.PORTAL) {
+    if (isPortal) {
       player.shouldSaveCoords = true;
       state.removeEntity(this);
     }
+
+    state.events.emit('goto', player, this.destiny, isPortal);
   }
 
 }
