@@ -47,28 +47,41 @@ export default class Level extends THREE.Object3D {
     // allow to consume items!
     this.hud.addEventListener("use-item", (e) => {
       e.stopPropagation = true;
+
       this.room.send(["use-item", {
         inventoryType: e.inventoryType,
         itemId: e.itemId
       }]);
+
+      if (e.inventoryType === "purchase") {
+        sounds.inventorySound.buy.play();
+      }
     });
 
     this.hud.addEventListener("inventory-drag", (e) => {
       e.stopPropagation = true;
+
       this.room.send(["inventory-drag", {
         fromInventoryType: e.fromInventoryType,
         toInventoryType: e.toInventoryType,
         itemId: e.itemId,
         switchItemId: e.switchItemId,
       }]);
+
+      if (e.fromInventoryType === "purchase") {
+        sounds.inventorySound.buy.play();
+      }
     });
 
     this.hud.addEventListener("inventory-sell", (e) => {
       e.stopPropagation = true;
+
       this.room.send(["inventory-sell", {
         fromInventoryType: e.fromInventoryType,
         itemId: e.itemId
       }]);
+
+      sounds.inventorySound.sell.play();
     });
   }
 

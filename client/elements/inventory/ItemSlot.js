@@ -207,7 +207,6 @@ export default class ItemSlot extends THREE.Object3D {
   }
 
   onDoubleClick(e) {
-    console.log("DOUBLE CLICK / RIGHT CLICK");
     const targetSlot = e.target;
     const item = targetSlot.item;
 

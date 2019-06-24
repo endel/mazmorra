@@ -51,6 +51,9 @@ export const levelUpSound = require('../resource/sounds/levelup.aif');
 export const inventorySound = {
   open: require('../resource/sounds/inventory/open.ogg'),
   close: require('../resource/sounds/inventory/close.ogg'),
+
+  sell: require('../resource/sounds/inventory/sell.wav'),
+  buy: require('../resource/sounds/inventory/buy.wav'),
 }
 
 export const pickItemSound = inventorySound.open;

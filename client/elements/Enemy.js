@@ -42,7 +42,9 @@ export default class Enemy extends THREE.Object3D {
       App.tweens.add(this.sprite.material).from({ opacity: 0 }, 300, Tweener.ease.quadOut);
     }
 
-    this.addBehaviour(new NearPlayerOpacity)
+    if (!this.userData.isBoss) {
+      this.addBehaviour(new NearPlayerOpacity)
+    }
   }
 
   get label () {
