@@ -210,15 +210,12 @@ export class RoomUtils {
     this.addEntity(room, (position) => new Chest(position, chestKind))
     this.addEntity(room, (position) => new Chest(position, chestKind))
 
-    // if (
-    //   this.state.progress % 3 === 0 && // fountains CAN appear only each 3 levels
-    //   this.rand.intBetween(0, 6) === 6
-    // ) {
-    //   this.addEntity(room, (position) => new Fountain(position))
-    // }
+    if (
+      this.state.progress % 3 === 0 && // fountains CAN appear only each 3 levels
+      this.rand.intBetween(0, 6) === 6
+    ) {
       this.addEntity(room, (position) => new Fountain(position))
-      this.addEntity(room, (position) => new Fountain(position))
-      this.addEntity(room, (position) => new Fountain(position))
+    }
 
     // if (this.hasPositionsRemaining(room)) {
     //   var entity = new Entity()
