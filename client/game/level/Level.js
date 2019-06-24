@@ -393,18 +393,24 @@ export default class Level extends THREE.Object3D {
 
     this.factory.setGrid(state.grid)
 
-    if (this.mapkind === "lobby") {
-      this.factory.createTiles('castle');
+    this.factory.createTiles(this.mapkind);
 
-    } else {
-      this.factory.createTiles(this.mapkind);
+    // essa é ok
+    // sounds.switchSoundtrack('higureForest');
+    const soundtrackMap = {
+      "castle": "moonlightForest",
 
-      // essa é ok
-      this.soundtrack = sounds.soundtrack.higureForest.play();
+      "rock": 'higureForest',
+      "rock-2": 'higureForest',
+      "ice": 'higureForest',
+      "grass": 'higureForest',
+      "inferno": 'higureForest',
+    };
 
-      // essa é tenebrosa pra kct
-      // this.soundtrack = sounds.soundtrack.plagueOfNighterrors.play();
-    }
+    sounds.switchSoundtrack(soundtrackMap[this.mapkind]);
+
+    // essa é tenebrosa pra kct
+    // this.soundtrack = sounds.soundtrack.plagueOfNighterrors.play();
 
     this.setupStateCallbacks();
   }

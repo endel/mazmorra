@@ -1,3 +1,4 @@
+
 export function playRandom(soundOptions) {
   soundOptions[Math.floor(Math.random() * soundOptions.length)].play();
 }
@@ -12,6 +13,27 @@ export const soundtrack = {
   plagueOfNighterrors: require('../resource/sounds/music/plague-of-nighterrors.mp3'),
 };
 //
+
+let curentSoundTrack;
+export function switchSoundtrack(trackId) {
+  const currentVolume = window.$_audiosprite.volume(curentSoundTrack)
+
+  if (curentSoundTrack) {
+    console.log("need fade out", curentSoundTrack);
+    const soundTrackToFade = curentSoundTrack;
+    window.$_audiosprite.on('fade', function (soundId) {
+      console.log("FADE COMPLETE", soundId, soundTrackToFade, soundId === soundTrackToFade);
+      if (soundId === soundTrackToFade) {
+        window.$_audiosprite.stop(soundId);
+      }
+    });
+
+    window.$_audiosprite.fade(1, 0, 1000, curentSoundTrack);
+  }
+
+  curentSoundTrack = soundtrack[trackId].play();
+  window.$_audiosprite.fade(0, 1, 1000, curentSoundTrack);
+}
 
 window.soundtrack = soundtrack;
 
