@@ -2,7 +2,7 @@ import { Behaviour } from 'behaviour.js'
 import helpers from '../../shared/helpers'
 
 import { getClientId } from '../core/network';
-import { battleStartSound, wooshSound, hitSound, playRandom, deathSound, deathStingerSound } from '../core/sound';
+import { battleStartSound, wooshSound, hitSound, playRandom, deathSound, deathStingerSound, bowSound } from '../core/sound';
 
 export const DEAD_ENTITY_OPACITY = 0.45;
 
@@ -45,6 +45,8 @@ export default class BattleBehaviour extends Behaviour {
   onAttack (actionData) {
     if (!actionData.type) { return this.disable(); }
 
+    this.damageAttribute = this.getDamageAttribute();
+
     this.togglePosition = true
     this.togglePositionTimeout = App.clock.setTimeout(() => { this.togglePosition = false }, 100);
 
@@ -68,7 +70,7 @@ export default class BattleBehaviour extends Behaviour {
 
     // create projectile
     if (this.attackDistance > 1) {
-      const projectileType = (this.getDamageAttribute() === "intelligence")
+      const projectileType = (this.damageAttribute === "intelligence")
         ? helpers.ENTITIES.PROJECTILE_MAGIC
         : helpers.ENTITIES.PROJECTILE_ARROW_1;
 
@@ -79,8 +81,12 @@ export default class BattleBehaviour extends Behaviour {
         target: this.defender
       });
 
+      const soundToPlay = (this.damageAttribute === "intelligence")
+        ? staffSound
+        : bowSound;
+
       // TODO: play arrow sound.
-      playRandom(wooshSound)
+      playRandom(soundToPlay);
 
     } else {
       // play "woosh"
@@ -96,7 +102,7 @@ export default class BattleBehaviour extends Behaviour {
       text = 'miss'
 
     } else if (this.defender) {
-      this.defender.getEntity().emit('damage')
+      this.defender.getEntity().emit('damage', this.damageAttribute);
     }
 
     // create label entity
@@ -110,7 +116,7 @@ export default class BattleBehaviour extends Behaviour {
     })
   }
 
-  onTakeDamage () {
+  onTakeDamage (damageAttribute) {
     if (this.object.sprite && (!this.lastTimeout || !this.lastTimeout.active)) {
       // play damage taken sound!
       playRandom(hitSound)

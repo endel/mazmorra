@@ -5,8 +5,16 @@ import ResourceManager from './resource/manager'
 import Game from './game/Game'
 
 import login from './web/login'
+import { soundtrack } from './core/sound';
 
 ResourceManager.load(() => {
+  // remove "loading" class
+  const body = document.querySelector("body");
+  body.classList.remove("loading");
+  body.classList.add("loaded");
+
+  soundtrack.higureForest.play();
+
   const game = new Game(document.getElementById('game'))
   game.render();
 

@@ -141,6 +141,8 @@ export default class Level extends THREE.Object3D {
           this.hud.onToggleInventory();
         }
 
+        this.playSound("approve");
+
         this.hud.inventory.setTradingItems(data);
 
       } else if (evt === "sound") {
@@ -195,6 +197,8 @@ export default class Level extends THREE.Object3D {
 
                 // kill boss camera effect!
                 if (entity.isBoss) {
+                  this.playSound("killBoss");
+
                   player.getEntity().emit('target', object);
                   player.getEntity().emit('zoom', 2);
 
@@ -289,6 +293,8 @@ export default class Level extends THREE.Object3D {
       // boss camera effect
       if (entity.isBoss && entity.hp.current > 0) {
         setTimeout(() => {
+          this.playSound("boss");
+
           player.getEntity().emit('target', object);
           player.getEntity().emit('rotate', true);
 
@@ -384,7 +390,13 @@ export default class Level extends THREE.Object3D {
       this.factory.createTiles('castle');
 
     } else {
-      this.factory.createTiles(this.mapkind)
+      this.factory.createTiles(this.mapkind);
+
+      // essa é ok
+      this.soundtrack = sounds.soundtrack.higureForest.play();
+
+      // essa é tenebrosa pra kct
+      // this.soundtrack = sounds.soundtrack.plagueOfNighterrors.play();
     }
 
     this.setupStateCallbacks();

@@ -3,9 +3,13 @@
 import { Behaviour } from 'behaviour.js'
 import LightOscillator from '../behaviors/LightOscillator'
 import { getLightFromPool, removeLight } from '../utils';
+import { spellSound } from '../core/sound';
 
 class PortalBehaviour extends Behaviour {
   onAttach() {
+    // play "portal" sound.
+    spellSound.play();
+
     this.light = getLightFromPool();
     this.light.intensity = 2;
     this.light.distance = 15;

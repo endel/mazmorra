@@ -22,6 +22,15 @@ body
   color #fff
   background #000
 
+  &.loading
+    cursor progress
+    .not-loaded
+      display block
+
+  &.loaded
+    .not-loaded
+      display none !important
+
 .hidden
   display none
 
