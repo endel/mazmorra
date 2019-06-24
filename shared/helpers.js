@@ -229,6 +229,7 @@ var helpers = {
         this.size = { x: 0, y: 0 };
         this.tiles = [];
         this.walls = []; //indexes for wall tiles
+        this.branches = [];
     }
 };
 

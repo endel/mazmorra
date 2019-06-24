@@ -74,11 +74,13 @@ var dungeon = {
             // 7) See if there is space for the new room next to the selected wall tile of the selected room.
             // 8) If yes, continue. If no, go back to step 4.
             if(this.isSpaceForRoom(grid, gridSize, room, roomPos)) {
+
                 // 9) Dig out the new room to add it to part of the dungeon, and add it to list of completed rooms.
                 rooms.push(room);
                 this.placeRoom(grid, room, roomPos.x, roomPos.y);
                 // 10) Turn the wall tile picked in step 5 into a door way to make our new room accessible.
-                this.connectRooms(grid, branchPos);
+
+                room.branches = this.connectRooms(grid, branchPos);
             }
 
             // 11) Go back to step 4 until the dungeon is complete.
@@ -194,28 +196,50 @@ var dungeon = {
 
         return true;
     },
+
     connectRooms: function(grid, branchPos) {
         grid[branchPos.x][branchPos.y] = helpers.TILE_TYPE.FLOOR;
 
+        var branches = []
         switch(branchPos.dir) {
             case helpers.DIRECTION.NORTH:
                 grid[branchPos.x][branchPos.y - 1] = helpers.TILE_TYPE.FLOOR | helpers.DIRECTION.NORTH;
+
+                branches.push({ x: branchPos.x, y: branchPos.y - 2 });
+                branches.push({ x: branchPos.x, y: branchPos.y + 1 });
+
                 // grid[branchPos.x + 1][branchPos.y - 1] = helpers.TILE_TYPE.FLOOR | helpers.DIRECTION.NORTH;
                 // grid[branchPos.x][branchPos.y - 1] = helpers.TILE_TYPE.FLOOR;
                 break;
 
             case helpers.DIRECTION.SOUTH:
                 grid[branchPos.x][branchPos.y + 1] = helpers.TILE_TYPE.FLOOR | helpers.DIRECTION.SOUTH;
+
+                branches.push({ x: branchPos.x, y: branchPos.y + 2 });
+                branches.push({ x: branchPos.x, y: branchPos.y - 1 });
+
+                // double sized!
+                // grid[branchPos.x][branchPos.y + 1] = helpers.TILE_TYPE.FLOOR;
+                // grid[branchPos.x - 1][branchPos.y] = helpers.TILE_TYPE.FLOOR;
+                // grid[branchPos.x - 1][branchPos.y + 1] = helpers.TILE_TYPE.FLOOR | helpers.DIRECTION.SOUTH;
                 break;
 
             case helpers.DIRECTION.EAST:
                 grid[branchPos.x + 1][branchPos.y] = helpers.TILE_TYPE.FLOOR | helpers.DIRECTION.EAST;
+
+                branches.push({ x: branchPos.x + 2, y: branchPos.y });
+                branches.push({ x: branchPos.x - 1, y: branchPos.y });
                 break;
 
             case helpers.DIRECTION.WEST:
                 grid[branchPos.x - 1][branchPos.y] = helpers.TILE_TYPE.FLOOR | helpers.DIRECTION.WEST;
+
+                branches.push({ x: branchPos.x - 2, y: branchPos.y });
+                branches.push({ x: branchPos.x + 1, y: branchPos.y });
                 break;
         }
+
+        return branches;
     }
 };
 

@@ -187,6 +187,12 @@ export default class Factory {
         this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.EAST, x, y - 1);
         this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.WEST, x, y - 1);
 
+        // double sized
+        // this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.EAST, x, y);
+        // this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.WEST, x + 1, y);
+        // this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.EAST, x, y - 1);
+        // this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.WEST, x + 1, y - 1);
+
       } else if (type & helpers.DIRECTION.EAST) {
         this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.SOUTH, x, y);
         this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.NORTH, x, y);

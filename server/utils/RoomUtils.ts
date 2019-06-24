@@ -37,6 +37,7 @@ export interface DungeonRoom {
   size: Point;
   tiles: any[];
   walls: any[];
+  branches: Point[];
 }
 
 export class RoomUtils {
@@ -96,13 +97,26 @@ export class RoomUtils {
   }
 
   cacheRoomData () {
+    // flattened branches
+    const branches = this.rooms.map(room => room.branches).reduce((acc, val) => acc.concat(val), []);
+
     for (var i=0; i<this.rooms.length; i++) {
-      let room = this.rooms[i]
-        , positions = []
+      const room = this.rooms[i];
+      const positions = [];
 
       for (var x = 1; x < room.size.x - 1; x++) {
         for (var y = 1; y < room.size.y - 1; y++) {
-          positions.push({ x: room.position.y + y , y: room.position.x + x })
+          const position = { x: room.position.y + y , y: room.position.x + x };
+
+          // prevent from placing items in the branches of the rooms.
+          // because some of them can block move
+          const branchAt = branches.findIndex(branch => branch.y === position.x && branch.x === position.y);
+          if (branchAt === -1) {
+            positions.push(position);
+
+          } else {
+            branches.splice(branchAt, 1);
+          }
         }
       }
 
@@ -196,12 +210,15 @@ export class RoomUtils {
     this.addEntity(room, (position) => new Chest(position, chestKind))
     this.addEntity(room, (position) => new Chest(position, chestKind))
 
-    if (
-      this.state.progress % 3 === 0 && // fountains CAN appear only each 3 levels
-      this.rand.intBetween(0, 6) === 6
-    ) {
+    // if (
+    //   this.state.progress % 3 === 0 && // fountains CAN appear only each 3 levels
+    //   this.rand.intBetween(0, 6) === 6
+    // ) {
+    //   this.addEntity(room, (position) => new Fountain(position))
+    // }
       this.addEntity(room, (position) => new Fountain(position))
-    }
+      this.addEntity(room, (position) => new Fountain(position))
+      this.addEntity(room, (position) => new Fountain(position))
 
     // if (this.hasPositionsRemaining(room)) {
     //   var entity = new Entity()
