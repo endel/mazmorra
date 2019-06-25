@@ -617,6 +617,8 @@ export default class Level extends THREE.Object3D {
       this.totalSessions++;
 
       if (this.totalSessions % 5 === 0) {
+        sounds.fadeOut(); // fade soundtrack out
+
         window.adPrerollComplete = () => {
           window.localStorage.setItem("totalSessions", this.totalSessions);
           resolve();

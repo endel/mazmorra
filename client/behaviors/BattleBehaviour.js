@@ -2,7 +2,7 @@ import { Behaviour } from 'behaviour.js'
 import helpers from '../../shared/helpers'
 
 import { getClientId } from '../core/network';
-import { battleStartSound, wooshSound, hitSound, playRandom, deathSound, deathStingerSound, bowSound, staffSound } from '../core/sound';
+import { battleStartSound, wooshSound, hitSound, playRandom, deathSound, deathStingerSound, bowSound, staffSound, fadeOut } from '../core/sound';
 
 export const DEAD_ENTITY_OPACITY = 0.45;
 
@@ -137,6 +137,7 @@ export default class BattleBehaviour extends Behaviour {
     }
 
     if (this.object.userData.id === getClientId()) {
+      fadeOut(); // fade soundtrack out
       deathStingerSound.play();
     }
 

@@ -30,7 +30,7 @@ export default class Enemy extends THREE.Object3D {
 
     this.sprite.center.set(0.5, 0);
     this.sprite.position.y = -0.5;
-    this.add(this.sprite)
+    this.add(this.sprite);
 
     // only attach lifebar if enemy is alive
     if (data.hp.current > 0) {

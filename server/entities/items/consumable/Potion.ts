@@ -85,4 +85,10 @@ export class Potion extends ConsumableItem {
     return true;
   }
 
+  getPrice() {
+    return (this.modifiers[0].attr == "xp")
+      ? this.modifiers[0].modifier * 15
+      : this.modifiers[0].modifier * 2;
+  }
+
 }

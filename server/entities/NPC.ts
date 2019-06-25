@@ -91,7 +91,7 @@ export class NPC extends Player {
 
           // populate item prices
           for (let itemId in player.purchase.slots) {
-            player.purchase.slots[itemId].price = 500;
+            player.purchase.slots[itemId].price = player.purchase.slots[itemId].getPrice();
           }
 
           state.events.emit("send", player, ["trading-items", player.purchase.slots]);
