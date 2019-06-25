@@ -14,25 +14,30 @@ export const soundtrack = {
 };
 //
 
+let soundtrackVolume = 0.45;
 let curentSoundTrack;
-export function switchSoundtrack(trackId) {
-  const currentVolume = window.$_audiosprite.volume(curentSoundTrack)
+let curentSoundTrackName;
+
+export function switchSoundtrack(trackName) {
+  if (curentSoundTrackName === trackName) {
+    return;
+  }
 
   if (curentSoundTrack) {
-    console.log("need fade out", curentSoundTrack);
     const soundTrackToFade = curentSoundTrack;
     window.$_audiosprite.on('fade', function (soundId) {
-      console.log("FADE COMPLETE", soundId, soundTrackToFade, soundId === soundTrackToFade);
       if (soundId === soundTrackToFade) {
         window.$_audiosprite.stop(soundId);
       }
     });
 
-    window.$_audiosprite.fade(1, 0, 1000, curentSoundTrack);
+    window.$_audiosprite.fade(soundtrackVolume, 0, 1000, curentSoundTrack);
   }
 
-  curentSoundTrack = soundtrack[trackId].play();
-  window.$_audiosprite.fade(0, 1, 1000, curentSoundTrack);
+  curentSoundTrackName = trackName;
+  curentSoundTrack = soundtrack[trackName].play();
+  window.$_audiosprite.loop(true, curentSoundTrack);
+  window.$_audiosprite.fade(0, soundtrackVolume, 1000, curentSoundTrack);
 }
 
 window.soundtrack = soundtrack;
