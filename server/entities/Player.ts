@@ -10,6 +10,7 @@ import { Point } from "../rooms/states/DungeonState";
 import { CastableItem } from "./items/CastableItem";
 import { Inventory } from "../core/Inventory";
 import { generateId } from "colyseus";
+import { ConsumableItem } from "./items/ConsumableItem";
 
 export class SkinProperties extends Schema {
   @type("number") klass: number;
@@ -176,11 +177,15 @@ export class Player extends Unit {
     console.log("inventoryBuy!", { item, toInventory });
 
     if (!toInventory) {
-      if (this.quickInventory.hasAvailability()) {
-        toInventory = this.quickInventory;
+      const toInventoryPriority = (item instanceof ConsumableItem)
+        ? [this.quickInventory, this.inventory]
+        : [this.inventory, this.quickInventory];
 
-      } else if (this.inventory.hasAvailability()) {
-        toInventory = this.inventory;
+      for (let i=0; i<toInventoryPriority.length; i++) {
+        if (toInventoryPriority[i].hasAvailability()) {
+          toInventory = toInventoryPriority[i];
+          break;
+        }
       }
     }
 
