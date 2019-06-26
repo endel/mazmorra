@@ -147,6 +147,43 @@ export default class HUD extends THREE.Scene {
       // open inventory pressing "i" or "b"
       this.openInventoryButton.onClick();
       this.onToggleInventory();
+
+    } else if (e.which === Keycode.KEY_1) {
+      this.quickInventory.slots[0].dispatchEvent({
+        type: "dblclick",
+        target: this.quickInventory.slots[0]
+      })
+
+    } else if (e.which === Keycode.KEY_2) {
+      this.quickInventory.slots[1].dispatchEvent({
+        type: "dblclick",
+        target: this.quickInventory.slots[1]
+      })
+
+    } else if (e.which === Keycode.KEY_3) {
+      this.quickInventory.slots[2].dispatchEvent({
+        type: "dblclick",
+        target: this.quickInventory.slots[2]
+      })
+
+    } else if (e.which === Keycode.KEY_4) {
+      this.quickInventory.slots[3].dispatchEvent({
+        type: "dblclick",
+        target: this.quickInventory.slots[3]
+      })
+
+    } else if (e.which === Keycode.KEY_5) {
+      this.quickInventory.slots[4].dispatchEvent({
+        type: "dblclick",
+        target: this.quickInventory.slots[4]
+      })
+
+    } else if (e.which === Keycode.KEY_6) {
+      this.quickInventory.slots[5].dispatchEvent({
+        type: "dblclick",
+        target: this.quickInventory.slots[5]
+      })
+
     }
   }
 

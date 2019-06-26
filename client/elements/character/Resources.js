@@ -19,8 +19,8 @@ export class Resources {
         new THREE.Color(0xe8c498), // white
         new THREE.Color(0xcca874), // brown-1
         new THREE.Color(0xb49054), // brown-2
-        // new THREE.Color(0x9c7c3c), // black
-        new THREE.Color(0x241400), // black
+        new THREE.Color(0x9c7c3c), // black
+        // new THREE.Color(0x241400), // black
       ],
       hair: [
         new THREE.Color(0xd0c01c), // yellow
