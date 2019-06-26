@@ -125,9 +125,21 @@ export class Player extends Unit {
     this.purchase.set(items);
 
     // populate item prices
-    for (let itemId in this.purchase.slots) {
-      this.purchase.slots[itemId].price = this.purchase.slots[itemId].getPrice();
-    }
+    [
+      this.purchase,
+      this.inventory,
+      this.quickInventory,
+      this.equipedItems
+    ].forEach(inventory => {
+      for (let itemId in inventory.slots) {
+        if (inventory === this.purchase) {
+          inventory.slots[itemId].price = inventory.slots[itemId].getPrice();
+
+        } else {
+          inventory.slots[itemId].price = inventory.slots[itemId].getSellPrice();
+        }
+      }
+    });
 
     this.state.events.emit("send", this, ["trading-items", this.purchase.slots]);
   }
@@ -171,11 +183,11 @@ export class Player extends Unit {
 
   inventorySell(fromInventoryType: InventoryType, itemId: string) {
     const fromInventory = this[fromInventoryType];
-    const item = fromInventory.getItem(itemId);
+    const item: Item = fromInventory.getItem(itemId);
 
     if (item && fromInventory !== this.purchase) {
       // selling price is half of buying price
-      const price = Math.floor(item.getPrice() / 3);
+      const price = item.getSellPrice();
       this.state.createTextEvent("+" + price, this.position, 'yellow', 100);
 
       this.gold += price;
@@ -218,10 +230,16 @@ export class Player extends Unit {
   drop () {
     if (!this.state) { return; }
 
-    if (this.state.isPVPAllowed) {
-      // players will drop a random equipped item, if PVP is allowed.
-      this.willDropItem = this.equipedItems.dropRandomItem();
+    // if (this.state.isPVPAllowed) {
+    // }
+
+    this.willDropItem = this.equipedItems.dropRandomItem();
+
+    if (this.willDropItem) {
+      this.willDropItem.position.set(this.position);
+      this.state.addEntity(this.willDropItem);
     }
+
   }
 
   dropItem(inventoryType: InventoryType, itemId: string) {

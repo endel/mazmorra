@@ -38,6 +38,10 @@ export abstract class Item extends Entity {
     this.modifiers.push(mod);
   }
 
+  getSellPrice() {
+    return Math.floor(this.getPrice() / 3);;
+  }
+
   getPrice() {
     let price = 0;
 

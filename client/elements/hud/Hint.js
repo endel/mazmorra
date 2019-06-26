@@ -73,17 +73,25 @@ ${(
     "<p>" +
       item.modifiers.map(modifier => {
         const equipedItemModifier = equipedItems[item.slotName] && equipedItems[item.slotName].modifiers.filter(mod => mod.attr === modifier.attr)[0];
-        const equipedModifier = (!equipedItemModifier)
+        let equipedModifier = (!equipedItemModifier)
           ? modifier.modifier
           : equipedItemModifier.modifier;
 
+        let modifierValue = modifier.modifier;
+
+        // calculate damage modifier based on `primaryAttribute`
+        if (modifier.attr === "damage" && item.damageAttribute) {
+          equipedModifier += player.userData.attributes[player.userData.primaryAttribute];
+          modifierValue += player.userData.attributes[item.damageAttribute];
+        }
+
         return `
-          <strong>${humanize(modifier.attr)}</strong> ${(modifier.modifier > 0) ? "+" : ""}
-          ${modifier.modifier}
-          ${(modifier.modifier > equipedModifier)
-            ? `<small class="increase">(+ ${(modifier.modifier - equipedModifier).toFixed(2)})</small>`
-            : (modifier.modifier < equipedModifier)
-              ? `<small class="decrease">(- ${(Math.abs(modifier.modifier - equipedModifier)).toFixed(2)})</small>`
+          <strong>${humanize(modifier.attr)}</strong> ${(modifierValue > 0) ? "+" : ""}
+          ${modifierValue}
+          ${(modifierValue > equipedModifier)
+            ? `<small class="increase">(+ ${(modifierValue - equipedModifier).toFixed(2)})</small>`
+            : (modifierValue < equipedModifier)
+              ? `<small class="decrease">(- ${(Math.abs(modifierValue - equipedModifier)).toFixed(2)})</small>`
               : "" }
         `;
       }).join("<br />") +
