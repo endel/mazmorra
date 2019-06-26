@@ -40,7 +40,8 @@ export interface DungeonRoom {
   branches: Point[];
 }
 
-interface ItemRarity {
+interface ItemDropOptions {
+  progress?: number,
   isRare?: boolean,
   isMagical?: boolean,
 }
@@ -459,18 +460,19 @@ export class RoomUtils {
 
       // common item
       } else if (chance < 0.99) {
-        const rarity: ItemRarity = {
+        const itemDropOptions: ItemDropOptions = {
+          progress: this.state.progress,
           isRare: (chance >= 0.95),
           isMagical: (chance >= 0.985)
         }
 
         const itemType = this.rand.intBetween(0, 5);
 
-        if (rarity.isRare) {
+        if (itemDropOptions.isRare) {
           console.log("DROP RARE ITEM!");
         }
 
-        if (rarity.isMagical) {
+        if (itemDropOptions.isMagical) {
           console.log("AND IT'S MAGICAL!!");
         }
 
@@ -480,23 +482,23 @@ export class RoomUtils {
             break;
 
           case 1:
-            itemToDrop = this.createShield(rarity);
+            itemToDrop = this.createShield(itemDropOptions);
             break;
 
           case 2:
-            itemToDrop = this.createWeapon(undefined, rarity);
+            itemToDrop = this.createWeapon(undefined, itemDropOptions);
             break;
 
           case 3:
-            itemToDrop = this.createBoot(rarity);
+            itemToDrop = this.createBoot(itemDropOptions);
             break;
 
           case 4:
-            itemToDrop = this.createHelmet(rarity);
+            itemToDrop = this.createHelmet(itemDropOptions);
             break;
 
           case 5:
-            itemToDrop = this.createArmor(rarity);
+            itemToDrop = this.createArmor(itemDropOptions);
             break;
         }
 
@@ -522,7 +524,7 @@ export class RoomUtils {
     return attributes[this.rand.intBetween(0, 2)] as Attribute;
   }
 
-  createWeapon(damageAttribute?: Attribute, rarity: ItemRarity = {}) {
+  createWeapon(damageAttribute?: Attribute, itemDropOptions: ItemDropOptions = {}) {
     const item = new WeaponItem();
     item.damageAttribute = damageAttribute || this.getRandomPrimaryAttribute();
 
@@ -533,7 +535,7 @@ export class RoomUtils {
     let hasAttackDistance: boolean;
 
     if (item.damageAttribute === "strength") {
-      ({ ratio, type, goodness } = this.getItemGoodness(rarity, [
+      ({ ratio, type, goodness } = this.getItemGoodness(itemDropOptions, [
         helpers.ENTITIES.WEAPON_1,
         helpers.ENTITIES.WEAPON_2,
         helpers.ENTITIES.WEAPON_3,
@@ -549,7 +551,7 @@ export class RoomUtils {
       hasAttackDistance = false;
 
     } else if (item.damageAttribute === "agility") {
-      ({ ratio, type, goodness } = this.getItemGoodness(rarity, [
+      ({ ratio, type, goodness } = this.getItemGoodness(itemDropOptions, [
         helpers.ENTITIES.BOW_1,
         helpers.ENTITIES.BOW_2,
         helpers.ENTITIES.BOW_3,
@@ -561,7 +563,7 @@ export class RoomUtils {
     } else if (item.damageAttribute === "intelligence") {
       item.manaCost = 2;
 
-      ({ ratio, type, goodness } = this.getItemGoodness(rarity, [
+      ({ ratio, type, goodness } = this.getItemGoodness(itemDropOptions, [
         helpers.ENTITIES.WAND_1,
         helpers.ENTITIES.WAND_2,
         helpers.ENTITIES.WAND_3,
@@ -591,10 +593,10 @@ export class RoomUtils {
     return item;
   }
 
-  createShield (rarity: ItemRarity) {
+  createShield (itemDropOptions: ItemDropOptions) {
     const item = new ShieldItem();
 
-    const { ratio, type, goodness } = this.getItemGoodness(rarity, [
+    const { ratio, type, goodness } = this.getItemGoodness(itemDropOptions, [
       helpers.ENTITIES.SHIELD_1,
       helpers.ENTITIES.SHIELD_2,
       helpers.ENTITIES.SHIELD_3,
@@ -633,10 +635,10 @@ export class RoomUtils {
     return item;
   }
 
-  createBoot(rarity: ItemRarity) {
+  createBoot(itemDropOptions: ItemDropOptions) {
     const item = new BootItem();
 
-    const { ratio, type, goodness } = this.getItemGoodness(rarity, [
+    const { ratio, type, goodness } = this.getItemGoodness(itemDropOptions, [
       helpers.ENTITIES.BOOTS_1,
       helpers.ENTITIES.BOOTS_2,
       helpers.ENTITIES.BOOTS_3,
@@ -663,10 +665,10 @@ export class RoomUtils {
     return item;
   }
 
-  createHelmet(rarity: ItemRarity) {
+  createHelmet(itemDropOptions: ItemDropOptions) {
     const item = new HelmetItem();
 
-    const { ratio, type, goodness } = this.getItemGoodness(rarity, [
+    const { ratio, type, goodness } = this.getItemGoodness(itemDropOptions, [
       helpers.ENTITIES.HELMET_1,
       helpers.ENTITIES.HELMET_2,
       helpers.ENTITIES.HELMET_3,
@@ -715,12 +717,12 @@ export class RoomUtils {
     return item;
   }
 
-  createArmor(rarity: ItemRarity) {
+  createArmor(itemDropOptions: ItemDropOptions) {
     const item = new ArmorItem();
 
     // (old, used to be): 0.1 ~ 0.2
     // (now): 1 ~ 15
-    const { ratio, type, goodness } = this.getItemGoodness(rarity, [
+    const { ratio, type, goodness } = this.getItemGoodness(itemDropOptions, [
       helpers.ENTITIES.ARMOR_1,
       helpers.ENTITIES.ARMOR_2,
       helpers.ENTITIES.ARMOR_3,
@@ -742,19 +744,21 @@ export class RoomUtils {
     return item;
   }
 
-  getItemGoodness(rarity: ItemRarity, typeOptions: string[]) {
+  getItemGoodness(itemDropOptions: ItemDropOptions, typeOptions: string[]) {
+    // (No limits!)
+    // const maxGoodness = typeOptions.length - 1;
+
+    const progressForMaxGoodness = 60;
+    typeOptions.length
+    const maxGoodness = typeOptions.length - 1;
+
     let difficulty = 2;
 
     let ratio: number = 1;
     let goodness = 0;
 
-    //
-    // TODO:
-    // check state.progress
-    //
-
     while (
-      goodness < typeOptions.length - 1 &&
+      goodness < maxGoodness &&
       this.rand.intBetween(0, difficulty) === 0
     )  {
       ratio += this.rand.floatBetween(0, 1);
@@ -762,10 +766,10 @@ export class RoomUtils {
       // difficulty++;
     }
 
-    if (rarity.isRare) {
+    if (itemDropOptions.isRare) {
     }
 
-    if (rarity.isMagical) {
+    if (itemDropOptions.isMagical) {
     }
 
     return { ratio, goodness, type: typeOptions[goodness] };

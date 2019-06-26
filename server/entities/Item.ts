@@ -50,7 +50,8 @@ export abstract class Item extends Entity {
         price += this.modifiers[i].modifier * 2;
 
       } else if (this.modifiers[i].attr == "xp") {
-        price += this.modifiers[i].modifier * 50;
+        const num = parseInt(this.type[this.type.length - 1]);
+        price += (this.modifiers[i].modifier * 50) - (Math.pow(num, 2) * 30);
 
       } else if (
         this.modifiers[i].attr == "strength" ||

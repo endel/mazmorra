@@ -50,11 +50,11 @@ export class NPC extends Player {
 
     } else if (this.kind === "merchant") {
       player.setTradingItems([
-        this.state.roomUtils.createArmor(),
-        this.state.roomUtils.createBoot(),
-        this.state.roomUtils.createHelmet(),
-        this.state.roomUtils.createShield(),
-        this.state.roomUtils.createWeapon(player.primaryAttribute),
+        this.state.roomUtils.createArmor({ progress: player.latestProgress }),
+        this.state.roomUtils.createBoot({ progress: player.latestProgress }),
+        this.state.roomUtils.createHelmet({ progress: player.latestProgress }),
+        this.state.roomUtils.createShield({ progress: player.latestProgress }),
+        this.state.roomUtils.createWeapon(player.primaryAttribute, { progress: player.latestProgress }),
       ]);
 
     } else if (this.kind === "majesty") {
