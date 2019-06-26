@@ -20,6 +20,9 @@ router.post('/', jwtMiddleware, async (req, res) => {
 
   const primaryAttribute = primaryAttributes[req.body.klass];
 
+  // delete previous user's heroes.
+  await Hero.deleteMany({ userId: req.auth._id });
+
   res.json(await Hero.create({
     userId: req.auth._id,
 

@@ -51,6 +51,16 @@ class Login extends EventEmitter {
         e.preventDefault();
         this.emit('login', heroes[0]);
       });
+
+      this.credentials.querySelector("a.new-hero").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        if (confirm("You will lose your progress with current hero, proceed?")) {
+          this.emit('register', {
+            name: this.credentials.querySelector("div.register input").value || "Anonymous"
+          });
+        }
+      });
     }
   }
 
