@@ -766,7 +766,7 @@ export class RoomUtils {
       goodness < maxGoodness &&
       this.rand.intBetween(0, difficulty) === 0
     )  {
-      ratio += this.rand.floatBetween(0, 0.5);
+      ratio += this.rand.floatBetween(0.3, 0.5);
       goodness++;
       // difficulty++;
     }
