@@ -212,10 +212,11 @@ export class RoomUtils {
     // const chestKind = 'bucket';
     const chestKind = 'bucket';
 
-    this.addEntity(room, (position) => new Chest(position, chestKind))
-    this.addEntity(room, (position) => new Chest(position, chestKind))
-    this.addEntity(room, (position) => new Chest(position, chestKind))
-    this.addEntity(room, (position) => new Chest(position, chestKind))
+    // add up to 3 chests per room.
+    const numChests = this.rand.intBetween(1, 3);
+    for (let i = 0; i < numChests; i++) {
+      this.addEntity(room, (position) => new Chest(position, chestKind))
+    }
 
     // add a light pole!
     if (
@@ -395,7 +396,7 @@ export class RoomUtils {
 
     // TODO: generate better/normalized modififers.
     for (let property in modifiers) {
-      modifiers[property] += this.state.progress;
+      modifiers[property] += Math.floor(this.state.progress / 2);
     }
 
     const enemy = new enemyKlass(type, baseAttributes, modifiers);
