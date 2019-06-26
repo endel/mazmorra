@@ -237,8 +237,7 @@ export class Player extends Unit {
     this.willDropItem = this.equipedItems.dropRandomItem();
 
     if (this.willDropItem) {
-      this.willDropItem.position.set(this.position);
-      this.state.addEntity(createItem(this.willDropItem));
+      this.state.addEntity(createItem(this.willDropItem, this.position));
     }
   }
 

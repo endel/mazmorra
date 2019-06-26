@@ -126,8 +126,8 @@ export class Unit extends Entity {
     this.attributes.agility = hero.agility || 1;
     this.attributes.intelligence = hero.intelligence || 1;
 
-    this.baseHp = (hero.userId) ? 10 : 1;
-    this.baseMp = (hero.userId) ? 10 : 1;
+    this.baseHp = (hero.userId) ? 10 : 0;
+    this.baseMp = (hero.userId) ? 10 : 0;
 
     this.recalculateStatsModifiers();
 

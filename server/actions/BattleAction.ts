@@ -69,8 +69,8 @@ export class BattleAction extends Action {
       // reduce armor from damage
       damage -= this.defender.getArmor();
 
-      // prevent negative damage
-      if (damage < 0) { damage = 0; }
+      // prevent negative damage, 1 is the minimum amount of damage!
+      if (damage <= 0) { damage = 1; }
 
       if (this.critical) {
         damage *= this.attacker.criticalBonus;

@@ -397,11 +397,6 @@ export class RoomUtils {
       baseAttributes[baseAttributes.primaryAttribute] += 1;
     }
 
-    // TODO: generate better/normalized modififers.
-    for (let property in modifiers) {
-      modifiers[property] += Math.floor(this.state.progress / 2);
-    }
-
     const enemy = new enemyKlass(type, baseAttributes, modifiers);
     enemy.state = this.state;
 
