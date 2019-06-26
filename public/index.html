@@ -11,51 +11,54 @@
 
     <meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <meta property="og:url"                content="http://alpha.mazmorra.io" />
+    <meta property="og:url"                content="https://mazmorra.io" />
     <meta property="og:type"               content="website" />
     <meta property="og:title"              content="mazmorra.io - roguelike & hack'n slash multiplayer browser game" />
     <meta property="og:description"        content="Online hack'n slash multiplayer roguelike for the browser" />
-    <meta property="og:image"              content="http://alpha.mazmorra.io/fb-share.png" />
+    <meta property="og:image"              content="https://mazmorra.io/fb-share.png" />
 
     <!-- Place favicon.ico in the root directory -->
     <link rel="icon" sizes="16x16" type="image/x-icon" href="images/sprites/favicon.png">
 
     <link rel="stylesheet" href="style.css">
 
-      <script>
-        var aiptag = aiptag || {};
-        aiptag.cmd = aiptag.cmd || [];
-        aiptag.cmd.display = aiptag.cmd.display || []; aiptag.cmd.player = aiptag.cmd.player || [];
-        // Show GDPR consent tool
-        aiptag.gdprShowConsentTool = true;
-        // If you use your own GDPR consent tool please set aiptag.gdprConsent = false; if an EU user has declined or not yet accepted marketing cookies, for users outside the EU or for users that accepted the GDPR please use aiptag.gdprConsent = true;
+    <!--
+    <script>
+      var aiptag = aiptag || {};
+      aiptag.cmd = aiptag.cmd || [];
+      aiptag.cmd.display = aiptag.cmd.display || []; aiptag.cmd.player = aiptag.cmd.player || [];
+      // Show GDPR consent tool
+      aiptag.gdprShowConsentTool = true;
+      // If you use your own GDPR consent tool please set aiptag.gdprConsent = false; if an EU user has declined or not yet accepted marketing cookies, for users outside the EU or for users that accepted the GDPR please use aiptag.gdprConsent = true;
 
-        aiptag.cmd.player.push(function () {
-          adplayer = new aipPlayer({
-            AD_WIDTH: 960,
-            AD_HEIGHT: 540,
-            AD_FULLSCREEN: true,
-            AD_CENTERPLAYER: false,
-            LOADING_TEXT: 'loading advertisement',
-            PREROLL_ELEM: function () { return document.getElementById('preroll') },
-            AIP_COMPLETE: function () {
-              /*******************
-               ***** WARNING *****
-              *******************
-              Please do not remove the PREROLL_ELEM
-              from the page, it will be hidden automaticly.
-              If you do want to remove it use the AIP_REMOVE callback.
-              */
-              window.adPrerollComplete();
-            },
-            AIP_REMOVE: function () {
-              // Here it's save to remove the PREROLL_ELEM from the page.
-              // But it's not necessary.
-            }
-          });
+      aiptag.cmd.player.push(function () {
+        adplayer = new aipPlayer({
+          AD_WIDTH: 960,
+          AD_HEIGHT: 540,
+          AD_FULLSCREEN: true,
+          AD_CENTERPLAYER: false,
+          LOADING_TEXT: 'loading advertisement',
+          PREROLL_ELEM: function () { return document.getElementById('preroll') },
+          AIP_COMPLETE: function () {
+            /*******************
+             ***** WARNING *****
+            *******************
+            Please do not remove the PREROLL_ELEM
+            from the page, it will be hidden automaticly.
+            If you do want to remove it use the AIP_REMOVE callback.
+            */
+            window.adPrerollComplete();
+          },
+          AIP_REMOVE: function () {
+            // Here it's save to remove the PREROLL_ELEM from the page.
+            // But it's not necessary.
+          }
         });
-      </script>
-      <script async src="//api.adinplay.com/libs/aiptag/pub/CRR/mazmorra.io/tag.min.js"></script>
+      });
+    </script>
+    <script async src="//api.adinplay.com/libs/aiptag/pub/CRR/mazmorra.io/tag.min.js"></script>
+    -->
+
   </head>
   <body class="loading">
     <!--[if lt IE 10]>
@@ -112,17 +115,13 @@
 
     <section id="credentials" class="modal active">
 
-      <!-- Adinplay banners -->
+      <!-- Adinplay banners
       <div id='mazmorra-io_300x250' class="ad-left">
         <script type='text/javascript'>
           aiptag.cmd.display.push(function() { aipDisplayTag.display('mazmorra-io_300x250'); });
         </script>
       </div>
-      <div id='mazmorra-io_300x250' class="ad-right">
-        <script type='text/javascript'>
-          aiptag.cmd.display.push(function() { aipDisplayTag.display('mazmorra-io_300x250'); });
-        </script>
-      </div>
+    -->
 
       <h1><img src="images/logo.png" alt="Mazmorra.io" /></h1>
 
