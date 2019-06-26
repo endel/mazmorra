@@ -79,8 +79,7 @@ export class BattleAction extends Action {
       this.damage = Math.floor(damage);
 
       // Defender take the damage
-      this.defender.hp.current -= this.damage;
-      // this.defender.takeDamage(this)
+      this.defender.takeDamage(this)
 
       // make defender move to attacker, if he's not doing anything.
       if (
@@ -97,7 +96,7 @@ export class BattleAction extends Action {
       }
 
       if (!this.defender.isAlive) {
-        this.defender.onDie()
+        this.defender.onDie();
         this.attacker.onKill(this.defender)
       }
 

@@ -106,6 +106,7 @@ export class Unit extends Entity {
   };
 
   willDropItem: Item;
+  damageTakenFrom = new Set<Unit>();
 
   constructor(id?: string, hero: Partial<DBHero> = {}, state?) {
     super(id)
@@ -292,27 +293,40 @@ export class Unit extends Entity {
     return this.action && (this.action instanceof BattleAction && this.action.defender === unit)
   }
 
-  // takeDamage (battleAction: BattleAction) {
-  //   var damageTaken = battleAction.damage
+  takeDamage (battleAction: BattleAction) {
+    var damageTaken = battleAction.damage
 
-  //   // TODO: consider attributes to reduce damage
-  //   this.hp.current -= damageTaken
+    this.hp.current -= damageTaken;
+    this.damageTakenFrom.add(battleAction.attacker);
 
-  //   return damageTaken
-  // }
+    return damageTaken;
+  }
 
   onDie () {
     this.walkable = true;
+
+    // distribute XP among players.
+    const xpWorth = this.getXPWorth() / this.damageTakenFrom.size;
+
+    const damageTakenFrom = this.damageTakenFrom.values();
+    let unit: Unit;
+
+    console.log("this.damageTakenFrom.size", this.damageTakenFrom.size);
+    console.log("xpWorth", xpWorth);
+
+    while (unit = damageTakenFrom.next().value) {
+      // compute experience this unit received by killing another one
+      // var xp =  unit.lvl / (this.lvl / 2)
+      console.log("increment in:", xpWorth / unit.lvl);
+      unit.xp.increment(xpWorth / unit.lvl);
+    }
+
     this.drop();
   }
 
   onKill (unit: Unit) {
     // clear pending movement
     this.position.pending = [];
-
-    // compute experience this unit received by killing another one
-    // var xp =  unit.lvl / (this.lvl / 2)
-    this.xp.increment(unit.lvl / (this.lvl / 4));
   }
 
   updateDirection(x: number, y: number) {
@@ -338,6 +352,21 @@ export class Unit extends Entity {
 
   get xpMax () {
     return this.lvl * 50;
+  }
+
+  getXPWorth () {
+    let worth = 0;
+
+    const attributes = this.attributes.toJSON();
+    for (let attr in attributes) {
+      worth += attributes[attr];
+    }
+
+    for (let attrModifier in this.statsModifiers) {
+      worth += this.statsModifiers[attrModifier];
+    }
+
+    return worth * this.lvl;
   }
 
   onLevelUp () {
