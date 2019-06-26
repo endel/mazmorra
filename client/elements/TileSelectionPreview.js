@@ -1,4 +1,3 @@
-import { humanize } from "../utils";
 
 export default class TileSelectionPreview extends THREE.Object3D {
 
@@ -44,7 +43,7 @@ export default class TileSelectionPreview extends THREE.Object3D {
           , lastLabel = availableLabels.length-1
 
         if (lastLabel !== -1) {
-          this.setLabel(humanize(availableLabels[lastLabel].label));
+          this.setLabel(availableLabels[lastLabel].label);
         }
 
         target.forEach(e => e.__ENTITY__ && e.__ENTITY__.emit('mouseover', this))
