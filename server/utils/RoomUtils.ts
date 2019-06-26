@@ -592,7 +592,7 @@ export class RoomUtils {
     if (hasAttackDistance) {
       item.addModifier({
         attr: "attackDistance",
-        modifier: this.rand.intBetween(goodness, goodness + 1)
+        modifier: this.rand.intBetween(goodness + 1, goodness + 2)
       });
     }
 
