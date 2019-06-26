@@ -31,6 +31,7 @@ import { Diamond } from "../entities/items/Diamond";
 import { Scroll } from "../entities/items/consumable/Scroll";
 import { MONSTER_BASE_ATTRIBUTES, isBossMap, MapKind } from "./ProgressionConfig";
 import { ConsumableItem } from "../entities/items/ConsumableItem";
+import { EquipableItem } from "../entities/items/EquipableItem";
 
 export interface DungeonRoom {
   position: Point;
@@ -392,7 +393,10 @@ export class RoomUtils {
       baseAttributes[baseAttributes.primaryAttribute] += 1;
     }
 
-    // TODO: generate better modififers.
+    // TODO: generate better/normalized modififers.
+    for (let property in modifiers) {
+      modifiers[property] += this.state.progress;
+    }
 
     const enemy = new enemyKlass(type, baseAttributes, modifiers);
     enemy.state = this.state;
@@ -467,15 +471,6 @@ export class RoomUtils {
         }
 
         const itemType = this.rand.intBetween(0, 5);
-
-        if (itemDropOptions.isRare) {
-          console.log("DROP RARE ITEM!");
-        }
-
-        if (itemDropOptions.isMagical) {
-          console.log("AND IT'S MAGICAL!!");
-        }
-
         switch (itemType) {
           case 0:
             itemToDrop = new Scroll();
@@ -500,6 +495,16 @@ export class RoomUtils {
           case 5:
             itemToDrop = this.createArmor(itemDropOptions);
             break;
+        }
+
+        if (itemDropOptions.isRare) {
+          console.log("DROP RARE ITEM!");
+          (itemToDrop as EquipableItem).isRare = true;
+        }
+
+        if (itemDropOptions.isMagical) {
+          console.log("AND IT'S MAGICAL!!");
+          (itemToDrop as EquipableItem).isMagical = true;
         }
 
         // if (itemToDrop instanceof EquipableItem) {
@@ -733,7 +738,7 @@ export class RoomUtils {
 
     item.type = type;
 
-    let minArmor = goodness;
+    let minArmor = goodness / 2;
     let maxArmor = minArmor + ratio * 2;
 
     item.addModifier({
@@ -748,9 +753,10 @@ export class RoomUtils {
     // (No limits!)
     // const maxGoodness = typeOptions.length - 1;
 
-    const progressForMaxGoodness = 60;
-    typeOptions.length
-    const maxGoodness = typeOptions.length - 1;
+    const progressForMaxGoodness = 50;
+
+    const maxGoodnessRatio = Math.min(itemDropOptions.progress / progressForMaxGoodness, 1);
+    const maxGoodness = Math.ceil(maxGoodnessRatio * (typeOptions.length - 1));
 
     let difficulty = 2;
 
@@ -761,15 +767,19 @@ export class RoomUtils {
       goodness < maxGoodness &&
       this.rand.intBetween(0, difficulty) === 0
     )  {
-      ratio += this.rand.floatBetween(0, 1);
+      ratio += this.rand.floatBetween(0, 0.5);
       goodness++;
       // difficulty++;
     }
 
+    console.log({ maxGoodnessRatio, maxGoodness, typeOptions, goodness });
+
     if (itemDropOptions.isRare) {
+      ratio += 0.5;
     }
 
     if (itemDropOptions.isMagical) {
+      ratio += 0.5;
     }
 
     return { ratio, goodness, type: typeOptions[goodness] };

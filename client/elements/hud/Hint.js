@@ -45,9 +45,15 @@ class Hint  {
 
     // <img src="images/sprites/items-${item.type}.png" width="${sprite.item.scale.x}" height="${sprite.item.scale.y}" />
 
+    //  class="${((item.isMagical) ? 'purple ' : "")}${((item.isRare) ? 'purple ' : "")}"
+
     return `
 <h2>
 ${humanize(item.type)}
+
+${(item.isRare) ? "(rare)" : ""}
+${(item.isMagical) ? "(magical) " : ""}
+
 ${(item.price !== undefined)
   ? `<small class="gold">(${item.price} gold)</small>`
   : ""}
