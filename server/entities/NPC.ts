@@ -4,7 +4,7 @@ import helpers from "../../shared/helpers";
 
 // Entities
 import { Player } from "./Player";
-import { Potion, POTION_1_MODIFIER, POTION_2_MODIFIER } from "./items/consumable/Potion";
+import { Potion, POTION_1_MODIFIER, POTION_2_MODIFIER, POTION_4_MODIFIER, POTION_3_MODIFIER } from "./items/consumable/Potion";
 import { Scroll } from "./items/consumable/Scroll";
 
 export class NPC extends Player {
@@ -46,34 +46,16 @@ export class NPC extends Player {
       const scroll = new Scroll();
       items.push(scroll);
 
-      player.purchase.clear();
-      player.purchase.set(items);
-
-      // populate item prices
-      for (let itemId in player.purchase.slots) {
-        player.purchase.slots[itemId].price = player.purchase.slots[itemId].getPrice();
-      }
-
-      state.events.emit("send", player, ["trading-items", player.purchase.slots]);
+      player.setTradingItems(items);
 
     } else if (this.kind === "merchant") {
-      const items = [
+      player.setTradingItems([
         this.state.roomUtils.createArmor(),
         this.state.roomUtils.createBoot(),
         this.state.roomUtils.createHelmet(),
         this.state.roomUtils.createShield(),
         this.state.roomUtils.createWeapon(player.primaryAttribute),
-      ];
-
-      player.purchase.clear();
-      player.purchase.set(items);
-
-      // populate item prices
-      for (let itemId in player.purchase.slots) {
-        player.purchase.slots[itemId].price = player.purchase.slots[itemId].getPrice();
-      }
-
-      state.events.emit("send", player, ["trading-items", player.purchase.slots]);
+      ]);
 
     } else if (this.kind === "majesty") {
       if (this.state.rand.intBetween(0, 5) === 0) {
@@ -82,19 +64,23 @@ export class NPC extends Player {
         setTimeout(() => {
           const items = [];
 
-          const potion = new Potion();
-          potion.addModifier({ attr: "xp", modifier: POTION_2_MODIFIER });
-          items.push(potion);
+          const potion1 = new Potion();
+          potion1.addModifier({ attr: "xp", modifier: POTION_1_MODIFIER });
+          items.push(potion1);
 
-          player.purchase.clear();
-          player.purchase.set(items);
+          const potion2 = new Potion();
+          potion2.addModifier({ attr: "xp", modifier: POTION_2_MODIFIER });
+          items.push(potion2);
 
-          // populate item prices
-          for (let itemId in player.purchase.slots) {
-            player.purchase.slots[itemId].price = player.purchase.slots[itemId].getPrice();
-          }
+          const potion3 = new Potion();
+          potion3.addModifier({ attr: "xp", modifier: POTION_3_MODIFIER });
+          items.push(potion3);
 
-          state.events.emit("send", player, ["trading-items", player.purchase.slots]);
+          const potion4 = new Potion();
+          potion4.addModifier({ attr: "xp", modifier: POTION_4_MODIFIER });
+          items.push(potion4);
+
+          player.setTradingItems(items);
         }, 1000);
 
       } else {

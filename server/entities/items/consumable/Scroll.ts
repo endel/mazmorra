@@ -39,4 +39,9 @@ export class Scroll extends CastableItem {
   // you cannot use this.
   use(player, state) { return false; }
 
+  getPrice() {
+    // TODO: differentiate prices from portals and other magic
+    return 50;
+  }
+
 }

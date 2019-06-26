@@ -206,11 +206,11 @@ export const MONSTER_BASE_ATTRIBUTES: {
     },
     modifiers: {
       damage: 5,
-      hp: 100
+      hp: 70
     },
     spawner: {
       type: 'spider',
-      lvl: 1
+      lvl: 2
     }
   },
 

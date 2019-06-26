@@ -120,6 +120,18 @@ export class Player extends Unit {
     }
   }
 
+  setTradingItems(items: Item[]) {
+    this.purchase.clear();
+    this.purchase.set(items);
+
+    // populate item prices
+    for (let itemId in this.purchase.slots) {
+      this.purchase.slots[itemId].price = this.purchase.slots[itemId].getPrice();
+    }
+
+    this.state.events.emit("send", this, ["trading-items", this.purchase.slots]);
+  }
+
   inventoryDrag(fromInventoryType: InventoryType, toInventoryType: InventoryType, itemId: string, switchItemId: string) {
     const fromInventory = this[fromInventoryType];
     const toInventory = this[toInventoryType]
@@ -163,7 +175,7 @@ export class Player extends Unit {
 
     if (item && fromInventory !== this.purchase) {
       // selling price is half of buying price
-      const price = Math.floor(item.getPrice() / 2);
+      const price = Math.floor(item.getPrice() / 3);
       this.state.createTextEvent("+" + price, this.position, 'yellow', 100);
 
       this.gold += price;

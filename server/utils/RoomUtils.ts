@@ -29,7 +29,7 @@ import { HelmetItem } from "../entities/items/equipable/HelmetItem";
 import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 import { Diamond } from "../entities/items/Diamond";
 import { Scroll } from "../entities/items/consumable/Scroll";
-import { MONSTER_BASE_ATTRIBUTES, isBossMap } from "./ProgressionConfig";
+import { MONSTER_BASE_ATTRIBUTES, isBossMap, MapKind } from "./ProgressionConfig";
 import { ConsumableItem } from "../entities/items/ConsumableItem";
 
 export interface DungeonRoom {
@@ -38,6 +38,11 @@ export interface DungeonRoom {
   tiles: any[];
   walls: any[];
   branches: Point[];
+}
+
+interface ItemRarity {
+  isRare?: boolean,
+  isMagical?: boolean,
 }
 
 export class RoomUtils {
@@ -52,13 +57,15 @@ export class RoomUtils {
   endRoom: DungeonRoom;
   endPosition: any;
 
+  hasFountain: boolean = false;
+
   constructor (rand, state, rooms: DungeonRoom[]) {
     this.rand = rand
     this.state = state
 
     this.rooms = rooms
 
-    this.cacheRoomData()
+    this.cacheRoomData();
 
     this.startRoom = this.rooms[0];
     this.endRoom = this.rooms[ this.rooms.length-1 ];
@@ -195,8 +202,6 @@ export class RoomUtils {
   populateRoom (room: DungeonRoom) {
     this.populateEnemies(room)
 
-    // this.populateAesthetics(room, Math.max(room.size.x, room.size.y) / 2)
-
     // if (this.rand.intBetween(0, 12) === 12) {
     //   this.addEntity(room, (position) => new Chest(position))
     // }
@@ -210,11 +215,35 @@ export class RoomUtils {
     this.addEntity(room, (position) => new Chest(position, chestKind))
     this.addEntity(room, (position) => new Chest(position, chestKind))
 
+    // add a light pole!
     if (
+      (
+        this.state.mapkind === MapKind.ROCK ||
+        this.state.mapkind === MapKind.ROCK_2 ||
+        this.state.mapkind === MapKind.CASTLE ||
+        this.state.mapkind === MapKind.INFERNO
+      ) &&
+      this.rand.intBetween(0, 1) === 0
+    ) {
+      this.addEntity(room, (position) => {
+        const lightPole = new Entity();
+        lightPole.type = helpers.ENTITIES.LIGHT;
+        lightPole.position.set(position);
+        return lightPole;
+      });
+    }
+
+    if (this.rand.intBetween(0, 1) === 0) {
+      this.addRandomAesthetics(room);
+    }
+
+    if (
+      !this.hasFountain &&
       this.state.progress % 3 === 0 && // fountains CAN appear only each 3 levels
       this.rand.intBetween(0, 6) === 6
     ) {
       this.addEntity(room, (position) => new Fountain(position))
+      this.hasFountain = true;
     }
 
     // if (this.hasPositionsRemaining(room)) {
@@ -343,7 +372,7 @@ export class RoomUtils {
 
   createEnemy(type: string, enemyKlass: new (...args: any[]) => Enemy, lvl?: number): Enemy {
     if (!lvl) {
-      const minLvl = Math.ceil(this.state.progress / 6);
+      const minLvl = Math.ceil(this.state.progress / 3);
       lvl = this.rand.intBetween(minLvl, minLvl + 1);
     }
 
@@ -370,15 +399,16 @@ export class RoomUtils {
     return enemy;
   }
 
-  populateAesthetics (room, qty) {
-    for (let i=0; i<qty; i++) {
-      if (!this.hasPositionsRemaining(room)) return
-
-      var entity = new Entity();
-      entity.type = helpers.ENTITIES.AESTHETICS
-      entity.position.set(this.getNextAvailablePosition(room));
-      this.state.addEntity(entity)
+  addRandomAesthetics (room) {
+    if (!this.hasPositionsRemaining(room)) {
+      return;
     }
+
+    var entity = new Entity();
+    entity.type = helpers.ENTITIES.AESTHETICS
+    entity.walkable = true;
+    entity.position.set(this.getNextAvailablePosition(room));
+    this.state.addEntity(entity)
   }
 
   addEntity (room: DungeonRoom, getEntity) {
@@ -429,12 +459,20 @@ export class RoomUtils {
 
       // common item
       } else if (chance < 0.99) {
-        const isRare = (chance >= 0.95);
-        const isMagical = (chance >= 0.985);
+        const rarity: ItemRarity = {
+          isRare: (chance >= 0.95),
+          isMagical: (chance >= 0.985)
+        }
+
         const itemType = this.rand.intBetween(0, 5);
 
-        if (isRare) { console.log("DROP RARE ITEM!"); }
-        if (isMagical) { console.log("AND IT'S MAGICAL!!"); }
+        if (rarity.isRare) {
+          console.log("DROP RARE ITEM!");
+        }
+
+        if (rarity.isMagical) {
+          console.log("AND IT'S MAGICAL!!");
+        }
 
         switch (itemType) {
           case 0:
@@ -442,23 +480,23 @@ export class RoomUtils {
             break;
 
           case 1:
-            itemToDrop = this.createShield();
+            itemToDrop = this.createShield(rarity);
             break;
 
           case 2:
-            itemToDrop = this.createWeapon();
+            itemToDrop = this.createWeapon(undefined, rarity);
             break;
 
           case 3:
-            itemToDrop = this.createBoot();
+            itemToDrop = this.createBoot(rarity);
             break;
 
           case 4:
-            itemToDrop = this.createHelmet();
+            itemToDrop = this.createHelmet(rarity);
             break;
 
           case 5:
-            itemToDrop = this.createArmor();
+            itemToDrop = this.createArmor(rarity);
             break;
         }
 
@@ -484,72 +522,253 @@ export class RoomUtils {
     return attributes[this.rand.intBetween(0, 2)] as Attribute;
   }
 
-  createWeapon(damageAttribute?: Attribute) {
+  createWeapon(damageAttribute?: Attribute, rarity: ItemRarity = {}) {
     const item = new WeaponItem();
     item.damageAttribute = damageAttribute || this.getRandomPrimaryAttribute();
 
+    let ratio: number;
+    let type: string;
+    let goodness: number;
+
+    let hasAttackDistance: boolean;
+
     if (item.damageAttribute === "strength") {
-      item.type = helpers.ENTITIES.WEAPON_1;
+      ({ ratio, type, goodness } = this.getItemGoodness(rarity, [
+        helpers.ENTITIES.WEAPON_1,
+        helpers.ENTITIES.WEAPON_2,
+        helpers.ENTITIES.WEAPON_3,
+        helpers.ENTITIES.WEAPON_4,
+        helpers.ENTITIES.WEAPON_5,
+        helpers.ENTITIES.WEAPON_6,
+        helpers.ENTITIES.WEAPON_7,
+        helpers.ENTITIES.WEAPON_8,
+        helpers.ENTITIES.WEAPON_9,
+        helpers.ENTITIES.WEAPON_10,
+      ]));
+
+      hasAttackDistance = false;
 
     } else if (item.damageAttribute === "agility") {
-      item.type = helpers.ENTITIES.BOW_1;
+      ({ ratio, type, goodness } = this.getItemGoodness(rarity, [
+        helpers.ENTITIES.BOW_1,
+        helpers.ENTITIES.BOW_2,
+        helpers.ENTITIES.BOW_3,
+        helpers.ENTITIES.BOW_4,
+      ]));
 
-      const attackDistance = this.rand.intBetween(1, 2);
-      item.addModifier({ attr: "attackDistance", modifier: attackDistance });
+      hasAttackDistance = true;
 
     } else if (item.damageAttribute === "intelligence") {
-      item.type = helpers.ENTITIES.WAND_1;
       item.manaCost = 2;
 
-      const attackDistance = this.rand.intBetween(1, 2);
-      item.addModifier({ attr: "attackDistance", modifier: attackDistance });
+      ({ ratio, type, goodness } = this.getItemGoodness(rarity, [
+        helpers.ENTITIES.WAND_1,
+        helpers.ENTITIES.WAND_2,
+        helpers.ENTITIES.WAND_3,
+        helpers.ENTITIES.WAND_4,
+      ]));
+
+      hasAttackDistance = true;
     }
 
-    const modifier = this.rand.intBetween(1, 2);
-    item.addModifier({ attr: "damage", modifier });
+    item.type = type;
+
+    let minDamage = goodness + 1;
+    let maxDamage = minDamage * (ratio * 2);
+
+    item.addModifier({
+      attr: "damage",
+      modifier: this.rand.intBetween(minDamage, maxDamage)
+    });
+
+    if (hasAttackDistance) {
+      item.addModifier({
+        attr: "attackDistance",
+        modifier: this.rand.intBetween(goodness, goodness + 1)
+      });
+    }
 
     return item;
   }
 
-  createShield () {
+  createShield (rarity: ItemRarity) {
     const item = new ShieldItem();
-    item.type = helpers.ENTITIES.SHIELD_1;
 
-    const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
-    item.addModifier({ attr: "armor", modifier });
+    const { ratio, type, goodness } = this.getItemGoodness(rarity, [
+      helpers.ENTITIES.SHIELD_1,
+      helpers.ENTITIES.SHIELD_2,
+      helpers.ENTITIES.SHIELD_3,
+      helpers.ENTITIES.SHIELD_4,
+      helpers.ENTITIES.SHIELD_5,
+      helpers.ENTITIES.SHIELD_6,
+      helpers.ENTITIES.SHIELD_7,
+      helpers.ENTITIES.SHIELD_8,
+      helpers.ENTITIES.SHIELD_9,
+      helpers.ENTITIES.SHIELD_10,
+      helpers.ENTITIES.SHIELD_11,
+      helpers.ENTITIES.SHIELD_12,
+      helpers.ENTITIES.SHIELD_13,
+      helpers.ENTITIES.SHIELD_14,
+      helpers.ENTITIES.SHIELD_15,
+      helpers.ENTITIES.SHIELD_16,
+      helpers.ENTITIES.SHIELD_17,
+      helpers.ENTITIES.SHIELD_18,
+      helpers.ENTITIES.SHIELD_19,
+      helpers.ENTITIES.SHIELD_20,
+      helpers.ENTITIES.SHIELD_21,
+      helpers.ENTITIES.SHIELD_22,
+    ]);
+
+    item.type = type;
+
+    let minArmor = goodness / 2;
+    let maxArmor = minArmor + ratio * 2;
+
+    item.addModifier({
+      attr: "armor",
+      modifier: Math.round(this.rand.floatBetween(minArmor, maxArmor) * 100) / 100
+    });
+
 
     return item;
   }
 
-  createBoot() {
+  createBoot(rarity: ItemRarity) {
     const item = new BootItem();
-    item.type = helpers.ENTITIES.BOOTS_1;
 
-    const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
-    item.addModifier({ attr: "armor", modifier });
-    item.addModifier({ attr: "movementSpeed", modifier: 5 });
+    const { ratio, type, goodness } = this.getItemGoodness(rarity, [
+      helpers.ENTITIES.BOOTS_1,
+      helpers.ENTITIES.BOOTS_2,
+      helpers.ENTITIES.BOOTS_3,
+      helpers.ENTITIES.BOOTS_4,
+      helpers.ENTITIES.BOOTS_5,
+      helpers.ENTITIES.BOOTS_6,
+    ]);
+
+    item.type = type;
+
+    let minArmor = (goodness / 2);
+    let maxArmor = minArmor + ratio * 2;
+
+    item.addModifier({
+      attr: "armor",
+      modifier: Math.round(this.rand.floatBetween(minArmor, maxArmor) * 100) / 100
+    });
+
+    item.addModifier({
+      attr: "movementSpeed",
+      modifier: this.rand.intBetween(goodness, goodness + Math.ceil(ratio * 3))
+    });
 
     return item;
   }
 
-  createHelmet() {
+  createHelmet(rarity: ItemRarity) {
     const item = new HelmetItem();
-    item.type = helpers.ENTITIES.HELMET_1;
 
-    const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
-    item.addModifier({ attr: "armor", modifier });
+    const { ratio, type, goodness } = this.getItemGoodness(rarity, [
+      helpers.ENTITIES.HELMET_1,
+      helpers.ENTITIES.HELMET_2,
+      helpers.ENTITIES.HELMET_3,
+      helpers.ENTITIES.HELMET_4,
+      helpers.ENTITIES.HELMET_5,
+      helpers.ENTITIES.HELMET_6,
+      helpers.ENTITIES.HELMET_7,
+      helpers.ENTITIES.HELMET_8,
+      helpers.ENTITIES.HELMET_9,
+      helpers.ENTITIES.HELMET_10,
+      helpers.ENTITIES.HELMET_11,
+      helpers.ENTITIES.HELMET_12,
+      helpers.ENTITIES.HELMET_13,
+      helpers.ENTITIES.HELMET_14,
+      helpers.ENTITIES.HELMET_15,
+      helpers.ENTITIES.HELMET_16,
+      helpers.ENTITIES.HELMET_17,
+      helpers.ENTITIES.HELMET_18,
+      helpers.ENTITIES.HELMET_19,
+      helpers.ENTITIES.HELMET_20,
+      helpers.ENTITIES.HELMET_21,
+      helpers.ENTITIES.HELMET_22,
+      helpers.ENTITIES.HELMET_23,
+      helpers.ENTITIES.HELMET_24,
+      helpers.ENTITIES.HELMET_25,
+      helpers.ENTITIES.HELMET_26,
+      helpers.ENTITIES.HELMET_27,
+      helpers.ENTITIES.HELMET_28,
+      helpers.ENTITIES.HELMET_29,
+      helpers.ENTITIES.HELMET_30,
+      helpers.ENTITIES.HELMET_31,
+      helpers.ENTITIES.HELMET_32,
+      helpers.ENTITIES.HELMET_33,
+    ]);
+
+    item.type = type;
+
+    let minArmor = (goodness / 3);
+    let maxArmor = minArmor + ratio * 2;
+
+    item.addModifier({
+      attr: "armor",
+      modifier: Math.round(this.rand.floatBetween(minArmor, maxArmor) * 100) / 100
+    });
 
     return item;
   }
 
-  createArmor() {
+  createArmor(rarity: ItemRarity) {
     const item = new ArmorItem();
-    item.type = helpers.ENTITIES.ARMOR_1;
 
-    const modifier = Math.round(this.rand.floatBetween(0.01, 0.2) * 100) / 100;
-    item.addModifier({ attr: "armor", modifier });
+    // (old, used to be): 0.1 ~ 0.2
+    // (now): 1 ~ 15
+    const { ratio, type, goodness } = this.getItemGoodness(rarity, [
+      helpers.ENTITIES.ARMOR_1,
+      helpers.ENTITIES.ARMOR_2,
+      helpers.ENTITIES.ARMOR_3,
+      helpers.ENTITIES.ARMOR_4,
+      helpers.ENTITIES.ARMOR_5,
+      helpers.ENTITIES.ARMOR_6,
+    ]);
+
+    item.type = type;
+
+    let minArmor = goodness;
+    let maxArmor = minArmor + ratio * 2;
+
+    item.addModifier({
+      attr: "armor",
+      modifier: Math.round(this.rand.floatBetween(minArmor, maxArmor) * 100) / 100
+    });
 
     return item;
+  }
+
+  getItemGoodness(rarity: ItemRarity, typeOptions: string[]) {
+    let difficulty = 2;
+
+    let ratio: number = 1;
+    let goodness = 0;
+
+    //
+    // TODO:
+    // check state.progress
+    //
+
+    while (
+      goodness < typeOptions.length - 1 &&
+      this.rand.intBetween(0, difficulty) === 0
+    )  {
+      ratio += this.rand.floatBetween(0, 1);
+      goodness++;
+      // difficulty++;
+    }
+
+    if (rarity.isRare) {
+    }
+
+    if (rarity.isMagical) {
+    }
+
+    return { ratio, goodness, type: typeOptions[goodness] };
   }
 
   shuffle (array: any[]) {

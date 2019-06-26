@@ -78,7 +78,11 @@ export default class Factory {
         break;
 
       case helpers.ENTITIES.AESTHETICS:
-        element = new Aesthetic();
+        //
+        // TODO: change material on tile instead.
+        // https://stackoverflow.com/a/16897178/892698
+        //
+        element = new Aesthetic(this.level.mapkind);
         break;
 
       case helpers.ENTITIES.PROJECTILE_MAGIC:

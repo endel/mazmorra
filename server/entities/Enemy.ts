@@ -32,7 +32,7 @@ export class Enemy extends Unit {
       const item = new WeaponItem();
       for (const statName in modifiers) {
         const modifier = new ItemModifier();
-        modifier.attr = statName;
+        modifier.attr = statName as keyof StatsModifiers;
         modifier.modifier = modifiers[statName];
         item.modifiers.push(modifier);
       }
