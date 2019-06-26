@@ -773,8 +773,6 @@ export class RoomUtils {
       // difficulty++;
     }
 
-    console.log({ maxGoodnessRatio, maxGoodness, typeOptions, goodness });
-
     if (itemDropOptions.isRare) {
       ratio += 0.5;
     }
