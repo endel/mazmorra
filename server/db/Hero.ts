@@ -121,7 +121,7 @@ export const Hero = mongoose.model<DBHero>('Hero', new Schema<DBHero>({
   mp: Number,
   xp: Number,
 
-  gold: { type: Number, default: 0 },
+  gold: { type: Number, default: 50 },
   diamond: { type: Number, default: 0 },
 
   /**
@@ -137,7 +137,12 @@ export const Hero = mongoose.model<DBHero>('Hero', new Schema<DBHero>({
 
   inventory: { type: [Item], default: [] },
   equipedItems: { type: [Item], default: [] },
-  quickInventory: { type: [Item], default: [] },
+  quickInventory: { type: [Item], default: [
+    { type: helpers.ENTITIES.HP_POTION_1, modifiers: [{ attr: "hp", modifier: POTION_1_MODIFIER }] },
+    { type: helpers.ENTITIES.HP_POTION_1, modifiers: [{ attr: "hp", modifier: POTION_1_MODIFIER }] },
+    { type: helpers.ENTITIES.MP_POTION_1, modifiers: [{ attr: "mp", modifier: POTION_1_MODIFIER }] },
+    { type: helpers.ENTITIES.SCROLL },
+  ] },
 
   skills: [ Skill ]
 }));

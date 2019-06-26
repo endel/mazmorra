@@ -32,20 +32,27 @@ export abstract class EquipableItem extends Item {
   }
 
   pick (unit: Unit, state: DungeonState) {
-    return super.pick(unit, state);
-    // let success = false;
+    let success = false;
 
-    // if (unit.equipedItems.isSlotAvailable(this.slotName) && this.use(unit, state)) {
-    //   success = true;
+    if (
+      unit.equipedItems.isSlotAvailable(this.slotName) &&
+      ( // only auto-equip items if primaryAttribute matches player's primaryAttribute
+        !(this as any).damageAttribute ||
+        ((this as any).damageAttribute && unit.primaryAttribute === (this as any).damageAttribute)
+      ) &&
+      this.use(unit, state)
+    ) {
+      success = true;
+    }
 
-    // } else {
-    //   success = super.pick(unit, state);
-    // }
+    if (!success) {
+      success = super.pick(unit, state);
+    }
 
-    // if (success) {
-    //   state.events.emit("sound", "pickItem", unit);
-    // }
+    if (success) {
+      state.events.emit("sound", "pickItem", unit);
+    }
 
-    // return success
+    return success
   }
 }

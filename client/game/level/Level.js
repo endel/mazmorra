@@ -31,6 +31,7 @@ export default class Level extends THREE.Object3D {
     this.selection = new TileSelectionPreview(this.selectionLight, this.hud);
 
     this.factory = new Factory(this);
+    this.isPVPAllowed = false;
 
     // this.room = this.enterRoom('grass')
     this.enterRoom('dungeon', { progress: 1 }).then(room => {
@@ -338,6 +339,8 @@ export default class Level extends THREE.Object3D {
     this.mapwidth = state.width;
     this.progress = state.progress;
 
+    this.isPVPAllowed = state.isPVPAllowed;
+
     Resources.init();
 
     //
@@ -546,6 +549,10 @@ export default class Level extends THREE.Object3D {
        */
       const draggingItemSprite = App.cursor.getDraggingItem();
       const item = draggingItemSprite.userData;
+
+      if (item.inventoryType === "purchase") {
+        return;
+      }
 
       /**
        * Animate & remove item from cursor.

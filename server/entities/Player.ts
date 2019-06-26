@@ -1,9 +1,8 @@
+import helpers from "../../shared/helpers";
 import { Schema, type } from "@colyseus/schema";
 import { Unit, InventoryType } from "./Unit";
-import helpers from "../../shared/helpers";
 import { Item } from "./Item";
 import { DBHero } from "../db/Hero";
-import { MoveEvent } from "../core/Movement";
 import { EquipedItems } from "../core/EquipedItems";
 import { EquipableItem } from "./items/EquipableItem";
 import { Point } from "../rooms/states/DungeonState";
@@ -34,6 +33,7 @@ export class Player extends Unit {
 
   movementSpeed = 600;
   attackSpeed = 900;
+
   shouldSaveCoords: boolean = false;
 
   constructor (id, hero: DBHero, state?) {
@@ -152,7 +152,7 @@ export class Player extends Unit {
     const switchItem = toInventory.getItem(switchItemId);
 
     // buying items!
-    if (fromInventory === this.purchase) {
+    if (item && fromInventory === this.purchase) {
       return this.inventoryBuy(item, toInventory);
     }
 
@@ -239,7 +239,6 @@ export class Player extends Unit {
       this.willDropItem.position.set(this.position);
       this.state.addEntity(this.willDropItem);
     }
-
   }
 
   dropItem(inventoryType: InventoryType, itemId: string) {

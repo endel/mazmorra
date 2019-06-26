@@ -1,3 +1,4 @@
+import helpers from "../../shared/helpers";
 import { type, Schema } from "@colyseus/schema";
 
 import { Entity } from "./Entity";
@@ -69,6 +70,15 @@ export class Unit extends Entity {
   movementSpeed: number = 1200;
   attackSpeed: number = 1000;
 
+  baseHp: number;
+  baseMp: number;
+
+  baseArmor: { [id in Attribute]: number } = {
+    strength: 0,
+    agility: -1,
+    intelligence: -2
+  };
+
   lastHpRegenerationTime: number = 0;
   hpRegeneration: number = 0
   hpRegenerationInterval: number = 30000; // 30 seconds
@@ -116,6 +126,9 @@ export class Unit extends Entity {
     this.attributes.agility = hero.agility || 1;
     this.attributes.intelligence = hero.intelligence || 1;
 
+    this.baseHp = (hero.userId) ? 10 : 1;
+    this.baseMp = (hero.userId) ? 10 : 1;
+
     this.recalculateStatsModifiers();
 
     // hit | mana | experience points
@@ -158,11 +171,11 @@ export class Unit extends Entity {
     }
 
     const hpPercent = this.hp.current / this.hp.max;
-    this.hp.max = (this.attributes.strength + this.statsModifiers['strength'] + this.statsModifiers['hp']) * 5;
+    this.hp.max = this.baseHp + (this.attributes.strength + this.statsModifiers['strength'] + this.statsModifiers['hp']) * 3;
     this.hp.current = this.hp.max * hpPercent;
 
     const mpPercent = this.mp.current / this.mp.max;
-    this.mp.max = (this.attributes.intelligence + this.statsModifiers['intelligence'] + this.statsModifiers['mp']) * 5;
+    this.mp.max = this.baseMp + (this.attributes.intelligence + this.statsModifiers['intelligence'] + this.statsModifiers['mp']) * 3;
     this.mp.current = this.mp.max * mpPercent;
   }
 
@@ -203,12 +216,7 @@ export class Unit extends Entity {
   }
 
   getArmor() {
-    const baseArmor: {[id in Attribute]: number} = {
-      strength: 0,
-      agility: -1,
-      intelligence: -2
-    };
-    return this.statsModifiers.armor + (this.attributes.agility * 0.16) + baseArmor[this.primaryAttribute];
+    return this.statsModifiers.armor + (this.attributes.agility * 0.16) + this.baseArmor[this.primaryAttribute];
   }
 
   onMove(moveEvent: MoveEvent, prevX, prevY, currentX, currentY) {

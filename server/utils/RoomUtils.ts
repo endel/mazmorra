@@ -59,6 +59,7 @@ export class RoomUtils {
   endRoom: DungeonRoom;
   endPosition: any;
 
+  isBossDungeon: boolean = false;
   hasFountain: boolean = false;
 
   constructor (rand, state, rooms: DungeonRoom[]) {
@@ -66,6 +67,7 @@ export class RoomUtils {
     this.state = state
 
     this.rooms = rooms
+    this.isBossDungeon = isBossMap(this.state.progress);
 
     this.cacheRoomData();
 
@@ -155,8 +157,7 @@ export class RoomUtils {
   }
 
   populateRooms () {
-    const isBossDungeon = isBossMap(this.state.progress);
-    const isLocked = isBossDungeon;
+    const isLocked = this.isBossDungeon;
 
     // entrance
     this.state.addEntity(new Door(this.startPosition, new DoorDestiny({
@@ -176,7 +177,7 @@ export class RoomUtils {
     }), isLocked));
 
     // create the BOSS for the dungeon.
-    if (isBossDungeon) {
+    if (this.isBossDungeon) {
       const bossType = this.state.config.boss[0];
       const boss = this.createEnemy(bossType, Boss) as Boss;
       boss.position.set(this.endPosition);
@@ -192,7 +193,7 @@ export class RoomUtils {
     }
 
     this.rooms.forEach(room => {
-      if (isBossDungeon && room === this.endRoom) {
+      if (this.isBossDungeon && room === this.endRoom) {
         this.populateBossRoom(room);
 
       } else {
@@ -203,10 +204,6 @@ export class RoomUtils {
 
   populateRoom (room: DungeonRoom) {
     this.populateEnemies(room)
-
-    // if (this.rand.intBetween(0, 12) === 12) {
-    //   this.addEntity(room, (position) => new Chest(position))
-    // }
 
     // const chestTypes = ['chest', 'chest2', 'bucket'];
     // const chestKind = 'bucket';
@@ -333,6 +330,11 @@ export class RoomUtils {
   }
 
   populateEnemies (room: DungeonRoom) {
+    if (this.isBossDungeon && room === this.startRoom) {
+      // when in a boss dungeon, first room doens't have enemies!
+      return;
+    }
+
     // allow 0 enemies on room?
     const minEnemies = (this.rand.intBetween(0, 3) === 0) ? 0 : 1;
 

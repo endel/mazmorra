@@ -48,9 +48,10 @@ export class DungeonState extends Schema {
   @type("number") height: number;
   @type({ map: Entity }) entities = new MapSchema<Entity>();
 
+  @type("boolean") isPVPAllowed: boolean = false;
+
   rooms: any;
   players: {[id: string]: Player} = {};
-  isPVPAllowed = false;
 
   gridUtils: GridUtils;
   roomUtils: RoomUtils;

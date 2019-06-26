@@ -54,10 +54,11 @@ export class EquipedItems extends Inventory {
 
     const dropItemFromSlot = equippedSlots[Math.floor(Math.random() * equippedSlots.length)];
 
-    const item = this.getItem(dropItemFromSlot);
-    this.remove(dropItemFromSlot);
-
-    return item;
+    if (dropItemFromSlot) {
+      const item = this.getItem(dropItemFromSlot);
+      this.remove(dropItemFromSlot);
+      return item;
+    }
   }
 
   remove(itemIdOrSlotName: string) {
