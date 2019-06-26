@@ -311,7 +311,8 @@ export class RoomUtils {
       this.state.addEntity(door);
 
       // add guards and lady
-      ['guard', 'lady', 'woman', 'majesty'].forEach(kind => {
+      // 'guard', 'lady',
+      ['woman', 'majesty'].forEach(kind => {
         this.addEntity(room, (position) => {
           var npc = new NPC(kind, {}, this.state);
           npc.position.set(position)

@@ -10,6 +10,7 @@ import { CastableItem } from "./items/CastableItem";
 import { Inventory } from "../core/Inventory";
 import { generateId } from "colyseus";
 import { ConsumableItem } from "./items/ConsumableItem";
+import { createItem } from "./items/createItem";
 
 export class SkinProperties extends Schema {
   @type("number") klass: number;
@@ -237,7 +238,7 @@ export class Player extends Unit {
 
     if (this.willDropItem) {
       this.willDropItem.position.set(this.position);
-      this.state.addEntity(this.willDropItem);
+      this.state.addEntity(createItem(this.willDropItem));
     }
   }
 

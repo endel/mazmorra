@@ -6,7 +6,7 @@ export class Fountain extends Interactive {
   @type("boolean") active: boolean = (Math.random() > 0.5);
 
   activationTime: number = Date.now();
-  fillTimeout: number = 30000; // 30 seconds to fill
+  fillTimeout: number = 20000; // 20 seconds to fill
 
   constructor (position) {
     super(helpers.ENTITIES.FOUNTAIN, position)
