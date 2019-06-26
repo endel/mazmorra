@@ -35,19 +35,20 @@ export abstract class EquipableItem extends Item {
   }
 
   pick (unit: Unit, state: DungeonState) {
-    let success = false;
+    return super.pick(unit, state);
+    // let success = false;
 
-    if (unit.equipedItems.isSlotAvailable(this.slotName) && this.use(unit, state)) {
-      success = true;
+    // if (unit.equipedItems.isSlotAvailable(this.slotName) && this.use(unit, state)) {
+    //   success = true;
 
-    } else {
-      success = super.pick(unit, state);
-    }
+    // } else {
+    //   success = super.pick(unit, state);
+    // }
 
-    if (success) {
-      state.events.emit("sound", "pickItem", unit);
-    }
+    // if (success) {
+    //   state.events.emit("sound", "pickItem", unit);
+    // }
 
-    return success
+    // return success
   }
 }
