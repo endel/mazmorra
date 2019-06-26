@@ -50,7 +50,7 @@ export class EquipedItems extends Inventory {
       EquipmentSlot.LEFT,
       EquipmentSlot.RIGHT,
       EquipmentSlot.FEET
-    ].filter(slotName => this.isSlotAvailable(slotName));
+    ].filter(slotName => !this.isSlotAvailable(slotName));
 
     const dropItemFromSlot = equippedSlots[Math.floor(Math.random() * equippedSlots.length)];
 

@@ -46,6 +46,10 @@ export class Door extends Interactive {
   }
 
   interact (moveEvent, player, state) {
+    if (!player.isAlive) {
+      return;
+    }
+
     if (this.isLocked) {
       const { inventoryType, itemId } = player.getItemByType(helpers.ENTITIES.KEY_1);
 
