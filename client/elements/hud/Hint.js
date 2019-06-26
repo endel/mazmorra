@@ -87,7 +87,7 @@ ${(
 
         return `
           <strong>${humanize(modifier.attr)}</strong> ${(modifierValue > 0) ? "+" : ""}
-          ${modifierValue}
+          ${modifier.modifier}
           ${(modifierValue > equipedModifier)
             ? `<small class="increase">(+ ${(modifierValue - equipedModifier).toFixed(2)})</small>`
             : (modifierValue < equipedModifier)
