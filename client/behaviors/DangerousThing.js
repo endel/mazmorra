@@ -3,6 +3,8 @@ import { Behaviour } from 'behaviour.js'
 export default class DangerousThing extends Behaviour {
 
   onAttach (amount = 0.05, duration) {
+    this.object.userData.interactive = true;
+
     this.initY = this.object.position.y
     this.destY = this.initY + amount
     this.duration = (duration) ? duration : 400 + (Math.random() * 200)
@@ -28,6 +30,7 @@ export default class DangerousThing extends Behaviour {
   }
 
   onDetach () {
+    delete this.object.userData.interactive;
     if (this.tween) this.tween.dispose()
   }
 

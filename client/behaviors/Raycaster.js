@@ -53,7 +53,11 @@ export default class Raycaster extends Behaviour {
     for (let i = 0, l = this.path.length; i < l; i++) {
       const object = this.path[i].object;
 
-      if (object.userData.type === "walkable") {
+      if (object.parent.userData.interactive) {
+        nextTargetObject = factory.getTileAt(object.parent.userData.position);
+        break;
+
+      } else if (object.userData.type === "walkable") {
         nextTargetObject = this.path[i].object;
         break;
 

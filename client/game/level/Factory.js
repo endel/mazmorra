@@ -2,6 +2,7 @@ import helpers from '../../../shared/helpers'
 
 import GameObject from '../../behaviors/GameObject'
 import HasLifebar from '../../behaviors/HasLifebar'
+import DangerousThing from '../../behaviors/DangerousThing';
 
 import Character from '../../elements/Character'
 import Enemy from '../../elements/Enemy'
@@ -27,6 +28,8 @@ export default class Factory {
     // visual groups
     this.ground = []
     this.wall = []
+
+    window.factory = this;
   }
 
   setGrid (grid) {
@@ -52,6 +55,8 @@ export default class Factory {
         }
 
         element = new Door(data, this.level.progress, this.level.mapkind, gridItem);
+        console.log(data);
+        element.userData.interactive = true;
         break;
 
       case helpers.ENTITIES.ENEMY:
@@ -62,6 +67,10 @@ export default class Factory {
         element = new Character(data);
         if (data.id !== getClientId()) {
           element.addBehaviour(new HasLifebar, this);
+
+          if (this.level.isPVPAllowed) {
+            element.addBehaviour(new DangerousThing);
+          }
         }
         break;
 
@@ -75,6 +84,7 @@ export default class Factory {
 
       case helpers.ENTITIES.PORTAL:
         element = new Portal(data);
+        element.userData.interactive = true;
         break;
 
       case helpers.ENTITIES.AESTHETICS:
@@ -255,7 +265,7 @@ export default class Factory {
       x = x.x
     }
 
-    return this.ground.filter( tile => ( tile.userData.x === y && tile.userData.y === x ) )[0]
+    return this.ground.find(tile => (tile.userData.x === y && tile.userData.y === x));
 
   }
 
