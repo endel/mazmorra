@@ -51,8 +51,8 @@ class Hint  {
 <h2>
 ${humanize(item.type)}
 
-${(item.isRare) ? `<span class="rare">+ Rare</span>` : ""}
-${(item.isMagical) ? `<span class="magical">+ Magical</span> ` : ""}
+${(item.isRare) ? `<small class="rare">+ Rare</small>` : ""}
+${(item.isMagical) ? `<small class="magical">+ Magical</small> ` : ""}
 
 ${(item.price !== undefined)
   ? (item.premium)

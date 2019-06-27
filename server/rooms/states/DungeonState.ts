@@ -252,6 +252,8 @@ export class DungeonState extends Schema {
       item = this.roomUtils.createRandomItem();
     }
 
+    // TODO: pass ItemDropOptions here.
+
     // may not drop anything...
     if (item) {
       item.position.set(unit.position);
