@@ -1,6 +1,7 @@
-const Tweener = require('tweener');
-const Clock = require('clock-timer.js').default
-const createComponentSystem = require('behaviour.js').createComponentSystem;
+const Tweener = require("tweener");
+const Clock = require("clock-timer.js").default;
+const createComponentSystem = require("behaviour.js").createComponentSystem;
+const isMobile = require("../utils/device").isMobile;
 
 class App {
 
@@ -9,7 +10,13 @@ class App {
     this.clock = new Clock()
     this.componentSystem = createComponentSystem(THREE.Object3D)
     this.mouse = new THREE.Vector2();
-    window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false )
+
+    if (isMobile) {
+      // window.addEventListener('touchstart', this.onMouseMove.bind(this), false);
+
+    } else {
+      window.addEventListener('mousemove', this.onMouseMove.bind(this), false);
+    }
   }
 
   update () {

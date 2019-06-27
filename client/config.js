@@ -1,3 +1,5 @@
+const isMobile = require('./utils/device').isMobile;
+
 module.exports = {
   TILE_SIZE: 3,
   WALL_THICKNESS: 0.7,
@@ -24,7 +26,9 @@ module.exports = {
   IS_DAY: true,
 
   HUD_MARGIN: 2.5,
-  HUD_SCALE: 6 / window.devicePixelRatio,
+  HUD_SCALE: (isMobile)
+    ? (7 / window.devicePixelRatio)
+    : (6 / window.devicePixelRatio),
 
   DEFAULT_FONT: (Math.floor((7.5 / window.devicePixelRatio) * 5)) + "px primary",
   FONT_TITLE: (Math.floor((9 / window.devicePixelRatio) * 5)) + "px primary",

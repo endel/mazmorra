@@ -7,6 +7,8 @@ import Game from './game/Game'
 import login from './web/login'
 import { switchSoundtrack } from './core/sound';
 
+window.app = App;
+
 ResourceManager.load(() => {
   // remove "loading" class
   const body = document.querySelector("body");

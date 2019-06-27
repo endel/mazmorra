@@ -1,4 +1,5 @@
 import { Behaviour } from 'behaviour.js'
+import { isMobile } from '../utils/device';
 
 export default class Raycaster extends Behaviour {
 
@@ -14,7 +15,9 @@ export default class Raycaster extends Behaviour {
     this.lastTapTime = Date.now();
 
     // do raycast at every 200ms
-    setInterval(() => this.doRaycast(true), 200);
+    if (!isMobile) {
+      setInterval(() => this.doRaycast(true), 200);
+    }
 
     window.addEventListener("mousemove", this.doRaycast.bind(this), false);
     window.addEventListener("touchstart", this.onTouchStart.bind(this), false);

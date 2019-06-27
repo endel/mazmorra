@@ -1,7 +1,7 @@
-import isMobile from 'is-mobile'
+import IsMobile from 'is-mobile'
 import fullscreen from 'fullscreen'
 
-export { isMobile }
+export const isMobile = IsMobile();
 
 // if (isMobile()) {
 //   let el = window.document.body

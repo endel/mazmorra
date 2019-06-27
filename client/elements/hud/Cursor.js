@@ -2,12 +2,18 @@ import ResourceManager from '../../resource/manager'
 
 import lerp from 'lerp'
 import { Behaviour } from 'behaviour.js'
+import { isMobile } from '../../utils/device';
 
 class CursorBehaviour extends Behaviour {
-  onAttach () {}
+  onAttach () {
+    this.on('update', () => this.update());
+  }
+
   update () {
-    this.object.position.x = lerp(this.object.position.x, App.mouse.x * (window.innerWidth / 2), 0.9)
-    this.object.position.y = lerp(this.object.position.y, App.mouse.y * (window.innerHeight / 2), 0.9)
+    // this.object.position.x = lerp(this.object.position.x, App.mouse.x * (window.innerWidth / 2), 0.9)
+    // this.object.position.y = lerp(this.object.position.y, App.mouse.y * (window.innerHeight / 2), 0.9)
+    this.object.position.x = App.mouse.x * (window.innerWidth / 2)
+    this.object.position.y = App.mouse.y * (window.innerHeight / 2)
   }
   onDetach() {}
 }
@@ -44,6 +50,25 @@ export default class Cursor extends THREE.Object3D {
 
     this.onUpdateCursor({ kind: "pointer" });
 
+    if (isMobile) {
+      window.addEventListener("touchstart", (e) => {
+        if (fadeOutCursorTimeout) clearTimeout(fadeOutCursorTimeout);
+
+        App.mouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1
+        App.mouse.y = - (e.touches[0].clientY / window.innerHeight) * 2 + 1
+
+        App.tweens.remove(this[this.kindActive].material);
+        this.getEntity().emit('update');
+      });
+
+      let fadeOutCursorTimeout;
+      window.addEventListener("touchend", (e) => {
+        if (fadeOutCursorTimeout) clearTimeout(fadeOutCursorTimeout);
+
+        App.tweens.add(this[this.kindActive].material).to({ opacity: 0 }, 500);
+      });
+    }
+
     this.addEventListener("drag", this.onDrag.bind(this));
     this.addEventListener("cursor", this.onUpdateCursor.bind(this));
 
@@ -72,19 +97,14 @@ export default class Cursor extends THREE.Object3D {
     this.performItemCast()
   }
 
-  onDrag (e) {
-
-    if ( e.item ) {
-
-      this.remove( this[ this.kindActive ] )
-      this.dragging.add( e.item )
+  onDrag(e) {
+    if (e.item) {
+      this.remove(this[this.kindActive])
+      this.dragging.add(e.item)
 
     } else {
-
-      this.add( this[ this.kindActive ] )
-
+      this.add(this[this.kindActive])
     }
-
   }
 
   onUpdateCursor (e) {
@@ -93,20 +113,15 @@ export default class Cursor extends THREE.Object3D {
       return false;
     }
 
-    if ( e.kind !== this.kindActive ) {
-
-      this.remove( this[ this.kindActive ] )
-
+    if (e.kind !== this.kindActive) {
+      this.remove(this[this.kindActive])
       this.kindActive = e.kind
-
     }
 
-    if ( this.kindActive ) {
-
-      this.add( this[ this.kindActive ] )
-
+    if (this.kindActive) {
+      this.add(this[this.kindActive])
+      this[this.kindActive].material.opacity = 1;
     }
-
   }
 
   get isDragging () {
