@@ -8,9 +8,9 @@ export function playRandom(soundOptions) {
  * By Alec Shea (https://slaleky.itch.io/fantasy-dungeons-and-dark-places-music-vol-1)
  */
 export const soundtrack = {
-  higureForest: require('../resource/sounds/music/higure-forest.mp3'),
-  moonlightForest: require('../resource/sounds/music/moonlight-forest.mp3'),
-  plagueOfNighterrors: require('../resource/sounds/music/plague-of-nighterrors.mp3'),
+  // higureForest: require('../resource/sounds/music/higure-forest.mp3'),
+  // moonlightForest: require('../resource/sounds/music/moonlight-forest.mp3'),
+  // plagueOfNighterrors: require('../resource/sounds/music/plague-of-nighterrors.mp3'),
 };
 //
 
@@ -19,17 +19,20 @@ let curentSoundTrack;
 let curentSoundTrackName;
 
 export function fadeOut(soundId) {
+  return;
   if (!soundId) { soundId = curentSoundTrack; }
   const previousVolume = window.$_audiosprite.volume(soundId);
   window.$_audiosprite.fade(previousVolume, 0, 1000, soundId);
 }
 
 export function fadeIn(soundId, toVolume) {
+  return;
   window.$_audiosprite.fade(0, toVolume, 1000, soundId);
 }
 
 
 export function switchSoundtrack(trackName) {
+  return;
   if (curentSoundTrackName === trackName) {
     return;
   }

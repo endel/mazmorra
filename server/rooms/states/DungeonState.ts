@@ -36,6 +36,7 @@ export class DungeonState extends Schema {
   @type("number") difficulty: number;
   @type("boolean") daylight: boolean;
   @type("string") mapkind: MapKind;
+  @type("uint8") mapvariation: number;
 
   @type(["number"]) grid = new ArraySchema<number>();
   @type("number") width: number;
@@ -69,6 +70,7 @@ export class DungeonState extends Schema {
     this.config = getMapConfig(this.progress);
     this.daylight = this.config.daylight;
     this.mapkind = this.config.mapkind;
+    this.mapvariation = (this.progress % 2 === 0) ? 2 : 1;
 
     let grid, rooms;
 

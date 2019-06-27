@@ -55,7 +55,6 @@ export default class Factory {
         }
 
         element = new Door(data, this.level.progress, this.level.mapkind, gridItem);
-        console.log(data);
         element.userData.interactive = true;
         break;
 
@@ -161,7 +160,7 @@ export default class Factory {
       , group = null
 
     if (type & helpers.TILE_TYPE.FLOOR) {
-      resource = 'tile-'+mapkind+'-ground'
+      resource = 'tile-' + mapkind + '-ground-' + this.level.mapvariation;
 
     } else if (type & helpers.TILE_TYPE.WALL) {
       resource = (type & helpers.CORNER) ? null : 'tile-'+mapkind+'-wall'

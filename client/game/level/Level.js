@@ -336,6 +336,7 @@ export default class Level extends THREE.Object3D {
 
     window.IS_DAY = state.daylight
     this.mapkind = state.mapkind;
+    this.mapvariation = state.mapvariation;
     this.mapwidth = state.width;
     this.progress = state.progress;
 

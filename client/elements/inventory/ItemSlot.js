@@ -227,6 +227,13 @@ export default class ItemSlot extends THREE.Object3D {
         draggingFrom = targetSlot;
         App.cursor.prepareItemCast(item, draggingFrom);
 
+        // force to close inventory if it's open.
+        // FIXME: this code is duplicated all over the place!
+        if (hud.isInventoryOpen()) {
+          hud.openInventoryButton.onClick();
+          hud.onToggleInventory();
+        }
+
       } else {
         // attach inventory type for sending to room handler.
         this.dispatchEvent({
