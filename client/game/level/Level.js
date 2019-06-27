@@ -344,16 +344,6 @@ export default class Level extends THREE.Object3D {
     Resources.init();
 
     //
-    // Display map name + progress
-    //
-    if (this.progress !== 1) {
-      this.hud.levelText.text = `${this.mapkind} ${this.progress}`;
-
-    } else {
-      this.hud.levelText.text = `Village`;
-    }
-
-    //
     if (this.mapkindAestetics) {
       clearInterval(this.mapkindAestetics);
       this.mapkindAestetics = undefined;

@@ -26,8 +26,10 @@ export class BattleAction extends Action {
     this.attacker = attacker;
     this.defender = defender;
     this.defenderId = defender.id;
-
     this.attackDistance = this.attacker.getAttackDistance();
+
+    // allow first attack to be instant.
+    this.lastUpdateTime = Date.now() - attacker.getAttackSpeed();
   }
 
   get isEligible() {

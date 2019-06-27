@@ -1,18 +1,31 @@
 import { MeshText2D, textAlign } from 'three-text2d'
 import { MAX_CHAR_WIDTH, MAX_CHAR_HEIGHT, Resources } from '../character/Resources'
 import LevelUpButton from './LevelUpButton';
+import { humanize } from '../../utils';
 
 export default class Character extends THREE.Object3D {
 
   constructor () {
     super()
 
-    this.sprite = ResourceManager.getHUDElement("character-body-0-hud-face")
-
+    const margin = config.HUD_MARGIN * 2 + 1;
     this.width = (MAX_CHAR_WIDTH *  config.HUD_SCALE)
     this.height = (MAX_CHAR_HEIGHT *  config.HUD_SCALE)
 
-    const margin = config.HUD_MARGIN * 2 + 1;
+    this.stairsIcon = ResourceManager.getHUDElement("icons-stairs");
+    this.stairsIcon.position.y = this.stairsIcon.height / 2;
+
+    this.stairsText = new MeshText2D(" ", {
+      align: textAlign.left,
+      font: config.DEFAULT_FONT,
+      fillStyle: '#dce1e2',
+      antialias: false
+    });
+    this.stairsText.position.x = margin * config.HUD_SCALE;
+    this.stairsText.position.y = this.stairsText.height - margin;
+
+    this.levelIcon = ResourceManager.getHUDElement("character-body-0-hud-face")
+    this.levelIcon.position.y = -this.stairsIcon.height * 1.5;
 
     this.levelText = new MeshText2D(" ", {
       align: textAlign.left,
@@ -21,11 +34,11 @@ export default class Character extends THREE.Object3D {
       antialias: false
     })
     this.levelText.position.x = margin * config.HUD_SCALE;
-    this.levelText.position.y = this.levelText.height - margin;
+    this.levelText.position.y = this.levelIcon.position.y + this.levelText.height - config.HUD_MARGIN;
 
     // Damage
     this.damageIcon = ResourceManager.getHUDElement("icons-damage");
-    this.damageIcon.position.y = -this.sprite.height * 1.5;
+    this.damageIcon.position.y = this.levelIcon.position.y - this.levelIcon.height - margin;
 
     this.damageText = new MeshText2D("0", {
       align: textAlign.left,
@@ -161,7 +174,10 @@ export default class Character extends THREE.Object3D {
     this.intUpButton.position.y = this.intText.position.y - this.intIcon.height / 2;
     this.intUpButton.addEventListener("click", this.onIncreaseAttribute.bind(this, 'intelligence'));
 
-    this.add(this.sprite)
+    this.add(this.stairsIcon);
+    this.add(this.stairsText);
+
+    this.add(this.levelIcon)
     this.add(this.levelText);
 
     this.add(this.damageIcon)
@@ -223,6 +239,7 @@ export default class Character extends THREE.Object3D {
 
     // var hpMax = (data.attributes.strength + statsModifiers['strength']) * 5;
     // var mpMax = (data.attributes.intelligence + statsModifiers['intelligence']) * 3;
+    this.stairsText.text = `${player.parent.progress.toString()} - ${humanize(player.parent.mapkind)}`;
 
     this.levelText.text = "Level " + data.lvl;
 
@@ -334,8 +351,8 @@ export default class Character extends THREE.Object3D {
   }
 
   set composition (instance) {
-    this.sprite.material.map = Resources.get(instance, 'hud-face')
-    this.sprite.scale.normalizeWithHUDTexture(this.sprite.material.map)
+    this.levelIcon.material.map = Resources.get(instance, 'hud-face')
+    this.levelIcon.scale.normalizeWithHUDTexture(this.levelIcon.material.map)
   }
 
 }

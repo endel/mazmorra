@@ -84,14 +84,6 @@ export default class HUD extends THREE.Scene {
       antialias: false
     })
 
-    // Label
-    this.levelText = new MeshText2D("Village", {
-      font: config.DEFAULT_FONT,
-      fillStyle: '#fff',
-      align: textAlign.right,
-      antialias: false
-    })
-
     // Resources
     this.resources = new Resources();
 
@@ -119,7 +111,6 @@ export default class HUD extends THREE.Scene {
     this.add(this.lifebar);
     this.add(this.expbar);
     this.add(this.selectionText);
-    this.add(this.levelText);
     this.add(this.resources);
     this.add(this.character);
 
@@ -248,14 +239,6 @@ export default class HUD extends THREE.Scene {
     // TOP
     //
     this.selectionText.position.set(0, window.innerHeight / 2 - (margin * 2), 0)
-
-    this.levelText.position.set(-this.levelText.width -  config.HUD_SCALE * ( config.HUD_MARGIN * 3 ), window.innerHeight / 2 - margin * 2, 0)
-
-    this.levelText.position.set(
-      window.innerWidth / 2 - config.HUD_SCALE * (config.HUD_MARGIN),
-      - window.innerHeight / 2 + this.levelText.height + (config.HUD_MARGIN * 3),
-      0
-    )
 
     //
     // LEFT SIDE
