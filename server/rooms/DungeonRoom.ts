@@ -1,9 +1,10 @@
-import { Room, Client } from "colyseus";
+import { Room, Client, generateId } from "colyseus";
 import { DungeonState } from "./states/DungeonState";
 import { verifyToken } from "@colyseus/social";
 import { Hero, DBHero } from "../db/Hero";
 import { Player } from "../entities/Player";
 import { DoorProgress } from "../entities/interactive/Door";
+import { Season } from "../db/Season";
 
 const TICK_RATE = 20 // 20 ticks per second
 
@@ -17,7 +18,7 @@ export class DungeonRoom extends Room<DungeonState> {
   heroes = new WeakMap<Client, DBHero>();
   clientMap = new WeakMap<Player, Client>();
 
-  onInit (options) {
+  async onInit (options) {
     this.progress = options.progress || 1;
     this.difficulty = options.difficulty || 1;
 
@@ -25,7 +26,17 @@ export class DungeonRoom extends Room<DungeonState> {
     this.heroes = new WeakMap();
     this.clientMap = new WeakMap();
 
-    this.setState(new DungeonState(this.progress, this.difficulty));
+    let season = await Season.find({}).sort({ _id: -1 }).findOne();
+    if (!season || Date.now() > season.until) {
+      season = await Season.create({
+        seed: `${generateId()}-${generateId()}`,
+        until: Date.now() + 60 * 60 * 24 * 7 // one week from now!
+      })
+    }
+
+    console.log("seed:", season.seed);
+
+    this.setState(new DungeonState(this.progress, this.difficulty, season.seed));
 
     this.state.events.on('goto', this.onGoTo.bind(this));
     this.state.events.on('sound', this.broadcastSound.bind(this));

@@ -1,4 +1,4 @@
-import { RandomSeed } from "random-seed";
+import gen, { RandomSeed } from "random-seed";
 
 import helpers from "../../shared/helpers";
 
@@ -49,7 +49,10 @@ interface ItemDropOptions {
 
 export class RoomUtils {
 
+  // random generators!
   rand: RandomSeed;
+  realRand: RandomSeed = gen.create();
+
   state: DungeonState;
   rooms: DungeonRoom[];
   cache = new WeakMap<DungeonRoom, Point[]>();
@@ -331,19 +334,19 @@ export class RoomUtils {
   }
 
   populateEnemies (room: DungeonRoom) {
-    if (this.isBossDungeon && room === this.startRoom) {
+    if (room === this.startRoom) {
       // when in a boss dungeon, first room doens't have enemies!
       return;
     }
 
     // allow 0 enemies on room?
-    const minEnemies = (this.rand.intBetween(0, 3) === 0) ? 0 : 1;
+    const minEnemies = (this.realRand.intBetween(0, 3) === 0) ? 0 : 1;
 
     const maxEnemies = (this.state.progress <= 8)
       ? 1
       : Math.min(this.state.progress, (room.size.x * room.size.y) / 15);
 
-    let numEnemies = this.rand.intBetween(minEnemies, maxEnemies);
+    let numEnemies = this.realRand.intBetween(minEnemies, maxEnemies);
 
     const enemyList = this.state.config.enemies;
     const enemyNames = Object.keys(enemyList);
@@ -364,7 +367,7 @@ export class RoomUtils {
 
     while (numEnemies--) {
       this.addEntity(room, (position) => {
-        const rand = this.rand.floatBetween(0, 1);
+        const rand = this.realRand.floatBetween(0, 1);
 
         const enemyTypeIndex = enemyRange.findIndex(range => rand <= range);
         const enemyType = enemyNames[enemyTypeIndex];
@@ -379,7 +382,7 @@ export class RoomUtils {
   createEnemy(type: string, enemyKlass: new (...args: any[]) => Enemy, lvl?: number): Enemy {
     if (!lvl) {
       const minLvl = Math.ceil(this.state.progress / 3);
-      lvl = this.rand.intBetween(minLvl, minLvl + 1);
+      lvl = this.realRand.intBetween(minLvl, minLvl + 1);
     }
 
     const attributes = MONSTER_BASE_ATTRIBUTES[type];
@@ -430,7 +433,7 @@ export class RoomUtils {
     // 0.5% unique item
     // 0.5% diamonds!
 
-    const chance = this.rand.floatBetween(0, 1);
+    const chance = this.realRand.floatBetween(0, 1);
 
     let itemToDrop: Item;
     // itemToDrop = new Scroll();
@@ -441,14 +444,14 @@ export class RoomUtils {
 
       // gold
       if (chance < 0.5) {
-        const amount = this.rand.intBetween(this.state.progress, Math.floor(this.state.progress * 1.5));
+        const amount = this.realRand.intBetween(this.state.progress, Math.floor(this.state.progress * 1.5));
         itemToDrop = new Gold(amount);
 
       // potion
       } else if (chance < 0.75) {
 
         itemToDrop = new Potion();
-        const potionChance = this.rand.floatBetween(0, 1);
+        const potionChance = this.realRand.floatBetween(0, 1);
 
         if (potionChance < 0.7) {
           itemToDrop.addModifier({ attr: "hp", modifier: POTION_1_MODIFIER });
@@ -469,7 +472,7 @@ export class RoomUtils {
           isMagical: (chance >= 0.985)
         }
 
-        const itemType = this.rand.intBetween(0, 5);
+        const itemType = this.realRand.intBetween(0, 5);
         switch (itemType) {
           case 0:
             itemToDrop = new Scroll();
@@ -512,7 +515,7 @@ export class RoomUtils {
 
       } else if (chance >= 0.99) {
         // drop diamond!
-        const amount = this.rand.intBetween(1, 2);
+        const amount = this.realRand.intBetween(1, 2);
         itemToDrop = new Diamond(amount);
 
       }
@@ -525,7 +528,7 @@ export class RoomUtils {
 
   getRandomPrimaryAttribute() {
     const attributes = ['strength', 'agility', 'intelligence'];
-    return attributes[this.rand.intBetween(0, 2)] as Attribute;
+    return attributes[this.realRand.intBetween(0, 2)] as Attribute;
   }
 
   createWeapon(damageAttribute?: Attribute, itemDropOptions: ItemDropOptions = {}) {
@@ -584,13 +587,13 @@ export class RoomUtils {
 
     item.addModifier({
       attr: "damage",
-      modifier: this.rand.intBetween(minDamage, maxDamage)
+      modifier: this.realRand.intBetween(minDamage, maxDamage)
     });
 
     if (hasAttackDistance) {
       item.addModifier({
         attr: "attackDistance",
-        modifier: this.rand.intBetween(goodness + 1, goodness + 2)
+        modifier: this.realRand.intBetween(goodness + 1, goodness + 2)
       });
     }
 
@@ -632,7 +635,7 @@ export class RoomUtils {
 
     item.addModifier({
       attr: "armor",
-      modifier: Math.round(this.rand.floatBetween(minArmor, maxArmor) * 100) / 100
+      modifier: Math.round(this.realRand.floatBetween(minArmor, maxArmor) * 100) / 100
     });
 
 
@@ -658,12 +661,12 @@ export class RoomUtils {
 
     item.addModifier({
       attr: "armor",
-      modifier: Math.round(this.rand.floatBetween(minArmor, maxArmor) * 100) / 100
+      modifier: Math.round(this.realRand.floatBetween(minArmor, maxArmor) * 100) / 100
     });
 
     item.addModifier({
       attr: "movementSpeed",
-      modifier: this.rand.intBetween(goodness, goodness + Math.ceil(ratio * 3))
+      modifier: this.realRand.intBetween(goodness, goodness + Math.ceil(ratio * 3))
     });
 
     return item;
@@ -715,7 +718,7 @@ export class RoomUtils {
 
     item.addModifier({
       attr: "armor",
-      modifier: Math.round(this.rand.floatBetween(minArmor, maxArmor) * 100) / 100
+      modifier: Math.round(this.realRand.floatBetween(minArmor, maxArmor) * 100) / 100
     });
 
     return item;
@@ -742,7 +745,7 @@ export class RoomUtils {
 
     item.addModifier({
       attr: "armor",
-      modifier: Math.round(this.rand.floatBetween(minArmor, maxArmor) * 100) / 100
+      modifier: Math.round(this.realRand.floatBetween(minArmor, maxArmor) * 100) / 100
     });
 
     return item;
@@ -764,9 +767,9 @@ export class RoomUtils {
 
     while (
       goodness < maxGoodness &&
-      this.rand.intBetween(0, difficulty) === 0
+      this.realRand.intBetween(0, difficulty) === 0
     )  {
-      ratio += this.rand.floatBetween(0.3, 0.5);
+      ratio += this.realRand.floatBetween(0.3, 0.5);
       goodness++;
       // difficulty++;
     }

@@ -32,12 +32,6 @@ export interface Point {
 }
 
 export class DungeonState extends Schema {
-  // predicatble random generator
-  rand = gen.create();
-  events = new EventEmitter();
-
-  config: MapConfig;
-
   @type("number") progress: number;
   @type("number") difficulty: number;
   @type("boolean") daylight: boolean;
@@ -53,14 +47,21 @@ export class DungeonState extends Schema {
   rooms: any;
   players: {[id: string]: Player} = {};
 
+  rand: RandomSeed; // predicatble random generator
+  config: MapConfig;
+
   gridUtils: GridUtils;
   roomUtils: RoomUtils;
 
   pathgrid: PF.Grid;
   finder = new PF.AStarFinder({ allowDiagonal: true } as any);
 
-  constructor (progress, difficulty, daylight?: boolean) {
+  events = new EventEmitter();
+
+  constructor (progress, difficulty, seed: string) {
     super()
+
+    this.rand = gen.create(seed + progress);
 
     this.progress = progress;
     this.difficulty = difficulty;
