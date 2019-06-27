@@ -191,7 +191,13 @@ export class Player extends Unit {
       const price = item.getSellPrice();
       this.state.createTextEvent("+" + price, this.position, 'yellow', 100);
 
-      this.gold += price;
+      if (item.premium) {
+        this.diamond += price;
+
+      } else {
+        this.gold += price;
+
+      }
       fromInventory.remove(itemId);
 
       // this.state.events.emit('sound', 'buy', this);
@@ -199,8 +205,6 @@ export class Player extends Unit {
   }
 
   inventoryBuy (item: Item, toInventory?: Inventory) {
-    console.log("inventoryBuy!", { item, toInventory });
-
     if (!toInventory) {
       const toInventoryPriority = (item instanceof ConsumableItem)
         ? [this.quickInventory, this.inventory]
@@ -214,15 +218,22 @@ export class Player extends Unit {
       }
     }
 
-    if (
-      toInventory &&
-      toInventory.hasAvailability() &&
-      this.gold >= item.getPrice()
-    ) {
-      this.gold -= item.getPrice();
+    if (toInventory && toInventory.hasAvailability()) {
+      let success: boolean = false;
 
-      item.id = generateId();
-      toInventory.add(item);
+      if (item.premium && this.diamond >= item.getPrice()) {
+        this.diamond -= item.getPrice();
+        success = true;
+
+      } else if (!item.premium && this.gold >= item.getPrice()) {
+        this.gold -= item.getPrice();
+        success = true;
+      }
+
+      if (success) {
+        item.id = generateId();
+        toInventory.add(item);
+      }
 
       // this.state.events.emit('sound', 'buy', this);
     }

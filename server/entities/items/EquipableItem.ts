@@ -6,8 +6,6 @@ import { Unit } from "../Unit";
 
 export abstract class EquipableItem extends Item {
   @type("string") abstract slotName: EquipmentSlot;
-  @type("boolean") isRare = false;
-  @type("boolean") isMagical = false;
 
   use(player: Unit, state: DungeonState) {
     // prevent performing action on already equiped item.

@@ -29,6 +29,7 @@ export interface DBItem {
   manaCost?: number,
   isRare?: boolean,
   isMagical?: boolean,
+  premium?: boolean,
 }
 
 const Item = new mongoose.Schema<DBItem>({

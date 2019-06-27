@@ -165,6 +165,10 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
     });
   }
 
+  if (data.premium) { item.premium = data.premium; }
+  if (data.isRare) { item.isRare = data.isRare; }
+  if (data.isMagical) { item.isMagical = data.isMagical; }
+
   item.type = data.type;
   item.position.set(position);
 

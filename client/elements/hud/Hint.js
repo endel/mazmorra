@@ -55,7 +55,9 @@ ${(item.isRare) ? "(rare)" : ""}
 ${(item.isMagical) ? "(magical) " : ""}
 
 ${(item.price !== undefined)
-  ? `<small class="gold">(${item.price} gold)</small>`
+  ? (item.premium)
+    ? `<small class="diamond">(${item.price} diamond)</small>`
+    : `<small class="gold">(${item.price} gold)</small>`
   : ""}
 </h2>
 

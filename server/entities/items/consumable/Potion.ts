@@ -45,6 +45,8 @@ export class Potion extends ConsumableItem {
       }
 
     } else if (modifier.attr == "xp") {
+      this.premium = true;
+
       if (modifier.modifier <= POTION_1_MODIFIER) {
         this.type = helpers.ENTITIES.XP_POTION_1;
 

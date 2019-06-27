@@ -58,27 +58,45 @@ export class NPC extends Player {
       ]);
 
     } else if (this.kind === "majesty") {
-      if (this.state.rand.intBetween(0, 5) === 0) {
+      // if (this.state.rand.intBetween(0, 5) === 0) {
+      if (this.state.rand.intBetween(0, 0) === 0) {
         state.createTextEvent("I've got you a deal.", this.position, 'white', 1000);
 
         setTimeout(() => {
+          const itemDropOptions = {
+            progress: 500,
+            isMagical: true,
+            isRare: true
+          };
+
           const items = [];
 
           const potion1 = new Potion();
           potion1.addModifier({ attr: "xp", modifier: POTION_1_MODIFIER });
           items.push(potion1);
 
-          const potion2 = new Potion();
-          potion2.addModifier({ attr: "xp", modifier: POTION_2_MODIFIER });
-          items.push(potion2);
+          [
+            this.state.roomUtils.createArmor(itemDropOptions),
+            this.state.roomUtils.createBoot(itemDropOptions),
+            this.state.roomUtils.createHelmet(itemDropOptions),
+            this.state.roomUtils.createShield(itemDropOptions),
+            this.state.roomUtils.createWeapon(player.primaryAttribute, itemDropOptions),
+          ].forEach(item => {
+            item.premium = true;
+            items.push(item);
+          });
 
-          const potion3 = new Potion();
-          potion3.addModifier({ attr: "xp", modifier: POTION_3_MODIFIER });
-          items.push(potion3);
+          // const potion2 = new Potion();
+          // potion2.addModifier({ attr: "xp", modifier: POTION_2_MODIFIER });
+          // items.push(potion2);
 
-          const potion4 = new Potion();
-          potion4.addModifier({ attr: "xp", modifier: POTION_4_MODIFIER });
-          items.push(potion4);
+          // const potion3 = new Potion();
+          // potion3.addModifier({ attr: "xp", modifier: POTION_3_MODIFIER });
+          // items.push(potion3);
+
+          // const potion4 = new Potion();
+          // potion4.addModifier({ attr: "xp", modifier: POTION_4_MODIFIER });
+          // items.push(potion4);
 
           player.setTradingItems(items);
         }, 1000);

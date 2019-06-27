@@ -15,6 +15,10 @@ export abstract class Item extends Entity {
 
   @type("number") price: number;
 
+  @type("boolean") premium: boolean;
+  @type("boolean") isRare = false;
+  @type("boolean") isMagical = false;
+
   constructor () {
     super()
   }
@@ -39,10 +43,10 @@ export abstract class Item extends Entity {
   }
 
   getSellPrice() {
-    return Math.floor(this.getPrice() / 3);;
+    return Math.floor(this.getPrice() / 3);
   }
 
-  getPrice() {
+  getPrice(allowPremium: boolean = true) {
     let price = 0;
 
     for (let i = 0; i < this.modifiers.length; i++) {
@@ -55,7 +59,7 @@ export abstract class Item extends Entity {
 
       } else if (this.modifiers[i].attr == "xp") {
         const num = parseInt(this.type[this.type.length - 1]);
-        price += (this.modifiers[i].modifier * 50) - (Math.pow(num, 2) * 30);
+        price += (this.modifiers[i].modifier * 50) - (Math.pow(num, 2) * 70);
 
       } else if (
         this.modifiers[i].attr == "strength" ||
@@ -85,11 +89,11 @@ export abstract class Item extends Entity {
       } else if (this.modifiers[i].attr == "criticalStrikeChance") {
         price += this.modifiers[i].modifier * 500;
       }
-
     }
 
-    // this.modifiers
-    return Math.round(price * 100) / 100;
+    return (!this.premium || !allowPremium)
+      ? Math.round(price * 100) / 100
+      : Math.max(Math.floor(price / 150), 1);
   }
 
 }
