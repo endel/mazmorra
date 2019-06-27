@@ -225,7 +225,10 @@ export class DungeonState extends Schema {
     ) {
       player.position.set(hero.currentCoords);
 
-    } else if (hero.currentProgress <= this.progress || isBossMap(this.progress)) {
+    } else if (
+      hero.currentProgress <= this.progress ||
+      (isBossMap(this.progress) && this.isBossAlive())
+    ) {
       player.position.set(this.roomUtils.startPosition)
 
     } else {
@@ -368,6 +371,17 @@ export class DungeonState extends Schema {
     }
 
     unit.position.moveTo(moves);
+  }
+
+  isBossAlive () {
+    const bosses: Enemy[] = [];
+    for (let id in this.entities) {
+      const entity = this.entities[id] as Enemy;
+      if (entity.isBoss) {
+        bosses.push(entity);
+      }
+    }
+    return bosses.filter(boss => boss.isAlive).length > 0;
   }
 
   addMessage (player, message) {

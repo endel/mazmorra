@@ -42,6 +42,10 @@ export abstract class Item extends Entity {
     this.modifiers.push(mod);
   }
 
+  getModifier(attr: keyof StatsModifiers) {
+    return this.modifiers.find(modifier => modifier.attr === attr);
+  }
+
   getSellPrice() {
     return Math.floor(this.getPrice() / 3);
   }

@@ -6,6 +6,9 @@
   background #cca874
   font-size 28px
 
+  @media only screen and (max-width: 768px)
+    font-size 20px
+
   &::after
     content ' '
     position absolute
@@ -31,7 +34,7 @@
   h2
     color #986c1b
     text-shadow -1px 0 #2c1800, 0 -1px #2c1800, 1px 0 #2c1800, 0px 2px #2c1800
-    font-size 32px
+    font-size 1.1em
 
     &.red
       color #d00000
@@ -66,16 +69,26 @@
     text-shadow -1px 0 #002870, 0 -1px #002870, 1px 0 #002870, 0px 2px #002870
     color #ced9fd
 
+  .rare
+    text-shadow -1px 0 #a57600, 0 -1px #a57600, 1px 0  #a57600, 0px 2px #a57600
+    color #f5b100
+    font-size 0.85em
+
+  .magical
+    text-shadow -1px 0 #0c4084, 0 -1px #0c4084, 1px 0 #0c4084, 0px 2px #0c4084
+    color #246098
+    font-size 0.85em
+
   p
     color #2e1100
-    font-size 26px
+    font-size 0.85em
     margin 0
 
   img
     image-rendering pixelated
 
   small
-    font-size 24px
+    font-size 0.82em
     margin-left 4px
     &.increase
       color #3c8008
