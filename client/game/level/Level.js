@@ -392,13 +392,13 @@ export default class Level extends THREE.Object3D {
     // essa é ok
     // sounds.switchSoundtrack('higureForest');
     const soundtrackMap = {
-      "castle": "moonlightForest",
+      "castle": "moonlight-forest",
 
-      "rock": 'higureForest',
-      "rock-2": 'higureForest',
-      "ice": 'higureForest',
-      "grass": 'higureForest',
-      "inferno": 'higureForest',
+      "rock": 'higure-forest',
+      "rock-2": 'higure-forest',
+      "ice": 'higure-forest',
+      "grass": 'higure-forest',
+      "inferno": 'higure-forest',
     };
 
     sounds.switchSoundtrack(soundtrackMap[this.mapkind]);
@@ -608,8 +608,6 @@ export default class Level extends THREE.Object3D {
 
   async checkAdPreRoll() {
     return new Promise((resolve, reject) => {
-      return resolve();
-
       if (!this.totalSessions) {
         this.totalSessions = Number(window.localStorage.getItem("totalSessions") || 0);
       }

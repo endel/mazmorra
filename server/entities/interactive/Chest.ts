@@ -3,11 +3,13 @@ import { type } from "@colyseus/schema";
 import { Interactive } from "../Interactive";
 import helpers from "../../../shared/helpers";
 import { Action } from "../../actions/Action";
+import { ItemDropOptions } from "../../utils/RoomUtils";
 
 export class Chest extends Interactive {
   @type("string") kind: string;
 
   walkable = true;
+  itemDropOptions: ItemDropOptions;
 
   constructor (position, kind: string, isOpen = false) {
     super(helpers.ENTITIES.CHEST, position)
@@ -23,11 +25,8 @@ export class Chest extends Interactive {
     if (!this.action) {
       this.action = new Action("open", true);
 
-      if (this.kind === 'chest2') {
-        state.dropItemFrom(this, undefined, {
-          isRare: true,
-          isMagical: state.rand.intBetween(0, 1) === 0
-        });
+      if (this.itemDropOptions) {
+        state.dropItemFrom(this, undefined, this.itemDropOptions);
 
       } else {
         state.dropItemFrom(this);

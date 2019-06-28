@@ -15,7 +15,7 @@ ResourceManager.load(() => {
   body.classList.remove("loading");
   body.classList.add("loaded");
 
-  switchSoundtrack("higureForest");
+  switchSoundtrack("higure-forest");
 
   const game = new Game(document.getElementById('game'))
   game.render();

@@ -1,49 +1,42 @@
-
-export function playRandom(soundOptions) {
-  soundOptions[Math.floor(Math.random() * soundOptions.length)].play();
-}
+import { Howler, Howl } from "howler";
 
 /**
  * Music (The Adventurer's Collection Tabletop Soundtrack)
  * By Alec Shea (https://slaleky.itch.io/fantasy-dungeons-and-dark-places-music-vol-1)
  */
-export const soundtrack = {
-  // higureForest: require('../resource/sounds/music/higure-forest.mp3'),
-  // moonlightForest: require('../resource/sounds/music/moonlight-forest.mp3'),
-  // plagueOfNighterrors: require('../resource/sounds/music/plague-of-nighterrors.mp3'),
-};
-//
+const soundtracks = new Howl(require('../../public/soundtracks.json'));
+
+export function playRandom(soundOptions) {
+  soundOptions[Math.floor(Math.random() * soundOptions.length)].play();
+}
 
 export let soundtrackVolume = 0.45;
 let curentSoundTrack;
 let curentSoundTrackName;
 
 export function fadeOut(soundId) {
-  return;
   if (!soundId) { soundId = curentSoundTrack; }
-  const previousVolume = window.$_audiosprite.volume(soundId);
-  window.$_audiosprite.fade(previousVolume, 0, 1000, soundId);
+  const previousVolume = soundtracks.volume(soundId);
+  soundtracks.fade(previousVolume, 0, 1000, soundId);
 }
 
 export function fadeIn(soundId, toVolume) {
-  return;
-  window.$_audiosprite.fade(0, toVolume, 1000, soundId);
+  soundtracks.fade(0, toVolume, 1000, soundId);
 }
 
 
 export function switchSoundtrack(trackName) {
-  return;
   if (curentSoundTrackName === trackName) {
     return;
   }
 
-  const previousVolume = window.$_audiosprite.volume(curentSoundTrack);
+  const previousVolume = soundtracks.volume(curentSoundTrack);
 
   if (curentSoundTrack && previousVolume > 0) {
     const soundTrackToFade = curentSoundTrack;
-    window.$_audiosprite.on('fade', function (soundId) {
+    soundtracks.on('fade', function (soundId) {
       if (soundId === soundTrackToFade) {
-        window.$_audiosprite.stop(soundId);
+        soundtracks.stop(soundId);
       }
     });
     fadeOut(curentSoundTrack);
@@ -51,16 +44,14 @@ export function switchSoundtrack(trackName) {
   }
 
   curentSoundTrackName = trackName;
-  curentSoundTrack = soundtrack[trackName].play();
-  window.$_audiosprite.loop(true, curentSoundTrack);
+  curentSoundTrack = soundtracks.play(trackName);
+  soundtracks.loop(true, curentSoundTrack);
   fadeIn(curentSoundTrack, soundtrackVolume);
 
   // window.$_audiosprite.fade(0, soundtrackVolume, 1000, curentSoundTrack);
 
   return curentSoundTrack;
 }
-
-window.soundtrack = soundtrack;
 
 export const doorSound = require('../resource/sounds/door.mp3');
 

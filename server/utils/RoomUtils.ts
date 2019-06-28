@@ -267,8 +267,23 @@ export class RoomUtils {
   }
 
   populateBossRoom(room: DungeonRoom) {
-    this.addEntity(room, (position) => new Chest(position, 'chest2'));
-    this.addEntity(room, (position) => new Chest(position, 'chest2'));
+    this.addEntity(room, (position) => {
+      const chest = new Chest(position, 'chest2')
+      chest.itemDropOptions = {
+        isRare: true,
+        isMagical: this.realRand.intBetween(0, 1) === 0
+      };
+      return chest;
+    });
+
+    this.addEntity(room, (position) => {
+      const chest = new Chest(position, 'chest2')
+      chest.itemDropOptions = {
+        isRare: true,
+        isMagical: this.realRand.intBetween(0, 1) === 0
+      };
+      return chest;
+    });
   }
 
   populateLobby (rooms: DungeonRoom[]) {

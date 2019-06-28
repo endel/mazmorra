@@ -79,6 +79,11 @@ ${(
           ? 0
           : equipedItemModifier.modifier;
 
+        // workaround to not display `+30 (+30)` for potions.
+        if (item.type.indexOf("-potion") !== -1) {
+          equipedModifier = modifier.modifier;
+        }
+
         let modifierValue = modifier.modifier;
 
         // calculate damage modifier based on `primaryAttribute`
