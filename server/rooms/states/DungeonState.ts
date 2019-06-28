@@ -72,8 +72,6 @@ export class DungeonState extends Schema {
     this.mapkind = this.config.mapkind;
     this.mapvariation = (this.progress % 2 === 0) ? 2 : 1;
 
-    let grid, rooms;
-
     this.width = this.config.getMapWidth(this.progress);
     this.height = this.config.getMapHeight(this.progress);
     const minRoomSize = this.config.minRoomSize;
@@ -158,7 +156,7 @@ export class DungeonState extends Schema {
     console.log({ maxRoomSize });
     console.log({ numRooms });
 
-    [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, minRoomSize, maxRoomSize, numRooms);
+    const [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, minRoomSize, maxRoomSize, numRooms);
 
     this.rooms = rooms;
 

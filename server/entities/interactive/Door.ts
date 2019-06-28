@@ -16,6 +16,7 @@ interface DoorDestinyOptions {
   difficulty?: number;
   identifier?: string;
   mapkind?: string;
+  isPVPAllowed?: boolean;
 }
 
 export class DoorDestiny extends Schema implements DoorDestinyOptions {
@@ -23,6 +24,7 @@ export class DoorDestiny extends Schema implements DoorDestinyOptions {
   @type("string") mapkind: string;
   @type("number") difficulty: number;
   @type("number") progress: DoorProgress;
+  @type("boolean") isPVPAllowed: boolean;
 
   constructor(data: DoorDestinyOptions) {
     super();

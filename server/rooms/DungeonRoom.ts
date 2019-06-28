@@ -40,6 +40,11 @@ export class DungeonRoom extends Room<DungeonState> {
 
     this.setState(new DungeonState(this.progress, this.difficulty, season.seed));
 
+    // Allow PVP?
+    if (this.state.progress > 1 && options.isPVPAllowed) {
+      this.state.isPVPAllowed = true;
+    }
+
     this.state.events.on('goto', this.onGoTo.bind(this));
     this.state.events.on('sound', this.broadcastSound.bind(this));
     this.state.events.on('send', this.sendToPlayer.bind(this));

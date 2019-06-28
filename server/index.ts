@@ -19,6 +19,7 @@ const server = http.createServer(app);
 const gameServer = new Server({ server: server });
 
 gameServer.register('dungeon', DungeonRoom);
+gameServer.register('dungeon-pvp', DungeonRoom, { isPVPAllowed: true });
 
 if (process.env.ENVIRONMENT !== "production") {
   app.use(cors());
