@@ -622,6 +622,8 @@ export default class Level extends THREE.Object3D {
 
   async checkAdPreRoll() {
     return new Promise((resolve, reject) => {
+      if (!window.isAdsAllowed()) { resolve(); }
+
       if (!this.totalSessions) {
         this.totalSessions = Number(window.localStorage.getItem("totalSessions") || 0);
       }

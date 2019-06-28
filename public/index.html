@@ -23,6 +23,19 @@
     <link rel="stylesheet" href="style.css">
 
     <script>
+      window.isAdsAllowed = function() {
+        var adsNotAllowedFor = ['kongregate.com', 'newgrounds.com']
+        var referrer = document.referrer;
+        for (var i = 0; i < adsNotAllowedFor.length; i++) {
+          if (referrer.indexOf(adsNotAllowedFor[i]) !== -1) {
+            return false;
+          }
+        }
+        return true;
+      }
+    </script>
+
+    <script>
       var aiptag = aiptag || {};
       aiptag.cmd = aiptag.cmd || [];
       aiptag.cmd.display = aiptag.cmd.display || []; aiptag.cmd.player = aiptag.cmd.player || [];
@@ -120,7 +133,9 @@
       <!-- Adinplay banners -->
       <div id='mazmorra-io_300x250' class="ad-left">
         <script type='text/javascript'>
-          aiptag.cmd.display.push(function() { aipDisplayTag.display('mazmorra-io_300x250'); });
+          if (window.isAdsAllowed()) {
+            aiptag.cmd.display.push(function () { aipDisplayTag.display('mazmorra-io_300x250'); });
+          }
         </script>
       </div>
 
