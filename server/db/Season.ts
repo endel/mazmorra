@@ -10,7 +10,11 @@ export interface DBSeason extends mongoose.Document {
   until: number;
 };
 
-export const Season = mongoose.model<DBSeason>('Season', new Schema<DBSeason>({
+const SeasonSchema = new Schema<DBSeason>({
   seed: String,
   until: Number
-}));
+});
+
+SeasonSchema.index({ until: -1 });
+
+export const Season = mongoose.model<DBSeason>('Season', SeasonSchema);

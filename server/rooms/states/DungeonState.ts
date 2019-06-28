@@ -388,14 +388,15 @@ export class DungeonState extends Schema {
   }
 
   addMessage (player, message) {
-    return this.createTextEvent(message, player.position, false, undefined, true)
+    return this.createTextEvent(message, player.position, false, undefined, false);
   }
 
   createTextEvent (text, position, kind, ttl, small?) {
-    var textEvent = new TextEvent(text, position, kind, ttl, small)
-    textEvent.state = this
-    this.addEntity(textEvent)
-    return textEvent
+    var textEvent = new TextEvent(text, position, kind, ttl, small);
+    textEvent.state = this;
+    this.addEntity(textEvent);
+    setTimeout(() => this.removeEntity(textEvent), 3000);
+    return textEvent;
   }
 
   update (currentTime) {

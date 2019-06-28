@@ -11,6 +11,7 @@ import helpers from "../../../shared/helpers"
 
 import * as sounds from '../../core/sound';
 import { doorSound, playRandom } from '../../core/sound';
+import { trackEvent } from '../../utils';
 
 export default class Level extends THREE.Object3D {
 
@@ -128,6 +129,13 @@ export default class Level extends THREE.Object3D {
         player.getEntity().emit('zoom', 1.5);
 
         this.room.onLeave.addOnce(() => {
+          // analytics event
+          trackEvent('gameplay-progress', {
+            event_category: 'Gameplay',
+            event_label: 'Progress',
+            value: data.progress
+          });
+
           setTimeout(async () => this.room = await this.enterRoom('dungeon', data), 500);
         });
 
@@ -530,6 +538,12 @@ export default class Level extends THREE.Object3D {
   }
 
   distributePoint (event) {
+    trackEvent('distribute-point', {
+      event_category: 'Character',
+      event_label: 'Distribute point',
+      value: event.attribute
+    });
+
     this.room.send(['distribute-point', { attribute: event.attribute }]);
   }
 

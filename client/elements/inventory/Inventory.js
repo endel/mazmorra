@@ -2,6 +2,7 @@ import EquipedItems from './EquipedItems'
 import SlotStrip from './SlotStrip'
 import ItemSlot from './ItemSlot'
 import { SpriteText2D, textAlign } from 'three-text2d'
+import { trackEvent } from '../../utils';
 
 export default class Inventory extends THREE.Object3D {
 
@@ -56,6 +57,8 @@ export default class Inventory extends THREE.Object3D {
   }
 
   setTradingItems (items) {
+    trackEvent('trade-open', { event_category: 'Trade', event_label: 'Open' });
+
     this.titleText.text = "Trade";
 
     this.purchaseSlots.userData.slots = items;

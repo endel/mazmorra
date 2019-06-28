@@ -9,12 +9,12 @@ export function humanize (value) {
     underscoresToSpaces.slice(1).toLowerCase();
 
   return caseCorrected.replace(/\-/g, " ").replace(/([0-9])$/g, " - T$1");
+}
 
-  // return string
-  //   .replace(/^[\s_]+|[\s_]+$/g, '')
-  //   .replace(/\-/g, ' ')
-  //   .replace(/[_\s]+/g, ' ')
-  //   .replace(/^[a-z]/, function (m) { return m.toUpperCase(); });
+export function trackEvent(name, options) {
+  if (process.env.NODE_ENV === "production") {
+    gtag('event', name, options);
+  }
 }
 
 const lightPool = [

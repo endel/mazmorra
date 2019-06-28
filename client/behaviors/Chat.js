@@ -17,6 +17,11 @@ export default class Chat extends Behaviour {
 
     this.form.addEventListener('submit', this.onSubmitCallback)
     document.addEventListener('keyup', this.onKeyUpCallback)
+
+    this.input.addEventListener("keydown", (e) => {
+      // e.preventDefault();
+      e.stopPropagation();
+    });
   }
 
   onKeyUp (e) {

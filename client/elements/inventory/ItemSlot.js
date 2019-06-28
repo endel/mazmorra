@@ -1,5 +1,6 @@
 import hint from "../hud/Hint";
 import EquipedItems from "./EquipedItems";
+import { trackEvent } from "../../utils";
 
 let draggingItem = null
   , draggingFrom = null
@@ -130,11 +131,13 @@ export default class ItemSlot extends THREE.Object3D {
   }
 
   dispatchSell(itemData) {
-      this.dispatchEvent({
-        type: "inventory-sell",
-        bubbles: true,
-        ...itemData
-      });
+    trackEvent('trade-sell', { event_category: 'Trade', event_label: 'Sell' });
+
+    this.dispatchEvent({
+      type: "inventory-sell",
+      bubbles: true,
+      ...itemData
+    });
   }
 
   onDragEnd(e) {

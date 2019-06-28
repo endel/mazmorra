@@ -26,11 +26,13 @@ export class DungeonRoom extends Room<DungeonState> {
     this.heroes = new WeakMap();
     this.clientMap = new WeakMap();
 
-    let season = await Season.find({}).sort({ _id: -1 }).findOne();
+    let season = await Season.find({}).sort({ until: -1 }).findOne();
+
     if (!season || Date.now() > season.until) {
       season = await Season.create({
         seed: `${generateId()}-${generateId()}`,
-        until: Date.now() + 60 * 60 * 24 * 7 // one week from now!
+        until: Date.now() + (60 * 60 * 24 * 1 * 1000) // one from now! (in milliseconds)
+        // until: Date.now() + (60 * 60 * 24 * 7 * 1000) // one week from now! (in milliseconds)
       })
     }
 
@@ -126,9 +128,7 @@ export class DungeonRoom extends Room<DungeonState> {
       player.dropItem(inventoryType, itemId);
 
     } else if (key == 'msg') {
-      // remove message after 3 seconds
-      let entity = this.state.addMessage(player, value)
-      this.clock.setTimeout(this.removeEntity.bind(this, entity), 3000)
+      this.state.addMessage(player, value);
     }
   }
 

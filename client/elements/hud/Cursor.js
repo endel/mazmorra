@@ -3,6 +3,7 @@ import ResourceManager from '../../resource/manager'
 import lerp from 'lerp'
 import { Behaviour } from 'behaviour.js'
 import { isMobile } from '../../utils/device';
+import { trackEvent } from '../../utils';
 
 class CursorBehaviour extends Behaviour {
   onAttach () {
@@ -87,6 +88,12 @@ export default class Cursor extends THREE.Object3D {
   }
 
   performItemCast() {
+    trackEvent('gameplay-cast-item', {
+      event_category: 'Gameplay',
+      event_label: 'Cast item',
+      value: this.castingItem.userData.item.type
+    });
+
     this.remove(this.castingItem);
     this.castingItemSlot.item = this.castingItem;
     this.castingItem = undefined;
