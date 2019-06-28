@@ -8,7 +8,7 @@ import { EventEmitter } from "events";
 import PF from "pathfinding";
 
 import { GridUtils } from "../../utils/GridUtils";
-import { RoomUtils } from "../../utils/RoomUtils";
+import { RoomUtils, ItemDropOptions } from "../../utils/RoomUtils";
 
 // entities
 import { Player } from "../../entities/Player";
@@ -246,13 +246,14 @@ export class DungeonState extends Schema {
     this.removeEntity(player);
   }
 
-  dropItemFrom (unit: Unit, item?: Item) {
-    if (!item) {
+  dropItemFrom (unit: Unit, item?: Item, dropOptions?: ItemDropOptions) {
+    if (!item && !dropOptions) {
       // create random drop item
       item = this.roomUtils.createRandomItem();
-    }
 
-    // TODO: pass ItemDropOptions here.
+    } else if (dropOptions) {
+      item = this.roomUtils.createItemByDropOptions(dropOptions);
+    }
 
     // may not drop anything...
     if (item) {

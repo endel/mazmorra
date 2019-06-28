@@ -58,58 +58,40 @@ export class NPC extends Player {
       ]);
 
     } else if (this.kind === "majesty") {
-      // if (this.state.rand.intBetween(0, 5) === 0) {
-      if (this.state.rand.intBetween(0, 0) === 0) {
-        state.createTextEvent("I've got you a deal.", this.position, 'white', 1000);
+      const genericMessages = [
+        "I've got you a deal.",
+        `Bring me something special!`,
+        `The prophecy is true.`,
+        `Demons are amongst us`,
+      ];
+      state.createTextEvent(genericMessages[Math.floor(Math.random() * genericMessages.length)], this.position, 'white', 1000);
 
-        setTimeout(() => {
-          const itemDropOptions = {
-            progress: 500,
-            isMagical: true,
-            isRare: true
-          };
+      setTimeout(() => {
+        const itemDropOptions = {
+          progress: 500,
+          isMagical: true,
+          isRare: true
+        };
 
-          const items = [];
+        const items = [];
 
-          const potion1 = new Potion();
-          potion1.addModifier({ attr: "xp", modifier: POTION_1_MODIFIER });
-          items.push(potion1);
+        const potion1 = new Potion();
+        potion1.addModifier({ attr: "xp", modifier: POTION_1_MODIFIER });
+        items.push(potion1);
 
-          [
-            this.state.roomUtils.createArmor(itemDropOptions),
-            this.state.roomUtils.createBoot(itemDropOptions),
-            this.state.roomUtils.createHelmet(itemDropOptions),
-            this.state.roomUtils.createShield(itemDropOptions),
-            this.state.roomUtils.createWeapon(player.primaryAttribute, itemDropOptions),
-          ].forEach(item => {
-            item.premium = true;
-            items.push(item);
-          });
+        [
+          this.state.roomUtils.createArmor(itemDropOptions),
+          this.state.roomUtils.createBoot(itemDropOptions),
+          this.state.roomUtils.createHelmet(itemDropOptions),
+          this.state.roomUtils.createShield(itemDropOptions),
+          this.state.roomUtils.createWeapon(player.primaryAttribute, itemDropOptions),
+        ].forEach(item => {
+          item.premium = true;
+          items.push(item);
+        });
 
-          // const potion2 = new Potion();
-          // potion2.addModifier({ attr: "xp", modifier: POTION_2_MODIFIER });
-          // items.push(potion2);
-
-          // const potion3 = new Potion();
-          // potion3.addModifier({ attr: "xp", modifier: POTION_3_MODIFIER });
-          // items.push(potion3);
-
-          // const potion4 = new Potion();
-          // potion4.addModifier({ attr: "xp", modifier: POTION_4_MODIFIER });
-          // items.push(potion4);
-
-          player.setTradingItems(items);
-        }, 1000);
-
-      } else {
-        const genericMessages = [
-          `Bring me something special!`,
-          `The prophecy is true.`,
-          `Demons are amongst us`,
-        ];
-        state.createTextEvent(genericMessages[Math.floor(Math.random() * genericMessages.length)], this.position, 'white', 1000);
-
-      }
+        player.setTradingItems(items);
+      }, 1000);
 
     } else {
       const genericMessages = [
@@ -125,6 +107,22 @@ export class NPC extends Player {
 
     // prevent NPC from moving right after talking.
     this.position.lastMove += 500;
+  }
+
+  getPotionModifierForPlayer(player) {
+    let modifier = POTION_1_MODIFIER;
+
+    if (player.hp > 180) {
+      modifier = POTION_4_MODIFIER;
+
+    } else if (player.hp > 110) {
+      modifier = POTION_3_MODIFIER;
+
+    } else if (player.hp > 50) {
+      modifier = POTION_2_MODIFIER;
+    }
+
+    return modifier;
   }
 
   update (currentTime) {

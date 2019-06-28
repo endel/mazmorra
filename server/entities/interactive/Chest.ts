@@ -22,8 +22,18 @@ export class Chest extends Interactive {
   interact (moveEvent, player, state) {
     if (!this.action) {
       this.action = new Action("open", true);
-      state.dropItemFrom(this);
-      moveEvent.cancel()
+
+      if (this.kind === 'chest2') {
+        state.dropItemFrom(this, undefined, {
+          isRare: true,
+          isMagical: state.rand.intBetween(0, 1) === 0
+        });
+
+      } else {
+        state.dropItemFrom(this);
+      }
+
+      moveEvent.cancel();
     }
   }
 

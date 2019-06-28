@@ -76,7 +76,7 @@ ${(
       item.modifiers.map(modifier => {
         const equipedItemModifier = equipedItems[item.slotName] && equipedItems[item.slotName].modifiers.filter(mod => mod.attr === modifier.attr)[0];
         let equipedModifier = (!equipedItemModifier)
-          ? modifier.modifier
+          ? 0
           : equipedItemModifier.modifier;
 
         let modifierValue = modifier.modifier;

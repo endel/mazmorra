@@ -6,7 +6,7 @@ import { Bar } from "../../../core/Bar";
 export const POTION_1_MODIFIER = 30;
 export const POTION_2_MODIFIER = 60;
 export const POTION_3_MODIFIER = 120;
-export const POTION_4_MODIFIER = 150;
+export const POTION_4_MODIFIER = 200;
 
 export class Potion extends ConsumableItem {
 

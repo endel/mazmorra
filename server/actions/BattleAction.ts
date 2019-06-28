@@ -59,8 +59,8 @@ export class BattleAction extends Action {
 
     const percent = Math.random();
 
-    this.missed = (percent <= this.defender.evasion);
-    this.critical = (percent >= 1 - this.defender.criticalStrikeChance);
+    this.missed = (percent <= this.defender.getEvasion());
+    this.critical = (percent >= 1 - this.defender.getCriticalStrikeChance());
 
     // force to update unit's direction towards defender
     this.attacker.updateDirection(this.defender.position.x, this.defender.position.y);

@@ -42,7 +42,7 @@ export interface DungeonRoom {
   branches: Point[];
 }
 
-interface ItemDropOptions {
+export interface ItemDropOptions {
   progress?: number,
   isRare?: boolean,
   isMagical?: boolean,
@@ -631,7 +631,7 @@ export class RoomUtils {
     if (dropOptions.isMagical) {
       item.isMagical = true;
 
-      const primaryAttribute = this.getRandomPrimaryAttribute();
+      const primaryAttribute = damageAttribute || this.getRandomPrimaryAttribute();
       item.damageAttribute = primaryAttribute;
 
       this.assignBetterItemModifiers(item, [primaryAttribute], { ratio, goodness });
@@ -819,10 +819,12 @@ export class RoomUtils {
 
     if (dropOptions.isRare) {
       item.isRare = true;
+      this.assignBetterItemModifiers(item, ['armor', 'evasion', 'attackSpeed'], { ratio, goodness });
     }
 
     if (dropOptions.isMagical) {
       item.isMagical = true;
+      this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], { ratio, goodness });
     }
 
     return item;
@@ -865,19 +867,24 @@ export class RoomUtils {
   assignBetterItemModifiers(item: EquipableItem, allowedModifiers: (keyof StatsModifiers)[], itemGoodness: any) {
     const modifiers: DBAttributeModifier[] = [];
 
-    for (let i=0; i<allowedModifiers.length; i++) {
-      if (this.realRand.intBetween(0, 1) === 0) {
-        modifiers.push({
-          attr: allowedModifiers[i],
-          modifier: this.realRand.intBetween(1, Math.ceil(itemGoodness.ratio))
-        })
-      }
+    const shuffledModifiers = this.shuffleReal(allowedModifiers)
+
+    for (let i=0; i<shuffledModifiers.length; i++) {
+      if (this.realRand.intBetween(0, i) === 0) {
+        let attr = shuffledModifiers[i];
+        let modifier = this.realRand.intBetween(1, Math.ceil(itemGoodness.ratio));
+        modifiers.push({ attr, modifier });
+      };
     }
 
     modifiers.forEach(modifier => {
       const existingModifier = item.getModifier(modifier.attr)
       if (existingModifier) {
         existingModifier.modifier += modifier.modifier;
+
+        if (modifier.attr === "armor") {
+          existingModifier.modifier = Math.round(existingModifier.modifier * 100) / 100;
+        }
 
       } else {
         item.addModifier(modifier);
@@ -888,6 +895,16 @@ export class RoomUtils {
   shuffle (array: any[]) {
     for (var i = array.length - 1; i > 0; i--) {
       var j = this.rand.intBetween(0, i)
+      var temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
+    return array;
+  }
+
+  shuffleReal (array: any[]) {
+    for (var i = array.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * i);
       var temp = array[i];
       array[i] = array[j];
       array[j] = temp;

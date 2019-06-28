@@ -64,8 +64,8 @@ export class Unit extends Entity {
   @type("number") criticalBonus = 1.5; // damage * criticalBonus (on critical)
 
   // 0~1
-  evasion: number = 0.001;
-  criticalStrikeChance: number = 0.1;
+  evasion: number = 1;
+  criticalStrikeChance: number = 1;
 
   movementSpeed: number = 1200;
   attackSpeed: number = 1000;
@@ -218,6 +218,14 @@ export class Unit extends Entity {
 
   getArmor() {
     return this.statsModifiers.armor + (this.attributes.agility * 0.16) + this.baseArmor[this.primaryAttribute];
+  }
+
+  getEvasion() {
+    return (this.evasion + this.statsModifiers.evasion) / 100;
+  }
+
+  getCriticalStrikeChance() {
+    return (this.criticalStrikeChance + this.statsModifiers.criticalStrikeChance) / 100;
   }
 
   onMove(moveEvent: MoveEvent, prevX, prevY, currentX, currentY) {
