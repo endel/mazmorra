@@ -123,15 +123,17 @@ export class BattleAction extends Action {
       //
       // Use mana, if applicable
       //
-      const weapon = this.attacker.getWeapon();
-      const manaCost = (weapon && weapon.manaCost) || 0;
-      if (active && this.attacker.mp.current >= manaCost) {
-        this.attacker.mp.increment(-manaCost);
+      if (active) {
+        const weapon = this.attacker.getWeapon();
+        const manaCost = (weapon && weapon.manaCost) || 0;
+        if (this.attacker.mp.current >= manaCost) {
+          this.attacker.mp.increment(-manaCost);
 
-      } else {
-        // NOT ENOUGH MANA
-        // this.attacker.state.createTextEvent(`Not enough mana.`, this.attacker.position, 'white', 100);
-        active = false;
+        } else {
+          // NOT ENOUGH MANA
+          this.attacker.state.createTextEvent(`Not enough mana.`, this.attacker.position, 'white', 100);
+          active = false;
+        }
       }
 
       this.active = active;

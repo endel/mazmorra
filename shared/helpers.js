@@ -212,6 +212,7 @@ var helpers = {
       // Interactive
       ROCK: 'rock',
       FOUNTAIN: 'fountain',
+      CHECK_POINT: 'check-point',
 
       // PROJECTILES
       PROJECTILE_MAGIC: 'projectile-magic',

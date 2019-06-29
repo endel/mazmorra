@@ -5,10 +5,10 @@ import helpers from "../../../shared/helpers";
 import { Point } from "../../rooms/states/DungeonState";
 
 export enum DoorProgress {
-  FORWARD = 1,
   BACK = -1,
-  HOME = 0,
-  LATEST = 10,
+  FORWARD = -2,
+  HOME = 1,
+  LATEST = -3,
 }
 
 interface DoorDestinyOptions {
@@ -40,6 +40,7 @@ export class Door extends Interactive {
   @type("boolean") isLocked: boolean = false;
 
   walkable = true;
+  ownerId: string;
 
   constructor (position: Point, destiny: DoorDestiny, isLocked: boolean = false) {
     super(helpers.ENTITIES.DOOR, position);
@@ -48,7 +49,7 @@ export class Door extends Interactive {
   }
 
   interact (moveEvent, player, state) {
-    if (!player.isAlive) {
+    if (!player.isAlive || player.isSwitchingDungeons) {
       return;
     }
 
@@ -75,11 +76,20 @@ export class Door extends Interactive {
 
     // remove portal when using it.
     if (isPortal) {
-      player.shouldSaveCoords = true;
+      // only the portal owner can enter this portal.
+      if (this.ownerId !== player.id) {
+        return;
+      }
+
+      if (state.progress > 1) {
+        player.shouldSaveCoords = true;
+      }
+
       state.removeEntity(this);
     }
 
-    state.events.emit('goto', player, this.destiny, isPortal);
+    player.isSwitchingDungeons = true;
+    state.events.emit('goto', player, this.destiny, { isPortal });
   }
 
 }

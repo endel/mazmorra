@@ -36,6 +36,10 @@ export class Player extends Unit {
   attackSpeed = 900;
 
   shouldSaveCoords: boolean = false;
+  checkPoint: number;
+
+  hero: DBHero;
+  isSwitchingDungeons: boolean = false;
 
   constructor (id, hero: DBHero, state?) {
     super(id, hero, state)
@@ -61,6 +65,8 @@ export class Player extends Unit {
     this.hpRegeneration = 1;
     this.direction = "bottom";
     this.walkable = true;
+
+    this.hero = hero;
   }
 
   getItemByType(type: string) {

@@ -19,6 +19,7 @@ import Portal from '../../elements/Portal';
 import Projectile from '../../elements/effects/Projectile';
 
 import { getClientId } from '../../core/network'
+import CheckPoint from '../../elements/CheckPoint';
 
 export default class Factory {
 
@@ -109,6 +110,10 @@ export default class Factory {
 
       case helpers.ENTITIES.FOUNTAIN:
         element = new Fountain(data);
+        break;
+
+      case helpers.ENTITIES.CHECK_POINT:
+        element = new CheckPoint(data);
         break;
 
       case helpers.ENTITIES.TEXT_EVENT:

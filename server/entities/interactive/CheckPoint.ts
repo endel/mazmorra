@@ -1,0 +1,36 @@
+import { type } from "@colyseus/schema";
+import { Interactive } from "../Interactive";
+import helpers from "../../../shared/helpers";
+import { Action } from "../../actions/Action";
+
+export class CheckPoint extends Interactive {
+  @type("boolean") active: boolean = false;
+
+  activationTime: number = Date.now();
+  fillTimeout: number = 10000; // 10 seconds to fill
+
+  constructor (position) {
+    super(helpers.ENTITIES.CHECK_POINT, position)
+  }
+
+  update (currentTime) {
+    if (currentTime > this.activationTime + this.fillTimeout) {
+      this.active = false
+    }
+  }
+
+  interact (moveEvent, player, state) {
+    this.action = new Action("activate", true);
+    setInterval(() => this.action = null, 2000);
+
+    this.active = true;
+    this.activationTime = Date.now();
+
+    if (state.progress > 1) {
+      player.checkPoint = state.progress;
+    }
+
+    state.events.emit("send", player, ["checkpoints", player.hero.checkPoints]);
+  }
+
+}

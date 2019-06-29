@@ -70,7 +70,7 @@ export interface DBHero extends mongoose.Document {
   body: number;
 
   currentProgress: number;
-  currentCoords: {x: number, y: number};
+  currentCoords: { x: number, y: number };
   latestProgress: number;
   alive: boolean;
 
@@ -92,6 +92,8 @@ export interface DBHero extends mongoose.Document {
   inventory: DBItem[];
   equipedItems: DBItem[];
   quickInventory: DBItem[];
+
+  checkPoints: number[];
 
   skills: any;
 };
@@ -144,6 +146,8 @@ export const Hero = mongoose.model<DBHero>('Hero', new Schema<DBHero>({
     { type: helpers.ENTITIES.MP_POTION_1, modifiers: [{ attr: "mp", modifier: POTION_1_MODIFIER }] },
     { type: helpers.ENTITIES.SCROLL },
   ] },
+
+  checkPoints: { type: [Number], default: [1] },
 
   skills: [ Skill ]
 }));

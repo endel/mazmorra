@@ -9,6 +9,7 @@ import { Scroll } from "./items/consumable/Scroll";
 
 export class NPC extends Player {
   @type("string") kind: string;
+
   wanderer: boolean = true;
 
   constructor (kind, npcHero = {}, state?) {
@@ -20,7 +21,7 @@ export class NPC extends Player {
     this.type = helpers.ENTITIES.NPC;
     this.kind = kind;
 
-    this.walkable = false;
+    this.walkable = true;
   }
 
   updateMovementSpeed () {
@@ -59,8 +60,8 @@ export class NPC extends Player {
 
     } else if (this.kind === "majesty") {
       const genericMessages = [
-        "I've got you a deal.",
-        `Bring me something special!`,
+        `I don't reveal the source of my weapons.`,
+        `You can't handle my potions!`,
         `The prophecy is true.`,
         `Demons are amongst us`,
       ];

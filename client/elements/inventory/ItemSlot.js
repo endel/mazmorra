@@ -111,6 +111,8 @@ export default class ItemSlot extends THREE.Object3D {
       draggingItem = targetSlot.item
       draggingFrom = targetSlot
 
+      draggingItem.slot = targetSlot;
+
       // setup initialScale variable for the first time
       if (draggingItem.initialScale === undefined) {
         draggingItem.initialScale = draggingItem.scale.clone()
@@ -188,7 +190,10 @@ export default class ItemSlot extends THREE.Object3D {
       /**
        * dispatch "inventory-drag" event only for different types of inventories
        */
-      if (draggingFrom.parent && draggingFrom.parent.inventoryType !== this.parent.inventoryType) {
+      if (
+        draggingFrom.parent && this.parent &&
+        draggingFrom.parent.inventoryType !== this.parent.inventoryType
+      ) {
         this.dispatchEvent({
           type: "inventory-drag",
           bubbles: true,

@@ -68,19 +68,20 @@ export type MapConfig = {
   boss?: string[]
 };
 
-const NUM_LEVELS_PER_MAP = 15;
+const NUM_LEVELS_PER_MAP = 18;
+const NUM_LEVELS_PER_CHECKPOINT = 9;
 
 export function getMapConfig(progress: number) {
   if (progress === 1) {
-    // village / lobby!
-    const size = 9;
+    // castle / lobby!
+    const size = 24;
     return {
       daylight: true,
       mapkind: MapKind.CASTLE,
       getMapWidth: (progress: number) => size,
       getMapHeight: (progress: number) => size,
-      minRoomSize: { x: size, y: size },
-      maxRoomSize: { x: size, y: size },
+      minRoomSize: { x: 8, y: 8 },
+      maxRoomSize: { x: 8, y: 8 },
       enemies: {}
     }
   } else {
@@ -94,12 +95,16 @@ export function isBossMap(progress: number) {
   return ((progress + 1) % NUM_LEVELS_PER_MAP) === 0;
 }
 
+export function isCheckPointMap(progress: number) {
+  return ((progress + 1) % NUM_LEVELS_PER_CHECKPOINT) === 0;
+}
+
 export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: true,
     mapkind: MapKind.ROCK,
-    getMapWidth: (progress: number) => 15 + progress,
-    getMapHeight: (progress: number) => 15 + progress,
+    getMapWidth: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
+    getMapHeight: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 7, y: 7 },
     enemies: { 'bat': 0.33, 'rat': 0.33, 'spider': 0.33, 'spider-medium': 0.01 },
@@ -109,8 +114,8 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: false,
     mapkind: MapKind.ROCK,
-    getMapWidth: (progress: number) => 15 + progress,
-    getMapHeight: (progress: number) => 15 + progress,
+    getMapWidth: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
+    getMapHeight: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'slime': 0.33, 'slime-2': 0.33, 'skeleton-1': 0.33, 'slime-cube': 0.01, },
@@ -120,8 +125,8 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: true,
     mapkind: MapKind.GRASS,
-    getMapWidth: (progress: number) => 15 + progress,
-    getMapHeight: (progress: number) => 15 + progress,
+    getMapWidth: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
+    getMapHeight: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'skeleton-1': 0.33, 'skeleton-2': 0.33, 'skeleton-3': 0.33, 'spider-medium': 0.01 },
@@ -131,8 +136,8 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: false,
     mapkind: MapKind.GRASS,
-    getMapWidth: (progress: number) => 15 + progress,
-    getMapHeight: (progress: number) => 15 + progress,
+    getMapWidth: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
+    getMapHeight: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'goblin': 0.33, 'goblin-2': 0.33, 'goblin-3': 0.33, 'skeleton-2': 0.01 },

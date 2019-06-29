@@ -243,7 +243,7 @@ export default class Character extends THREE.Object3D {
 
     this.levelText.text = "Level " + data.lvl;
 
-    this.movementSpeedText.text = statsModifiers.movementSpeed.toFixed(1);
+    this.movementSpeedText.text = (data.attributes.agility * 0.5 + statsModifiers.movementSpeed).toFixed(1);
     this.attackSpeedText.text = (data.attributes.agility * 0.5 + statsModifiers.attackSpeed).toFixed(1);
 
     this.attackDistanceText.text = statsModifiers.attackDistance.toString();

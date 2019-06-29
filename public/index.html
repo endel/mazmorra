@@ -17,6 +17,8 @@
     <meta property="og:description"        content="Online hack'n slash multiplayer roguelike for the browser" />
     <meta property="og:image"              content="https://mazmorra.io/fb-share.png" />
 
+    <!-- <base href="https://mazmorra.io" /> -->
+
     <!-- Place favicon.ico in the root directory -->
     <link rel="icon" sizes="16x16" type="image/x-icon" href="images/sprites/favicon.png">
 
@@ -128,6 +130,11 @@
       </form>
     </section>
 
+    <section class="modal checkpoint-modal">
+      <h2>Checkpoints <a href="#" onclick="this.parentNode.parentNode.classList.remove('active');return;">(x)</a></h2>
+      <ul></ul>
+    </section>
+
     <section id="credentials" class="modal active">
 
       <!-- Adinplay banners -->
@@ -139,8 +146,9 @@
         </script>
       </div>
 
-      <!-- Adinplay banners -->
-      <div class="ad-right">
+      <!-- Updates! -->
+      <div class="updates">
+        <p><strong>29/06/2019</strong> - New feature: checkpoints!</p>
         <p><strong>28/06/2019</strong> - Beta version is out worldwide!</p>
       </div>
 

@@ -19,6 +19,8 @@ export class DungeonRoom extends Room<DungeonState> {
   clientMap = new WeakMap<Player, Client>();
 
   async onInit (options) {
+    console.log("onInit =>", options);
+
     this.progress = options.progress || 1;
     this.difficulty = options.difficulty || 1;
 
@@ -67,17 +69,14 @@ export class DungeonRoom extends Room<DungeonState> {
   }
 
   async onJoin (client: Client, options: any, hero: DBHero) {
-    const player = this.state.createPlayer(client, hero);
+    const player = this.state.createPlayer(client, hero, options);
 
     this.heroes.set(client, hero)
     this.players.set(client, player)
     this.clientMap.set(player, client)
 
     // store hero's currentProgress
-    if (
-      this.state.progress > 1 &&
-      this.state.progress !== hero.currentProgress
-    ) {
+    if (this.state.progress !== hero.currentProgress) {
       hero.currentProgress = this.state.progress;
 
       const $set: any = { currentProgress: hero.currentProgress };
@@ -132,12 +131,15 @@ export class DungeonRoom extends Room<DungeonState> {
       const { inventoryType, itemId } = value;
       player.dropItem(inventoryType, itemId);
 
+    } else if (key == 'checkpoint') {
+      this.onGoTo(player, { progress: parseInt(value) }, { isCheckPoint: true });
+
     } else if (key == 'msg') {
       this.state.addMessage(player, value);
     }
   }
 
-  onGoTo (player, data, isPortal) {
+  onGoTo (player, data, params: any = {}) {
     const client = this.clientMap.get(player);
     const hero = this.heroes.get(client);
 
@@ -146,7 +148,7 @@ export class DungeonRoom extends Room<DungeonState> {
       return;
     }
 
-    let progress: number = hero.currentProgress;
+    let progress: number = data.progress;
 
     if (data.progress === DoorProgress.FORWARD) {
       progress = hero.currentProgress + 1;
@@ -156,12 +158,9 @@ export class DungeonRoom extends Room<DungeonState> {
 
     } else if (data.progress === DoorProgress.LATEST) {
       progress = hero.latestProgress;
-
-    } else if (data.progress === DoorProgress.HOME) {
-      progress = 1;
     }
 
-    this.send(this.clientMap.get(player), ['goto', { progress }, isPortal]);
+    this.send(this.clientMap.get(player), ['goto', { progress }, params]);
   }
 
   sendToPlayer (player, data) {
@@ -211,8 +210,7 @@ export class DungeonRoom extends Room<DungeonState> {
         : null;
     }
 
-    // sync
-    await Hero.updateOne({ _id: hero._id }, {
+    const $update: any = {
       $set: {
         lvl: player.lvl,
         strength: player.attributes.strength,
@@ -229,7 +227,14 @@ export class DungeonRoom extends Room<DungeonState> {
 
         ...additionalData
       }
-    });
+    };
+
+    if (player.checkPoint) {
+      $update.$addToSet = { checkPoints: player.checkPoint };
+    }
+
+    // sync
+    await Hero.updateOne({ _id: hero._id }, $update);
 
     this.players.delete(client);
     this.clientMap.delete(player);

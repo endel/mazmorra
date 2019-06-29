@@ -23,8 +23,9 @@ import { Interactive } from "../../entities/Interactive";
 import { Entity } from "../../entities/Entity";
 import { MoveEvent } from "../../core/Movement";
 import { DBHero } from "../../db/Hero";
-import { MapKind, MapConfig, getMapConfig, isBossMap } from "../../utils/ProgressionConfig";
+import { MapKind, MapConfig, getMapConfig, isBossMap, isCheckPointMap } from "../../utils/ProgressionConfig";
 import { NPC } from "../../entities/NPC";
+import { Door, DoorDestiny } from "../../entities/interactive/Door";
 
 export interface Point {
   x: number;
@@ -213,20 +214,51 @@ export class DungeonState extends Schema {
     delete this.entities[entity.id]
   }
 
-  createPlayer (client, hero: DBHero) {
+  createPlayer (client, hero: DBHero, options: any) {
     var player = new Player(client.id, hero, this);
 
     if (
-      this.progress > 1 &&
-      hero.currentCoords &&
-      this.roomUtils.isValidTile(hero.currentCoords) // original room may have been expired
+      options.isPortal &&
+      (
+        (
+          this.progress > 1 &&
+          hero.currentCoords &&
+          this.roomUtils.isValidTile(hero.currentCoords) // original room may have been expired
+        ) || (
+          this.progress === 1
+        )
+      )
     ) {
-      player.position.set(hero.currentCoords);
+      if (this.progress === 1) {
+        // created a portal in a dungeon!
+        const portalBack = new Door({
+          x: this.roomUtils.checkPoint.position.x,
+          y: this.roomUtils.checkPoint.position.y - 1
+        }, new DoorDestiny({ progress: hero.currentProgress }));
+        portalBack.type = helpers.ENTITIES.PORTAL;
+        portalBack.ownerId = player.id;
+
+        this.addEntity(portalBack);
+
+        player.position.set({ x: portalBack.position.x + 1, y: portalBack.position.y + 1 });
+
+      } else {
+        // back from a portal!
+        player.position.set(hero.currentCoords);
+      }
+
+    } else if (
+      options.isCheckPoint &&
+      this.roomUtils.checkPoint &&
+      hero.checkPoints.indexOf(this.progress) !== -1 // hero has the checkpoint?
+    ) {
+      player.position.set(this.roomUtils.checkPoint.position);
 
     } else if (
       hero.currentProgress <= this.progress ||
       (isBossMap(this.progress) && this.isBossAlive())
     ) {
+      // Math.abs(this.progress - hero.currentProgress) === 1
       player.position.set(this.roomUtils.startPosition)
 
     } else {
@@ -375,14 +407,7 @@ export class DungeonState extends Schema {
   }
 
   isBossAlive () {
-    const bosses: Enemy[] = [];
-    for (let id in this.entities) {
-      const entity = this.entities[id] as Enemy;
-      if (entity.isBoss) {
-        bosses.push(entity);
-      }
-    }
-    return bosses.filter(boss => boss.isAlive).length > 0;
+    return this.roomUtils.bosses.filter(boss => boss.isAlive).length > 0;
   }
 
   addMessage (player, message) {

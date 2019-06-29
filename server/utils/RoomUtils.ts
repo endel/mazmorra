@@ -29,10 +29,11 @@ import { HelmetItem } from "../entities/items/equipable/HelmetItem";
 import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 import { Diamond } from "../entities/items/Diamond";
 import { Scroll } from "../entities/items/consumable/Scroll";
-import { MONSTER_BASE_ATTRIBUTES, isBossMap, MapKind } from "./ProgressionConfig";
+import { MONSTER_BASE_ATTRIBUTES, isBossMap, MapKind, isCheckPointMap } from "./ProgressionConfig";
 import { ConsumableItem } from "../entities/items/ConsumableItem";
 import { EquipableItem } from "../entities/items/EquipableItem";
 import { DBAttributeModifier } from "../db/Hero";
+import { CheckPoint } from "../entities/interactive/CheckPoint";
 
 export interface DungeonRoom {
   position: Point;
@@ -65,7 +66,10 @@ export class RoomUtils {
   endPosition: any;
 
   isBossDungeon: boolean = false;
+  bosses?: Boss[];
+
   hasFountain: boolean = false;
+  checkPoint?: CheckPoint;
 
   constructor (rand, state, rooms: DungeonRoom[]) {
     this.rand = rand
@@ -141,7 +145,7 @@ export class RoomUtils {
   }
 
   getRandomPosition() {
-    const room = this.rooms[this.rand.intBetween(0, this.rooms.length - 1)];
+    const room = this.getRandomRoom();
     return {
       x: room.position.x + this.rand.intBetween(0, room.size.x - 1),
       y: room.position.y + this.rand.intBetween(0, room.size.y - 1),
@@ -159,6 +163,16 @@ export class RoomUtils {
   getNextAvailablePosition (room: DungeonRoom) {
     let positions = this.cache.get(room)
     return positions.shift()
+  }
+
+  getRandomRoom(excluding?: DungeonRoom) {
+    let room: DungeonRoom;
+
+    do {
+      room = this.rooms[this.rand.intBetween(0, this.rooms.length - 1)];
+    } while (room === excluding && this.rooms.length > 1);
+
+    return room;
   }
 
   populateRooms () {
@@ -188,6 +202,8 @@ export class RoomUtils {
       boss.position.set(this.endPosition);
       boss.unitSpawner = MONSTER_BASE_ATTRIBUTES[bossType].spawner;
 
+      this.bosses = [boss];
+
       // define the item the boss will drop
       // for now, he only drops the key for the next level.
       const key = new ConsumableItem();
@@ -195,6 +211,17 @@ export class RoomUtils {
       boss.willDropItem = key;
 
       this.state.addEntity(boss);
+    }
+
+    if (isCheckPointMap(this.state.progress)) {
+      const checkPointRoom = this.getRandomRoom(this.startRoom);
+      this.rooms = this.rooms.filter(r => r !== checkPointRoom);
+
+      this.checkPoint = new CheckPoint({
+        x: checkPointRoom.position.y + Math.ceil(checkPointRoom.size.y / 2) - 1,
+        y: checkPointRoom.position.x + Math.ceil(checkPointRoom.size.x / 2) - 1,
+      })
+      this.state.addEntity(this.checkPoint);
     }
 
     this.rooms.forEach(room => {
@@ -287,67 +314,84 @@ export class RoomUtils {
   }
 
   populateLobby (rooms: DungeonRoom[]) {
-    rooms.forEach(room => {
-      /**
-       * Marchant
-       */
-      const merchant = new NPC('merchant', {}, this.state);
-      merchant.wanderer = false;
-      merchant.position.set(room.position.x + Math.floor(room.size.x / 2), 1);
-      this.state.addEntity(merchant);
+    console.log("NUM ROOMS => ", rooms.length);
+    const room = this.startRoom;
 
-      const merchantChest = new Chest({
-        x: merchant.position.x + 1,
-        y: merchant.position.y
-      }, 'chest', true);
-      merchantChest.walkable = false;
-      this.state.addEntity(merchantChest);
+    /**
+     * Marchant
+     */
+    const merchant = new NPC('merchant', {}, this.state);
+    merchant.wanderer = false;
+    merchant.position.set(room.position.x + Math.floor(room.size.x / 2), room.position.y + 1);
+    this.state.addEntity(merchant);
 
-      /**
-       * Elder
-       */
-      const elder = new NPC('elder', {}, this.state);
-      elder.wanderer = false;
-      elder.position.set(1, room.position.y + Math.floor(room.size.y / 2));
-      this.state.addEntity(elder);
+    const merchantChest = new Chest({
+      x: merchant.position.x + 1,
+      y: merchant.position.y
+    }, 'chest', true);
+    merchantChest.walkable = false;
+    this.state.addEntity(merchantChest);
 
-      const elderChest = new Chest({
-        x: elder.position.x,
-        y: elder.position.y + 1
-      }, 'bucket', true);
-      elderChest.walkable = false;
-      this.state.addEntity(elderChest);
+    /**
+     * Elder
+     */
+    const elder = new NPC('elder', {}, this.state);
+    elder.wanderer = false;
+    elder.position.set(room.position.x + 1, room.position.y + Math.floor(room.size.y / 2));
+    this.state.addEntity(elder);
 
-      this.endPosition = {
-        x: elder.position.x,
-        y: elder.position.y - 3
-      };
+    const elderChest = new Chest({
+      x: elder.position.x,
+      y: elder.position.y + 1
+    }, 'bucket', true);
+    elderChest.walkable = false;
+    this.state.addEntity(elderChest);
 
-      // add door
-      const door = new Door(this.endPosition, new DoorDestiny({
-        difficulty: 1,
-        progress: DoorProgress.LATEST
-      }));
-      this.state.addEntity(door);
+    this.state.addEntity(new Fountain({ x: elder.position.x, y: elder.position.y - 1 }));
 
-      // add guards and lady
-      // 'guard', 'lady',
-      ['woman', 'majesty'].forEach(kind => {
-        this.addEntity(room, (position) => {
-          var npc = new NPC(kind, {}, this.state);
-          npc.position.set(position)
-          return npc
-        })
-      });
+    this.startPosition = {
+      x: elder.position.x,
+      y: elder.position.y - 3
+    };
+    this.endPosition = this.startPosition;
 
-      // add 5 fountains in the center.
-      const centerY = Math.floor(room.size.y / 2);
-      this.state.addEntity(new Fountain({ x: room.position.x + room.size.x - 2, y: room.position.y + centerY }));
-      this.state.addEntity(new Fountain({ x: room.position.x + room.size.x - 2, y: room.position.y + centerY-1 }));
-      this.state.addEntity(new Fountain({ x: room.position.x + room.size.x - 2, y: room.position.y + centerY-2 }));
-      this.state.addEntity(new Fountain({ x: room.position.x + room.size.x - 2, y: room.position.y + centerY+1 }));
-      this.state.addEntity(new Fountain({ x: room.position.x + room.size.x - 2, y: room.position.y + centerY+2 }));
+    // add door
+    const initialDoor = new Door(this.startPosition, new DoorDestiny({
+      difficulty: 1,
+      progress: 2
+    }));
+    this.state.addEntity(initialDoor);
+
+    /**
+     * Lady
+     */
+    const lady = new NPC('woman', {}, this.state);
+    lady.wanderer = false;
+    lady.position.set(this.endRoom.position.y + 1, this.endRoom.position.x + Math.ceil(this.endRoom.size.x / 2) - 2);
+    this.state.addEntity(lady);
+
+    // // add door
+    // const latestDoor = new Door({ x: lady.position.x , y: lady.position.y + 1 }, new DoorDestiny({
+    //   difficulty: 1,
+    //   progress: DoorProgress.LATEST
+    // }));
+    // this.state.addEntity(latestDoor);
+
+    /**
+     * Majesty
+     */
+    this.addEntity(this.endRoom, (position) => {
+      const majesty = new NPC('majesty', {}, this.state);
+      majesty.wanderer = true;
+      majesty.position.set(position);
+      return majesty;
     })
+
+    this.checkPoint = new CheckPoint({
+      x: this.endRoom.position.y + Math.ceil(this.endRoom.size.y / 2) - 1,
+      y: this.endRoom.position.x + Math.ceil(this.endRoom.size.x / 2) - 1,
+    })
+    this.state.addEntity(this.checkPoint);
   }
 
   populateEnemies (room: DungeonRoom) {
@@ -361,7 +405,7 @@ export class RoomUtils {
 
     const maxEnemies = (this.state.progress <= 8)
       ? 1
-      : Math.min(this.state.progress, (room.size.x * room.size.y) / 15);
+      : Math.min(this.state.progress, Math.floor((room.size.x * room.size.y) / 10));
 
     let numEnemies = this.realRand.intBetween(minEnemies, maxEnemies);
 

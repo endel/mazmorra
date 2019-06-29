@@ -2,7 +2,7 @@ import { Behaviour } from 'behaviour.js'
 import Chat from './Chat'
 import lerp from 'lerp'
 
-const DEFAULT_LOOK_AT_TARGET_SPEED = 0.02;
+const DEFAULT_LOOK_AT_TARGET_SPEED = 0.04;
 
 export default class CharacterController extends Behaviour {
 
@@ -42,30 +42,18 @@ export default class CharacterController extends Behaviour {
 
   update () {
     if (!this.isRotating) {
-      // // 3rd person (Perspective)
-      // this.camera.position.x = lerp(this.camera.position.x, this.target.position.x, 0.1) // + (window.innerWidth / window.innerHeight)
-      // this.camera.position.y = lerp(this.camera.position.y, this.originalY + 30, 0.1) // this.camera.position.y = lerp(this.camera.position.y, this.originalY + 15, 0.1)
-      // this.camera.position.z = lerp(this.camera.position.z, this.target.position.z + 50, 0.1)
-
-      // 3rd person (Orthographic) (OLD ORTOGRAPHIC, W/ HIDDEN OBJECTS BEHIND WALLS)
-      // this.camera.position.x = lerp(this.camera.position.x, this.target.position.x + 90 * Math.cos( 1 ), 0.1) // + (window.innerWidth / window.innerHeight)
-      // this.camera.position.z = lerp(this.camera.position.z, this.target.position.z + 50, 0.1)
-      // this.camera.position.y = lerp(this.camera.position.y, this.originalY + 40, 0.1)
-
       this.camera.position.x = lerp(this.camera.position.x, this.target.position.x + 90 * Math.cos(1), 0.05) // + (window.innerWidth / window.innerHeight)
       this.camera.position.z = lerp(this.camera.position.z, this.target.position.z + 40, 0.05)
       this.camera.position.y = lerp(this.camera.position.y, this.originalY + 50, 0.05)
 
-      // // Perspective
-      // this.camera.position.x = lerp(this.camera.position.x, this.target.position.x + 20, 0.1)
-      // this.camera.position.z = lerp(this.camera.position.z, this.target.position.z + 20, 0.1)
-      // this.camera.position.y = lerp(this.camera.position.y, this.originalY + 20, 0.1)
-
       // this.lookAtTarget.x = this.target.position.x;
       // this.lookAtTarget.y = this.target.position.y;
       // this.lookAtTarget.z = this.target.position.z;
-      this.camera.zoom = lerp(this.camera.zoom, this.zoom, 0.03);
-      this.camera.updateProjectionMatrix();
+
+      if (Math.abs(this.camera.zoom - this.zoom) > 0.1) {
+        this.camera.zoom = lerp(this.camera.zoom, this.zoom, 0.03);
+        this.camera.updateProjectionMatrix();
+      }
 
     } else {
 
@@ -76,10 +64,6 @@ export default class CharacterController extends Behaviour {
       this.camera.position.x = x * Math.cos(rotSpeed) + z * Math.sin(rotSpeed);
       this.camera.position.z = z * Math.cos(rotSpeed) - x * Math.sin(rotSpeed);
       this.camera.position.y = lerp(this.camera.position.y, this.originalY + 25, 0.05)
-
-      // this.camera.position.x = lerp(this.camera.position.x, this.target.position.x + 90 * Math.cos(1), 0.05) // + (window.innerWidth / window.innerHeight)
-      // this.camera.position.z = lerp(this.camera.position.z, this.target.position.z + 40, 0.1)
-      // this.camera.position.y = lerp(this.camera.position.y, this.originalY + 30, 0.05)
 
       this.camera.zoom = lerp(this.camera.zoom, config.ZOOM + 30, 0.05);
       this.camera.updateProjectionMatrix();

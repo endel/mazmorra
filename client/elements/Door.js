@@ -14,7 +14,7 @@ export default class Door extends THREE.Object3D {
       flatShading: true,
       map: this.getTexture(),
       side: THREE.FrontSide,
-      transparent: true
+      // transparent: true
     });
 
       // +2.8 for the pillars
@@ -55,7 +55,7 @@ export default class Door extends THREE.Object3D {
   getTexture() {
     const doorStyle = (this.isLocked)
       ? "locked"
-      : (this.userData.destiny.progress <= 0) ? "up" : "down";
+      : (this.userData.destiny.progress === -1) ? "up" : "down";
 
     return ResourceManager.get('billboards-door-' + this.mapkind + "-" + doorStyle);
   }
@@ -78,17 +78,20 @@ export default class Door extends THREE.Object3D {
     // }
 
     let label = "";
-    if (progress === 1) {
-      label = `Forward to ${this.currentProgress + progress}`;
+    if (progress === -2) {
+      label = `Forward to ${this.currentProgress + 1}`;
 
     } else if (progress === -1) {
-      label = `Back to ${this.currentProgress + progress}`;
+      label = `Back to ${this.currentProgress - 1}`;
 
-    } else if (progress === 0) {
-      label = `Back to Lobby`
+    } else if (progress === 1) {
+      label = `Back to Castle`
 
-    } else if (progress === 10) {
+    } else if (progress === -3) {
       label = `Continue from ${player.userData.latestProgress}`;
+
+    } else {
+      label = `Down to ${progress}`;
     }
 
     return label;

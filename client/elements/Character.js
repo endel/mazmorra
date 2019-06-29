@@ -18,7 +18,9 @@ export default class Character extends THREE.Object3D {
   }
 
   get label () {
-    return `${ this.userData.name } - lvl ${ this.userData.lvl }`
+    return (this !== window.player)
+      ? `${ this.userData.name } - lvl ${ this.userData.lvl }`
+      : undefined;
   }
 
   set direction (direction) {

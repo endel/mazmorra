@@ -201,10 +201,12 @@ export default class HUD extends THREE.Scene {
 
   showOverlay (duration = 200) {
     this.overlay.visible = true
+    App.tweens.remove(this.overlay.material);
     App.tweens.add(this.overlay.material).to({ opacity: 0.8 }, duration);
   }
 
   hideOverlay(duration = 200) {
+    App.tweens.remove(this.overlay.material);
     App.tweens.add(this.overlay.material).to({ opacity: 0 }, duration).then(() => {
       this.overlay.visible = false
     })

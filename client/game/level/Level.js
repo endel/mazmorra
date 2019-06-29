@@ -123,8 +123,33 @@ export default class Level extends THREE.Object3D {
     this.room.onMessage.add((payload) => {
       const [ evt, data ] = payload;
 
-      if (evt === "goto") {
-        const isPortal = payload[2];
+      if (evt === "checkpoints") {
+        // TODO: improve me.
+        const checkPointModal = document.querySelector(".checkpoint-modal");
+
+        const ul = checkPointModal.querySelector("ul");
+        ul.removeEventListener("click", this.onCheckPointClick);
+        ul.addEventListener("click", this.onCheckPointClick);
+        ul.innerHTML = data.
+          filter(n => n !== this.progress).
+          map(n => `<li><a href="#" data-progress="${n}">${n}</a></li>`).join("\n");
+
+        setTimeout(() => { checkPointModal.classList.add('active') }, 200);
+
+      } else if (evt === "goto") {
+        const params = payload[2];
+
+        if (params.isPortal) {
+          sounds.enterPortal.play();
+          data.isPortal = true;
+
+        } else if (params.isCheckPoint) {
+          sounds.enterPortal.play();
+          data.isCheckPoint = true;
+
+        } else {
+          doorSound.play();
+        }
 
         player.getEntity().emit('zoom', 1.5);
 
@@ -141,12 +166,6 @@ export default class Level extends THREE.Object3D {
 
         setTimeout(() => this.room.leave(), 200);
 
-        if (isPortal) {
-          sounds.enterPortal.play();
-
-        } else {
-          doorSound.play();
-        }
 
       } else if (evt === "trading-items") {
 
@@ -167,6 +186,14 @@ export default class Level extends THREE.Object3D {
     });
 
     return this.room;
+  }
+
+  onCheckPointClick = (e) => {
+    if (e.target.dataset.progress) {
+      const checkPointModal = document.querySelector(".checkpoint-modal");
+      checkPointModal.classList.remove('active');
+      this.room.send(["checkpoint", e.target.dataset.progress]);
+    }
   }
 
   setupStateCallbacks () {
@@ -556,6 +583,11 @@ export default class Level extends THREE.Object3D {
       const item = draggingItemSprite.userData;
 
       if (item.inventoryType === "purchase") {
+        // FIXME: this is ugly!
+        if (draggingItemSprite && draggingItemSprite.slot) {
+          draggingItemSprite.slot._revertDraggingItem(true);
+        }
+
         return;
       }
 
@@ -630,7 +662,7 @@ export default class Level extends THREE.Object3D {
 
       this.totalSessions++;
 
-      if (this.totalSessions % 5 === 0) {
+      if (this.totalSessions % 6 === 0) {
         sounds.fadeOut(); // fade soundtrack out
 
         window.adPrerollComplete = () => {
