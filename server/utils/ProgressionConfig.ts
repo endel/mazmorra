@@ -69,7 +69,7 @@ export type MapConfig = {
 };
 
 const NUM_LEVELS_PER_MAP = 18;
-const NUM_LEVELS_PER_CHECKPOINT = 9;
+const NUM_LEVELS_PER_CHECKPOINT = 8;
 
 export function getMapConfig(progress: number) {
   if (progress === 1) {
@@ -114,8 +114,8 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: false,
     mapkind: MapKind.ROCK,
-    getMapWidth: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
-    getMapHeight: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
+    getMapWidth: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
+    getMapHeight: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'slime': 0.33, 'slime-2': 0.33, 'skeleton-1': 0.33, 'slime-cube': 0.01, },
@@ -125,8 +125,8 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: true,
     mapkind: MapKind.GRASS,
-    getMapWidth: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
-    getMapHeight: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
+    getMapWidth: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
+    getMapHeight: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'skeleton-1': 0.33, 'skeleton-2': 0.33, 'skeleton-3': 0.33, 'spider-medium': 0.01 },
@@ -136,8 +136,8 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: false,
     mapkind: MapKind.GRASS,
-    getMapWidth: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
-    getMapHeight: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
+    getMapWidth: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
+    getMapHeight: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'goblin': 0.33, 'goblin-2': 0.33, 'goblin-3': 0.33, 'skeleton-2': 0.01 },

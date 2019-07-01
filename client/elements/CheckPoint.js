@@ -7,8 +7,6 @@ import { getLightFromPool, removeLight } from '../utils';
 class CheckPointBehaviour extends Behaviour {
   onAttach() {
     this.on("activate", (data) => {
-      console.log("activate =>", data);
-
       if (!this.light) {
         this.light = getLightFromPool();
       }

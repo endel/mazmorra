@@ -185,8 +185,11 @@ export default class HUD extends THREE.Scene {
   }
 
   onToggleInventory () {
-    const isOpen = this.inventory.isOpen;
+    if (this.checkPointSelector.isOpen) {
+      this.forceCloseOverlay();
+    }
 
+    const isOpen = this.inventory.isOpen;
     this.inventory.toggleOpen();
 
     if (isOpen) {
@@ -202,8 +205,11 @@ export default class HUD extends THREE.Scene {
   }
 
   onOpenCheckPoints(numbers) {
-    const isOpen = this.checkPointSelector.isOpen;
+    if (this.isInventoryOpen()) {
+      this.forceCloseOverlay();
+    }
 
+    const isOpen = this.checkPointSelector.isOpen;
     this.checkPointSelector.openWithCheckPoints(numbers);
 
     if (isOpen) {
@@ -217,11 +223,13 @@ export default class HUD extends THREE.Scene {
   }
 
   isInventoryOpen () {
-    return this.openInventoryButton.isOpen;
+    return this.inventory.isOpen;
   }
 
   forceCloseOverlay() {
     let hasOverlay;
+
+    console.log("forceCloseOverlay! isInventoryOpen? ", this.isInventoryOpen());
 
     if (this.isInventoryOpen()) {
       hasOverlay = true;

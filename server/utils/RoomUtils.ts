@@ -779,7 +779,7 @@ export class RoomUtils {
 
     item.addModifier({
       attr: "movementSpeed",
-      modifier: this.realRand.intBetween(goodness, goodness + Math.ceil(ratio * 3))
+      modifier: this.realRand.intBetween(goodness + 1, goodness + 1 + Math.ceil(ratio * 3))
     });
 
     if (dropOptions.isRare) {

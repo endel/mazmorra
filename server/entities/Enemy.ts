@@ -56,7 +56,7 @@ export class Enemy extends Unit {
 
         if (
           player.isAlive &&
-          distance(this.position, player.position) <= this.aiDistance
+          distance(this.position, player.position) <= Math.min(Math.round(this.state.progress / 3), this.aiDistance)
         ) {
           closePlayer = player;
           break;
