@@ -30,7 +30,16 @@ class Hint  {
     this.el.innerHTML = contents;
 
     var position = toScreenPosition(hud.camera, sprite);
-    this.el.style.left = (position.x - (config.HUD_SCALE * 5) - this.el.clientWidth - config.HUD_SCALE) + "px";
+
+    if (position.x >= window.innerWidth / 2) {
+      this.el.style.left = (position.x - (config.HUD_SCALE * 5) - this.el.clientWidth - config.HUD_SCALE) + "px";
+      this.el.classList.add("left");
+
+    } else {
+      this.el.style.left = (position.x + (config.HUD_SCALE * 5)) + "px";
+      this.el.classList.remove("left");
+    }
+
     this.el.style.top = (position.y - (config.HUD_SCALE * 5)) + "px";
   }
 

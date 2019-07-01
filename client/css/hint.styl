@@ -18,18 +18,26 @@
     height 6px
     top 24px
     bottom 0
-    right -6px
 
-  &::before
-    content ' '
-    position absolute
-    display block
-    background #b49054
-    width: 6px
-    height 6px
-    top 30px
-    bottom 0
-    right -12px
+  &:not(.left)
+    &::after
+      left -6px
+      height 6px
+
+  &.left
+    &::after
+      right -6px
+
+    &::before
+      content ' '
+      position absolute
+      display block
+      background #b49054
+      width: 6px
+      height 6px
+      top 30px
+      bottom 0
+      right -12px
 
   h2
     color #986c1b
