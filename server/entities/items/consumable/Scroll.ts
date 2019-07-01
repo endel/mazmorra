@@ -28,6 +28,19 @@ export class Scroll extends ConsumableItem {
 
     if (availablePosition) {
       if (player.mp.current >= mpCost) {
+        //
+        // remove previous portals from this player.
+        //
+        for (let id in state.entities) {
+          const entity = state.entities[id];
+          if (
+            entity.type === helpers.ENTITIES.PORTAL &&
+            entity.ownerId === player.id
+          ) {
+            state.removeEntity(entity);
+          }
+        }
+
         const portal = new Door({
           x: availablePosition[1],
           y: availablePosition[0]

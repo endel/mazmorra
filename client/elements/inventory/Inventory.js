@@ -80,8 +80,8 @@ export default class Inventory extends THREE.Object3D {
     // emit toggle event
     this.getEntity().emit('toggle', this.isOpen)
 
-    const scaleFrom = ((this.isOpen) ? 0.5 : 1)
-    const scaleTo = ((this.isOpen) ? 1 : 0.5)
+    const scaleFrom = ((this.isOpen) ? 0.5 : 1);
+    const scaleTo = ((this.isOpen) ? 1 : 0.85);
 
     this.scale.set(scaleFrom, scaleFrom, scaleFrom)
 

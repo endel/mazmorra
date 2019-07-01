@@ -12,6 +12,7 @@ import InventoryBehaviour from '../behaviors/InventoryBehaviour'
 import OpenInventoryButton from '../elements/inventory/OpenButton'
 import Inventory from '../elements/inventory/Inventory'
 import SlotStrip from '../elements/inventory/SlotStrip'
+import CheckPointSelector from "../elements/hud/CheckPointSelector";
 
 import { MeshText2D, textAlign } from 'three-text2d'
 import { inventorySound } from '../core/sound';
@@ -56,7 +57,10 @@ export default class HUD extends THREE.Scene {
 
     // Inventory
     this.inventory = new Inventory()
-    this.inventory.visible = false
+    this.inventory.visible = false;
+
+    this.checkPointSelector = new CheckPointSelector();
+    this.checkPointSelector.visible = false
 
     // FIXME: this is a workaround for `HUDController#onUpdateInventory`
     this.equipedItems = this.inventory.equipedItems;
@@ -123,6 +127,8 @@ export default class HUD extends THREE.Scene {
     // this.add(this.skillsInventory);
 
     this.add(this.openInventoryButton);
+
+    this.add(this.checkPointSelector);
   }
 
   onKeyPress (e) {
@@ -195,8 +201,43 @@ export default class HUD extends THREE.Scene {
     }
   }
 
+  onOpenCheckPoints(numbers) {
+    const isOpen = this.checkPointSelector.isOpen;
+
+    this.checkPointSelector.openWithCheckPoints(numbers.reverse());
+
+    if (isOpen) {
+      this.hideOverlay();
+      inventorySound.close.play();
+
+    } else {
+      this.showOverlay();
+      inventorySound.open.play();
+    }
+  }
+
   isInventoryOpen () {
     return this.openInventoryButton.isOpen;
+  }
+
+  forceCloseOverlay() {
+    let hasOverlay;
+
+    if (this.isInventoryOpen()) {
+      hasOverlay = true;
+
+      this.openInventoryButton.onClick();
+      this.onToggleInventory();
+    }
+
+    if (this.checkPointSelector.isOpen) {
+      hasOverlay = true;
+      this.checkPointSelector.toggleOpen();
+    }
+
+    if (hasOverlay) {
+      this.hideOverlay();
+    }
   }
 
   showOverlay (duration = 200) {

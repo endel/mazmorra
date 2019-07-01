@@ -85,12 +85,15 @@ export default class Level extends THREE.Object3D {
 
       sounds.inventorySound.sell.play();
     });
+
+    this.hud.addEventListener("checkpoint", (e) => {
+      console.log("hud event, checkpoint =>", e.progress);
+      this.room.send(["checkpoint", e.progress]);
+    });
   }
 
   onClick (e) {
-
     this.playerAction()
-
   }
 
   onMouseOver (e) {
@@ -124,17 +127,7 @@ export default class Level extends THREE.Object3D {
       const [ evt, data ] = payload;
 
       if (evt === "checkpoints") {
-        // TODO: improve me.
-        const checkPointModal = document.querySelector(".checkpoint-modal");
-
-        const ul = checkPointModal.querySelector("ul");
-        ul.removeEventListener("click", this.onCheckPointClick);
-        ul.addEventListener("click", this.onCheckPointClick);
-        ul.innerHTML = data.
-          filter(n => n !== this.progress).
-          map(n => `<li><a href="#" data-progress="${n}">${n}</a></li>`).join("\n");
-
-        setTimeout(() => { checkPointModal.classList.add('active') }, 200);
+        this.hud.onOpenCheckPoints(data.filter(n => n !== this.progress));
 
       } else if (evt === "goto") {
         const params = payload[2];
@@ -186,14 +179,6 @@ export default class Level extends THREE.Object3D {
     });
 
     return this.room;
-  }
-
-  onCheckPointClick = (e) => {
-    if (e.target.dataset.progress) {
-      const checkPointModal = document.querySelector(".checkpoint-modal");
-      checkPointModal.classList.remove('active');
-      this.room.send(["checkpoint", e.target.dataset.progress]);
-    }
   }
 
   setupStateCallbacks () {
@@ -529,11 +514,8 @@ export default class Level extends THREE.Object3D {
   playerAction (targetPosition) {
     if (!this.targetPosition) return;
 
-    // force to close inventory if it's open.
-    if (this.hud.isInventoryOpen()) {
-      this.hud.openInventoryButton.onClick();
-      this.hud.onToggleInventory();
-    }
+    // force to close inventory/checkpoints if they're open.
+    this.hud.forceCloseOverlay();
 
     if (App.cursor.isPerformingCast()) {
       const castingItem = App.cursor.castingItem;
