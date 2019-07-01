@@ -43,8 +43,6 @@ export default class Portal extends THREE.Object3D {
 
   constructor () {
     super()
-    window.portal = this;
-
     this.frames = [
       ResourceManager.get("billboards-portal-frame0"),
       ResourceManager.get("billboards-portal-frame1"),
@@ -72,6 +70,10 @@ export default class Portal extends THREE.Object3D {
       to(this.initialScale, 1000, Tweener.ease.quartOut);
 
     this.addBehaviour(new PortalBehaviour());
+  }
+
+  get label () {
+    return `Portal to ${this.userData.destiny && this.userData.destiny.progress}`;
   }
 
 }

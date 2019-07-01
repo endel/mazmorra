@@ -2,9 +2,9 @@
 
 import Highlight from './effects/Highlight'
 import Pickable from '../behaviors/Pickable'
-import LightOscillator from '../behaviors/LightOscillator'
 import Stretchable from '../behaviors/Stretchable'
 import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
+import { humanize } from '../utils';
 
 export default class Item extends THREE.Object3D {
 
@@ -20,11 +20,13 @@ export default class Item extends THREE.Object3D {
     //
     // TODO: add "rarity" to rare items.
     //
-    if (data.rarity) {
-      this.highlight = new Highlight()
-      this.highlight.position.y = 0.8
-      this.highlight.addBehaviour(new Stretchable)
+    if (data.isRare || data.isMagical) {
+      this.highlight = new Highlight(data.isMagical ? 'magical' : 'rare');
+      this.highlight.position.y = 0.8;
+      this.highlight.addBehaviour(new Stretchable);
       this.add(this.highlight)
+
+      window.highlight = this.highlight;
 
       // var light = new THREE.SpotLight(0xffffff, 0.5, 50);
       // light.penumbra = 1
@@ -44,7 +46,7 @@ export default class Item extends THREE.Object3D {
   }
 
   get label () {
-    return this.userData.type.replace('-', ' ')
+    return humanize(this.userData.type);
   }
 
   onMouseOver (tileSelection) {

@@ -25,20 +25,18 @@ export default class Door extends THREE.Object3D {
 
     if (gridTile & helpers.DIRECTION.NORTH) {
       this.position.y = 0.5;
-      mesh.position.y = 0.5
-      mesh.position.z -= 1.499 // TODO: automate a good-looking position based on door direction
+      mesh.position.y = 0.5;
+      mesh.position.z -= 1.499; // TODO: automate a good-looking position based on door direction
 
     } else if (gridTile & helpers.DIRECTION.WEST) {
       this.position.x = 0.5;
-      mesh.position.x = -1.5;
+      mesh.position.x = -1.499;
       mesh.position.y = 1;
       mesh.rotateY(Math.PI/2);
     }
 
     mesh.scale.normalizeWithTexture(this.material.map, true)
     this.add(mesh);
-
-    window.door = this;
 
     let lightColor = 0xfcfcfc
       , light = new THREE.PointLight(lightColor, 1, 5); // Spotlight would be better here
@@ -56,6 +54,13 @@ export default class Door extends THREE.Object3D {
     const doorStyle = (this.isLocked)
       ? "locked"
       : (this.userData.destiny.progress === -1) ? "up" : "down";
+
+    if (this.userData.destiny.progress === -1) {
+      window.doorUp = this;
+
+    } else {
+      window.doorDown = this;
+    }
 
     return ResourceManager.get('billboards-door-' + this.mapkind + "-" + doorStyle);
   }

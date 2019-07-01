@@ -204,7 +204,7 @@ export default class HUD extends THREE.Scene {
   onOpenCheckPoints(numbers) {
     const isOpen = this.checkPointSelector.isOpen;
 
-    this.checkPointSelector.openWithCheckPoints(numbers.reverse());
+    this.checkPointSelector.openWithCheckPoints(numbers);
 
     if (isOpen) {
       this.hideOverlay();

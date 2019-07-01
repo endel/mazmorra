@@ -21,7 +21,7 @@ export class CheckPoint extends Interactive {
 
   interact (moveEvent, player, state) {
     this.action = new Action("activate", true);
-    setInterval(() => this.action = null, 2000);
+    setTimeout(() => this.action = null, 2000);
 
     this.active = true;
     this.activationTime = Date.now();
@@ -30,7 +30,15 @@ export class CheckPoint extends Interactive {
       player.checkPoint = state.progress;
     }
 
-    state.events.emit("send", player, ["checkpoints", player.hero.checkPoints]);
+    if (state.progress === 1 && player.hero.checkPoints.length === 1) {
+      setTimeout(() => {
+        state.createTextEvent(`No checkpoints available yet.`, player.position, 'white', 1000);
+      }, 1);
+
+    } else {
+      state.events.emit("send", player, ["checkpoints", player.hero.checkPoints]);
+    }
+
   }
 
 }

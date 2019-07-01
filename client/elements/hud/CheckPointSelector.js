@@ -61,7 +61,7 @@ export default class CheckPointSelector extends THREE.Object3D {
       this.options.add(checkpoint);
     }
 
-    this.options.position.x = - column * (this.options.children[0].width + config.HUD_SCALE);
+    this.options.position.x = - ((Math.min(columns, numbers.length) - 1) / 2) * (this.options.children[0].width + config.HUD_SCALE);
 
     this.toggleOpen();
   }

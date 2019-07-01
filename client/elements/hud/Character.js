@@ -321,7 +321,6 @@ export default class Character extends THREE.Object3D {
       this.intUpButton.hide();
 
     } else {
-      console.log("is inventory open?!", hud.inventory.isOpen);
       if (hud.inventory.isOpen) {
         this.lvlUpButton.hide();
         this.strUpButton.show();
