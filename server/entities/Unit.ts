@@ -107,6 +107,7 @@ export class Unit extends Entity {
 
   willDropItem: Item;
   damageTakenFrom = new Set<Unit>();
+  removed?: boolean;
 
   constructor(id?: string, hero: Partial<DBHero> = {}, state?) {
     super(id)
@@ -264,7 +265,7 @@ export class Unit extends Entity {
     if (this.action)  {
       this.action.update(currentTime);
 
-      if (this.action.isEligible) {
+      if (this.action && this.action.isEligible) {
         this.position.touch(currentTime);
 
       } else {

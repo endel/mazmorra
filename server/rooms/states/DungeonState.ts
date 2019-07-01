@@ -272,6 +272,7 @@ export class DungeonState extends Schema {
   }
 
   removePlayer (player: Player) {
+    player.removed = true;
     delete this.players[ player.id ];
     this.removeEntity(player);
   }

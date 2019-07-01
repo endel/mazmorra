@@ -51,7 +51,7 @@ export class BattleAction extends Action {
   }
 
   attack() {
-    if (!this.isEligible) {
+    if (!this.isEligible || this.defender.removed) {
       // clear BattleAction
       this.attacker.action = null;
       this.events.removeAllListeners();
