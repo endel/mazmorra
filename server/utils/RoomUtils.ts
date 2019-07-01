@@ -165,12 +165,17 @@ export class RoomUtils {
     return positions.shift()
   }
 
-  getRandomRoom(excluding?: DungeonRoom) {
+  getRandomRoom(excluding?: DungeonRoom[]) {
     let room: DungeonRoom;
 
     do {
       room = this.rooms[this.rand.intBetween(0, this.rooms.length - 1)];
-    } while (room === excluding && this.rooms.length > 1);
+
+    } while (
+      excluding !== undefined &&
+      excluding.indexOf(room) !== -1 &&
+      this.rooms.length > 1
+    );
 
     return room;
   }
@@ -214,7 +219,7 @@ export class RoomUtils {
     }
 
     if (isCheckPointMap(this.state.progress)) {
-      const checkPointRoom = this.getRandomRoom(this.startRoom);
+      const checkPointRoom = this.getRandomRoom([this.startRoom, this.endRoom]);
       this.rooms = this.rooms.filter(r => r !== checkPointRoom);
 
       this.checkPoint = new CheckPoint({
