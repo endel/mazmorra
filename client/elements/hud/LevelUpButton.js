@@ -1,3 +1,5 @@
+import Hint from "./Hint";
+
 export default class LevelUpButton extends THREE.Object3D {
 
   constructor () {
@@ -33,6 +35,8 @@ export default class LevelUpButton extends THREE.Object3D {
   }
 
   onMouseOver () {
+    if (this.userData.hint) { Hint.show(this.userData.hint, this.sprite); }
+
     App.tweens.remove(this.scale);
     App.tweens.add(this.scale).to({
       x: this.initialScale.x + 4,
@@ -41,6 +45,7 @@ export default class LevelUpButton extends THREE.Object3D {
   }
 
   onMouseOut () {
+    if (this.userData.hint) { Hint.hide(); }
     App.tweens.remove(this.scale);
     App.tweens.add(this.scale).to(this.initialScale, 200, Tweener.ease.quadOut);
   }

@@ -2,6 +2,7 @@ import { MeshText2D, textAlign } from 'three-text2d'
 import { MAX_CHAR_WIDTH, MAX_CHAR_HEIGHT, Resources } from '../character/Resources'
 import LevelUpButton from './LevelUpButton';
 import { humanize } from '../../utils';
+import hint from './Hint';
 
 export default class Character extends THREE.Object3D {
 
@@ -105,6 +106,7 @@ export default class Character extends THREE.Object3D {
     this.lvlUpButton = new LevelUpButton();
     this.lvlUpButton.position.y = this.attackDistanceIcon.position.y - this.attackDistanceIcon.height - (margin * 2);
     this.lvlUpButton.addEventListener("click", () => this.onLevelUpClick());
+    this.lvlUpButton.userData.hint = "Level up!"
 
     // Strength
     this.strIcon = ResourceManager.getHUDElement("icons-red");
@@ -198,6 +200,14 @@ export default class Character extends THREE.Object3D {
     this.add(this.intUpButton);
   }
 
+  onMouseOver(e) {
+    hint.show(e.target.userData.hud, e.target)
+  }
+
+  onMouseOut(e) {
+    hint.hide();
+  }
+
   getDamageAttribute() {
     return (
       player.userData.equipedItems.slots.left &&
@@ -236,6 +246,23 @@ export default class Character extends THREE.Object3D {
         });
       }
     }
+
+    // Level up hints!
+    this.strUpButton.userData.hint = `<strong class="strength">Strength${(data.primaryAttribute === "strength") ? " (primary)" : ""}:</strong><br />
+      Increase max hp<br />
+      ${(data.primaryAttribute === "strength") ? "Increase damage" : ""}
+    `;
+    this.agiUpButton.userData.hint = `<strong class="agility">Agility${(data.primaryAttribute === "agility") ? " (primary)" : ""}:</strong><br/>
+      Increase attack speed<br/>
+      Increase movement speed<br/>
+      Increase armor<br/>
+      ${(data.primaryAttribute === "agility") ? "Increase damage" : ""}
+    `;
+    this.intUpButton.userData.hint = `<strong class="intelligence">Intelligence${(data.primaryAttribute === "intelligence") ? " (primary)" : ""}:</strong><br/>
+      Increases max mp<br/>
+      Increase magical damage<br/>
+      ${(data.primaryAttribute === "intelligence") ? "Increase damage" : ""}
+    `;
 
     // var hpMax = (data.attributes.strength + statsModifiers['strength']) * 5;
     // var mpMax = (data.attributes.intelligence + statsModifiers['intelligence']) * 3;
