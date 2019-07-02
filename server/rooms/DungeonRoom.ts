@@ -5,6 +5,7 @@ import { Hero, DBHero } from "../db/Hero";
 import { Player } from "../entities/Player";
 import { DoorProgress } from "../entities/interactive/Door";
 import { Season } from "../db/Season";
+import { Movement } from "../core/Movement";
 
 const TICK_RATE = 20 // 20 ticks per second
 
@@ -104,6 +105,7 @@ export class DungeonRoom extends Room<DungeonState> {
     }
 
     if (key == 'move') {
+      (player.position as Movement).target = null;
       this.state.move(player, value, true)
 
     } else if (key == 'distribute-point') {

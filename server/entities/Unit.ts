@@ -242,7 +242,7 @@ export class Unit extends Entity {
       ) {
         this.position.x = currentX;
         this.position.y = currentY;
-        this.state.move(this, this.position.target.position, false);
+        this.state.move(this, { x: this.position.target.position.y, y: this.position.target.position.x, }, false);
       }
 
       this.state.checkOverlapingEntities(this.position.target, moveEvent, currentX, currentY)

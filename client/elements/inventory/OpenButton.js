@@ -1,3 +1,5 @@
+import Hint from "../hud/Hint";
+
 export default class OpenInventoryButton extends THREE.Object3D {
 
   constructor () {
@@ -46,11 +48,15 @@ export default class OpenInventoryButton extends THREE.Object3D {
   }
 
   onMouseOver () {
+    Hint.show("Inventory", this);
+
     App.tweens.remove(this.scale)
     App.tweens.add(this.scale).to({ x: 1.1, y: 1.1 }, 200, Tweener.ease.quadOut)
   }
 
   onMouseOut () {
+    Hint.hide();
+
     App.tweens.remove(this.scale)
     App.tweens.add(this.scale).to({ x: 1, y: 1 }, 200, Tweener.ease.quadOut)
   }
