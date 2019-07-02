@@ -133,11 +133,11 @@ export default class Level extends THREE.Object3D {
         const params = payload[2];
 
         if (params.isPortal) {
-          sounds.enterPortal.play();
+          sounds.portal.play();
           data.isPortal = true;
 
         } else if (params.isCheckPoint) {
-          sounds.enterPortal.play();
+          sounds.checkpoint.play();
           data.isCheckPoint = true;
 
         } else {
@@ -169,7 +169,12 @@ export default class Level extends THREE.Object3D {
           this.hud.onToggleInventory();
         }
 
-        this.playSound("approve");
+        if (Object.keys(data).length <= 5) {
+          this.playSound("approve");
+
+        } else {
+          this.playSound("potionSeller");
+        }
 
         this.hud.inventory.setTradingItems(data);
 
@@ -644,7 +649,7 @@ export default class Level extends THREE.Object3D {
 
       this.totalSessions++;
 
-      if (this.totalSessions % 6 === 0) {
+      if (this.totalSessions % 5 === 0) {
         sounds.fadeOut(); // fade soundtrack out
 
         window.adPrerollComplete = () => {

@@ -47,7 +47,7 @@ export abstract class Item extends Entity {
   }
 
   getSellPrice() {
-    return Math.floor(this.getPrice() / 3);
+    return Math.floor(this.getPrice() / 4);
   }
 
   getPrice(allowPremium: boolean = true) {

@@ -1,4 +1,5 @@
 import { SpriteText2D, textAlign, MeshText2D } from 'three-text2d'
+import { checkpoint } from '../../core/sound';
 
 export default class CheckPointSelector extends THREE.Object3D {
 
