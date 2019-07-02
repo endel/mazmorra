@@ -301,13 +301,13 @@ export class DungeonState extends Schema {
       let entity = entities[i] as Entity;
 
       if (unit instanceof Enemy && entity instanceof Unit) {
-        if (
-          targetEntity.position.x === entity.position.x &&
-          targetEntity.position.y === entity.position.y
-        ) {
-          moveEvent.cancel();
-          return;
-        }
+        // if (
+        //   targetEntity.position.x === entity.position.x &&
+        //   targetEntity.position.y === entity.position.y
+        // ) {
+        //   moveEvent.cancel();
+        //   return;
+        // }
 
       } else if (unit instanceof Player) {
         // if unit has reached target point,

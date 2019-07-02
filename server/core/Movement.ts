@@ -45,14 +45,6 @@ export class Movement extends Position {
       this.y = y;
     }
 
-    if (this.pending.length > 0 && this.target) {
-      console.log("PENDING LAST POSITION", this.target.position.x, this.target.position.y)
-
-      const lastPending = this.pending[this.pending.length - 1];
-      console.log("TARGET POSITION", lastPending[0], lastPending[1]);
-
-    }
-
     // console.log(event.valid(), this.position)
   }
 

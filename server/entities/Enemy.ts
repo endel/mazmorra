@@ -52,19 +52,17 @@ export class Enemy extends Unit {
       let closePlayer: Player;
 
       for (let sessionId in this.state.players) {
+        const aiDistance = Math.max(Math.round(this.state.progress / 3), this.aiDistance);
         const player: Player = this.state.players[sessionId];
 
-        if (
-          player.isAlive &&
-          distance(this.position, player.position) <= Math.min(Math.round(this.state.progress / 3), this.aiDistance)
-        ) {
+        if (player.isAlive && distance(this.position, player.position) <= aiDistance) {
           closePlayer = player;
           break;
         }
       }
 
       if (closePlayer) {
-        this.state.move(this, { x: closePlayer.position.y, y: closePlayer.position.x })
+        this.state.move(this, { x: closePlayer.position.y, y: closePlayer.position.x }, true)
       }
 
       this.lastUpdateTime = currentTime;
