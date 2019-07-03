@@ -13,7 +13,6 @@ export class Enemy extends Unit {
   @type("string") kind: string;
   @type("boolean") isBoss?: boolean;
 
-  aiDistance: number = 3;
   aiUpdateTime = 500;
   lastUpdateTime = Date.now();
 
@@ -42,6 +41,10 @@ export class Enemy extends Unit {
     }
   }
 
+  get aiDistance () {
+    return Math.max(Math.round(this.state.progress / 3), 3);
+  }
+
   update (currentTime) {
     super.update(currentTime)
 
@@ -52,10 +55,9 @@ export class Enemy extends Unit {
       let closePlayer: Player;
 
       for (let sessionId in this.state.players) {
-        const aiDistance = Math.max(Math.round(this.state.progress / 3), this.aiDistance);
         const player: Player = this.state.players[sessionId];
 
-        if (player.isAlive && distance(this.position, player.position) <= aiDistance) {
+        if (player.isAlive && distance(this.position, player.position) <= this.aiDistance) {
           closePlayer = player;
           break;
         }

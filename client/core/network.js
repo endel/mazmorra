@@ -19,3 +19,7 @@ export function enterRoom (name, options = {}) {
 export function getClientId () {
   return client.id
 }
+
+export function enterChat() {
+  return client.join("chat");
+}

@@ -19,6 +19,10 @@ export class Boss extends Enemy {
     this.isBoss = true;
   }
 
+  get aiDistance () {
+    return 4;
+  }
+
   update (currentTime) {
     super.update(currentTime);
 

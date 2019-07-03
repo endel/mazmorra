@@ -11,6 +11,7 @@ import { monitor } from "@colyseus/monitor";
 
 import { router as hero } from "./controllers/hero";
 import { DungeonRoom } from './rooms/DungeonRoom';
+import { ChatRoom } from './rooms/ChatRoom';
 
 const port = process.env.PORT || 3553;
 const app = express();
@@ -18,6 +19,7 @@ const app = express();
 const server = http.createServer(app);
 const gameServer = new Server({ server: server });
 
+gameServer.register('chat', ChatRoom);
 gameServer.register('dungeon', DungeonRoom);
 gameServer.register('dungeon-pvp', DungeonRoom, { isPVPAllowed: true });
 

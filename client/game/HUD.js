@@ -136,46 +136,51 @@ export default class HUD extends THREE.Scene {
       e.which === Keycode.I + 32 || e.which === Keycode.I ||
       e.which === Keycode.B + 32 || e.which === Keycode.B ||
       (
-        // close the inventory hitting ESC if  {
-        this.isInventoryOpen() &&
+        // close the inventory hitting ESC
+        (this.inventory.isOpen || this.checkPointSelector.isOpen) &&
         (e.key === "Escape" || e.key === " ")
       )
     ) {
-      // open inventory pressing "i" or "b"
-      this.openInventoryButton.onClick();
-      this.onToggleInventory();
+      if (this.checkPointSelector.isOpen) {
+        this.forceCloseOverlay();
 
-    } else if (e.which === Keycode.KEY_1) {
+      } else {
+        // open inventory pressing "i" or "b"
+        this.openInventoryButton.onClick();
+        this.onToggleInventory();
+      }
+
+    } else if (e.which === Keycode.KEY_1 || e.which === Keycode.NUMPAD_1) {
       this.quickInventory.slots[0].dispatchEvent({
         type: "dblclick",
         target: this.quickInventory.slots[0]
       })
 
-    } else if (e.which === Keycode.KEY_2) {
+    } else if (e.which === Keycode.KEY_2 || e.which === Keycode.NUMPAD_2) {
       this.quickInventory.slots[1].dispatchEvent({
         type: "dblclick",
         target: this.quickInventory.slots[1]
       })
 
-    } else if (e.which === Keycode.KEY_3) {
+    } else if (e.which === Keycode.KEY_3 || e.which === Keycode.NUMPAD_3) {
       this.quickInventory.slots[2].dispatchEvent({
         type: "dblclick",
         target: this.quickInventory.slots[2]
       })
 
-    } else if (e.which === Keycode.KEY_4) {
+    } else if (e.which === Keycode.KEY_4 || e.which === Keycode.NUMPAD_4) {
       this.quickInventory.slots[3].dispatchEvent({
         type: "dblclick",
         target: this.quickInventory.slots[3]
       })
 
-    } else if (e.which === Keycode.KEY_5) {
+    } else if (e.which === Keycode.KEY_5 || e.which === Keycode.NUMPAD_5) {
       this.quickInventory.slots[4].dispatchEvent({
         type: "dblclick",
         target: this.quickInventory.slots[4]
       })
 
-    } else if (e.which === Keycode.KEY_6) {
+    } else if (e.which === Keycode.KEY_6 || e.which === Keycode.NUMPAD_6) {
       this.quickInventory.slots[5].dispatchEvent({
         type: "dblclick",
         target: this.quickInventory.slots[5]

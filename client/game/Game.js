@@ -94,7 +94,6 @@ export default class Game {
 
   async createHero(data) {
     const hero = await login.createHero({ ...this.characterBuilder.getHero(), ...data });
-    console.log("HERO CREATED:", hero);
     this.init();
   }
 

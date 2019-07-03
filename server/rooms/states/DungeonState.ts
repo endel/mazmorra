@@ -404,10 +404,6 @@ export class DungeonState extends Schema {
       }
     }
 
-    if (unit instanceof Player) {
-      console.log("PLAYER MOVES:", moves);
-    }
-
     unit.position.moveTo(moves);
   }
 

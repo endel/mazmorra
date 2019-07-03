@@ -19,9 +19,9 @@ export class DungeonRoom extends Room<DungeonState> {
   heroes = new WeakMap<Client, DBHero>();
   clientMap = new WeakMap<Player, Client>();
 
-  async onInit (options) {
-    console.log("onInit =>", options);
+  disposeTimeout = 60; // 1 minute default
 
+  async onInit (options) {
     this.progress = options.progress || 1;
     this.difficulty = options.difficulty || 1;
 
@@ -38,8 +38,6 @@ export class DungeonRoom extends Room<DungeonState> {
         // until: Date.now() + (60 * 60 * 24 * 7 * 1000) // one week from now! (in milliseconds)
       })
     }
-
-    console.log("seed:", season.seed);
 
     this.setState(new DungeonState(this.progress, this.difficulty, season.seed));
 
@@ -199,6 +197,11 @@ export class DungeonRoom extends Room<DungeonState> {
 
     if (!hero._id) return;
 
+    // if a player dies on this dungeon, the timeout is 10 minutes.
+    if (player.hp.current <= 0 || this.progress === 1) {
+      this.disposeTimeout = 60 * 10;
+    }
+
     const quickInventory = Object.values(player.quickInventory.slots).map(slot => slot.toJSON());
     const inventory = Object.values(player.inventory.slots).map(slot => slot.toJSON());
     const equipedItems = Object.values(player.equipedItems.slots).map(slot => slot.toJSON());
@@ -243,7 +246,7 @@ export class DungeonRoom extends Room<DungeonState> {
     this.heroes.delete(client);
     this.state.removePlayer(player);
 
-    this.resetAutoDisposeTimeout(60 * 2);
+    this.resetAutoDisposeTimeout(this.disposeTimeout);
   }
 
   tick () {

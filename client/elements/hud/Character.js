@@ -40,6 +40,9 @@ export default class Character extends THREE.Object3D {
     // Damage
     this.damageIcon = ResourceManager.getHUDElement("icons-damage");
     this.damageIcon.position.y = this.levelIcon.position.y - this.levelIcon.height - margin;
+    this.damageIcon.addEventListener("mouseover", () => {
+      console.log("MOUSE OVER DAMAGE ICON!");
+    })
 
     this.damageText = new MeshText2D("0", {
       align: textAlign.left,

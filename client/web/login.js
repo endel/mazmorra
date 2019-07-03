@@ -1,4 +1,4 @@
-import { client } from '../core/network';
+import { client, enterChat } from '../core/network';
 
 var EventEmitter = require('tiny-emitter')
 

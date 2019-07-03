@@ -510,7 +510,7 @@ export class RoomUtils {
 
       // gold
       if (chance < 0.5) {
-        const amount = this.realRand.intBetween(this.state.progress, Math.floor(this.state.progress * 1.5));
+        const amount = this.realRand.intBetween(Math.floor(this.state.progress / 2), this.state.progress);
         itemToDrop = new Gold(amount);
 
       // potion

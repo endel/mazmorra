@@ -92,11 +92,11 @@ export const approveSound = [
   require('../resource/sounds/voices/approve-5.mp3'),
 ];
 
-export const potionSellerSound = [
-  require('../resource/sounds/voices/potion-seller-1.wav'),
-  require('../resource/sounds/voices/potion-seller-2.wav'),
-  require('../resource/sounds/voices/potion-seller-3.wav'),
-];
+// export const potionSellerSound = [
+//   require('../resource/sounds/voices/potion-seller-1.wav'),
+//   require('../resource/sounds/voices/potion-seller-2.wav'),
+//   require('../resource/sounds/voices/potion-seller-3.wav'),
+// ];
 
 export const chestSound = require('../resource/sounds/chest.wav');
 export const coinSound = require('../resource/sounds/coin.mp3');

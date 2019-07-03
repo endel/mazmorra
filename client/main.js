@@ -35,7 +35,7 @@ ResourceManager.load(() => {
   login.init();
 })
 
-window.THREE = THREE;
+// window.THREE = THREE;
 
 //
 // TODO patch three.js

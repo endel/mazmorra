@@ -59,15 +59,15 @@ export class NPC extends Player {
       ]);
 
     } else if (this.kind === "majesty") {
-      // const genericMessages = [
-      //   `I don't reveal the source of my weapons.`,
-      //   `You can't handle my potions!`,
-      //   `The prophecy is true.`,
-      //   `Demons are amongst us`,
-      // ];
-      // state.createTextEvent(genericMessages[Math.floor(Math.random() * genericMessages.length)], this.position, 'white', 1000);
+      const genericMessages = [
+        `I don't reveal the source of my weapons.`,
+        `You can't handle my potions!`,
+        `The prophecy is true.`,
+        `Demons are amongst us`,
+      ];
+      state.createTextEvent(genericMessages[Math.floor(Math.random() * genericMessages.length)], this.position, 'white', 1000);
 
-      // setTimeout(() => {
+      setTimeout(() => {
         const itemDropOptions = {
           progress: 500,
           isMagical: true,
@@ -92,7 +92,7 @@ export class NPC extends Player {
         });
 
         player.setTradingItems(items);
-      // }, 1000);
+      }, 1000);
 
     } else {
       const genericMessages = [

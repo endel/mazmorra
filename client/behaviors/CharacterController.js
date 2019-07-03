@@ -21,8 +21,6 @@ export default class CharacterController extends Behaviour {
 
     this.lightDistance = 8;
 
-    this.object.addBehaviour(new Chat, room)
-
     // this.light = new THREE.SpotLight(0xffffff, 1, 300, 10);
     if (!window.IS_DAY) {
       this.light = new THREE.SpotLight(0xffffff);

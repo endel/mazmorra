@@ -12,6 +12,7 @@ import helpers from "../../../shared/helpers"
 import * as sounds from '../../core/sound';
 import { doorSound, playRandom } from '../../core/sound';
 import { trackEvent } from '../../utils';
+import Chat from '../../behaviors/Chat';
 
 export default class Level extends THREE.Object3D {
 
@@ -38,6 +39,8 @@ export default class Level extends THREE.Object3D {
     this.enterRoom('dungeon', { progress: 1 }).then(room => {
       this.room = room;
     });
+
+    this.addBehaviour(new Chat(), this);
 
     this.addEventListener("click", this.onClick.bind(this));
     this.addEventListener("mouseover", this.onMouseOver.bind(this));
@@ -169,12 +172,7 @@ export default class Level extends THREE.Object3D {
           this.hud.onToggleInventory();
         }
 
-        if (Object.keys(data).length <= 5) {
-          this.playSound("approve");
-
-        } else {
-          this.playSound("potionSeller");
-        }
+        this.playSound("approve");
 
         this.hud.inventory.setTradingItems(data);
 
@@ -649,7 +647,7 @@ export default class Level extends THREE.Object3D {
 
       this.totalSessions++;
 
-      if (this.totalSessions % 5 === 0) {
+      if (this.totalSessions % 6 === 0) {
         sounds.fadeOut(); // fade soundtrack out
 
         window.adPrerollComplete = () => {
