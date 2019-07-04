@@ -25,7 +25,8 @@ import { MoveEvent } from "../../core/Movement";
 import { DBHero } from "../../db/Hero";
 import { MapKind, MapConfig, getMapConfig, isBossMap, isCheckPointMap } from "../../utils/ProgressionConfig";
 import { NPC } from "../../entities/NPC";
-import { Door, DoorDestiny } from "../../entities/interactive/Door";
+import { DoorDestiny } from "../../entities/interactive/Door";
+import { Portal } from "../../entities/interactive/Portal";
 
 export interface Point {
   x: number;
@@ -34,7 +35,6 @@ export interface Point {
 
 export class DungeonState extends Schema {
   @type("number") progress: number;
-  @type("number") difficulty: number;
   @type("boolean") daylight: boolean;
   @type("string") mapkind: MapKind;
   @type("uint8") mapvariation: number;
@@ -44,7 +44,7 @@ export class DungeonState extends Schema {
   @type("number") height: number;
   @type({ map: Entity }) entities = new MapSchema<Entity>();
 
-  @type("boolean") isPVPAllowed: boolean = false;
+  @type("boolean") isPVPAllowed: boolean;
 
   rooms: any;
   players: {[id: string]: Player} = {};
@@ -60,15 +60,15 @@ export class DungeonState extends Schema {
 
   events = new EventEmitter();
 
-  constructor (progress, difficulty, seed: string) {
+  constructor (progress, seed: string, roomType: string) {
     super()
 
     this.rand = gen.create(seed + progress);
-
     this.progress = progress;
-    this.difficulty = difficulty;
+    this.isPVPAllowed = (roomType === "pvp");
 
-    this.config = getMapConfig(this.progress);
+    this.config = getMapConfig(this.progress, roomType);
+    console.log("this.config:", this.config);
     this.daylight = this.config.daylight;
     this.mapkind = this.config.mapkind;
     this.mapvariation = (this.progress % 2 === 0) ? 2 : 1;
@@ -77,73 +77,6 @@ export class DungeonState extends Schema {
     this.height = this.config.getMapHeight(this.progress);
     const minRoomSize = this.config.minRoomSize;
     const maxRoomSize = this.config.maxRoomSize;
-
-    /*
-    // const dungeonStyle = this.rand.intBetween(0, 5);
-    const dungeonStyle: number = 0;
-
-    let minRoomSize: Point = { x: 0, y: 0 };
-    let maxRoomSize: Point = { x: 0, y: 0 };
-
-    this.width = 14 + Math.floor(progress / 1.5);
-    this.height = 14 + Math.floor(progress / 1.5);
-
-    if (dungeonStyle === 0) {
-      // regular rooms
-      minRoomSize.x = Math.max(Math.ceil(this.width * 0.2), 6);
-      minRoomSize.y = Math.max(Math.ceil(this.height * 0.2), 6);
-
-      maxRoomSize.x = Math.max(Math.floor(this.width * 0.3), 10);
-      maxRoomSize.y = Math.max(Math.floor(this.height * 0.3), 10);
-
-    } else if (dungeonStyle === 1) {
-      // compact / cave
-      minRoomSize.x = 5
-      minRoomSize.y = 5
-
-      maxRoomSize.x = 8
-      maxRoomSize.y = 8
-
-    } else if (dungeonStyle === 2) {
-      // one-direction
-      if (progress % 2 === 0) {
-        minRoomSize.x = this.width;
-        minRoomSize.y = Math.max(Math.floor(this.height * 0.33), 6);
-
-        maxRoomSize.x = this.width;
-        maxRoomSize.y = Math.floor(this.height * 0.33);
-
-      } else {
-        minRoomSize.x = Math.max(Math.floor(this.width * 0.33), 6);
-        minRoomSize.y = this.height;
-
-        maxRoomSize.x = Math.floor(this.width * 0.33);
-        maxRoomSize.y = this.height;
-      }
-
-    } else if (dungeonStyle === 3) {
-      // maze-like
-      this.width = Math.ceil(this.width * 1.4);
-      this.height = Math.ceil(this.height * 1.4);
-
-      minRoomSize.x = Math.max(Math.ceil(this.width / 4), 5);
-      minRoomSize.y = Math.max(Math.ceil(this.height / 4), 5);
-
-      maxRoomSize.x = Math.max(Math.ceil(this.width / 4), 10);
-      maxRoomSize.y = Math.max(Math.ceil(this.height / 4), 10);
-
-    } else if (dungeonStyle === 4) {
-      // big-and-spread (castle)
-      this.width = 48;
-      this.height = 48;
-
-      minRoomSize.x = 6;
-      minRoomSize.y = 6;
-
-      maxRoomSize.x = 12;
-      maxRoomSize.y = 12;
-    }
-    */
 
     const numRooms: number = Math.max(2, // generate at least 2 rooms!
       Math.min(
@@ -181,7 +114,11 @@ export class DungeonState extends Schema {
     this.gridUtils = new GridUtils(this.entities);
     this.roomUtils = new RoomUtils(this.rand, this, this.rooms);
 
-    if (progress === 1) {
+    if (roomType === "loot") {
+      // regular room
+      this.roomUtils.populateRoomsWithLoot();
+
+    } else if (progress === 1) {
       // lobby
       this.roomUtils.populateLobby(this.rooms);
 
@@ -231,12 +168,18 @@ export class DungeonState extends Schema {
     ) {
       if (this.progress === 1) {
         // created a portal in a dungeon!
-        const portalBack = new Door({
+        const portalBack = new Portal({
           x: this.roomUtils.checkPoint.position.x,
           y: this.roomUtils.checkPoint.position.y - 1
-        }, new DoorDestiny({ progress: hero.currentProgress }));
-        portalBack.type = helpers.ENTITIES.PORTAL;
+        }, new DoorDestiny({
+          progress: hero.currentProgress,
+          room: hero.currentRoom
+        }));
         portalBack.ownerId = player.id;
+        // City's portal has 1 second less of life,
+        // to avoid created room from being created again
+        portalBack.ttl -= 1000;
+        portalBack.state = this;
 
         this.addEntity(portalBack);
 
@@ -421,6 +364,18 @@ export class DungeonState extends Schema {
     this.addEntity(textEvent);
     setTimeout(() => this.removeEntity(textEvent), 3000);
     return textEvent;
+  }
+
+  getAllEntitiesOfType<T>(T: any) {
+    const entities: T[] = [];
+
+    for (var id in this.entities) {
+      if (this.entities[id] instanceof T) {
+        entities.push(this.entities[id]);
+      }
+    }
+
+    return entities;
   }
 
   update (currentTime) {

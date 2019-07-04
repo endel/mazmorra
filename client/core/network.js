@@ -3,7 +3,7 @@ import credentials from '../web/login'
 
 const protocol = window.location.protocol.replace("http", "ws");
 const endpoint = (process.env.NODE_ENV === "production")
-  ? `${protocol}//${window.location.hostname}`
+  ? `wss://mazmorra.io`
   : `${protocol}//${ window.location.hostname }:3553`;
 
 export const client = new Client(endpoint);

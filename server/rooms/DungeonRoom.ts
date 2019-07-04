@@ -6,40 +6,47 @@ import { Player } from "../entities/Player";
 import { DoorProgress } from "../entities/interactive/Door";
 import { Season } from "../db/Season";
 import { Movement } from "../core/Movement";
+import { Portal } from "../entities/interactive/Portal";
 
 const TICK_RATE = 20 // 20 ticks per second
 
 export class DungeonRoom extends Room<DungeonState> {
   maxClients = 8;
-
   progress: number;
-  difficulty: number;
 
   players = new WeakMap<Client, Player>();
   heroes = new WeakMap<Client, DBHero>();
   clientMap = new WeakMap<Player, Client>();
 
-  disposeTimeout = 60; // 1 minute default
+  disposeTimeout = 5; // 20 seconds default
 
   async onInit (options) {
+    console.log({roomName: this.roomName, ...options});
+
     this.progress = options.progress || 1;
-    this.difficulty = options.difficulty || 1;
 
     this.players = new WeakMap();
     this.heroes = new WeakMap();
     this.clientMap = new WeakMap();
 
-    let season = await Season.find({}).sort({ until: -1 }).findOne();
+    // Get season/random seed for this room.
+    let seed: string;
+    if (this.progress === 1) {
+      seed = "castleseed1";
 
-    if (!season || Date.now() > season.until) {
-      season = await Season.create({
-        seed: `${generateId()}-${generateId()}`,
-        until: Date.now() + (60 * 60 * 24 * 1 * 1000) // one from now! (in milliseconds)
-        // until: Date.now() + (60 * 60 * 24 * 7 * 1000) // one week from now! (in milliseconds)
-      })
+    } else {
+      let season = await Season.find({}).sort({ until: -1 }).findOne();
+      if (!season || Date.now() > season.until) {
+        season = await Season.create({
+          seed: `${generateId()}-${generateId()}`,
+          until: Date.now() + (60 * 60 * 24 * 1 * 1000) // one from now! (in milliseconds)
+          // until: Date.now() + (60 * 60 * 24 * 7 * 1000) // one week from now! (in milliseconds)
+        })
+      }
+      seed = season.seed;
     }
 
-    this.setState(new DungeonState(this.progress, this.difficulty, season.seed));
+    this.setState(new DungeonState(this.progress, seed, this.roomName));
 
     // Allow PVP?
     if (this.state.progress > 1 && options.isPVPAllowed) {
@@ -61,8 +68,9 @@ export class DungeonRoom extends Room<DungeonState> {
   requestJoin (options) {
     var success = true;
 
-    if (options.progress) success = (success && options.progress === this.progress)
-    if (options.difficulty) success = (success && options.difficulty === this.difficulty)
+    if (options.progress) {
+      success = (success && options.progress === this.progress);
+    }
 
     return success;
   }
@@ -73,6 +81,10 @@ export class DungeonRoom extends Room<DungeonState> {
     this.heroes.set(client, hero)
     this.players.set(client, player)
     this.clientMap.set(player, client)
+
+    if (this.roomName !== hero.currentRoom) {
+      hero.currentRoom = this.roomName;
+    }
 
     // store hero's currentProgress
     if (this.state.progress !== hero.currentProgress) {
@@ -139,7 +151,7 @@ export class DungeonRoom extends Room<DungeonState> {
     }
   }
 
-  onGoTo (player, data, params: any = {}) {
+  onGoTo (player, destiny, params: any = {}) {
     const client = this.clientMap.get(player);
     const hero = this.heroes.get(client);
 
@@ -148,19 +160,26 @@ export class DungeonRoom extends Room<DungeonState> {
       return;
     }
 
-    let progress: number = data.progress;
+    const destinyParams: any = { progress: destiny.progress };
 
-    if (data.progress === DoorProgress.FORWARD) {
-      progress = hero.currentProgress + 1;
+    console.log("destiny:", destiny)
 
-    } else if (data.progress === DoorProgress.BACK) {
-      progress = hero.currentProgress - 1;
-
-    } else if (data.progress === DoorProgress.LATEST) {
-      progress = hero.latestProgress;
+    if (destiny.room) {
+      destinyParams.room = destiny.room;
     }
 
-    this.send(this.clientMap.get(player), ['goto', { progress }, params]);
+    if (destiny.progress === DoorProgress.FORWARD) {
+      destinyParams.progress = hero.currentProgress + 1;
+
+    } else if (destiny.progress === DoorProgress.BACK) {
+      destinyParams.progress = hero.currentProgress - 1;
+
+    } else if (destiny.progress === DoorProgress.LATEST) {
+      destinyParams.progress = hero.latestProgress;
+    }
+    console.log("destinyParams:", destinyParams)
+
+    this.send(this.clientMap.get(player), ['goto', destinyParams, params]);
   }
 
   sendToPlayer (player, data) {
@@ -197,16 +216,23 @@ export class DungeonRoom extends Room<DungeonState> {
 
     if (!hero._id) return;
 
-    // if a player dies on this dungeon, the timeout is 10 minutes.
-    if (player.hp.current <= 0 || this.progress === 1) {
-      this.disposeTimeout = 60 * 10;
+    if (this.progress === 1) {
+      this.disposeTimeout = 60 * 5;
     }
+
+    // // if a player dies on this dungeon, the timeout is 5 minutes.
+    // if (player.hp.current <= 0 || this.progress === 1) {
+    //   this.disposeTimeout = 60 * 5;
+    // }
 
     const quickInventory = Object.values(player.quickInventory.slots).map(slot => slot.toJSON());
     const inventory = Object.values(player.inventory.slots).map(slot => slot.toJSON());
     const equipedItems = Object.values(player.equipedItems.slots).map(slot => slot.toJSON());
 
     const additionalData: {[id: string]: any} = { quickInventory, inventory, equipedItems };
+
+    additionalData.currentProgress = hero.currentProgress;
+    additionalData.currentRoom = hero.currentRoom;
 
     if (this.state.progress !== 1) {
     // saved coords are used when entering Portals.
@@ -246,7 +272,18 @@ export class DungeonRoom extends Room<DungeonState> {
     this.heroes.delete(client);
     this.state.removePlayer(player);
 
-    this.resetAutoDisposeTimeout(this.disposeTimeout);
+    let autoDisposeTimeout = this.disposeTimeout;
+
+    const allPortals = this.state.getAllEntitiesOfType<Portal>(Portal);
+    const lastPortalOpened = allPortals.sort((a, b) =>
+      b.creationTime - a.creationTime)[0];
+    if (lastPortalOpened) {
+      const elapsedPortalTime = (Date.now() - lastPortalOpened.creationTime);
+      const additionalTime = (lastPortalOpened.ttl - elapsedPortalTime) / 1000;
+      autoDisposeTimeout += additionalTime;;
+    }
+
+    this.resetAutoDisposeTimeout(autoDisposeTimeout);
   }
 
   tick () {

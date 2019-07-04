@@ -29,7 +29,7 @@ import { HelmetItem } from "../entities/items/equipable/HelmetItem";
 import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 import { Diamond } from "../entities/items/Diamond";
 import { Scroll } from "../entities/items/consumable/Scroll";
-import { MONSTER_BASE_ATTRIBUTES, isBossMap, MapKind, isCheckPointMap } from "./ProgressionConfig";
+import { MONSTER_BASE_ATTRIBUTES, isBossMap, MapKind, isCheckPointMap, getMapKind } from "./ProgressionConfig";
 import { ConsumableItem } from "../entities/items/ConsumableItem";
 import { EquipableItem } from "../entities/items/EquipableItem";
 import { DBAttributeModifier } from "../db/Hero";
@@ -64,6 +64,8 @@ export class RoomUtils {
   startPosition: any;
   endRoom: DungeonRoom;
   endPosition: any;
+
+  hasSecretDoor: boolean = false;
 
   isBossDungeon: boolean = false;
   bosses?: Boss[];
@@ -185,18 +187,12 @@ export class RoomUtils {
 
     // entrance
     this.state.addEntity(new Door(this.startPosition, new DoorDestiny({
-      identifier: 'grass',
-      mapkind: 'grass',
-      difficulty: 1,
       progress: DoorProgress.BACK
     })));
 
     // out
     // obs: door is locked on boss dungeons!
     this.state.addEntity(new Door(this.endPosition, new DoorDestiny({
-      identifier: 'grass',
-      mapkind: 'grass',
-      difficulty: 1,
       progress: DoorProgress.FORWARD
     }), isLocked));
 
@@ -229,6 +225,22 @@ export class RoomUtils {
       this.state.addEntity(this.checkPoint);
     }
 
+    if (((this.state.progress + 1) % 5) === 0) {
+      this.hasSecretDoor = true;
+
+      const secredDoorRoom = this.getRandomRoom([this.startRoom]);
+      const doorPosition = this.getRandomDoorPosition(secredDoorRoom);
+
+      const secretDoor = new Door(doorPosition, new DoorDestiny({
+        progress: this.state.progress,
+        room: "loot"
+      }));
+      secretDoor.isLocked = true;
+      secretDoor.mapkind = getMapKind(this.state.progress, 2);
+
+      this.state.addEntity(secretDoor);
+    }
+
     this.rooms.forEach(room => {
       if (this.isBossDungeon && room === this.endRoom) {
         this.populateBossRoom(room);
@@ -237,6 +249,15 @@ export class RoomUtils {
         this.populateRoom(room);
       }
     });
+  }
+
+  populateRoomsWithLoot () {
+    // entrance
+    this.state.addEntity(new Door(this.startPosition, new DoorDestiny({
+      progress: this.state.progress
+    })));
+
+    this.rooms.forEach(room => this.populateLootRoom(room));
   }
 
   populateRoom (room: DungeonRoom) {
@@ -298,6 +319,49 @@ export class RoomUtils {
       // this.state.addEntity(heal)
   }
 
+  populateLootRoom(room) {
+    for (let i=0; i<2; i++) {
+      this.addEntity(room, (position) => {
+        const chest = new Chest(position, 'chest2')
+        chest.itemDropOptions = {
+          isRare: true,
+          isMagical: this.realRand.intBetween(0, 1) === 0
+        };
+        return chest;
+      });
+    }
+
+    for (let i=0; i<3; i++) {
+      this.addEntity(room, (position) => {
+        const chest = new Chest(position, 'chest')
+        chest.itemDropOptions = {
+          isRare: true,
+          isMagical: this.realRand.intBetween(0, 1) === 0
+        };
+        return chest;
+      });
+    }
+
+    for (let i=0; i<5; i++) {
+      this.addEntity(room, (position) => {
+        const chest = new Chest(position, 'bucket')
+        chest.itemDropOptions = {
+          isRare: true,
+          isMagical: this.realRand.intBetween(0, 1) === 0
+        };
+        return chest;
+      });
+    }
+
+    for (let i=0; i<2; i++) {
+      var entity = new Entity();
+      entity.type = helpers.ENTITIES.AESTHETICS
+      entity.walkable = true;
+      entity.position.set(this.getNextAvailablePosition(room));
+      this.state.addEntity(entity)
+    }
+  }
+
   populateBossRoom(room: DungeonRoom) {
     this.addEntity(room, (position) => {
       const chest = new Chest(position, 'chest2')
@@ -319,7 +383,6 @@ export class RoomUtils {
   }
 
   populateLobby (rooms: DungeonRoom[]) {
-    console.log("NUM ROOMS => ", rooms.length);
     const room = this.startRoom;
 
     /**
@@ -362,7 +425,6 @@ export class RoomUtils {
 
     // add door
     const initialDoor = new Door(this.startPosition, new DoorDestiny({
-      difficulty: 1,
       progress: 2
     }));
     this.state.addEntity(initialDoor);
@@ -375,12 +437,13 @@ export class RoomUtils {
     lady.position.set(this.endRoom.position.y + 1, this.endRoom.position.x + Math.ceil(this.endRoom.size.x / 2) - 2);
     this.state.addEntity(lady);
 
-    // // add door
-    // const latestDoor = new Door({ x: lady.position.x , y: lady.position.y + 1 }, new DoorDestiny({
-    //   difficulty: 1,
-    //   progress: DoorProgress.LATEST
-    // }));
-    // this.state.addEntity(latestDoor);
+    /**
+     * Key guy
+     */
+    const keyKid = new NPC('key-kid', {}, this.state);
+    keyKid.wanderer = false;
+    keyKid.position.set(lady.position.x, lady.position.y - 1);
+    this.state.addEntity(keyKid);
 
     /**
      * Majesty
@@ -694,11 +757,7 @@ export class RoomUtils {
 
     if (dropOptions.isMagical) {
       item.isMagical = true;
-
-      const primaryAttribute = damageAttribute || this.getRandomPrimaryAttribute();
-      item.damageAttribute = primaryAttribute;
-
-      this.assignBetterItemModifiers(item, [primaryAttribute], { ratio, goodness });
+      this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], { ratio, goodness });
     }
 
     return item;

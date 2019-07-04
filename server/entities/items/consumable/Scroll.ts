@@ -1,9 +1,9 @@
 import helpers from "../../../../shared/helpers";
 import { Unit } from "../../Unit";
 import { DungeonState, Point } from "../../../rooms/states/DungeonState";
-import { Door, DoorDestiny, DoorProgress } from "../../interactive/Door";
+import { DoorDestiny, DoorProgress } from "../../interactive/Door";
 import { ConsumableItem } from "../ConsumableItem";
-// import { CastableItem } from "../CastableItem";
+import { Portal } from "../../interactive/Portal";
 
 export class Scroll extends ConsumableItem {
 
@@ -41,17 +41,17 @@ export class Scroll extends ConsumableItem {
           }
         }
 
-        const portal = new Door({
+        const portal = new Portal({
           x: availablePosition[1],
           y: availablePosition[0]
         }, new DoorDestiny({ progress: DoorProgress.HOME }));
 
-        portal.type = helpers.ENTITIES.PORTAL;
         portal.ownerId = player.id;
+        portal.state = state;
 
         player.mp.increment(-mpCost);
 
-        state.entities[portal.id] = portal;
+        state.addEntity(portal);
         return true;
 
       } else {

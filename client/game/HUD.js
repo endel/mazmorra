@@ -16,6 +16,7 @@ import CheckPointSelector from "../elements/hud/CheckPointSelector";
 
 import { MeshText2D, textAlign } from 'three-text2d'
 import { inventorySound } from '../core/sound';
+import NewQuestOverlay from "../elements/hud/NewQuestOverlay";
 
 export default class HUD extends THREE.Scene {
 
@@ -207,6 +208,12 @@ export default class HUD extends THREE.Scene {
       this.showOverlay();
       inventorySound.open.play();
     }
+  }
+
+  onOpenQuests() {
+    const newQuestOverlay = new NewQuestOverlay();
+    this.add(newQuestOverlay);
+    this.showOverlay();
   }
 
   onOpenCheckPoints(numbers) {

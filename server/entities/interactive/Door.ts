@@ -13,34 +13,35 @@ export enum DoorProgress {
 
 interface DoorDestinyOptions {
   progress: number;
-  difficulty?: number;
-  identifier?: string;
-  mapkind?: string;
-  isPVPAllowed?: boolean;
+  room?: string;
 }
 
 export class DoorDestiny extends Schema implements DoorDestinyOptions {
-  @type("string") identifier: string;
-  @type("string") mapkind: string;
-  @type("number") difficulty: number;
+  // @type("string") identifier: string;
+  // @type("string") mapkind: string;
+  // @type("number") difficulty: number;
   @type("number") progress: DoorProgress;
-  @type("boolean") isPVPAllowed: boolean;
+  @type("string") room: string;
 
   constructor(data: DoorDestinyOptions) {
     super();
-    this.identifier = data.identifier;
-    this.mapkind = data.mapkind;
-    this.difficulty = data.difficulty;
+    // this.identifier = data.identifier;
+    // this.mapkind = data.mapkind;
+    // this.difficulty = data.difficulty;
     this.progress = data.progress;
+
+    if (data.room) {
+      this.room = data.room;
+    }
   }
 }
 
 export class Door extends Interactive {
   @type(DoorDestiny) destiny: DoorDestiny;
   @type("boolean") isLocked: boolean = false;
+  @type("string") mapkind: string;
 
   walkable = true;
-  ownerId: string;
 
   constructor (position: Point, destiny: DoorDestiny, isLocked: boolean = false) {
     super(helpers.ENTITIES.DOOR, position);
@@ -54,7 +55,7 @@ export class Door extends Interactive {
     }
 
     if (this.isLocked) {
-      const { inventoryType, itemId } = player.getItemByType(helpers.ENTITIES.KEY_1);
+      const { inventoryType, itemId } = player.getItemByType('key-' + (this.mapkind || state.mapkind));
 
       // use key to unlock door
       if (
@@ -72,24 +73,8 @@ export class Door extends Interactive {
       }
     }
 
-    const isPortal = this.type === helpers.ENTITIES.PORTAL;
-
-    // remove portal when using it.
-    if (isPortal) {
-      // only the portal owner can enter this portal.
-      if (this.ownerId !== player.id) {
-        return;
-      }
-
-      if (state.progress > 1) {
-        player.shouldSaveCoords = true;
-      }
-
-      state.removeEntity(this);
-    }
-
     player.isSwitchingDungeons = true;
-    state.events.emit('goto', player, this.destiny, { isPortal });
+    state.events.emit('goto', player, this.destiny, { isPortal: false });
   }
 
 }

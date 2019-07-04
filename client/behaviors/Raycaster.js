@@ -15,7 +15,7 @@ export default class Raycaster extends Behaviour {
     this.lastTapTime = Date.now();
 
     // do raycast at every 200ms
-    if (!isMobile) {
+    if (!isMobile && parentRaycaster) {
       setInterval(() => this.doRaycast(true), 200);
     }
 

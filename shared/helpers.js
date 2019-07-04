@@ -83,9 +83,12 @@ var helpers = {
       BOOK_YELLOW: 'book-yellow',
 
       // KEYS
-      KEY_1: 'key-1',
-      KEY_2: 'key-2',
-      KEY_3: 'key-3',
+      KEY_CASTLE: 'key-castle',
+      KEY_ROCK: 'key-rock',
+      KEY_GRASS: 'key-grass',
+      KEY_ROCK_2: 'key-rock-2',
+      KEY_ICE: 'key-ice',
+      KEY_INFERNO: 'key-inferno',
 
       // skills
       PORTAL: 'portal',

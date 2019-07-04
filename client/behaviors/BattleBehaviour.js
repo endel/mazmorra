@@ -51,6 +51,9 @@ export default class BattleBehaviour extends Behaviour {
     this.togglePositionTimeout = App.clock.setTimeout(() => { this.togglePosition = false }, 100);
 
     this.defender = this.factory.level.entities[actionData.defenderId];
+    // TODO: defender might be null.
+    // if (!)
+
     this.attackingPoint = this.defender.position.clone();
     this.attackDistance = actionData.attackDistance;
 

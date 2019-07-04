@@ -7,7 +7,7 @@ export default class Door extends THREE.Object3D {
     super()
 
     this.userData = data
-    this.mapkind = mapkind;
+    this.mapkind = this.userData.mapkind || mapkind;
     this.currentProgress = currentProgress
 
     this.material = new THREE.MeshPhongMaterial({

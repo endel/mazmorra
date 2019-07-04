@@ -21,7 +21,7 @@ const gameServer = new Server({ server: server });
 
 gameServer.register('chat', ChatRoom);
 gameServer.register('dungeon', DungeonRoom);
-gameServer.register('dungeon-pvp', DungeonRoom, { isPVPAllowed: true });
+gameServer.register('loot', DungeonRoom);
 
 if (process.env.ENVIRONMENT !== "production") {
   app.use(cors());

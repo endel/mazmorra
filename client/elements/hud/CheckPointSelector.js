@@ -7,12 +7,10 @@ export default class CheckPointSelector extends THREE.Object3D {
     super()
 
     this.isOpen = false
-    this.isTrading = false;
 
     this.title = ResourceManager.getHUDElement('hud-big-title-red');
     this.title.position.y = this.title.height * 2;
     this.add(this.title);
-    window.bg = this.title;
 
     this.titleText = new MeshText2D("Checkpoints", {
       align: textAlign.center ,

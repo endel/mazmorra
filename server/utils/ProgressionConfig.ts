@@ -71,8 +71,23 @@ export type MapConfig = {
 const NUM_LEVELS_PER_MAP = 18;
 const NUM_LEVELS_PER_CHECKPOINT = 8;
 
-export function getMapConfig(progress: number) {
-  if (progress === 1) {
+export function getMapKind(progress: number, multiplier: number = 0) {
+  return getMapConfig(progress + (NUM_LEVELS_PER_MAP * multiplier)).mapkind;
+}
+
+export function getMapConfig(progress: number, roomType?: string) {
+  if (roomType === "loot") {
+    return {
+      daylight: Math.random() > 0.5,
+      mapkind: getMapKind(progress, 2),
+      getMapWidth: (progress: number) => 20,
+      getMapHeight: (progress: number) => 20,
+      minRoomSize: { x: 8, y: 8 },
+      maxRoomSize: { x: 8, y: 8 },
+      enemies: {}
+    }
+
+  } else if (progress === 1) {
     // castle / lobby!
     const size = 24;
     return {

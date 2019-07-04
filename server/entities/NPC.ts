@@ -6,6 +6,8 @@ import helpers from "../../shared/helpers";
 import { Player } from "./Player";
 import { Potion, POTION_1_MODIFIER, POTION_2_MODIFIER, POTION_4_MODIFIER, POTION_3_MODIFIER } from "./items/consumable/Potion";
 import { Scroll } from "./items/consumable/Scroll";
+import { ConsumableItem } from "./items/ConsumableItem";
+import { Key } from "./items/consumable/Key";
 
 export class NPC extends Player {
   @type("string") kind: string;
@@ -94,16 +96,46 @@ export class NPC extends Player {
         player.setTradingItems(items);
       }, 1000);
 
+    } else if (this.kind === "key-kid") {
+      const items = [];
+
+      // helpers.ENTITIES.KEY_GRASS
+      // helpers.ENTITIES.KEY_ROCK
+      // helpers.ENTITIES.KEY_ROCK_2
+      // helpers.ENTITIES.KEY_ICE
+      // helpers.ENTITIES.KEY_INFERNO
+
+      const keyCastle = new Key();
+      keyCastle.type = helpers.ENTITIES.KEY_CASTLE;
+      items.push(keyCastle);
+
+      const keyGrass = new Key();
+      keyGrass.type = helpers.ENTITIES.KEY_GRASS;
+      items.push(keyGrass);
+
+      player.setTradingItems(items);
+
+
     } else {
-      const genericMessages = [
-        `Hello traveler`,
-        `Take care out there`,
-        `Be safe!`,
-        `You gotta be stronger than them`,
+      const messages = [
+        `PvP is coming next week.`,
         `Save us from their curse!`,
-        `We believe in your ${player.primaryAttribute}`
+        `Be safe!`,
       ]
-      state.createTextEvent(genericMessages[Math.floor(Math.random() * genericMessages.length)], this.position, 'white', 1000);
+
+      if (
+        !player.equipedItems.slots['left'] ||
+        player.equipedItems.slots['left'].damageAttribute !== player.primaryAttribute
+      ) {
+        const weapons = {
+          agility: 'bow',
+          intelligence: 'staff',
+          strength: 'melee weapon',
+        };
+        messages.push(`You need a ${weapons[player.primaryAttribute]}!`);
+      }
+
+      state.createTextEvent(messages[Math.floor(Math.random() * messages.length)], this.position, 'white', 1000);
     }
 
     // prevent NPC from moving right after talking.

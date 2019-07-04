@@ -11,6 +11,7 @@ import { DBItem } from "../../db/Hero";
 import { Scroll } from "./consumable/Scroll";
 import { ArmorItem } from "./equipable/ArmorItem";
 import { ConsumableItem } from "./ConsumableItem";
+import { Key } from "./consumable/Key";
 
 export function createItem(data: Item | DBItem, position?: Point): Item {
   let item: Item;
@@ -37,10 +38,13 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
       break;
 
     // Generic consumables
-    case helpers.ENTITIES.KEY_1:
-    case helpers.ENTITIES.KEY_2:
-    case helpers.ENTITIES.KEY_3:
-      item = new ConsumableItem();
+    case helpers.ENTITIES.KEY_CASTLE:
+    case helpers.ENTITIES.KEY_ROCK:
+    case helpers.ENTITIES.KEY_ROCK_2:
+    case helpers.ENTITIES.KEY_ICE:
+    case helpers.ENTITIES.KEY_GRASS:
+    case helpers.ENTITIES.KEY_INFERNO:
+      item = new Key();
       break;
 
     case helpers.ENTITIES.SHIELD_1:

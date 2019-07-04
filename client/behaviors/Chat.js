@@ -74,7 +74,7 @@ export default class Chat extends Behaviour {
 
     const date = new Date(message.timestamp);
     const child = document.createElement("p");
-    child.innerHTML = `[${date.toLocaleTimeString()}] - [${message.progress}] ${message.name}: ${message.text}`;
+    child.innerText = `[${date.toLocaleTimeString()}] (${message.progress}) ${message.name} says: ${message.text}`;
 
     this.messages.appendChild(child);
     this.updateScroll();

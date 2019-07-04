@@ -14,8 +14,12 @@ THREE.Texture.prototype.createInstance = function() {
 
 const scaleRatio = 5.6
 THREE.Vector3.prototype.normalizeWithTexture = function(texture, isMesh = false) {
-  let ratio = (!isMesh) ? scaleRatio : Math.max(texture.frame.w, texture.frame.h)
-  this.set(texture.frame.w / ratio, texture.frame.h / ratio, 1)
+  if (texture) {
+    let ratio = (!isMesh) ? scaleRatio : Math.max(texture.frame.w, texture.frame.h)
+    this.set(texture.frame.w / ratio, texture.frame.h / ratio, 1)
+  } else {
+    console.log("texture is undefined!?");
+  }
 }
 
 THREE.Vector3.prototype.normalizeWithHUDTexture = function(texture) {

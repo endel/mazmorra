@@ -35,6 +35,8 @@ export default class Level extends THREE.Object3D {
     this.factory = new Factory(this);
     this.isPVPAllowed = false;
 
+    this.lastRoomName = 'dungeon';
+
     // this.room = this.enterRoom('grass')
     this.enterRoom('dungeon', { progress: 1 }).then(room => {
       this.room = room;
@@ -116,7 +118,7 @@ export default class Level extends THREE.Object3D {
   async enterRoom (name, options = {}) {
     this.cleanup();
 
-    await this.checkAdPreRoll();
+    await this.checkAdPreRoll(name);
 
     this.room = enterRoom(name, options)
 
@@ -134,6 +136,7 @@ export default class Level extends THREE.Object3D {
 
       } else if (evt === "goto") {
         const params = payload[2];
+        const roomName = (data.room) ? data.room : "dungeon";
 
         if (params.isPortal) {
           sounds.portal.play();
@@ -157,7 +160,7 @@ export default class Level extends THREE.Object3D {
             value: data.progress
           });
 
-          setTimeout(async () => this.room = await this.enterRoom('dungeon', data), 500);
+          setTimeout(async () => this.room = await this.enterRoom(roomName, data), 500);
         });
 
         setTimeout(() => this.room.leave(), 200);
@@ -637,7 +640,7 @@ export default class Level extends THREE.Object3D {
 
   }
 
-  async checkAdPreRoll() {
+  async checkAdPreRoll(roomName) {
     return new Promise((resolve, reject) => {
       if (!window.isAdsAllowed()) { resolve(); }
 
@@ -645,9 +648,15 @@ export default class Level extends THREE.Object3D {
         this.totalSessions = Number(window.localStorage.getItem("totalSessions") || 0);
       }
 
+      const sessionsForAd = 6;
       this.totalSessions++;
 
-      if (this.totalSessions % 6 === 0) {
+      if (roomName !== this.lastRoomName) {
+        // this.lastRoomName = roomName;
+        this.totalSessions = sessionsForAd;
+      }
+
+      if (this.totalSessions % sessionsForAd === 0) {
         sounds.fadeOut(); // fade soundtrack out
 
         window.adPrerollComplete = () => {
