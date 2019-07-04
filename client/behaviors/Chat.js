@@ -7,7 +7,7 @@ export default class Chat extends Behaviour {
 
   onAttach (level) {
     this.level = level;
-    this.maxMessages = 20;
+    this.maxMessages = 40;
 
     this.room = enterChat();
     this.room.onMessage.add((message) => this.addMessage(message))
@@ -69,6 +69,7 @@ export default class Chat extends Behaviour {
 
   addMessage (message) {
     if (this.messages.childNodes.length > this.maxMessages) {
+      // console.log("remove first messages...");
       this.messages.removeChild(this.messages.childNodes[0]);
     }
 

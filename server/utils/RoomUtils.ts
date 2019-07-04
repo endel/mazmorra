@@ -439,12 +439,14 @@ export class RoomUtils {
     this.state.addEntity(lady);
 
     /**
-     * Key guy
+     * Locksmith
      */
-    const keyKid = new NPC('key-kid', {}, this.state);
-    keyKid.wanderer = false;
-    keyKid.position.set(lady.position.x, lady.position.y - 1);
-    this.state.addEntity(keyKid);
+    this.addEntity(this.endRoom, (position) => {
+      const locksmith = new NPC('locksmith', {}, this.state);
+      locksmith.wanderer = true;
+      locksmith.position.set(position);
+      return locksmith;
+    })
 
     /**
      * Majesty

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "lib",
+    "outDir": "../server-compiled",
     "target": "es6",
     "module": "commonjs",
     "esModuleInterop": true,

@@ -96,7 +96,7 @@ export class NPC extends Player {
         player.setTradingItems(items);
       }, 1000);
 
-    } else if (this.kind === "key-kid") {
+    } else if (this.kind === "locksmith") {
       const items = [];
 
       // helpers.ENTITIES.KEY_GRASS

@@ -36,7 +36,7 @@ export class ChatRoom extends Room {
       this.lastMessages.push(msg);
 
       // only 20 messages are allowed!
-      if (this.lastMessages.length > 20) {
+      if (this.lastMessages.length > 40) {
         this.lastMessages.shift();
       }
 
