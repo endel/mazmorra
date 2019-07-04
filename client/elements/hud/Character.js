@@ -263,7 +263,7 @@ export default class Character extends THREE.Object3D {
     `;
     this.intUpButton.userData.hint = `<strong class="intelligence">Intelligence${(data.primaryAttribute === "intelligence") ? " (primary)" : ""}:</strong><br/>
       ${(data.primaryAttribute === "intelligence") ? "Increase damage<br/>" : ""}
-      Increases max mp<br/>
+      Increase max mp<br/>
       Increase magical damage<br/>
     `;
 

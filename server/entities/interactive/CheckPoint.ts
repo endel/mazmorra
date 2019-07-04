@@ -11,6 +11,7 @@ export class CheckPoint extends Interactive {
 
   constructor (position) {
     super(helpers.ENTITIES.CHECK_POINT, position)
+    this.walkable = true;
   }
 
   update (currentTime) {
