@@ -4,6 +4,7 @@ import http from 'http';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import expressBasicAuth from 'express-basic-auth';
 
 import { Server } from 'colyseus';
 import socialRoutes from "@colyseus/social/express";
@@ -15,6 +16,12 @@ import { ChatRoom } from './rooms/ChatRoom';
 
 const port = process.env.PORT || 3553;
 const app = express();
+
+const basicAuth = expressBasicAuth({
+  users: { admin: "mazmorra" },
+  challenge: true
+});
+
 
 const server = http.createServer(app);
 const gameServer = new Server({ server: server });
@@ -43,7 +50,7 @@ app.use(express.static( __dirname + '/../public' ));
 app.use('/', socialRoutes);
 app.use('/hero', hero);
 
-app.use('/colyseus', monitor(gameServer));
+app.use('/colyseus', basicAuth, monitor(gameServer));
 
 server.listen(port);
 
