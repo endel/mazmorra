@@ -118,7 +118,7 @@ export default class Level extends THREE.Object3D {
   async enterRoom (name, options = {}) {
     this.cleanup();
 
-    await this.checkAdPreRoll(name);
+    // await this.checkAdPreRoll(name);
 
     if (name === "loot") {
       options.progress = 22;
