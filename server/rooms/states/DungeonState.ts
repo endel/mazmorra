@@ -187,6 +187,12 @@ export class DungeonState extends Schema {
 
       } else {
         // back from a portal!
+
+        const portal = this.getAllEntitiesOfType<Portal>(Portal).find(portal => portal.ownerId === player.id);
+        if (portal) {
+          this.removeEntity(portal);
+        }
+
         player.position.set(hero.currentCoords);
       }
 
