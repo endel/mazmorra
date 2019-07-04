@@ -68,7 +68,6 @@ export class DungeonState extends Schema {
     this.isPVPAllowed = (roomType === "pvp");
 
     this.config = getMapConfig(this.progress, roomType);
-    console.log("this.config:", this.config);
     this.daylight = this.config.daylight;
     this.mapkind = this.config.mapkind;
     this.mapvariation = (this.progress % 2 === 0) ? 2 : 1;

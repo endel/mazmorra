@@ -118,10 +118,8 @@ export default class Level extends THREE.Object3D {
   async enterRoom (name, options = {}) {
     this.cleanup();
 
-    // await this.checkAdPreRoll(name);
-
-    if (name === "loot") {
-      options.progress = 22;
+    if (options.progress === 1) {
+      await this.checkAdPreRoll(name);
     }
 
     this.room = enterRoom(name, options)
@@ -652,11 +650,10 @@ export default class Level extends THREE.Object3D {
         this.totalSessions = Number(window.localStorage.getItem("totalSessions") || 0);
       }
 
-      const sessionsForAd = 6;
+      const sessionsForAd = 5;
       this.totalSessions++;
 
       if (roomName !== this.lastRoomName) {
-        // this.lastRoomName = roomName;
         this.totalSessions = sessionsForAd;
       }
 

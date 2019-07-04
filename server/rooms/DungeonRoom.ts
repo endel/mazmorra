@@ -21,8 +21,6 @@ export class DungeonRoom extends Room<DungeonState> {
   disposeTimeout = 5; // 5 seconds default
 
   async onInit (options) {
-    console.log({roomName: this.roomName, ...options});
-
     this.progress = options.progress || 1;
 
     this.players = new WeakMap();
@@ -162,8 +160,6 @@ export class DungeonRoom extends Room<DungeonState> {
 
     const destinyParams: any = { progress: destiny.progress };
 
-    console.log("destiny:", destiny)
-
     if (destiny.room) {
       destinyParams.room = destiny.room;
     }
@@ -177,7 +173,6 @@ export class DungeonRoom extends Room<DungeonState> {
     } else if (destiny.progress === DoorProgress.LATEST) {
       destinyParams.progress = hero.latestProgress;
     }
-    console.log("destinyParams:", destinyParams)
 
     this.send(this.clientMap.get(player), ['goto', destinyParams, params]);
   }
