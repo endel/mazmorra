@@ -7,8 +7,10 @@ export class ChatRoom extends Room {
 
   lastMessages: any[] = [];
 
-  onInit() {
+  async onInit() {
     this.setPatchRate(null);
+
+    this.lastMessages = (await ChatLog.find().sort({_id: -1}).limit(30)).reverse();
   }
 
   onAuth (options) {

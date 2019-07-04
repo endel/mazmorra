@@ -127,7 +127,16 @@ export default class Level extends THREE.Object3D {
     // first level setup
     this.room.onStateChange.addOnce((state) => this.setInitialState(state));
 
-    this.room.onError.add((err) => console.error(err));
+    this.room.onError.add((err, e, data) => {
+      // "black screen" workaround
+      // this is real messy!
+      if (err === "setState") {
+        this.room.leave();
+        options.workaround = true;
+        this.enterRoom(name, options);
+      }
+      console.error(err);
+    });
     // this.room.onLeave.add(() => this.cleanup());
 
     this.room.onMessage.add((payload) => {
@@ -360,6 +369,9 @@ export default class Level extends THREE.Object3D {
   }
 
   setInitialState (state) {
+    // FIXME: this is because of the "black screen" workaround.
+    if (!state.progress) { return; }
+
     this.dispatchEvent({ type: 'setup', state: state })
 
     window.IS_DAY = state.daylight

@@ -27,6 +27,7 @@ import { MapKind, MapConfig, getMapConfig, isBossMap, isCheckPointMap } from "..
 import { NPC } from "../../entities/NPC";
 import { DoorDestiny, DoorProgress, Door } from "../../entities/interactive/Door";
 import { Portal } from "../../entities/interactive/Portal";
+import { debugLog } from "../../utils/Debug";
 
 export interface Point {
   x: number;
@@ -86,10 +87,7 @@ export class DungeonState extends Schema {
           )
         );
 
-    console.log("SIZE:", { x: this.width, y: this.height });
-    console.log({ minRoomSize });
-    console.log({ maxRoomSize });
-    console.log({ numRooms });
+    debugLog(`Dungeon config, size: ${{ x: this.width, y: this.height }}, ${{minRoomSize}}, ${{maxRoomSize}}, ${{numRooms}}`);
 
     const [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, minRoomSize, maxRoomSize, numRooms);
 

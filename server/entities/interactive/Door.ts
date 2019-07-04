@@ -68,7 +68,7 @@ export class Door extends Interactive {
         }, 1);
         return;
 
-      } else {
+      } else if (this.destiny.room === undefined) { // do not unlock special rooms!
         this.isLocked = false;
       }
     }

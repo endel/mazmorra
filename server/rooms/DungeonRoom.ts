@@ -7,6 +7,7 @@ import { DoorProgress } from "../entities/interactive/Door";
 import { Season } from "../db/Season";
 import { Movement } from "../core/Movement";
 import { Portal } from "../entities/interactive/Portal";
+import { debugLog } from "../utils/Debug";
 
 const TICK_RATE = 20 // 20 ticks per second
 
@@ -46,6 +47,8 @@ export class DungeonRoom extends Room<DungeonState> {
 
     this.setState(new DungeonState(this.progress, seed, this.roomName));
 
+    debugLog(`'${this.roomName}' created (with "${seed}" seed) => progress: ${this.progress}`);
+
     // Allow PVP?
     if (this.state.progress > 1 && options.isPVPAllowed) {
       this.state.isPVPAllowed = true;
@@ -63,11 +66,17 @@ export class DungeonRoom extends Room<DungeonState> {
     return await Hero.findOne({ userId, alive: true });
   }
 
-  requestJoin (options) {
+  requestJoin (options, isNew) {
     var success = true;
 
     if (options.progress) {
       success = (success && options.progress === this.progress);
+    }
+
+    // if previous connection had error, create a fresh new room and let the old one dispose itself!
+    if (options.workaround) {
+      debugLog(">>>>>>>>>>> WORKAROUND!");
+      success = success && isNew;
     }
 
     return success;
@@ -122,11 +131,12 @@ export class DungeonRoom extends Room<DungeonState> {
 
     } else if (key == 'inventory-drag') {
       const { fromInventoryType, toInventoryType, itemId, switchItemId } = value;
-      console.log({ fromInventoryType, toInventoryType, itemId, switchItemId });
+      debugLog(`trading from '${fromInventoryType}' to ${toInventoryType}`);;
       player.inventoryDrag(fromInventoryType, toInventoryType, itemId, switchItemId);
 
     } else if (key == 'inventory-sell') {
       const { fromInventoryType, itemId } = value;
+      debugLog(`selling from '${fromInventoryType}'`);
       player.inventorySell(fromInventoryType, itemId);
 
     } else if (key == 'use-item') {
