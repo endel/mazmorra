@@ -120,6 +120,10 @@ export default class Level extends THREE.Object3D {
 
     await this.checkAdPreRoll(name);
 
+    if (name === "loot") {
+      options.progress = 22;
+    }
+
     this.room = enterRoom(name, options)
 
     // first level setup

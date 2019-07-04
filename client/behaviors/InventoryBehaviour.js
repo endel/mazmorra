@@ -11,7 +11,9 @@ export default class InventoryBehaviour extends Behaviour {
   }
 
   onToggle (isOpen) {
-    this.object.slots.updateItems();
+    if (isOpen) {
+      this.object.slots.updateItems();
+    }
   }
 
   onDetach () { }

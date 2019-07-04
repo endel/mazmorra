@@ -13,6 +13,7 @@ export class Movement extends Position {
   target: Entity;
 
   events = new EventEmitter();
+  initialPosition: Point;
 
   constructor (unit) {
     super()
@@ -43,6 +44,10 @@ export class Movement extends Position {
     if (event.valid()) {
       this.x = x;
       this.y = y;
+    }
+
+    if (!this.initialPosition) {
+      this.initialPosition = { x, y };
     }
 
     // console.log(event.valid(), this.position)

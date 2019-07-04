@@ -80,7 +80,8 @@ export default class HUD extends THREE.Scene {
       columns: 1,
       slots: 6,
       inventoryType: "quickInventory"
-    })
+    });
+    this.quickInventory.enabled = true;
 
     // Label
     this.selectionText = new MeshText2D("Welcome", {
@@ -240,8 +241,6 @@ export default class HUD extends THREE.Scene {
 
   forceCloseOverlay() {
     let hasOverlay;
-
-    console.log("forceCloseOverlay! isInventoryOpen? ", this.isInventoryOpen());
 
     if (this.isInventoryOpen()) {
       hasOverlay = true;

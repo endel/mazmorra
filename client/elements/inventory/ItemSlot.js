@@ -13,7 +13,7 @@ export default class ItemSlot extends THREE.Object3D {
     super()
 
     this._item = null
-    this.userData.hud = true;
+    // this.userData.hud = true;
 
     this.accepts = options.accepts
 
@@ -45,6 +45,10 @@ export default class ItemSlot extends THREE.Object3D {
 
     // double click
     this.addEventListener('dblclick', this.onDoubleClick.bind(this))
+  }
+
+  set enabled (bool) {
+    this.userData.hud = bool;
   }
 
   hasItem () {
@@ -150,7 +154,12 @@ export default class ItemSlot extends THREE.Object3D {
     //
     // Sell item!
     //
-    if (draggingItem && this.accepts === "sell" && !isPurchasing) {
+    if (
+      draggingItem &&
+      draggingFrom.parent &&
+      this.accepts === "sell" &&
+      !isPurchasing
+    ) {
       this.dispatchSell({
         fromInventoryType: draggingFrom.parent.inventoryType,
         itemId: draggingItem.userData.itemId

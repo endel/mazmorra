@@ -12,6 +12,11 @@ export class Key extends ConsumableItem {
   cast(unit: Unit, state: DungeonState, position?: Point) {}
   use(player, state, force: boolean = false) { return force; }
 
+  getSellPrice() {
+    // players can't kill bosses to earn loads of money!
+    return 10;
+  }
+
   getPrice() {
     return 10000;
   }

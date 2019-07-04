@@ -65,6 +65,10 @@ export class Enemy extends Unit {
 
       if (closePlayer) {
         this.state.move(this, { x: closePlayer.position.y, y: closePlayer.position.x }, true)
+
+      // } else {
+      //   console.log("doesn't have close player, return...");
+      //   this.state.move(this, { x: this.position.y, y: this.position.x }, true);
       }
 
       this.lastUpdateTime = currentTime;

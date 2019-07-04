@@ -18,7 +18,7 @@ export class DungeonRoom extends Room<DungeonState> {
   heroes = new WeakMap<Client, DBHero>();
   clientMap = new WeakMap<Player, Client>();
 
-  disposeTimeout = 5; // 20 seconds default
+  disposeTimeout = 5; // 5 seconds default
 
   async onInit (options) {
     console.log({roomName: this.roomName, ...options});
@@ -216,14 +216,10 @@ export class DungeonRoom extends Room<DungeonState> {
 
     if (!hero._id) return;
 
-    if (this.progress === 1) {
-      this.disposeTimeout = 60 * 5;
+    // if a player dies on this dungeon, the timeout is 2 minutes.
+    if (player.hp.current <= 0 || this.progress === 1) {
+      this.disposeTimeout = 60 * 2;
     }
-
-    // // if a player dies on this dungeon, the timeout is 5 minutes.
-    // if (player.hp.current <= 0 || this.progress === 1) {
-    //   this.disposeTimeout = 60 * 5;
-    // }
 
     const quickInventory = Object.values(player.quickInventory.slots).map(slot => slot.toJSON());
     const inventory = Object.values(player.inventory.slots).map(slot => slot.toJSON());
@@ -274,13 +270,15 @@ export class DungeonRoom extends Room<DungeonState> {
 
     let autoDisposeTimeout = this.disposeTimeout;
 
-    const allPortals = this.state.getAllEntitiesOfType<Portal>(Portal);
-    const lastPortalOpened = allPortals.sort((a, b) =>
-      b.creationTime - a.creationTime)[0];
-    if (lastPortalOpened) {
-      const elapsedPortalTime = (Date.now() - lastPortalOpened.creationTime);
-      const additionalTime = (lastPortalOpened.ttl - elapsedPortalTime) / 1000;
-      autoDisposeTimeout += additionalTime;;
+    if (this.roomName === "loot") {
+      // prevent loot dungeons from being looted multiple times using portals.
+      const lastPortalOpened = this.state.getAllEntitiesOfType<Portal>(Portal).sort((a, b) =>
+        b.creationTime - a.creationTime)[0];
+      if (lastPortalOpened) {
+        const elapsedPortalTime = (Date.now() - lastPortalOpened.creationTime);
+        const additionalTime = (lastPortalOpened.ttl - elapsedPortalTime) / 1000;
+        autoDisposeTimeout += additionalTime;;
+      }
     }
 
     this.resetAutoDisposeTimeout(autoDisposeTimeout);

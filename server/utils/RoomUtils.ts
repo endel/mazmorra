@@ -29,11 +29,12 @@ import { HelmetItem } from "../entities/items/equipable/HelmetItem";
 import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 import { Diamond } from "../entities/items/Diamond";
 import { Scroll } from "../entities/items/consumable/Scroll";
-import { MONSTER_BASE_ATTRIBUTES, isBossMap, MapKind, isCheckPointMap, getMapKind } from "./ProgressionConfig";
+import { MONSTER_BASE_ATTRIBUTES, isBossMap, MapKind, isCheckPointMap, getMapKind, NUM_LEVELS_PER_LOOT_ROOM } from "./ProgressionConfig";
 import { ConsumableItem } from "../entities/items/ConsumableItem";
 import { EquipableItem } from "../entities/items/EquipableItem";
 import { DBAttributeModifier } from "../db/Hero";
 import { CheckPoint } from "../entities/interactive/CheckPoint";
+import { Key } from "../entities/items/consumable/Key";
 
 export interface DungeonRoom {
   position: Point;
@@ -207,8 +208,8 @@ export class RoomUtils {
 
       // define the item the boss will drop
       // for now, he only drops the key for the next level.
-      const key = new ConsumableItem();
-      key.type = helpers.ENTITIES.KEY_1;
+      const key = new Key();
+      key.type = helpers.ENTITIES.KEY_ROCK;
       boss.willDropItem = key;
 
       this.state.addEntity(boss);
@@ -225,7 +226,7 @@ export class RoomUtils {
       this.state.addEntity(this.checkPoint);
     }
 
-    if (((this.state.progress + 1) % 5) === 0) {
+    if (((this.state.progress + 1) % NUM_LEVELS_PER_LOOT_ROOM) === 0) {
       this.hasSecretDoor = true;
 
       const secredDoorRoom = this.getRandomRoom([this.startRoom]);
@@ -320,7 +321,7 @@ export class RoomUtils {
   }
 
   populateLootRoom(room) {
-    for (let i=0; i<2; i++) {
+    for (let i=0; i<1; i++) {
       this.addEntity(room, (position) => {
         const chest = new Chest(position, 'chest2')
         chest.itemDropOptions = {
@@ -957,7 +958,7 @@ export class RoomUtils {
     // (No limits!)
     // const maxGoodness = typeOptions.length - 1;
 
-    const progressForMaxGoodness = 50;
+    const progressForMaxGoodness = 40;
 
     const maxGoodnessRatio = Math.min(dropOptions.progress / progressForMaxGoodness, 1);
     const maxGoodness = Math.ceil(maxGoodnessRatio * (typeOptions.length - 1));

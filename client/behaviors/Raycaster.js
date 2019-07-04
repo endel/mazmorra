@@ -15,8 +15,14 @@ export default class Raycaster extends Behaviour {
     this.lastTapTime = Date.now();
 
     // do raycast at every 200ms
-    if (!isMobile && parentRaycaster) {
-      setInterval(() => this.doRaycast(true), 200);
+    if (!isMobile) {
+      if (parentRaycaster) {
+        setInterval(() => this.doRaycast(true), 200);
+
+      } else {
+        // hud frequency
+        setInterval(() => this.doRaycast(true), 500);
+      }
     }
 
     window.addEventListener("mousemove", this.doRaycast.bind(this), false);

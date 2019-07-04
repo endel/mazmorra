@@ -3,7 +3,7 @@ import { DBHero } from "../db/Hero";
 import { StatsModifiers, Unit } from "./Unit";
 
 export interface UnitSpawner {
-  type: string,
+  type: string[],
   lvl: number
 }
 
@@ -50,7 +50,8 @@ export class Boss extends Enemy {
         });
 
         if (availablePosition) {
-          const enemy = this.state.roomUtils.createEnemy(this.unitSpawner.type, Enemy, this.unitSpawner.lvl);
+          const enemyType = this.unitSpawner.type[this.state.roomUtils.realRand.intBetween(0, this.unitSpawner.type.length - 1)];
+          const enemy = this.state.roomUtils.createEnemy(enemyType, Enemy, this.unitSpawner.lvl);
 
           enemy.position.set({
             x: availablePosition[1],

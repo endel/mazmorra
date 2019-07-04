@@ -17,6 +17,15 @@ export default class SlotStrip extends THREE.Object3D {
     }
   }
 
+  set enabled (bool) {
+    this._enabled = bool;
+    this.children.forEach(slot => slot.enabled = bool);
+  }
+
+  get enabled () {
+    return this._enabled;
+  }
+
   clearItems () {
     for (let i=0; i<this.slots.length; i++) {
       if (this.slots[i].item) {
@@ -39,6 +48,7 @@ export default class SlotStrip extends THREE.Object3D {
       this.slots[i].item.userData.item = item;
       this.slots[i].item.userData.itemId = itemId;
       this.slots[i].item.userData.inventoryType = this.inventoryType;
+      this.slots[i].enabled = this.enabled;
       i++
     }
   }

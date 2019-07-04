@@ -25,7 +25,7 @@ import { MoveEvent } from "../../core/Movement";
 import { DBHero } from "../../db/Hero";
 import { MapKind, MapConfig, getMapConfig, isBossMap, isCheckPointMap } from "../../utils/ProgressionConfig";
 import { NPC } from "../../entities/NPC";
-import { DoorDestiny } from "../../entities/interactive/Door";
+import { DoorDestiny, DoorProgress, Door } from "../../entities/interactive/Door";
 import { Portal } from "../../entities/interactive/Portal";
 
 export interface Point {
@@ -78,12 +78,14 @@ export class DungeonState extends Schema {
     const minRoomSize = this.config.minRoomSize;
     const maxRoomSize = this.config.maxRoomSize;
 
-    const numRooms: number = Math.max(2, // generate at least 2 rooms!
-      Math.min(
-        Math.floor((this.width * this.height) / (maxRoomSize.x * maxRoomSize.y)),
-        Math.floor(progress / 2)
-      )
-    );
+    const numRooms: number = (roomType === "loot")
+      ? 1
+      : Math.max(2, // generate at least 2 rooms!
+          Math.min(
+            Math.floor((this.width * this.height) / (maxRoomSize.x * maxRoomSize.y)),
+            Math.floor(progress / 2)
+          )
+        );
 
     console.log("SIZE:", { x: this.width, y: this.height });
     console.log({ minRoomSize });
@@ -245,6 +247,9 @@ export class DungeonState extends Schema {
   checkOverlapingEntities (targetEntity: Entity, moveEvent: MoveEvent, x, y) {
     const unit = moveEvent.target;
 
+    let doorEntity: Door;
+    let hasPickedItems: boolean;
+
     const entities = this.gridUtils.getAllEntitiesAt(y, x);
     for (var i=0; i<entities.length; i++) {
       let entity = entities[i] as Entity;
@@ -267,6 +272,10 @@ export class DungeonState extends Schema {
         ) {
           if (entity instanceof Item && entity.pick(unit, this)) {
             this.removeEntity(entity);
+            hasPickedItems = true;
+
+          } else if (entity instanceof Door) {
+            doorEntity = entity;
 
           } else if (entity instanceof Interactive) {
             entity.interact(moveEvent, unit, this);
@@ -277,6 +286,11 @@ export class DungeonState extends Schema {
         }
 
       }
+    }
+
+    // door interaction is the last!
+    if (!hasPickedItems && doorEntity) {
+      doorEntity.interact(moveEvent, unit, this);
     }
   }
 

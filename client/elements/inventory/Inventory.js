@@ -96,6 +96,11 @@ export default class Inventory extends THREE.Object3D {
       this.remove(this.purchaseSlots);
     }
 
+    // toggle interactivity
+    this.equipedItems.enabled = this.isOpen;
+    this.slots.enabled = this.isOpen;
+    this.purchaseSlots.enabled = this.isOpen;
+
     //
     // fade all element materials separately
     // (THREE.js can't change opacity of containers)

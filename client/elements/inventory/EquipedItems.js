@@ -29,6 +29,19 @@ export default class EquipedItems extends THREE.Object3D {
     this.height = (this.head.height +  config.HUD_SCALE) * 3;
   }
 
+  set enabled (bool) {
+    this.head.enabled = bool;
+    this.left.enabled = bool;
+    this.right.enabled = bool;
+    this.body.enabled = bool;
+    this.feet.enabled = bool;
+    this._enabled = bool;
+  }
+
+  get enabled () {
+    return this._enabled;
+  }
+
   updateItems () {
     const equipmentSlots = ['head', 'left', 'right', 'body', 'feet'];
 
@@ -47,6 +60,7 @@ export default class EquipedItems extends THREE.Object3D {
         this[slotName].item.userData.item = item;
         this[slotName].item.userData.itemId = slotName;
         this[slotName].item.userData.inventoryType = this.inventoryType;
+        this[slotName].enabled = this.enabled;
       }
     }
 

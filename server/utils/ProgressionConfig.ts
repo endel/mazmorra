@@ -68,8 +68,9 @@ export type MapConfig = {
   boss?: string[]
 };
 
-const NUM_LEVELS_PER_MAP = 18;
-const NUM_LEVELS_PER_CHECKPOINT = 8;
+export const NUM_LEVELS_PER_MAP = 18;
+export const NUM_LEVELS_PER_CHECKPOINT = 8;
+export const NUM_LEVELS_PER_LOOT_ROOM = 12;
 
 export function getMapKind(progress: number, multiplier: number = 0) {
   return getMapConfig(progress + (NUM_LEVELS_PER_MAP * multiplier)).mapkind;
@@ -82,8 +83,8 @@ export function getMapConfig(progress: number, roomType?: string) {
       mapkind: getMapKind(progress, 2),
       getMapWidth: (progress: number) => 20,
       getMapHeight: (progress: number) => 20,
-      minRoomSize: { x: 8, y: 8 },
-      maxRoomSize: { x: 8, y: 8 },
+      minRoomSize: { x: 6, y: 6 },
+      maxRoomSize: { x: 6, y: 6 },
       enemies: {}
     }
 
@@ -229,7 +230,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
       hp: 70
     },
     spawner: {
-      type: 'spider',
+      type: ['spider'],
       lvl: 2
     }
   },
@@ -278,7 +279,8 @@ export const MONSTER_BASE_ATTRIBUTES: {
       intelligence: 1,
     },
     modifiers: {
-      damage: 5
+      damage: 8,
+      hp: 200
     }
   },
   //////////
@@ -323,8 +325,12 @@ export const MONSTER_BASE_ATTRIBUTES: {
       intelligence: 5
     },
     modifiers: {
-      damage: 5,
-      hp: 100
+      damage: 10,
+      hp: 250
+    },
+    spawner: {
+      type: ['skeleton-1', 'skeleton-2'],
+      lvl: 5
     }
   },
   //////////
@@ -369,8 +375,8 @@ export const MONSTER_BASE_ATTRIBUTES: {
       intelligence: 3
     },
     modifiers: {
-      damage: 10,
-      hp: 200,
+      damage: 12,
+      hp: 300,
       movementSpeed: 2,
       attackSpeed: 3
     }
