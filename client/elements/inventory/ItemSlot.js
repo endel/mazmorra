@@ -273,6 +273,10 @@ export default class ItemSlot extends THREE.Object3D {
     }
   }
 
+  _drop() {
+    draggingItem = null
+  }
+
   _revertDraggingItem(cancelDrop) {
     if (cancelDrop) {
       draggingFrom.item = draggingItem;

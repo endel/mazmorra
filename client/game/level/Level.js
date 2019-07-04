@@ -4,7 +4,7 @@ import TileSelectionPreview from '../../elements/TileSelectionPreview'
 import LevelUp from '../../elements/effects/LevelUp';
 
 import CharacterController from '../../behaviors/CharacterController'
-import { Resources } from '../../elements/character/Resources';
+import { HeroSkinBuilder } from "../../elements/character/HeroSkinBuilder";
 
 import { enterRoom, getClientId } from '../../core/network'
 import helpers from "../../../shared/helpers"
@@ -370,7 +370,7 @@ export default class Level extends THREE.Object3D {
 
     this.isPVPAllowed = state.isPVPAllowed;
 
-    Resources.init();
+    HeroSkinBuilder.init();
 
     //
     if (this.mapkindAestetics) {
@@ -579,6 +579,9 @@ export default class Level extends THREE.Object3D {
         }
 
         return;
+
+      } else {
+        draggingItemSprite.slot._drop();
       }
 
       /**

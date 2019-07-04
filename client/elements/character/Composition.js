@@ -1,11 +1,11 @@
-import { Resources } from './Resources'
+import { HeroSkinBuilder } from "./HeroSkinBuilder";
 
 export default class Composition extends THREE.Object3D {
 
   constructor (props = {}) {
     super()
 
-    this.textureOffset = Resources.getCurrentOffset()
+    this.textureOffset = HeroSkinBuilder.getCurrentOffset()
 
     this.properties = {
       cape: props.klass || 0,
@@ -16,9 +16,9 @@ export default class Composition extends THREE.Object3D {
     }
 
     this.colors = {
-      hair: Resources.colors.hair[props.hairColor || 0],
-      eye: Resources.colors.eye[props.eye || 0],
-      body: Resources.colors.body[props.body || 0]
+      hair: HeroSkinBuilder.colors.hair[props.hairColor || 0],
+      eye: HeroSkinBuilder.colors.eye[props.eye || 0],
+      body: HeroSkinBuilder.colors.body[props.body || 0]
     }
 
     this._direction = 'bottom'
@@ -26,8 +26,8 @@ export default class Composition extends THREE.Object3D {
   }
 
   updateTexture () {
-    Resources.updateTexture(this)
-    var map = Resources.get(this)
+    HeroSkinBuilder.updateTexture(this)
+    var map = HeroSkinBuilder.get(this)
 
     if (!this.sprite) {
       this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -60,11 +60,11 @@ export default class Composition extends THREE.Object3D {
   }
 
   updateDirection () {
-    this.sprite.material.map = Resources.get(this)
+    this.sprite.material.map = HeroSkinBuilder.get(this)
   }
 
   destroy () {
-    Resources.deleteTexture(this)
+    HeroSkinBuilder.deleteTexture(this)
   }
 
 }

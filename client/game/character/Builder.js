@@ -1,6 +1,6 @@
 import credentials from '../../web/login'
 
-import { Resources } from '../../elements/character/Resources'
+import { HeroSkinBuilder } from '../../elements/character/HeroSkinBuilder'
 import Composition from '../../elements/character/Composition'
 
 import Button from '../../elements/controls/Button'
@@ -52,7 +52,7 @@ export default class Builder extends THREE.Object3D {
   }
 
   buildHUDControls () {
-    this.hairColorPicker = new ColorPicker(Resources.colors.hair)
+    this.hairColorPicker = new ColorPicker(HeroSkinBuilder.colors.hair)
     this.hairColorPicker.position.set(0, - window.innerHeight / 2 + this.hairColorPicker.height +  config.HUD_MARGIN, 0)
     this.hairColorPicker.addEventListener('change', this.onChangeColor.bind(this, 'hair'))
     this.hud.add(this.hairColorPicker)
@@ -62,12 +62,12 @@ export default class Builder extends THREE.Object3D {
     this.hairSelection.addEventListener('change', this.onChangeProperty.bind(this, 'hair'))
     this.hud.add(this.hairSelection)
 
-    this.eyeColorPicker = new ColorPicker(Resources.colors.eye, "Eyes")
+    this.eyeColorPicker = new ColorPicker(HeroSkinBuilder.colors.eye, "Eyes")
     this.eyeColorPicker.position.set(-this.eyeColorPicker.width, this.hairSelection.position.y + this.eyeColorPicker.height +  config.HUD_MARGIN, 0)
     this.eyeColorPicker.addEventListener('change', this.onChangeColor.bind(this, 'eye'))
     this.hud.add(this.eyeColorPicker)
 
-    this.bodyColorPicker = new ColorPicker(Resources.colors.body, "Body")
+    this.bodyColorPicker = new ColorPicker(HeroSkinBuilder.colors.body, "Body")
     this.bodyColorPicker.position.set(this.eyeColorPicker.width, this.hairSelection.position.y + this.bodyColorPicker.height +  config.HUD_MARGIN, 0)
     this.bodyColorPicker.addEventListener('change', this.onChangeColor.bind(this, 'body'))
     this.hud.add(this.bodyColorPicker)

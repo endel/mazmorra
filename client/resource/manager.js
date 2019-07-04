@@ -77,7 +77,9 @@ class ResourceManager {
     this.texturesLoaded = 0
     this.texturesTotal = 101
 
-    loader.load('images/spritesheet.png', (texture) => {
+    const cacheBuster = Math.random().toString().replace(".", "");
+
+    loader.load(`images/spritesheet.png?${cacheBuster}`, (texture) => {
       this.atlas = texture
 
       for (let filename in spritesheet.frames) {

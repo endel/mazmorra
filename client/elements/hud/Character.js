@@ -1,5 +1,6 @@
 import { MeshText2D, textAlign } from 'three-text2d'
-import { MAX_CHAR_WIDTH, MAX_CHAR_HEIGHT, Resources } from '../character/Resources'
+import { MAX_CHAR_WIDTH, MAX_CHAR_HEIGHT } from '../character/HeroSkinBuilder'
+import { HeroSkinBuilder } from "../character/HeroSkinBuilder";
 import LevelUpButton from './LevelUpButton';
 import { humanize } from '../../utils';
 import hint from './Hint';
@@ -380,7 +381,7 @@ export default class Character extends THREE.Object3D {
   }
 
   set composition (instance) {
-    this.levelIcon.material.map = Resources.get(instance, 'hud-face')
+    this.levelIcon.material.map = HeroSkinBuilder.get(instance, 'hud-face')
     this.levelIcon.scale.normalizeWithHUDTexture(this.levelIcon.material.map)
   }
 

@@ -7,7 +7,7 @@ export const MAX_CHAR_HEIGHT = 10
 export const TOTAL_CHAR_WIDTH = 7 * 5 // with head
 export const TEXTURE_SIZE = 256
 
-export class Resources {
+export class HeroSkinBuilder {
 
   static init () {
     this.offset = 0

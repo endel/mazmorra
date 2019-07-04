@@ -73,7 +73,8 @@ export const NUM_LEVELS_PER_CHECKPOINT = 8;
 export const NUM_LEVELS_PER_LOOT_ROOM = 12;
 
 export function getMapKind(progress: number, multiplier: number = 0) {
-  return getMapConfig(progress + (NUM_LEVELS_PER_MAP * multiplier)).mapkind;
+  const config = getMapConfig(progress + (NUM_LEVELS_PER_MAP * multiplier));
+  return (config && config.mapkind) || MapKind.INFERNO;
 }
 
 export function getMapConfig(progress: number, roomType?: string) {

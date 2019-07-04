@@ -1,6 +1,6 @@
 import { MeshText2D, textAlign } from 'three-text2d'
 
-export default class Lifebar extends THREE.Object3D {
+export default class Resources extends THREE.Object3D {
 
   constructor () {
     super()
