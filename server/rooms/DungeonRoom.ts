@@ -270,15 +270,13 @@ export class DungeonRoom extends Room<DungeonState> {
 
     let autoDisposeTimeout = this.disposeTimeout;
 
-    if (this.roomName === "loot") {
-      // prevent loot dungeons from being looted multiple times using portals.
-      const lastPortalOpened = this.state.getAllEntitiesOfType<Portal>(Portal).sort((a, b) =>
-        b.creationTime - a.creationTime)[0];
-      if (lastPortalOpened) {
-        const elapsedPortalTime = (Date.now() - lastPortalOpened.creationTime);
-        const additionalTime = (lastPortalOpened.ttl - elapsedPortalTime) / 1000;
-        autoDisposeTimeout += additionalTime;;
-      }
+    // prevent loot dungeons from being looted multiple times using portals.
+    const lastPortalOpened = this.state.getAllEntitiesOfType<Portal>(Portal).sort((a, b) =>
+      b.creationTime - a.creationTime)[0];
+    if (lastPortalOpened) {
+      const elapsedPortalTime = (Date.now() - lastPortalOpened.creationTime);
+      const additionalTime = (lastPortalOpened.ttl - elapsedPortalTime) / 1000;
+      autoDisposeTimeout += additionalTime;;
     }
 
     this.resetAutoDisposeTimeout(autoDisposeTimeout);
