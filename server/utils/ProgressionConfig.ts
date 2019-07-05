@@ -4,51 +4,12 @@ import { UnitSpawner } from "../entities/Boss";
 
 export enum MapKind {
   ROCK = 'rock',
-  ROCK_2 = 'rock-2',
+  CAVE = 'cave',
   ICE = 'ice',
   GRASS = 'grass',
   INFERNO = 'inferno',
   CASTLE = 'castle',
 };
-
-// const enemyList = [
-//   'bat',
-//   'rat',
-//   'spider',
-//   'spider-medium',
-//   'spider-giant',
-//   'slime',
-//   'slime-cube',
-//   'slime-2',
-//   'slime-big',
-//   'eye',
-//   'fairy',
-//   'fat-zombie',
-//   'flying-eye',
-//   'frog',
-//   'spider-giant',
-//   'glass-eye',
-//   'goblin-2',
-//   'goblin-3',
-//   'goblin-boss',
-//   'goblin',
-//   'golem',
-//   'lava-ogre',
-//   'lava-totem',
-//   'minion',
-//   'monkey',
-//   'octopus-boss',
-//   'owl',
-//   'rabbit',
-//   'scorpio-boss',
-//   'skeleton-2',
-//   'skeleton',
-//   'snow-goblin-boss',
-//   'snow-minion-2',
-//   'snow-minion',
-//   'witch',
-//   'zombie'
-// ];
 
 export type MapMonsterList = {
   day: {regular: string[], boss?: string[]},
@@ -69,8 +30,27 @@ export type MapConfig = {
 };
 
 export const NUM_LEVELS_PER_MAP = 18;
+// export const NUM_LEVELS_PER_MAP = 4;
 export const NUM_LEVELS_PER_CHECKPOINT = 8;
 export const NUM_LEVELS_PER_LOOT_ROOM = 12;
+
+/**
+ * Maximum attribute modifiers
+ */
+export const MAX_HELMET_ARMOR = 15;
+export const MAX_SHIELD_ARMOR = 20;
+export const MAX_ARMOR_ARMOR = 75;
+
+export const MAX_BOOTS_ARMOR = 10;
+export const MAX_BOOTS_MOVEMENT_SPEED = 12;
+
+export const MAX_WEAPON_DAMAGE = 30;
+
+export const MAX_BOW_DAMAGE = 20;
+export const MAX_BOW_ATTACK_DISTANCE = 6;
+
+export const MAX_STAFF_DAMAGE = 14;
+export const MAX_STAFF_ATTACK_DISTANCE = 7;
 
 export function getMapKind(progress: number, multiplier: number = 0) {
   const config = getMapConfig(progress + (NUM_LEVELS_PER_MAP * multiplier));
@@ -89,12 +69,14 @@ export function getMapConfig(progress: number, roomType?: string) {
       enemies: {}
     }
 
-  } else if (progress === 1) {
+  } else if (progress === 1 || progress === MAX_LEVELS) {
     // castle / lobby!
     const size = 24;
     return {
       daylight: true,
-      mapkind: MapKind.CASTLE,
+      mapkind: (progress === MAX_LEVELS)
+        ? MapKind.INFERNO
+        : MapKind.CASTLE,
       getMapWidth: (progress: number) => size,
       getMapHeight: (progress: number) => size,
       minRoomSize: { x: 8, y: 8 },
@@ -130,9 +112,9 @@ export const MAP_CONFIGS: MapConfig[] = [
 
   {
     daylight: false,
-    mapkind: MapKind.ROCK,
-    getMapWidth: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
-    getMapHeight: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
+    mapkind: MapKind.CAVE,
+    getMapWidth: (progress: number) => 16 + progress % NUM_LEVELS_PER_MAP,
+    getMapHeight: (progress: number) => 16 + progress % NUM_LEVELS_PER_MAP,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'slime': 0.33, 'slime-2': 0.33, 'skeleton-1': 0.33, 'slime-cube': 0.01, },
@@ -142,8 +124,8 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: true,
     mapkind: MapKind.GRASS,
-    getMapWidth: (progress: number) => 18 + progress % NUM_LEVELS_PER_MAP,
-    getMapHeight: (progress: number) => 18 + progress % NUM_LEVELS_PER_MAP,
+    getMapWidth: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
+    getMapHeight: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'skeleton-1': 0.33, 'skeleton-2': 0.33, 'skeleton-3': 0.33, 'spider-medium': 0.01 },
@@ -153,15 +135,40 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: false,
     mapkind: MapKind.GRASS,
-    getMapWidth: (progress: number) => 19 + progress % NUM_LEVELS_PER_MAP,
-    getMapHeight: (progress: number) => 19 + progress % NUM_LEVELS_PER_MAP,
+    getMapWidth: (progress: number) => 18 + progress % NUM_LEVELS_PER_MAP,
+    getMapHeight: (progress: number) => 18 + progress % NUM_LEVELS_PER_MAP,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'goblin': 0.33, 'goblin-2': 0.33, 'goblin-3': 0.33, 'skeleton-2': 0.01 },
     boss: ['goblin-boss']
   },
 
+  {
+    daylight: true,
+    mapkind: MapKind.INFERNO,
+    getMapWidth: (progress: number) => 18 + progress % NUM_LEVELS_PER_MAP,
+    getMapHeight: (progress: number) => 18 + progress % NUM_LEVELS_PER_MAP,
+    minRoomSize: { x: 6, y: 6 },
+    maxRoomSize: { x: 9, y: 9 },
+    enemies: { 'lava-ogre': 0.33, 'lava-totem': 0.33, 'beholder': 0.33, 'golem': 0.01 },
+    boss: ['scorpion-boss']
+    // boss: ['evil-majesty']
+  },
+
+  {
+    daylight: false,
+    mapkind: MapKind.INFERNO,
+    getMapWidth: (progress: number) => 18 + progress % NUM_LEVELS_PER_MAP,
+    getMapHeight: (progress: number) => 18 + progress % NUM_LEVELS_PER_MAP,
+    minRoomSize: { x: 6, y: 6 },
+    maxRoomSize: { x: 9, y: 9 },
+    enemies: { 'demon': 0.33, 'lava-totem': 0.33, 'beholder': 0.33, 'winged-demon': 0.01 },
+    boss: ['monkey-king', 'scorpion-boss', 'goblin-boss', 'necromancer', 'slime-big', 'spider-giant']
+  },
+
 ];
+
+export const MAX_LEVELS = MAP_CONFIGS.length * NUM_LEVELS_PER_MAP;;
 
 export const MONSTER_BASE_ATTRIBUTES: {
   [id: string]: {
@@ -206,6 +213,19 @@ export const MONSTER_BASE_ATTRIBUTES: {
       damage: 1
     }
   },
+
+  'scorpion': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 1,
+      agility: 1,
+      intelligence: 1,
+    },
+    modifiers: {
+      damage: 10
+    }
+  },
+
 
   'spider-medium': {
     base: {
@@ -381,6 +401,171 @@ export const MONSTER_BASE_ATTRIBUTES: {
       movementSpeed: 2,
       attackSpeed: 3
     }
-  }
+  },
   //////////
-}
+
+  'lava-ogre': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 10,
+      agility: 2,
+      intelligence: 1
+    },
+    modifiers: {
+      damage: 5,
+      hp: 50,
+    }
+  },
+
+  'lava-totem': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 10,
+      agility: 2,
+      intelligence: 1
+    },
+    modifiers: {
+      damage: 5,
+      hp: 50,
+    }
+  },
+
+  'beholder': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 10,
+      agility: 2,
+      intelligence: 1
+    },
+    modifiers: {
+      damage: 5,
+      hp: 50,
+    }
+  },
+
+  'golem': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 10,
+      agility: 2,
+      intelligence: 1
+    },
+    modifiers: {
+      damage: 5,
+      hp: 100,
+    }
+  },
+
+  'scorpion-boss': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 10,
+      agility: 5,
+      intelligence: 5
+    },
+    modifiers: {
+      damage: 10,
+      hp: 500,
+      movementSpeed: 2,
+      attackSpeed: 3
+    },
+    spawner: {
+      type: ['scorpion'],
+      lvl: 2
+    }
+  },
+
+  // 'evil-majesty': {
+  //   base: {
+  //     primaryAttribute: "intelligence",
+  //     strength: 5,
+  //     agility: 5,
+  //     intelligence: 10
+  //   },
+  //   modifiers: {
+  //     damage: 10,
+  //     hp: 500,
+  //     movementSpeed: 2,
+  //     attackSpeed: 3
+  //   }
+  // },
+
+  //////////////
+
+  'demon': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 15,
+      agility: 2,
+      intelligence: 1
+    },
+    modifiers: {
+      damage: 5,
+      hp: 50,
+    }
+  },
+
+  'winged-demon': {
+    base: {
+      primaryAttribute: "strength",
+      strength: 20,
+      agility: 2,
+      intelligence: 1
+    },
+    modifiers: {
+      damage: 5,
+      hp: 50,
+    }
+  },
+
+  'monkey-king': {
+    base: {
+      primaryAttribute: "agility",
+      strength: 10,
+      agility: 20,
+      intelligence: 10
+    },
+    modifiers: {
+      damage: 20,
+      hp: 5000,
+      movementSpeed: 10,
+      attackSpeed: 10
+    },
+    spawner: {
+      type: ['monkey'],
+      lvl: 20,
+    }
+  },
+
+  'monkey': {
+    base: {
+      primaryAttribute: "agility",
+      strength: 5,
+      agility: 10,
+      intelligence: 5
+    },
+    modifiers: {
+      damage: 10,
+      movementSpeed: 5,
+      attackSpeed: 5
+    }
+  },
+
+  // 'demon-majesty': {
+  //   base: {
+  //     primaryAttribute: "intelligence",
+  //     strength: 5,
+  //     agility: 5,
+  //     intelligence: 20
+  //   },
+  //   modifiers: {
+  //     damage: 20,
+  //     hp: 1000,
+  //     movementSpeed: 3,
+  //     attackSpeed: 3
+  //   }
+  // },
+
+  //////////////
+
+};

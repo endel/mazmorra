@@ -40,7 +40,7 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
     // Generic consumables
     case helpers.ENTITIES.KEY_CASTLE:
     case helpers.ENTITIES.KEY_ROCK:
-    case helpers.ENTITIES.KEY_ROCK_2:
+    case helpers.ENTITIES.KEY_CAVE:
     case helpers.ENTITIES.KEY_ICE:
     case helpers.ENTITIES.KEY_GRASS:
     case helpers.ENTITIES.KEY_INFERNO:

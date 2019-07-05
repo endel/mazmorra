@@ -143,7 +143,7 @@ export default class Level extends THREE.Object3D {
       const [ evt, data ] = payload;
 
       if (evt === "checkpoints") {
-        this.hud.onOpenCheckPoints(data.filter(n => n !== this.progress));
+        this.hud.onOpenCheckPoints(data.filter(n => n !== this.progress).sort((a, b) => a - b));
 
       } else if (evt === "goto") {
         const params = payload[2];
@@ -435,7 +435,7 @@ export default class Level extends THREE.Object3D {
       "castle": "moonlight-forest",
 
       "rock": 'higure-forest',
-      "rock-2": 'higure-forest',
+      "cave": 'higure-forest',
       "ice": 'higure-forest',
       "grass": 'higure-forest',
       "inferno": 'higure-forest',
@@ -665,7 +665,7 @@ export default class Level extends THREE.Object3D {
         this.totalSessions = Number(window.localStorage.getItem("totalSessions") || 0);
       }
 
-      const sessionsForAd = 5;
+      const sessionsForAd = 4;
       this.totalSessions++;
 
       if (roomName !== this.lastRoomName) {

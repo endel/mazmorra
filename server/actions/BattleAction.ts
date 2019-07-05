@@ -85,11 +85,11 @@ export class BattleAction extends Action {
 
       // make defender move to attacker, if he's not doing anything.
       if (
-        this.defender instanceof Enemy &&
+        this.defender instanceof Enemy/* &&
         (
           !this.defender.action ||
           !this.defender.action.isEligible
-        )
+        )*/
       ) {
         this.defender.state.move(this.defender, {
           x: this.attacker.position.y,
@@ -99,7 +99,7 @@ export class BattleAction extends Action {
 
       if (!this.defender.isAlive) {
         this.defender.onDie();
-        this.attacker.onKill(this.defender)
+        this.attacker.clearPendingMovement();
       }
 
       //

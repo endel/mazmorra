@@ -166,17 +166,14 @@ export default class Character extends THREE.Object3D {
 
     // Atribute lvl ups
     this.strUpButton = new LevelUpButton();
-    this.strUpButton.position.x = this.strText.position.x + this.strText.width * config.HUD_SCALE;
     this.strUpButton.position.y = this.strText.position.y - this.strIcon.height / 2;
     this.strUpButton.addEventListener("click", this.onIncreaseAttribute.bind(this, 'strength'));
 
     this.agiUpButton = new LevelUpButton();
-    this.agiUpButton.position.x = this.agiText.position.x + this.agiText.width * config.HUD_SCALE;
     this.agiUpButton.position.y = this.agiText.position.y - this.agiIcon.height / 2;
     this.agiUpButton.addEventListener("click", this.onIncreaseAttribute.bind(this, 'agility'));
 
     this.intUpButton = new LevelUpButton();
-    this.intUpButton.position.x = this.intText.position.x + this.intText.width * config.HUD_SCALE;
     this.intUpButton.position.y = this.intText.position.y - this.intIcon.height / 2;
     this.intUpButton.addEventListener("click", this.onIncreaseAttribute.bind(this, 'intelligence'));
 
@@ -259,7 +256,6 @@ export default class Character extends THREE.Object3D {
     this.agiUpButton.userData.hint = `<strong class="agility">Agility${(data.primaryAttribute === "agility") ? " (primary)" : ""}:</strong><br/>
       ${(data.primaryAttribute === "agility") ? "Increase damage<br/>" : ""}
       Increase attack speed<br/>
-      Increase movement speed<br/>
       Increase armor<br/>
     `;
     this.intUpButton.userData.hint = `<strong class="intelligence">Intelligence${(data.primaryAttribute === "intelligence") ? " (primary)" : ""}:</strong><br/>
@@ -354,6 +350,11 @@ export default class Character extends THREE.Object3D {
     } else {
       if (hud.inventory.isOpen) {
         this.lvlUpButton.hide();
+
+        this.strUpButton.position.x = this.strText.position.x + this.strText.width + ((config.HUD_MARGIN * 2.5) * config.HUD_SCALE);
+        this.agiUpButton.position.x = this.agiText.position.x + this.agiText.width + ((config.HUD_MARGIN * 2.5) * config.HUD_SCALE);
+        this.intUpButton.position.x = this.intText.position.x + this.intText.width + ((config.HUD_MARGIN * 2.5) * config.HUD_SCALE);
+
         this.strUpButton.show();
         this.agiUpButton.show();
         this.intUpButton.show();

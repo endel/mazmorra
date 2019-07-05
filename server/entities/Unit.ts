@@ -12,6 +12,7 @@ import { BattleAction } from "../actions/BattleAction";
 import { DBHero } from "../db/Hero";
 import { Item } from "./Item";
 import { WeaponItem } from "./items/equipable/WeaponItem";
+import { ItemDropOptions } from "../utils/RoomUtils";
 
 export type Attribute = 'strength' | 'agility' | 'intelligence';
 export type InventoryType = 'inventory' | 'quickInventory';
@@ -105,9 +106,11 @@ export class Unit extends Entity {
     criticalStrikeChance: 0,
   };
 
-  willDropItem: Item;
+  dropOptions: ItemDropOptions;
   damageTakenFrom = new Set<Unit>();
   removed?: boolean;
+
+  doNotGiveXP: boolean;
 
   constructor(id?: string, hero: Partial<DBHero> = {}, state?) {
     super(id)
@@ -193,7 +196,6 @@ export class Unit extends Entity {
     return (
       this.movementSpeed
       - (this.statsModifiers.movementSpeed * 10)
-      - (this.attributes.agility * 5)
     );
   }
 
@@ -220,7 +222,7 @@ export class Unit extends Entity {
   }
 
   getArmor() {
-    return this.statsModifiers.armor + (this.attributes.agility * 0.16) + this.baseArmor[this.primaryAttribute];
+    return this.statsModifiers.armor + (this.attributes.agility * 0.1) + this.baseArmor[this.primaryAttribute];
   }
 
   getEvasion() {
@@ -281,14 +283,19 @@ export class Unit extends Entity {
   drop () {
     if (!this.state) { return; }
 
+    let itemToDrop: Item;
+
     // willDropItem = null means no drop allowed!
-    if (this.willDropItem === undefined) {
-      this.willDropItem = this.state.roomUtils.createRandomItem();
+    if (this.dropOptions === undefined) {
+      itemToDrop = this.state.roomUtils.createRandomItem();
+
+    } else if (this.dropOptions) {
+      itemToDrop = this.state.roomUtils.createItemByDropOptions(this.dropOptions);
     }
 
-    if (this.willDropItem) {
-      this.willDropItem.position.set(this.position);
-      this.state.addEntity(this.willDropItem);
+    if (itemToDrop) {
+      itemToDrop.position.set(this.position);
+      this.state.addEntity(itemToDrop);
     }
   }
 
@@ -317,26 +324,27 @@ export class Unit extends Entity {
   onDie () {
     this.walkable = true;
 
+    // skip xp if spawned units.
+    if (this.doNotGiveXP) {
+      return this.drop();
+    }
+
     // distribute XP among players.
     const xpWorth = this.getXPWorth() / this.damageTakenFrom.size;
 
     const damageTakenFrom = this.damageTakenFrom.values();
     let unit: Unit;
 
-    console.log("this.damageTakenFrom.size", this.damageTakenFrom.size);
-    console.log("xpWorth", xpWorth);
-
     while (unit = damageTakenFrom.next().value) {
       // compute experience this unit received by killing another one
       // var xp =  unit.lvl / (this.lvl / 2)
-      console.log("increment in:", xpWorth / unit.lvl);
       unit.xp.increment(xpWorth / unit.lvl);
     }
 
     this.drop();
   }
 
-  onKill (unit: Unit) {
+  clearPendingMovement () {
     // clear pending movement
     this.position.pending = [];
   }

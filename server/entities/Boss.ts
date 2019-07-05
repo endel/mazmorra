@@ -13,14 +13,27 @@ export class Boss extends Enemy {
   lastUnitSpawnTime = Date.now() - 5800; // give some time for the spawn to appear during camera animation
   unitSpawnTime = 8000;
 
+  thingsToUnlockWhenDead: any[] = [];
+
   constructor (kind, data: Partial<DBHero>, modifiers: Partial<StatsModifiers> = {}) {
     super(kind, data,modifiers);
 
     this.isBoss = true;
+
+    this.hp.current = 1;
   }
 
   get aiDistance () {
     return 4;
+  }
+
+  onDie () {
+    super.onDie();
+
+    // unlock chests and doors!
+    this.thingsToUnlockWhenDead.forEach((thing) => {
+      thing.isLocked = false;
+    });
   }
 
   update (currentTime) {
@@ -58,8 +71,11 @@ export class Boss extends Enemy {
             y: availablePosition[0]
           });
 
+          enemy.walkable = true;
+          enemy.doNotGiveXP = true;
+
           // disable drop for this unit.
-          enemy.willDropItem = null;
+          enemy.dropOptions = null;
 
           this.state.addEntity(enemy);
         }

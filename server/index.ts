@@ -30,6 +30,9 @@ gameServer.register('dungeon', DungeonRoom);
 gameServer.register('loot', DungeonRoom);
 
 if (process.env.ENVIRONMENT !== "production") {
+  gameServer.register('test-items', DungeonRoom);
+  gameServer.register('test-monsters', DungeonRoom);
+
   app.use(cors());
 } else {
   var whitelist = ['http://talk.itch.zone'];

@@ -1,0 +1,21 @@
+05/07/2019 - Patch notes!
+
+- Portals are not overriden in the Castle anymore
+- Improved item tiers and stats while progressing in the game
+- Chests and doors of boss rooms now remain locked until the boss is alive.
+- Bosses drop rare and magical items
+- Boss chests now drop only rare items
+- Updated maximum values each item can provide, which follows:
+  - Total number of levels in the game: 108
+  - Number of levels between different maps: 18
+  - Number levels between checkpoints: 8
+  - Max. Body Armor: 75
+  - Max. Shield Armor: 20
+  - Max. Boots Armor: 10
+  - Max. Helmet Armor: 15
+  - Max. Boots Movement Speed: 12
+  - Max. Melee Weapon Damage: 30
+  - Max. Bow Damage: 20
+  - Max. Staff Damage: 14
+  - Max. Bow Attack Distance: 6
+  - Max. Bow Staff Distance: 7

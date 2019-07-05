@@ -8,6 +8,7 @@ import { Potion, POTION_1_MODIFIER, POTION_2_MODIFIER, POTION_4_MODIFIER, POTION
 import { Scroll } from "./items/consumable/Scroll";
 import { ConsumableItem } from "./items/ConsumableItem";
 import { Key } from "./items/consumable/Key";
+import { NUM_LEVELS_PER_CHECKPOINT, MAX_LEVELS } from "../utils/ProgressionConfig";
 
 export class NPC extends Player {
   @type("string") kind: string;
@@ -35,15 +36,17 @@ export class NPC extends Player {
 
     this.updateDirection(player.position.x, player.position.y);
 
+    const isLastLevel = (state.progress === MAX_LEVELS);
+
     if (this.kind === "elder") {
       const items = [];
 
       const hpPotion = new Potion();
-      hpPotion.addModifier({ attr: "hp", modifier: POTION_1_MODIFIER });
+      hpPotion.addModifier({ attr: "hp", modifier: this.getPotionModifierForPlayer(player, 'hp') });
       items.push(hpPotion);
 
       const mpPotion = new Potion();
-      mpPotion.addModifier({ attr: "mp", modifier: POTION_1_MODIFIER });
+      mpPotion.addModifier({ attr: "mp", modifier: this.getPotionModifierForPlayer(player, 'mp') });
       items.push(mpPotion);
 
       const scroll = new Scroll();
@@ -52,26 +55,33 @@ export class NPC extends Player {
       player.setTradingItems(items);
 
     } else if (this.kind === "merchant") {
+      const progress = player.latestProgress + NUM_LEVELS_PER_CHECKPOINT;
       player.setTradingItems([
-        this.state.roomUtils.createArmor({ progress: player.latestProgress }),
-        this.state.roomUtils.createBoot({ progress: player.latestProgress }),
-        this.state.roomUtils.createHelmet({ progress: player.latestProgress }),
-        this.state.roomUtils.createShield({ progress: player.latestProgress }),
-        this.state.roomUtils.createWeapon(player.primaryAttribute, { progress: player.latestProgress }),
+        this.state.roomUtils.createArmor({ progress }),
+        this.state.roomUtils.createBoot({ progress }),
+        this.state.roomUtils.createHelmet({ progress }),
+        this.state.roomUtils.createShield({ progress }),
+        this.state.roomUtils.createWeapon(player.primaryAttribute, { progress }),
       ]);
 
     } else if (this.kind === "majesty") {
-      const genericMessages = [
+      const genericMessages = (!isLastLevel) ? [
         `I don't reveal the source of my weapons.`,
         `You can't handle my potions!`,
         `The prophecy is true.`,
         `Demons are amongst us`,
+      ] : [
+        `What happened?`,
+        `I wish things could be different.`,
       ];
+
       state.createTextEvent(genericMessages[Math.floor(Math.random() * genericMessages.length)], this.position, 'white', 1000);
 
       setTimeout(() => {
         const itemDropOptions = {
-          progress: 500,
+          progress: (!isLastLevel)
+            ? player.latestProgress + NUM_LEVELS_PER_CHECKPOINT
+            : MAX_LEVELS * 2,
           isMagical: true,
           isRare: true
         };
@@ -79,7 +89,7 @@ export class NPC extends Player {
         const items = [];
 
         const potion1 = new Potion();
-        potion1.addModifier({ attr: "xp", modifier: POTION_1_MODIFIER });
+        potion1.addModifier({ attr: "xp", modifier: this.getPotionModifierForPlayer(player, 'xp') });
         items.push(potion1);
 
         [
@@ -97,31 +107,30 @@ export class NPC extends Player {
       }, 1000);
 
     } else if (this.kind === "locksmith") {
-      const items = [];
-
-      // helpers.ENTITIES.KEY_GRASS
-      // helpers.ENTITIES.KEY_ROCK
-      // helpers.ENTITIES.KEY_ROCK_2
-      // helpers.ENTITIES.KEY_ICE
-      // helpers.ENTITIES.KEY_INFERNO
-
-      const keyCastle = new Key();
-      keyCastle.type = helpers.ENTITIES.KEY_CASTLE;
-      items.push(keyCastle);
-
-      const keyGrass = new Key();
-      keyGrass.type = helpers.ENTITIES.KEY_GRASS;
-      items.push(keyGrass);
+      const items = [
+        helpers.ENTITIES.KEY_GRASS,
+        helpers.ENTITIES.KEY_ROCK,
+        helpers.ENTITIES.KEY_CAVE,
+        helpers.ENTITIES.KEY_ICE,
+        helpers.ENTITIES.KEY_INFERNO
+      ].map(type => {
+        const key = new Key();
+        key.type = type;
+        return key;
+      });
 
       player.setTradingItems(items);
 
-
     } else {
-      const messages = [
-        `PvP is coming next week.`,
+      const messages = (!isLastLevel) ? [
+        `PvP is coming eventually!`,
+        `Join the Discord Server!`,
         `Save us from their curse!`,
         `Be safe!`,
-      ]
+      ] : [
+        `You're awesome!`,
+        `Majesty has the best items you can find.`
+      ];
 
       if (
         !player.equipedItems.slots['left'] ||
@@ -142,16 +151,16 @@ export class NPC extends Player {
     this.position.lastMove += 500;
   }
 
-  getPotionModifierForPlayer(player) {
+  getPotionModifierForPlayer(player, attr: 'hp' | 'mp' | 'xp') {
     let modifier = POTION_1_MODIFIER;
 
-    if (player.hp > 180) {
+    if (player[attr].max > POTION_4_MODIFIER) {
       modifier = POTION_4_MODIFIER;
 
-    } else if (player.hp > 110) {
+    } else if (player[attr].max > POTION_3_MODIFIER) {
       modifier = POTION_3_MODIFIER;
 
-    } else if (player.hp > 50) {
+    } else if (player[attr].max > POTION_2_MODIFIER) {
       modifier = POTION_2_MODIFIER;
     }
 

@@ -11,6 +11,11 @@ export default class Chat extends Behaviour {
 
     this.room = enterChat();
     this.room.onMessage.add((message) => this.addMessage(message))
+    this.room.onLeave.add(() => {
+      if (confirm("The server has been restarted, refresh the game? Please join the Discord Server if you think this is a bug.")) {
+        window.location.reload();
+      }
+    })
 
     this.isActive = false;
 

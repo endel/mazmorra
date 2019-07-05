@@ -1,6 +1,6 @@
 import hint from "../hud/Hint";
 import EquipedItems from "./EquipedItems";
-import { trackEvent } from "../../utils";
+import { trackEvent, humanize } from "../../utils";
 
 let draggingItem = null
   , draggingFrom = null
@@ -160,10 +160,21 @@ export default class ItemSlot extends THREE.Object3D {
       this.accepts === "sell" &&
       !isPurchasing
     ) {
-      this.dispatchSell({
-        fromInventoryType: draggingFrom.parent.inventoryType,
-        itemId: draggingItem.userData.itemId
-      })
+      if (draggingFrom.parent.inventoryType === "equippedItems") {
+        // confirmation to sell equipped item
+        if (confirm(`Are you sure you'd like to sell this '${humanize(this._item.userData.item.type)}'?`)) {
+          this.dispatchSell({
+            fromInventoryType: draggingFrom.parent.inventoryType,
+            itemId: draggingItem.userData.itemId
+          })
+        }
+      } else {
+        this.dispatchSell({
+          fromInventoryType: draggingFrom.parent.inventoryType,
+          itemId: draggingItem.userData.itemId
+        })
+
+      }
       return;
     }
 

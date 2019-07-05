@@ -11,6 +11,8 @@ export class Chest extends Interactive {
   walkable = true;
   itemDropOptions: ItemDropOptions;
 
+  isLocked: boolean = false;
+
   constructor (position, kind: string, isOpen = false) {
     super(helpers.ENTITIES.CHEST, position)
 
@@ -22,6 +24,11 @@ export class Chest extends Interactive {
   }
 
   interact (moveEvent, player, state) {
+    if (this.isLocked) {
+      state.createTextEvent(`Chest is locked!`, this.position, "white", 100);
+      return;
+    }
+
     if (!this.action) {
       this.action = new Action("open", true);
 

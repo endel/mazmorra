@@ -8,7 +8,7 @@ export function humanize (value) {
     underscoresToSpaces.charAt(0).toUpperCase() +
     underscoresToSpaces.slice(1).toLowerCase();
 
-  return caseCorrected.replace(/\-/g, " ").replace(/([0-9])$/g, " - T$1");
+  return caseCorrected.replace(/\-/g, " ").replace(/([0-9]+)$/g, " - T$1");
 }
 
 export function trackEvent(name, options) {

@@ -24,7 +24,15 @@ class Login extends EventEmitter {
   }
 
   async login() {
-    await client.auth.login();
+    try {
+      await client.auth.login();
+
+    } catch (e) {
+      // display "server offline" message
+      document.querySelector(".not-loaded").innerHTML = "Server is offline.";
+      document.body.classList.remove("loaded");
+      return;
+    }
 
     const heroes = await this.getHeroes();
 

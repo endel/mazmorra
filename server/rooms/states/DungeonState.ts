@@ -23,7 +23,7 @@ import { Interactive } from "../../entities/Interactive";
 import { Entity } from "../../entities/Entity";
 import { MoveEvent } from "../../core/Movement";
 import { DBHero } from "../../db/Hero";
-import { MapKind, MapConfig, getMapConfig, isBossMap, isCheckPointMap } from "../../utils/ProgressionConfig";
+import { MapKind, MapConfig, getMapConfig, isBossMap, isCheckPointMap, MAX_LEVELS } from "../../utils/ProgressionConfig";
 import { NPC } from "../../entities/NPC";
 import { DoorDestiny, DoorProgress, Door } from "../../entities/interactive/Door";
 import { Portal } from "../../entities/interactive/Portal";
@@ -117,7 +117,7 @@ export class DungeonState extends Schema {
       // regular room
       this.roomUtils.populateRoomsWithLoot();
 
-    } else if (progress === 1) {
+    } else if (progress === 1 || progress === MAX_LEVELS) {
       // lobby
       this.roomUtils.populateLobby(this.rooms);
 
@@ -271,14 +271,15 @@ export class DungeonState extends Schema {
             this.removeEntity(entity);
             hasPickedItems = true;
 
-          } else if (entity instanceof Door) {
+          } else if (entity instanceof Door && !(entity instanceof Portal)) {
             doorEntity = entity;
 
-          } else if (entity instanceof Interactive) {
+          } else if (
+            entity instanceof Interactive ||
+            entity instanceof NPC
+          ) {
             entity.interact(moveEvent, unit, this);
 
-          } else if (entity instanceof NPC) {
-            entity.interact(moveEvent, unit, this);
           }
         }
 
@@ -295,6 +296,11 @@ export class DungeonState extends Schema {
     // dead units cannot move!
     if (!unit.isAlive) { return; }
 
+    if (unit instanceof Player) {
+      console.log("RECEIVED MOVE", { destiny, allowChangeTarget });
+      console.log("UNIT CURRENT POSITION", unit.position.x, unit.position.y);
+    }
+
     // prioritize getting Unit entities before
     let targetEntity = this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit);
 
@@ -308,7 +314,10 @@ export class DungeonState extends Schema {
     for (const id in this.entities) {
       const entity: Entity = this.entities[id];
 
-      if (!entity.walkable && entity !== targetEntity) {
+      if (
+        !entity.walkable &&
+        (!targetEntity || !entity.position.equals(targetEntity.position))
+      ) {
         allowedPath.setWalkableAt(entity.position.x, entity.position.y, false);
       }
     }
@@ -364,11 +373,14 @@ export class DungeonState extends Schema {
       }
     }
 
+    if (unit instanceof Player) {
+      console.log("Let's move to", moves);
+    }
     unit.position.moveTo(moves);
   }
 
   isBossAlive () {
-    return this.roomUtils.bosses.filter(boss => boss.isAlive).length > 0;
+    return this.roomUtils.bosses && this.roomUtils.bosses.filter(boss => boss.isAlive).length > 0;
   }
 
   addMessage (player, message) {

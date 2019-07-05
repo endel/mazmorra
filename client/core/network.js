@@ -12,8 +12,15 @@ export const client = new Client(endpoint);
 window.client = client;
 
 export function enterRoom (name, options = {}) {
+  App.cursor.dispatchEvent({ type: "cursor", kind: "loading" });
+
   options.token = credentials.token
-  return client.join(name, options)
+
+  const room = client.join(name, options);
+  room.onJoin.addOnce(() =>
+    App.cursor.dispatchEvent({ type: "cursor", kind: "pointer" }));
+
+  return room;
 }
 
 export function getClientId () {

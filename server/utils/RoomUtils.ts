@@ -14,7 +14,7 @@ import { Item }  from "../entities/Item";
 
 // items
 import { Gold }  from "../entities/items/Gold";
-import { Potion, POTION_1_MODIFIER }  from "../entities/items/consumable/Potion";
+import { Potion, POTION_1_MODIFIER, POTION_2_MODIFIER, POTION_3_MODIFIER, POTION_4_MODIFIER }  from "../entities/items/consumable/Potion";
 
 // interactive
 import { Door, DoorDestiny, DoorProgress }  from "../entities/interactive/Door";
@@ -29,12 +29,125 @@ import { HelmetItem } from "../entities/items/equipable/HelmetItem";
 import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 import { Diamond } from "../entities/items/Diamond";
 import { Scroll } from "../entities/items/consumable/Scroll";
-import { MONSTER_BASE_ATTRIBUTES, isBossMap, MapKind, isCheckPointMap, getMapKind, NUM_LEVELS_PER_LOOT_ROOM } from "./ProgressionConfig";
+import { MONSTER_BASE_ATTRIBUTES, isBossMap, MapKind, isCheckPointMap, getMapKind, NUM_LEVELS_PER_LOOT_ROOM, NUM_LEVELS_PER_CHECKPOINT, MAX_LEVELS, MAX_WEAPON_DAMAGE, MAX_BOW_DAMAGE, MAX_STAFF_DAMAGE, MAX_BOW_ATTACK_DISTANCE, MAX_STAFF_ATTACK_DISTANCE, MAX_BOOTS_ARMOR, MAX_BOOTS_MOVEMENT_SPEED, MAX_HELMET_ARMOR, MAX_ARMOR_ARMOR, MAX_SHIELD_ARMOR } from "./ProgressionConfig";
 import { ConsumableItem } from "../entities/items/ConsumableItem";
 import { EquipableItem } from "../entities/items/EquipableItem";
 import { DBAttributeModifier } from "../db/Hero";
 import { CheckPoint } from "../entities/interactive/CheckPoint";
 import { Key } from "../entities/items/consumable/Key";
+
+const ALL_BOOTS = [
+  helpers.ENTITIES.BOOTS_1,
+  helpers.ENTITIES.BOOTS_2,
+  helpers.ENTITIES.BOOTS_3,
+  helpers.ENTITIES.BOOTS_4,
+  helpers.ENTITIES.BOOTS_5,
+  helpers.ENTITIES.BOOTS_6,
+];
+
+const ALL_SHIELDS = [
+  helpers.ENTITIES.SHIELD_1,
+  helpers.ENTITIES.SHIELD_2,
+  helpers.ENTITIES.SHIELD_3,
+  helpers.ENTITIES.SHIELD_4,
+  helpers.ENTITIES.SHIELD_5,
+  helpers.ENTITIES.SHIELD_6,
+  helpers.ENTITIES.SHIELD_7,
+  helpers.ENTITIES.SHIELD_8,
+  helpers.ENTITIES.SHIELD_9,
+  helpers.ENTITIES.SHIELD_10,
+  helpers.ENTITIES.SHIELD_11,
+  helpers.ENTITIES.SHIELD_12,
+  helpers.ENTITIES.SHIELD_13,
+  helpers.ENTITIES.SHIELD_14,
+  helpers.ENTITIES.SHIELD_15,
+  helpers.ENTITIES.SHIELD_16,
+  helpers.ENTITIES.SHIELD_17,
+  helpers.ENTITIES.SHIELD_18,
+  helpers.ENTITIES.SHIELD_19,
+  helpers.ENTITIES.SHIELD_20,
+  helpers.ENTITIES.SHIELD_21,
+  helpers.ENTITIES.SHIELD_22,
+];
+
+const ALL_HELMETS = [
+  helpers.ENTITIES.HELMET_1,
+  helpers.ENTITIES.HELMET_2,
+  helpers.ENTITIES.HELMET_3,
+  helpers.ENTITIES.HELMET_4,
+  helpers.ENTITIES.HELMET_5,
+  helpers.ENTITIES.HELMET_6,
+  helpers.ENTITIES.HELMET_7,
+  helpers.ENTITIES.HELMET_8,
+  helpers.ENTITIES.HELMET_9,
+  helpers.ENTITIES.HELMET_10,
+  helpers.ENTITIES.HELMET_11,
+  helpers.ENTITIES.HELMET_12,
+  helpers.ENTITIES.HELMET_13,
+  helpers.ENTITIES.HELMET_14,
+  helpers.ENTITIES.HELMET_15,
+  helpers.ENTITIES.HELMET_16,
+  helpers.ENTITIES.HELMET_17,
+  helpers.ENTITIES.HELMET_18,
+  helpers.ENTITIES.HELMET_19,
+  helpers.ENTITIES.HELMET_20,
+  helpers.ENTITIES.HELMET_21,
+  helpers.ENTITIES.HELMET_22,
+  helpers.ENTITIES.HELMET_23,
+  helpers.ENTITIES.HELMET_24,
+  // helpers.ENTITIES.HELMET_25,
+  // helpers.ENTITIES.HELMET_26,
+  // helpers.ENTITIES.HELMET_27,
+  // helpers.ENTITIES.HELMET_28,
+  // helpers.ENTITIES.HELMET_29,
+  // helpers.ENTITIES.HELMET_30,
+  // helpers.ENTITIES.HELMET_31,
+  // helpers.ENTITIES.HELMET_32,
+  // helpers.ENTITIES.HELMET_33,
+];
+
+const ALL_ARMOR = [
+  helpers.ENTITIES.ARMOR_1,
+  helpers.ENTITIES.ARMOR_2,
+  helpers.ENTITIES.ARMOR_3,
+  helpers.ENTITIES.ARMOR_4,
+  helpers.ENTITIES.ARMOR_5,
+  helpers.ENTITIES.ARMOR_6,
+];
+
+const ALL_STAFFS = [
+  helpers.ENTITIES.WAND_1,
+  helpers.ENTITIES.WAND_2,
+  helpers.ENTITIES.WAND_3,
+  helpers.ENTITIES.WAND_4,
+];
+
+const ALL_BOWS = [
+  helpers.ENTITIES.BOW_1,
+  helpers.ENTITIES.BOW_2,
+  helpers.ENTITIES.BOW_3,
+  helpers.ENTITIES.BOW_4,
+];
+
+const ALL_WEAPONS = [
+  helpers.ENTITIES.WEAPON_1,
+  helpers.ENTITIES.WEAPON_2,
+  helpers.ENTITIES.WEAPON_3,
+  helpers.ENTITIES.WEAPON_4,
+  helpers.ENTITIES.WEAPON_5,
+  helpers.ENTITIES.WEAPON_6,
+  helpers.ENTITIES.WEAPON_7,
+  helpers.ENTITIES.WEAPON_8,
+  helpers.ENTITIES.WEAPON_9,
+  helpers.ENTITIES.WEAPON_10,
+];
+
+const ALL_POTION_MODIFIERS = [
+  POTION_1_MODIFIER,
+  POTION_2_MODIFIER,
+  POTION_3_MODIFIER,
+  POTION_4_MODIFIER,
+];
 
 export interface DungeonRoom {
   position: Point;
@@ -49,6 +162,12 @@ export interface ItemDropOptions {
   isRare?: boolean,
   isMagical?: boolean,
   goodness?: number,
+}
+
+export interface ItemGoodness {
+  ratio: number,
+  tier: number, // 0~maxTier
+  type: string
 }
 
 export class RoomUtils {
@@ -185,6 +304,7 @@ export class RoomUtils {
 
   populateRooms () {
     const isLocked = this.isBossDungeon;
+    const isLastLevel = (this.state.progress === MAX_LEVELS - 1);
 
     // entrance
     this.state.addEntity(new Door(this.startPosition, new DoorDestiny({
@@ -193,26 +313,56 @@ export class RoomUtils {
 
     // out
     // obs: door is locked on boss dungeons!
-    this.state.addEntity(new Door(this.endPosition, new DoorDestiny({
+    const endDoor = new Door(this.endPosition, new DoorDestiny({
       progress: DoorProgress.FORWARD
-    }), isLocked));
+    }), isLocked)
+
+    this.state.addEntity(endDoor);
 
     // create the BOSS for the dungeon.
     if (this.isBossDungeon) {
-      const bossType = this.state.config.boss[0];
-      const boss = this.createEnemy(bossType, Boss) as Boss;
-      boss.position.set(this.endPosition);
-      boss.unitSpawner = MONSTER_BASE_ATTRIBUTES[bossType].spawner;
+      if (!isLastLevel) {
 
-      this.bosses = [boss];
+        const bossType = this.state.config.boss[0];
+        const boss = this.createEnemy(bossType, Boss) as Boss;
+        boss.position.set(this.endPosition);
+        boss.unitSpawner = MONSTER_BASE_ATTRIBUTES[bossType].spawner;
 
-      // define the item the boss will drop
-      // for now, he only drops the key for the next level.
-      const key = new Key();
-      key.type = helpers.ENTITIES.KEY_ROCK;
-      boss.willDropItem = key;
+        this.bosses = [boss];
 
-      this.state.addEntity(boss);
+        // drop key for next level!
+        boss.dropOptions = { isRare: true, isMagical: true };
+
+        this.state.addEntity(boss);
+
+      } else {
+        //
+        // FINAL STAGE!!!!
+        //
+        let currentBoss = 0;
+
+        this.rooms.forEach(room => {
+          this.addEntity(room, (position) => {
+            const isFirstBoss = (currentBoss === 0);
+            const bossType = this.state.config.boss[(currentBoss++) % this.state.config.boss.length];
+            const boss = this.createEnemy(bossType, (isFirstBoss) ? Boss : Enemy) as Boss;
+            boss.position.set(position);
+
+            if (isFirstBoss) {
+              boss.unitSpawner = MONSTER_BASE_ATTRIBUTES[bossType].spawner;
+              boss.dropOptions = { isRare: true, isMagical: true };
+              this.bosses = [boss];
+
+            } else {
+              boss.dropOptions = { isRare: true };
+            }
+
+            return boss;
+          })
+        });
+      }
+
+      this.bosses[0].thingsToUnlockWhenDead.push(endDoor);
     }
 
     if (isCheckPointMap(this.state.progress)) {
@@ -270,6 +420,7 @@ export class RoomUtils {
 
     // add up to 3 chests per room.
     const numChests = this.rand.intBetween(1, 3);
+    // const numChests = this.rand.intBetween(3, 5);
     for (let i = 0; i < numChests; i++) {
       this.addEntity(room, (position) => new Chest(position, chestKind))
     }
@@ -278,7 +429,7 @@ export class RoomUtils {
     if (
       (
         this.state.mapkind === MapKind.ROCK ||
-        this.state.mapkind === MapKind.ROCK_2 ||
+        this.state.mapkind === MapKind.CAVE ||
         this.state.mapkind === MapKind.CASTLE ||
         this.state.mapkind === MapKind.INFERNO
       ) &&
@@ -364,23 +515,19 @@ export class RoomUtils {
   }
 
   populateBossRoom(room: DungeonRoom) {
-    this.addEntity(room, (position) => {
-      const chest = new Chest(position, 'chest2')
-      chest.itemDropOptions = {
-        isRare: true,
-        isMagical: this.realRand.intBetween(0, 1) === 0
-      };
-      return chest;
-    });
+    // 2 boss chests!
+    for (let i=0; i<2; i++) {
+      this.addEntity(room, (position) => {
+        const chest = new Chest(position, 'chest2')
+        chest.isLocked = true;
+        chest.itemDropOptions = { isRare: true };
 
-    this.addEntity(room, (position) => {
-      const chest = new Chest(position, 'chest2')
-      chest.itemDropOptions = {
-        isRare: true,
-        isMagical: this.realRand.intBetween(0, 1) === 0
-      };
-      return chest;
-    });
+        // killing boss will unlock this chest
+        this.bosses[0].thingsToUnlockWhenDead.push(chest);
+
+        return chest;
+      });
+    }
   }
 
   populateLobby (rooms: DungeonRoom[]) {
@@ -466,7 +613,7 @@ export class RoomUtils {
   }
 
   populateEnemies (room: DungeonRoom) {
-    if (room === this.startRoom) {
+    if (room === this.startRoom || this.state.progress === MAX_LEVELS - 1) {
       // when in a boss dungeon, first room doens't have enemies!
       return;
     }
@@ -489,13 +636,6 @@ export class RoomUtils {
       currentRange += enemyList[enemyId];
       enemyRange.push(currentRange);
     });
-
-    // this.addEntity(room, (position) => {
-    //   const enemy = this.createEnemy('spider-giant', 1);
-    //   enemy.state = this.state;
-    //   enemy.position.set(position);
-    //   return enemy;
-    // });
 
     while (numEnemies--) {
       this.addEntity(room, (position) => {
@@ -583,26 +723,35 @@ export class RoomUtils {
       } else if (chance < 0.75) {
 
         itemToDrop = new Potion();
-        const potionChance = this.realRand.floatBetween(0, 1);
+        const potionTypeChance = this.realRand.floatBetween(0, 1);
 
-        if (potionChance < 0.7) {
-          itemToDrop.addModifier({ attr: "hp", modifier: POTION_1_MODIFIER });
+        let modifierIndex = 0;
+        // 30% chance to drop current level potion
+        if (this.realRand.floatBetween(0, 1) > 0.6) {
+          let ratio = this._quadOut(this.state.progress / MAX_LEVELS);
+          const totalPotionModifiers = ALL_POTION_MODIFIERS.length;
+          modifierIndex = Math.floor(ratio * totalPotionModifiers);
+          // cap max tier
+          if (modifierIndex > totalPotionModifiers - 1) { modifierIndex = totalPotionModifiers - 1; }
+        }
 
-        } else if (potionChance < 0.95) {
-          itemToDrop.addModifier({ attr: "mp", modifier: POTION_1_MODIFIER });
+        if (potionTypeChance < 0.8) {
+          itemToDrop.addModifier({ attr: "hp", modifier: ALL_POTION_MODIFIERS[modifierIndex] });
+
+        } else if (potionTypeChance < 0.98) {
+          itemToDrop.addModifier({ attr: "mp", modifier: ALL_POTION_MODIFIERS[modifierIndex] });
 
         } else {
-          itemToDrop.addModifier({ attr: "xp", modifier: POTION_1_MODIFIER });
-
+          itemToDrop.addModifier({ attr: "xp", modifier: ALL_POTION_MODIFIERS[modifierIndex] });
         }
 
       // common item
       } else if (chance < 0.99) {
         const dropOptions: ItemDropOptions = {
           progress: this.state.progress,
-          isRare: (chance >= 0.95),
-          isMagical: (chance >= 0.985)
-        }
+          isRare: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.955),
+          isMagical: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.985)
+        };
 
         const itemType = this.realRand.intBetween(0, 5);
         switch (itemType) {
@@ -691,76 +840,71 @@ export class RoomUtils {
     const item = new WeaponItem();
     item.damageAttribute = damageAttribute || this.getRandomPrimaryAttribute();
 
-    let ratio: number;
-    let type: string;
-    let goodness: number;
+    // let ratio: number;
+    // let type: string;
+    // let goodness: number;
 
     let hasAttackDistance: boolean;
+    let goodness: ItemGoodness;
+
+    let minDamage: number;
+    let maxDamage: number;
+
+    let minAttackDistance: number;
+    let maxAttackDistance: number;
 
     if (item.damageAttribute === "strength") {
-      ({ ratio, type, goodness } = this.getItemGoodness(dropOptions, [
-        helpers.ENTITIES.WEAPON_1,
-        helpers.ENTITIES.WEAPON_2,
-        helpers.ENTITIES.WEAPON_3,
-        helpers.ENTITIES.WEAPON_4,
-        helpers.ENTITIES.WEAPON_5,
-        helpers.ENTITIES.WEAPON_6,
-        helpers.ENTITIES.WEAPON_7,
-        helpers.ENTITIES.WEAPON_8,
-        helpers.ENTITIES.WEAPON_9,
-        helpers.ENTITIES.WEAPON_10,
-      ]));
+      goodness = this.getItemGoodness(dropOptions, ALL_WEAPONS);
+
+      minDamage = Math.floor(MAX_WEAPON_DAMAGE * goodness.ratio);
+      maxDamage = Math.ceil(MAX_WEAPON_DAMAGE * goodness.ratio);
 
       hasAttackDistance = false;
 
     } else if (item.damageAttribute === "agility") {
-      ({ ratio, type, goodness } = this.getItemGoodness(dropOptions, [
-        helpers.ENTITIES.BOW_1,
-        helpers.ENTITIES.BOW_2,
-        helpers.ENTITIES.BOW_3,
-        helpers.ENTITIES.BOW_4,
-      ]));
+      goodness = this.getItemGoodness(dropOptions, ALL_BOWS);
+
+      minDamage = Math.floor(MAX_BOW_DAMAGE * goodness.ratio);
+      maxDamage = Math.ceil(MAX_BOW_DAMAGE * goodness.ratio);
 
       hasAttackDistance = true;
+      minAttackDistance = Math.max(1, Math.floor(MAX_BOW_ATTACK_DISTANCE * goodness.ratio));
+      maxAttackDistance = Math.ceil(MAX_BOW_ATTACK_DISTANCE * goodness.ratio);
 
     } else if (item.damageAttribute === "intelligence") {
       item.manaCost = 2;
+      goodness = this.getItemGoodness(dropOptions, ALL_STAFFS);
 
-      ({ ratio, type, goodness } = this.getItemGoodness(dropOptions, [
-        helpers.ENTITIES.WAND_1,
-        helpers.ENTITIES.WAND_2,
-        helpers.ENTITIES.WAND_3,
-        helpers.ENTITIES.WAND_4,
-      ]));
+      minDamage = Math.floor(MAX_STAFF_DAMAGE * goodness.ratio);
+      maxDamage = Math.ceil(MAX_STAFF_DAMAGE * goodness.ratio);
 
       hasAttackDistance = true;
+      minAttackDistance = Math.max(1, Math.floor(MAX_STAFF_ATTACK_DISTANCE * goodness.ratio));
+      maxAttackDistance = Math.ceil(MAX_STAFF_ATTACK_DISTANCE * goodness.ratio);
     }
 
-    item.type = type;
-
-    let minDamage = goodness + 1;
-    let maxDamage = minDamage * (ratio * 2);
+    item.type = goodness.type;
 
     item.addModifier({
       attr: "damage",
-      modifier: this.realRand.intBetween(minDamage, maxDamage)
+      modifier: Math.max(1, this.realRand.intBetween(minDamage, maxDamage))
     });
 
     if (hasAttackDistance) {
       item.addModifier({
         attr: "attackDistance",
-        modifier: this.realRand.intBetween(goodness + 1, goodness + 2)
+        modifier: this.realRand.intBetween(minAttackDistance, maxAttackDistance)
       });
     }
 
     if (dropOptions.isRare) {
       item.isRare = true;
-      this.assignBetterItemModifiers(item, ['attackSpeed', 'evasion', 'damage', 'criticalStrikeChance'], { ratio, goodness });
+      this.assignBetterItemModifiers(item, ['attackSpeed', 'evasion', 'damage', 'criticalStrikeChance'], goodness);
     }
 
     if (dropOptions.isMagical) {
       item.isMagical = true;
-      this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], { ratio, goodness });
+      this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], goodness);
     }
 
     return item;
@@ -769,49 +913,25 @@ export class RoomUtils {
   createShield (dropOptions: ItemDropOptions) {
     const item = new ShieldItem();
 
-    const { ratio, type, goodness } = this.getItemGoodness(dropOptions, [
-      helpers.ENTITIES.SHIELD_1,
-      helpers.ENTITIES.SHIELD_2,
-      helpers.ENTITIES.SHIELD_3,
-      helpers.ENTITIES.SHIELD_4,
-      helpers.ENTITIES.SHIELD_5,
-      helpers.ENTITIES.SHIELD_6,
-      helpers.ENTITIES.SHIELD_7,
-      helpers.ENTITIES.SHIELD_8,
-      helpers.ENTITIES.SHIELD_9,
-      helpers.ENTITIES.SHIELD_10,
-      helpers.ENTITIES.SHIELD_11,
-      helpers.ENTITIES.SHIELD_12,
-      helpers.ENTITIES.SHIELD_13,
-      helpers.ENTITIES.SHIELD_14,
-      helpers.ENTITIES.SHIELD_15,
-      helpers.ENTITIES.SHIELD_16,
-      helpers.ENTITIES.SHIELD_17,
-      helpers.ENTITIES.SHIELD_18,
-      helpers.ENTITIES.SHIELD_19,
-      helpers.ENTITIES.SHIELD_20,
-      helpers.ENTITIES.SHIELD_21,
-      helpers.ENTITIES.SHIELD_22,
-    ]);
+    const goodness = this.getItemGoodness(dropOptions, ALL_SHIELDS);
+    item.type = goodness.type;
 
-    item.type = type;
-
-    let minArmor = goodness / 2;
-    let maxArmor = minArmor + ratio * 2;
+    let minArmor = Math.floor(MAX_SHIELD_ARMOR * goodness.ratio);
+    let maxArmor = Math.ceil(MAX_SHIELD_ARMOR * goodness.ratio);
 
     item.addModifier({
       attr: "armor",
-      modifier: Math.round(this.realRand.floatBetween(minArmor, maxArmor) * 100) / 100
+      modifier: Math.round(Math.max(0.1, this.realRand.floatBetween(minArmor, maxArmor)) * 10) / 10
     });
 
     if (dropOptions.isRare) {
       item.isRare = true;
-      this.assignBetterItemModifiers(item, ['armor', 'evasion', 'criticalStrikeChance'], { ratio, goodness });
+      this.assignBetterItemModifiers(item, ['armor', 'evasion', 'criticalStrikeChance'], goodness);
     }
 
     if (dropOptions.isMagical) {
       item.isMagical = true;
-      this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], { ratio, goodness });
+      this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], goodness);
     }
 
     return item;
@@ -820,38 +940,30 @@ export class RoomUtils {
   createBoot(dropOptions: ItemDropOptions) {
     const item = new BootItem();
 
-    const { ratio, type, goodness } = this.getItemGoodness(dropOptions, [
-      helpers.ENTITIES.BOOTS_1,
-      helpers.ENTITIES.BOOTS_2,
-      helpers.ENTITIES.BOOTS_3,
-      helpers.ENTITIES.BOOTS_4,
-      helpers.ENTITIES.BOOTS_5,
-      helpers.ENTITIES.BOOTS_6,
-    ]);
+    const goodness = this.getItemGoodness(dropOptions, ALL_BOOTS);
+    item.type = goodness.type;
 
-    item.type = type;
-
-    let minArmor = (goodness / 2);
-    let maxArmor = minArmor + ratio * 2;
+    let minArmor = Math.floor(MAX_BOOTS_ARMOR * goodness.ratio);
+    let maxArmor = Math.ceil(MAX_BOOTS_ARMOR * goodness.ratio);
 
     item.addModifier({
       attr: "armor",
-      modifier: Math.round(this.realRand.floatBetween(minArmor, maxArmor) * 100) / 100
+      modifier: Math.round(Math.max(0.1, this.realRand.floatBetween(minArmor, maxArmor)) * 10) / 10
     });
 
-    item.addModifier({
-      attr: "movementSpeed",
-      modifier: this.realRand.intBetween(goodness + 1, goodness + 1 + Math.ceil(ratio * 3))
-    });
+    const movementSpeed = this.realRand.intBetween(Math.floor(MAX_BOOTS_MOVEMENT_SPEED * goodness.ratio), Math.ceil(MAX_BOOTS_MOVEMENT_SPEED * goodness.ratio));
+    if (movementSpeed > 0) {
+      item.addModifier({ attr: "movementSpeed", modifier: movementSpeed });
+    }
 
     if (dropOptions.isRare) {
       item.isRare = true;
-      this.assignBetterItemModifiers(item, ['armor', 'movementSpeed'], { ratio, goodness });
+      this.assignBetterItemModifiers(item, ['armor', 'movementSpeed'], goodness);
     }
 
     if (dropOptions.isMagical) {
       item.isMagical = true;
-      this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], { ratio, goodness });
+      this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], goodness);
     }
 
     return item;
@@ -860,60 +972,25 @@ export class RoomUtils {
   createHelmet(dropOptions: ItemDropOptions) {
     const item = new HelmetItem();
 
-    const { ratio, type, goodness } = this.getItemGoodness(dropOptions, [
-      helpers.ENTITIES.HELMET_1,
-      helpers.ENTITIES.HELMET_2,
-      helpers.ENTITIES.HELMET_3,
-      helpers.ENTITIES.HELMET_4,
-      helpers.ENTITIES.HELMET_5,
-      helpers.ENTITIES.HELMET_6,
-      helpers.ENTITIES.HELMET_7,
-      helpers.ENTITIES.HELMET_8,
-      helpers.ENTITIES.HELMET_9,
-      helpers.ENTITIES.HELMET_10,
-      helpers.ENTITIES.HELMET_11,
-      helpers.ENTITIES.HELMET_12,
-      helpers.ENTITIES.HELMET_13,
-      helpers.ENTITIES.HELMET_14,
-      helpers.ENTITIES.HELMET_15,
-      helpers.ENTITIES.HELMET_16,
-      helpers.ENTITIES.HELMET_17,
-      helpers.ENTITIES.HELMET_18,
-      helpers.ENTITIES.HELMET_19,
-      helpers.ENTITIES.HELMET_20,
-      helpers.ENTITIES.HELMET_21,
-      helpers.ENTITIES.HELMET_22,
-      helpers.ENTITIES.HELMET_23,
-      helpers.ENTITIES.HELMET_24,
-      helpers.ENTITIES.HELMET_25,
-      helpers.ENTITIES.HELMET_26,
-      helpers.ENTITIES.HELMET_27,
-      helpers.ENTITIES.HELMET_28,
-      helpers.ENTITIES.HELMET_29,
-      helpers.ENTITIES.HELMET_30,
-      helpers.ENTITIES.HELMET_31,
-      helpers.ENTITIES.HELMET_32,
-      helpers.ENTITIES.HELMET_33,
-    ]);
+    const goodness = this.getItemGoodness(dropOptions, ALL_HELMETS);
+    item.type = goodness.type;
 
-    item.type = type;
-
-    let minArmor = (goodness / 3);
-    let maxArmor = minArmor + ratio * 2;
+    let minArmor = Math.floor(MAX_HELMET_ARMOR * goodness.ratio);
+    let maxArmor = Math.ceil(MAX_HELMET_ARMOR * goodness.ratio);
 
     item.addModifier({
       attr: "armor",
-      modifier: Math.round(this.realRand.floatBetween(minArmor, maxArmor) * 100) / 100
+      modifier: Math.round(Math.max(0.1, this.realRand.floatBetween(minArmor, maxArmor)) * 10) / 10
     });
 
     if (dropOptions.isRare) {
       item.isRare = true;
-      this.assignBetterItemModifiers(item, ['armor', 'evasion'], { ratio, goodness });
+      this.assignBetterItemModifiers(item, ['armor', 'evasion'], goodness);
     }
 
     if (dropOptions.isMagical) {
       item.isMagical = true;
-      this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], { ratio, goodness });
+      this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], goodness);
     }
 
     return item;
@@ -924,73 +1001,60 @@ export class RoomUtils {
 
     // (old, used to be): 0.1 ~ 0.2
     // (now): 1 ~ 15
-    const { ratio, type, goodness } = this.getItemGoodness(dropOptions, [
-      helpers.ENTITIES.ARMOR_1,
-      helpers.ENTITIES.ARMOR_2,
-      helpers.ENTITIES.ARMOR_3,
-      helpers.ENTITIES.ARMOR_4,
-      helpers.ENTITIES.ARMOR_5,
-      helpers.ENTITIES.ARMOR_6,
-    ]);
+    const goodness = this.getItemGoodness(dropOptions, ALL_ARMOR);
+    item.type = goodness.type;
 
-    item.type = type;
-
-    let minArmor = goodness / 2;
-    let maxArmor = minArmor + ratio * 2;
+    let minArmor = Math.floor(MAX_ARMOR_ARMOR * goodness.ratio);
+    let maxArmor = Math.ceil(MAX_ARMOR_ARMOR * goodness.ratio);
 
     item.addModifier({
       attr: "armor",
-      modifier: Math.round(this.realRand.floatBetween(minArmor, maxArmor) * 100) / 100
+      modifier: Math.round(Math.max(0.1, this.realRand.floatBetween(minArmor, maxArmor)) * 10) / 10
     });
 
     if (dropOptions.isRare) {
       item.isRare = true;
-      this.assignBetterItemModifiers(item, ['armor', 'evasion', 'attackSpeed'], { ratio, goodness });
+      this.assignBetterItemModifiers(item, ['armor', 'evasion', 'attackSpeed'], goodness);
     }
 
     if (dropOptions.isMagical) {
       item.isMagical = true;
-      this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], { ratio, goodness });
+      this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], goodness);
     }
 
     return item;
   }
 
-  getItemGoodness(dropOptions: ItemDropOptions, typeOptions: string[]) {
-    // (No limits!)
-    // const maxGoodness = typeOptions.length - 1;
-
-    const progressForMaxGoodness = 40;
-
-    const maxGoodnessRatio = Math.min(dropOptions.progress / progressForMaxGoodness, 1);
-    const maxGoodness = Math.ceil(maxGoodnessRatio * (typeOptions.length - 1));
-
-    let difficulty = 2;
-
-    let ratio: number = 1;
-    let goodness = 0;
-
-    while (
-      goodness < maxGoodness &&
-      this.realRand.intBetween(0, difficulty) === 0
-    )  {
-      ratio += this.realRand.floatBetween(0.3, 0.5);
-      goodness++;
-      // difficulty++;
+  getItemGoodness(dropOptions: ItemDropOptions, allTiers: string[]): ItemGoodness {
+    // ensure progress is defined.
+    if (!dropOptions.progress) {
+      dropOptions.progress = this.state.progress;
     }
 
+    const totalTiers = allTiers.length;
+
+    let ratio = dropOptions.progress / MAX_LEVELS;
+
     if (dropOptions.isRare) {
-      ratio += 0.5;
+      ratio += this.realRand.floatBetween(0.01, 0.1);
     }
 
     if (dropOptions.isMagical) {
-      ratio += 0.5;
+      ratio += this.realRand.floatBetween(0.01, 0.1);
     }
 
-    return { ratio, goodness, type: typeOptions[goodness] };
+    // cap max tier
+    let tier = Math.floor(ratio * totalTiers);
+    if (tier > totalTiers - 1) { tier = totalTiers - 1; }
+
+    console.log({ tier, ratio });
+
+    return { ratio, tier, type: allTiers[tier] };
   }
 
-  assignBetterItemModifiers(item: EquipableItem, allowedModifiers: (keyof StatsModifiers)[], itemGoodness: any) {
+  // assignItemModifier(item: Item, options)
+
+  assignBetterItemModifiers(item: EquipableItem, allowedModifiers: (keyof StatsModifiers)[], itemGoodness: ItemGoodness) {
     const modifiers: DBAttributeModifier[] = [];
 
     const shuffledModifiers = this.shuffleReal(allowedModifiers)
@@ -1009,7 +1073,7 @@ export class RoomUtils {
         existingModifier.modifier += modifier.modifier;
 
         if (modifier.attr === "armor") {
-          existingModifier.modifier = Math.round(existingModifier.modifier * 100) / 100;
+          existingModifier.modifier = Math.round(existingModifier.modifier * 10) / 10;
         }
 
       } else {
@@ -1036,6 +1100,10 @@ export class RoomUtils {
       array[j] = temp;
     }
     return array;
+  }
+
+  _quadOut(t) {
+    return -t * (t - 2.0);
   }
 
 }

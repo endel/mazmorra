@@ -86,7 +86,7 @@ var helpers = {
       KEY_CASTLE: 'key-castle',
       KEY_ROCK: 'key-rock',
       KEY_GRASS: 'key-grass',
-      KEY_ROCK_2: 'key-rock-2',
+      KEY_CAVE: 'key-cave',
       KEY_ICE: 'key-ice',
       KEY_INFERNO: 'key-inferno',
 

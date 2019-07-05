@@ -47,7 +47,7 @@ export abstract class Item extends Entity {
   }
 
   getSellPrice() {
-    return Math.floor(this.getPrice() / 4);
+    return Math.floor(this.getPrice() / 8);
   }
 
   getPrice(allowPremium: boolean = true) {
@@ -63,40 +63,40 @@ export abstract class Item extends Entity {
 
       } else if (this.modifiers[i].attr == "xp") {
         const num = parseInt(this.type[this.type.length - 1]);
-        price += (this.modifiers[i].modifier * 50) - (Math.pow(num, 2) * 70);
+        price += (this.modifiers[i].modifier * 100) - (Math.pow(num, 2) * 130);
 
       } else if (
         this.modifiers[i].attr == "strength" ||
         this.modifiers[i].attr == "agility" ||
         this.modifiers[i].attr == "intelligence"
       ) {
-        price += this.modifiers[i].modifier * 300;
+        price += this.modifiers[i].modifier * 600;
 
       } else if (this.modifiers[i].attr == "armor") {
-        price += this.modifiers[i].modifier * 200;
+        price += this.modifiers[i].modifier * 500;
 
       } else if (this.modifiers[i].attr == "damage") {
-        price += this.modifiers[i].modifier * 200;
+        price += this.modifiers[i].modifier * 500;
 
       } else if (this.modifiers[i].attr == "movementSpeed") {
-        price += this.modifiers[i].modifier * 200;
+        price += this.modifiers[i].modifier * 500;
 
       } else if (this.modifiers[i].attr == "attackDistance") {
-        price += this.modifiers[i].modifier * 200;
+        price += this.modifiers[i].modifier * 500;
 
       } else if (this.modifiers[i].attr == "attackSpeed") {
-        price += this.modifiers[i].modifier * 200;
+        price += this.modifiers[i].modifier * 500;
 
       } else if (this.modifiers[i].attr == "evasion") {
-        price += this.modifiers[i].modifier * 200;
+        price += this.modifiers[i].modifier * 500;
 
       } else if (this.modifiers[i].attr == "criticalStrikeChance") {
-        price += this.modifiers[i].modifier * 500;
+        price += this.modifiers[i].modifier * 700;
       }
     }
 
     return (!this.premium || !allowPremium)
-      ? Math.round(price * 100) / 100
+      ? Math.round(price * 10) / 10
       : Math.max(Math.floor(price / 150), 1);
   }
 

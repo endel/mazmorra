@@ -75,4 +75,13 @@ export class Enemy extends Unit {
     }
   }
 
+  onLevelUp () {
+    super.onLevelUp();
+
+    for (let i = this.pointsToDistribute; i > 0; i--) {
+      this.attributes[this.primaryAttribute]++;
+      this.pointsToDistribute--;
+    }
+  }
+
 }

@@ -95,8 +95,6 @@ export class Player extends Unit {
     const inventory = this[inventoryType];
     const item: Item = inventory.slots[itemId];
 
-    console.log("useItem:", { inventoryType, itemId, inventory, item });
-
     // buying items!
     if (item && inventory === this.purchase) {
       return this.inventoryBuy(item);
@@ -251,10 +249,10 @@ export class Player extends Unit {
     // if (this.state.isPVPAllowed) {
     // }
 
-    this.willDropItem = this.equipedItems.dropRandomItem();
+    const itemToDrop = this.equipedItems.dropRandomItem();
 
-    if (this.willDropItem) {
-      this.state.addEntity(createItem(this.willDropItem, this.position));
+    if (itemToDrop) {
+      this.state.addEntity(createItem(itemToDrop, this.position));
     }
   }
 

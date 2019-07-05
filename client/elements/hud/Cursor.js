@@ -46,6 +46,11 @@ export default class Cursor extends THREE.Object3D {
     this.magic.position.x += this.magic.height / 2
     this.magic.position.y -= this.magic.width / 2
 
+    this.loading = ResourceManager.getHUDElement('cursor-loading')
+    this.loading.material.alphaTest = 0.5
+    this.loading.position.x += this.loading.height / 2
+    this.loading.position.y -= this.loading.width / 2
+
     this.dragging = new THREE.Object3D()
     this.add(this.dragging)
 
