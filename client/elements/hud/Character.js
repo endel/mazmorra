@@ -256,7 +256,6 @@ export default class Character extends THREE.Object3D {
     this.agiUpButton.userData.hint = `<strong class="agility">Agility${(data.primaryAttribute === "agility") ? " (primary)" : ""}:</strong><br/>
       ${(data.primaryAttribute === "agility") ? "Increase damage<br/>" : ""}
       Increase attack speed<br/>
-      Increase armor<br/>
     `;
     this.intUpButton.userData.hint = `<strong class="intelligence">Intelligence${(data.primaryAttribute === "intelligence") ? " (primary)" : ""}:</strong><br/>
       ${(data.primaryAttribute === "intelligence") ? "Increase damage<br/>" : ""}

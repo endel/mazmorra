@@ -222,7 +222,7 @@ export class Unit extends Entity {
   }
 
   getArmor() {
-    return this.statsModifiers.armor + (this.attributes.agility * 0.1) + this.baseArmor[this.primaryAttribute];
+    return this.statsModifiers.armor + this.baseArmor[this.primaryAttribute];
   }
 
   getEvasion() {
