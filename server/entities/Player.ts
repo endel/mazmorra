@@ -159,6 +159,10 @@ export class Player extends Unit {
 
     // buying items!
     if (item && fromInventory === this.purchase) {
+      if (switchItem) {
+        this.inventorySell(toInventoryType, switchItemId);
+      }
+
       return this.inventoryBuy(item, toInventory);
     }
 
@@ -223,7 +227,12 @@ export class Player extends Unit {
       }
     }
 
-    if (toInventory && toInventory.hasAvailability()) {
+    let hasAvailability = toInventory.hasAvailability();
+    if (toInventory instanceof EquipedItems) {
+      hasAvailability = toInventory.isSlotAvailable((item as EquipableItem).slotName);
+    }
+
+    if (toInventory && hasAvailability) {
       let success: boolean = false;
 
       if (item.premium && this.diamond >= item.getPrice()) {

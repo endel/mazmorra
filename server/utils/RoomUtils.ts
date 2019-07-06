@@ -604,13 +604,8 @@ export class RoomUtils {
      */
     this.addEntity(this.endRoom, (position) => {
       const majesty = new NPC('majesty', {}, this.state);
-      majesty.wanderer = false;
-      majesty.position.set({
-        x: lady.position.x - 1,
-        y: lady.position.y + 2,
-      });
-      // majesty.wanderer = true;
-      // majesty.position.set(position);
+      majesty.wanderer = true;
+      majesty.position.set(position);
       return majesty;
     })
 
