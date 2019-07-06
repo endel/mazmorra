@@ -45,11 +45,18 @@ export default class Level extends THREE.Object3D {
     this.addBehaviour(new Chat(), this);
 
     this.addEventListener("click", this.onClick.bind(this));
+    this.addEventListener("contextmenu", this.onRightClick.bind(this));
     this.addEventListener("mouseover", this.onMouseOver.bind(this));
     this.addEventListener("mouseout", this.onMouseOut.bind(this));
 
     App.cursor.addEventListener("mouseup", this.playerActionDrop.bind(this));
     App.cursor.addEventListener("distribute-point", this.distributePoint.bind(this));
+
+    // auto-attack!
+    this.hud.addEventListener("atk", (e) => {
+      e.stopPropagation = true;
+      this.room.send(["atk"]);
+    });
 
     // allow to consume items!
     this.hud.addEventListener("use-item", (e) => {
@@ -101,6 +108,18 @@ export default class Level extends THREE.Object3D {
     this.playerAction()
   }
 
+  onRightClick (e) {
+    if (!this.targetPosition) { return; }
+
+    this.updateClickedTileLight();
+
+    this.room.send(["atk", {
+      // FIXME: why need to invert here?
+      x: this.targetPosition.y,
+      y: this.targetPosition.x,
+    }]);
+  }
+
   onMouseOver (e) {
     let walkableObject = null
 
@@ -132,7 +151,7 @@ export default class Level extends THREE.Object3D {
       // this is real messy!
       if (err === "setState") {
         this.room.leave();
-        options.workaround = true;
+        options.progress++;
         this.enterRoom(name, options);
       }
       console.error(err);
@@ -438,7 +457,7 @@ export default class Level extends THREE.Object3D {
       "cave": 'higure-forest',
       "ice": 'higure-forest',
       "grass": 'higure-forest',
-      "inferno": 'higure-forest',
+      "inferno": 'plague-of-nighterrors',
     };
 
     sounds.switchSoundtrack(soundtrackMap[this.mapkind]);
@@ -553,9 +572,7 @@ export default class Level extends THREE.Object3D {
       App.cursor.performItemCast();
 
     } else {
-      this.clickedTileLight.intensity = 1
-      this.clickedTileLight.position.copy(this.selectionLight.position)
-      this.clickedTileLight.target = this.selectionLight.target
+      this.updateClickedTileLight();
 
       const moveCommand = {
         x: this.targetPosition.x,
@@ -564,6 +581,12 @@ export default class Level extends THREE.Object3D {
 
       this.room.send(['move', moveCommand]);
     }
+  }
+
+  updateClickedTileLight() {
+    this.clickedTileLight.intensity = 1
+    this.clickedTileLight.position.copy(this.selectionLight.position)
+    this.clickedTileLight.target = this.selectionLight.target
   }
 
   distributePoint (event) {

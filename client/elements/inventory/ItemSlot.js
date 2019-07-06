@@ -160,21 +160,10 @@ export default class ItemSlot extends THREE.Object3D {
       this.accepts === "sell" &&
       !isPurchasing
     ) {
-      if (draggingFrom.parent.inventoryType === "equippedItems") {
-        // confirmation to sell equipped item
-        if (confirm(`Are you sure you'd like to sell this '${humanize(this._item.userData.item.type)}'?`)) {
-          this.dispatchSell({
-            fromInventoryType: draggingFrom.parent.inventoryType,
-            itemId: draggingItem.userData.itemId
-          })
-        }
-      } else {
-        this.dispatchSell({
-          fromInventoryType: draggingFrom.parent.inventoryType,
-          itemId: draggingItem.userData.itemId
-        })
-
-      }
+      this.dispatchSell({
+        fromInventoryType: draggingFrom.parent.inventoryType,
+        itemId: draggingItem.userData.itemId
+      })
       return;
     }
 
@@ -245,6 +234,12 @@ export default class ItemSlot extends THREE.Object3D {
         hud.inventory.isTrading &&
         this.parent.inventoryType !== "purchase"
       ) {
+        if (this.parent.inventoryType === "equipedItems") {
+          if (!confirm(`Are you sure you'd like to sell this '${humanize(this._item.userData.item.type)}'?`)) {
+            return;
+          }
+        }
+
         // Sell item!
         this.dispatchSell({
           fromInventoryType: this.parent.inventoryType,

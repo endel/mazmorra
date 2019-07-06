@@ -49,6 +49,7 @@ export class DungeonState extends Schema {
 
   rooms: any;
   players: {[id: string]: Player} = {};
+  enemies: {[id: string]: Enemy} = {};
 
   rand: RandomSeed; // predicatble random generator
   config: MapConfig;
@@ -141,13 +142,17 @@ export class DungeonState extends Schema {
   addEntity (entity) {
     this.entities[entity.id] = entity
 
-    if (entity instanceof Fountain) {
-      // this.pathgrid.setWalkableAt(entity.position.x, entity.position.y, false);
+    if (entity instanceof Enemy) {
+      this.enemies[entity.id] = entity;
     }
   }
 
   removeEntity (entity) {
     delete this.entities[entity.id]
+
+    if (entity instanceof Enemy) {
+      delete this.enemies[entity.id];
+    }
   }
 
   createPlayer (client, hero: DBHero, options: any) {
@@ -296,10 +301,10 @@ export class DungeonState extends Schema {
     // dead units cannot move!
     if (!unit.isAlive) { return; }
 
-    if (unit instanceof Player) {
-      console.log("RECEIVED MOVE", { destiny, allowChangeTarget });
-      console.log("UNIT CURRENT POSITION", unit.position.x, unit.position.y);
-    }
+    // if (unit instanceof Player) {
+    //   console.log("RECEIVED MOVE", { destiny, allowChangeTarget });
+    //   console.log("UNIT CURRENT POSITION", unit.position.x, unit.position.y);
+    // }
 
     // prioritize getting Unit entities before
     let targetEntity = this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit);
@@ -373,9 +378,10 @@ export class DungeonState extends Schema {
       }
     }
 
-    if (unit instanceof Player) {
-      console.log("Let's move to", moves);
-    }
+    // if (unit instanceof Player) {
+    //   console.log("Let's move to", moves);
+    // }
+
     unit.position.moveTo(moves);
   }
 

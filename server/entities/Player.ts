@@ -11,6 +11,7 @@ import { Inventory } from "../core/Inventory";
 import { generateId } from "colyseus";
 import { ConsumableItem } from "./items/ConsumableItem";
 import { createItem } from "./items/createItem";
+import { distance } from "../helpers/Math";
 
 export class SkinProperties extends Schema {
   @type("number") klass: number;
@@ -253,6 +254,51 @@ export class Player extends Unit {
 
     if (itemToDrop) {
       this.state.addEntity(createItem(itemToDrop, this.position));
+    }
+  }
+
+  autoAttack(position?: Point) {
+    let allowedDistance: number;
+
+    if (!position) {
+      position = this.position;
+      // auto-attack
+      allowedDistance = 12;
+
+    } else {
+      // clicked near an enemy
+      allowedDistance = 2;
+    }
+
+    const distances = []
+    for (let sessionId in this.state.enemies) {
+      const unit: Unit = this.state.enemies[sessionId];
+      if (unit.isAlive) {
+        const dist = distance(position, unit.position);
+        if (dist <= allowedDistance) {
+          distances.push([unit, dist]);
+        }
+      }
+    }
+
+    if (this.state.isPVPAllowed) {
+      // search for players!
+      for (let sessionId in this.state.players) {
+        const unit: Unit = this.state.players[sessionId];
+        if (unit.isAlive) {
+          const dist = distance(position, unit.position);
+          if (dist <= allowedDistance) {
+            distances.push([unit, dist]);
+          }
+        }
+      }
+    }
+
+    const sortedDistances = distances.sort((a,b) => a[1] - b[1]);
+    const closestUnit = sortedDistances[0];
+
+    if (closestUnit) {
+      this.state.move(this, { x: closestUnit[0].position.y, y: closestUnit[0].position.x }, true)
     }
   }
 

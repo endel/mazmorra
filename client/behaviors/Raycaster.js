@@ -167,6 +167,14 @@ export default class Raycaster extends Behaviour {
   onContextMenu (e) {
     e.preventDefault();
     e.stopPropagation();
+
+    if (this.isTargetReachable && !App.cursor.isDroppingItem) {
+      this.targetObject.dispatchEvent({
+        type: "contextmenu",
+        bubbles: true,
+        path: this.path
+      })
+    }
   }
 
   onMouseDown(e) {

@@ -572,7 +572,10 @@ export class RoomUtils {
     this.endPosition = this.startPosition;
 
     // add door
-    const initialDoor = new Door(this.startPosition, new DoorDestiny({
+    const initialDoor = new Door({
+      x: merchant.position.x - 2,
+      y: merchant.position.y
+    }, new DoorDestiny({
       progress: 2
     }));
     this.state.addEntity(initialDoor);

@@ -152,7 +152,10 @@ export default class HUD extends THREE.Scene {
         this.onToggleInventory();
       }
 
-    } else if (e.which === Keycode.KEY_1 || e.which === Keycode.NUMPAD_1) {
+    } else if (e.which === Keycode.A) {
+      this.dispatchEvent({type: "atk"});
+
+    } else if (e.which === Keycode.KEY_1 || e.which === Keycode.NUMPAD_1 || e.which === Keycode.Q) {
       this.quickInventory.slots[0].dispatchEvent({
         type: "dblclick",
         target: this.quickInventory.slots[0]

@@ -1,5 +1,9 @@
 05/07/2019 - Patch notes!
 
+- New feature: attack, and auto-attack!
+  - Right click near an enemy will attack it instead of moving
+  - Pressing "A" attacks the closest enemy
+- black/gray screen bug: I still don't know how to fix it, so if room 5 has the bug, for example, you'll skip it and go to room 6. room 5 will be available after a few seconds
 - Portals are not overriden in the Castle anymore
 - Agility points do not increase movement speed anymore
 - Agility points do not increase armor anymore
