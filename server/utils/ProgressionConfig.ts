@@ -29,8 +29,8 @@ export type MapConfig = {
   boss?: string[]
 };
 
-// export const NUM_LEVELS_PER_MAP = 18;
-export const NUM_LEVELS_PER_MAP = 3;
+export const NUM_LEVELS_PER_MAP = 18;
+// export const NUM_LEVELS_PER_MAP = 3;
 export const NUM_LEVELS_PER_CHECKPOINT = 8;
 export const NUM_LEVELS_PER_LOOT_ROOM = 12;
 
