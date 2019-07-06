@@ -70,28 +70,28 @@ export abstract class Item extends Entity {
         this.modifiers[i].attr == "agility" ||
         this.modifiers[i].attr == "intelligence"
       ) {
-        price += this.modifiers[i].modifier * 600;
+        price += this.modifiers[i].modifier * 500;
 
       } else if (this.modifiers[i].attr == "armor") {
-        price += this.modifiers[i].modifier * 500;
+        price += this.modifiers[i].modifier * 400;
 
       } else if (this.modifiers[i].attr == "damage") {
-        price += this.modifiers[i].modifier * 500;
+        price += this.modifiers[i].modifier * 400;
 
       } else if (this.modifiers[i].attr == "movementSpeed") {
-        price += this.modifiers[i].modifier * 500;
+        price += this.modifiers[i].modifier * 400;
 
       } else if (this.modifiers[i].attr == "attackDistance") {
-        price += this.modifiers[i].modifier * 500;
+        price += this.modifiers[i].modifier * 400;
 
       } else if (this.modifiers[i].attr == "attackSpeed") {
-        price += this.modifiers[i].modifier * 500;
+        price += this.modifiers[i].modifier * 400;
 
       } else if (this.modifiers[i].attr == "evasion") {
-        price += this.modifiers[i].modifier * 500;
+        price += this.modifiers[i].modifier * 400;
 
       } else if (this.modifiers[i].attr == "criticalStrikeChance") {
-        price += this.modifiers[i].modifier * 700;
+        price += this.modifiers[i].modifier * 600;
       }
     }
 

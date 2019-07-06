@@ -29,8 +29,8 @@ export default class SlotStrip extends THREE.Object3D {
   clearItems () {
     for (let i=0; i<this.slots.length; i++) {
       if (this.slots[i].item) {
-        this.slots[i].item.getEntity().detachAll()
-        this.slots[i].item = null
+        this.slots[i].item.getEntity().destroy();
+        this.slots[i].item = null;
       }
     }
   }
@@ -39,43 +39,47 @@ export default class SlotStrip extends THREE.Object3D {
     const items = this.userData.slots;
 
     this.clearItems();
-    this.updateChildren();
 
-    let i = 0
-    for (let itemId in items) {
+    const itemIds = Object.keys(items);
+    for (let i=0; i<this.numSlots;i++) {
+      this.slots[i].item = null;
+
+      const itemId = itemIds[i];
       const item = items[itemId];
-      this.slots[i].item = ResourceManager.getHUDElement(`items-${ item.type }`)
-      this.slots[i].item.userData.item = item;
-      this.slots[i].item.userData.itemId = itemId;
-      this.slots[i].item.userData.inventoryType = this.inventoryType;
-      i++
-    }
 
-    this.slots.forEach(slot => slot.enabled = this.enabled);
+      if (item) {
+        this.slots[i].item = ResourceManager.getHUDElement(`items-${item.type}`)
+        this.slots[i].item.userData.item = item;
+        this.slots[i].item.userData.itemId = itemId;
+        this.slots[i].item.userData.inventoryType = this.inventoryType;
+      }
+
+      this.slots[i].enabled = this.enabled;
+    }
   }
 
   set numSlots (total) {
     this._numSlots = total
-    this.updateChildren();
+    this.createChildren();
   }
 
   get numSlots () {
     return this._numSlots
   }
 
-  updateChildren () {
+  createChildren () {
     let row, column
       , i = this.children.length
       , slot = null
 
     // remove previous children
     while (i--) {
+      this.children[i].removeAllListeners();
       this.remove(this.children[i])
     }
 
     const maxRows = Math.floor(this.numSlots / this.columns) - 1;
 
-    this.slots = []
     for (i = 0; i < this.numSlots; i++) {
       column = i % this.columns
       row = Math.floor(i / this.columns)
@@ -90,6 +94,7 @@ export default class SlotStrip extends THREE.Object3D {
 
     // this.slots.reverse();
 
+    /*
     // add REMOVE slot
     if (this.allowRemove) {
       let x = slot.position.x + slot.width
@@ -103,6 +108,7 @@ export default class SlotStrip extends THREE.Object3D {
       this.slots.push(slot)
       this.add(slot)
     }
+    */
 
     this.width = slot.position.x + slot.width
     this.height = (slot.height +  config.HUD_SCALE) * (row+1)

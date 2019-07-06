@@ -9,6 +9,7 @@ import { Scroll } from "./items/consumable/Scroll";
 import { ConsumableItem } from "./items/ConsumableItem";
 import { Key } from "./items/consumable/Key";
 import { NUM_LEVELS_PER_CHECKPOINT, MAX_LEVELS } from "../utils/ProgressionConfig";
+import { PotionPoints } from "./items/consumable/PotionPoints";
 
 export class NPC extends Player {
   @type("string") kind: string;
@@ -52,10 +53,13 @@ export class NPC extends Player {
       const scroll = new Scroll();
       items.push(scroll);
 
+      const pointsPotion = new PotionPoints();
+      items.push(pointsPotion);
+
       player.setTradingItems(items);
 
     } else if (this.kind === "merchant") {
-      const progress = player.latestProgress + NUM_LEVELS_PER_CHECKPOINT;
+      const progress = this.state.roomUtils.realRand.intBetween(player.latestProgress, player.latestProgress + 2)
       player.setTradingItems([
         this.state.roomUtils.createArmor({ progress }),
         this.state.roomUtils.createBoot({ progress }),
@@ -67,8 +71,8 @@ export class NPC extends Player {
     } else if (this.kind === "majesty") {
       const genericMessages = (!isLastLevel) ? [
         `I don't reveal the source of my weapons.`,
-        `You can't handle my potions!`,
         `The prophecy is true.`,
+        `You've got the diamonds?`,
         `Demons are amongst us`,
       ] : [
         `What happened?`,
@@ -80,7 +84,7 @@ export class NPC extends Player {
       setTimeout(() => {
         const itemDropOptions = {
           progress: (!isLastLevel)
-            ? player.latestProgress + NUM_LEVELS_PER_CHECKPOINT
+            ? this.state.roomUtils.realRand.intBetween(player.latestProgress, player.latestProgress + NUM_LEVELS_PER_CHECKPOINT)
             : MAX_LEVELS * 2,
           isMagical: true,
           isRare: true
@@ -154,13 +158,13 @@ export class NPC extends Player {
   getPotionModifierForPlayer(player, attr: 'hp' | 'mp' | 'xp') {
     let modifier = POTION_1_MODIFIER;
 
-    if (player[attr].max > POTION_4_MODIFIER) {
+    if (player[attr].max >= POTION_4_MODIFIER) {
       modifier = POTION_4_MODIFIER;
 
-    } else if (player[attr].max > POTION_3_MODIFIER) {
+    } else if (player[attr].max >= POTION_3_MODIFIER) {
       modifier = POTION_3_MODIFIER;
 
-    } else if (player[attr].max > POTION_2_MODIFIER) {
+    } else if (player[attr].max >= POTION_2_MODIFIER) {
       modifier = POTION_2_MODIFIER;
     }
 

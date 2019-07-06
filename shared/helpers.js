@@ -65,10 +65,14 @@ var helpers = {
       XP_POTION_2: 'xp-potion-2',
       XP_POTION_3: 'xp-potion-3',
       XP_POTION_4: 'xp-potion-4',
-      ELIXIR_POTION_1: 'elixir-potion-1',
-      ELIXIR_POTION_2: 'elixir-potion-2',
-      ELIXIR_POTION_3: 'elixir-potion-3',
-      ELIXIR_POTION_4: 'elixir-potion-4',
+      ELIXIR_POTION_1: 'elixir-1',
+      ELIXIR_POTION_2: 'elixir-2',
+      ELIXIR_POTION_3: 'elixir-3',
+      ELIXIR_POTION_4: 'elixir-4',
+      POINTS_POTION_1: 'points-1',
+      POINTS_POTION_2: 'points-2',
+      POINTS_POTION_3: 'points-3',
+      POINTS_POTION_4: 'points-4',
 
       // scrolls / books
       SCROLL: 'scroll-regular',

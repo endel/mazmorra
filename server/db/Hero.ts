@@ -64,6 +64,9 @@ export interface DBHero extends mongoose.Document {
   klass: number;
   lvl: number;
 
+  kills: number;
+  deaths: number;
+
   hair: number;
   hairColor: number;
   eye: number;
@@ -107,6 +110,9 @@ export const Hero = mongoose.model<DBHero>('Hero', new Schema<DBHero>({
   name: String,
   klass: { type: Number, default: 0 },
   lvl: { type: Number, default: 1 },
+
+  kills: { type: Number, default: 0 },
+  deaths: { type: Number, default: 0 },
 
   hair: { type: Number, default: 0 },
   hairColor: { type: Number, default: 0 },

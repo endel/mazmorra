@@ -20,7 +20,7 @@ export class Boss extends Enemy {
 
     this.isBoss = true;
 
-    this.hp.current = 1;
+    // this.hp.current = 1;
   }
 
   get aiDistance () {

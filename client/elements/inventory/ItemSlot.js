@@ -31,20 +31,26 @@ export default class ItemSlot extends THREE.Object3D {
     this.width = useTex.frame.w *  config.HUD_SCALE
     this.height = useTex.frame.h *  config.HUD_SCALE
 
+    this.onMouseOver = this.onMouseOver.bind(this);
+    this.onMouseOut = this.onMouseOut.bind(this);
+    this.onDragStart = this.onDragStart.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
+    this.onDoubleClick = this.onDoubleClick.bind(this);
+
     // mouse-over / mouse-out
-    this.addEventListener('mouseover', this.onMouseOver.bind(this))
-    this.addEventListener('mouseout', this.onMouseOut.bind(this))
+    this.addEventListener('mouseover', this.onMouseOver)
+    this.addEventListener('mouseout', this.onMouseOut)
 
     // drag start
-    this.addEventListener('mousedown', this.onDragStart.bind(this))
-    this.addEventListener('touchstart', this.onDragStart.bind(this))
+    this.addEventListener('mousedown', this.onDragStart)
+    this.addEventListener('touchstart', this.onDragStart)
 
     // drag end
-    this.addEventListener('mouseup', this.onDragEnd.bind(this))
-    this.addEventListener('touchend', this.onDragEnd.bind(this))
+    this.addEventListener('mouseup', this.onDragEnd)
+    this.addEventListener('touchend', this.onDragEnd)
 
     // double click
-    this.addEventListener('dblclick', this.onDoubleClick.bind(this))
+    this.addEventListener('dblclick', this.onDoubleClick)
   }
 
   set enabled (bool) {
@@ -72,6 +78,9 @@ export default class ItemSlot extends THREE.Object3D {
   }
 
   set item(item) {
+    this.use.material.opacity = ItemSlot.OCCUPIED_OPACITY;
+    this.free.material.opacity = ItemSlot.DEFAULT_OPACITY
+
     if (item) {
       this.add(this.use)
       this.remove(this.free)
@@ -80,6 +89,12 @@ export default class ItemSlot extends THREE.Object3D {
       item.position.y = 0
       item.position.z = 1
 
+      // item.addEventListener("removed", () => {
+      //   if (item.geometry) {
+      //     console.log("destroy ITEM geometry");
+      //     item.geometry.dispose()
+      //   }
+      // });
       this.add(item)
 
     } else {
@@ -137,6 +152,7 @@ export default class ItemSlot extends THREE.Object3D {
   }
 
   dispatchSell(itemData) {
+    console.log("SELL!");
     trackEvent('trade-sell', { event_category: 'Trade', event_label: 'Sell' });
 
     this.dispatchEvent({
@@ -280,7 +296,8 @@ export default class ItemSlot extends THREE.Object3D {
   }
 
   _drop() {
-    draggingItem = null
+    draggingFrom = null;
+    draggingItem = null;
   }
 
   _revertDraggingItem(cancelDrop) {
@@ -297,6 +314,16 @@ export default class ItemSlot extends THREE.Object3D {
     App.tweens.add(draggingItem.scale).to(draggingItem.initialScale, 300, Tweener.ease.quintOut)
 
     draggingItem = null
+  }
+
+  removeAllListeners() {
+    this.removeEventListener('mouseover', this.onMouseOver);
+    this.removeEventListener('mouseout', this.onMouseOut);
+    this.removeEventListener('mousedown', this.onDragStart);
+    this.removeEventListener('touchstart', this.onDragStart);
+    this.removeEventListener('mouseup', this.onDragEnd);
+    this.removeEventListener('touchend', this.onDragEnd);
+    this.removeEventListener('dblclick', this.onDoubleClick);
   }
 
 }

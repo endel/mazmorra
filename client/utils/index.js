@@ -41,7 +41,7 @@ export function getLightPoolCount() {
 }
 
 export function removeLight(light) {
-  light.getEntity().detachAll();
+  light.getEntity().destroy();
   light.intensity = 0;
   light.distance = 0;
   window.scene.add(light);

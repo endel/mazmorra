@@ -76,7 +76,7 @@ export class Unit extends Entity {
 
   baseArmor: { [id in Attribute]: number } = {
     strength: 0,
-    agility: -1,
+    agility: -1.5,
     intelligence: -2
   };
 
@@ -131,8 +131,10 @@ export class Unit extends Entity {
     this.attributes.agility = hero.agility || 1;
     this.attributes.intelligence = hero.intelligence || 1;
 
-    this.baseHp = (hero.userId) ? 10 : 0;
-    this.baseMp = (hero.userId) ? 10 : 0;
+    // this.baseHp = (hero.userId) ? 10 : 0;
+    // this.baseMp = (hero.userId) ? 10 : 0;
+    this.baseHp = 0;
+    this.baseMp = 0;
 
     this.recalculateStatsModifiers();
 
@@ -176,7 +178,7 @@ export class Unit extends Entity {
     }
 
     const hpPercent = this.hp.current / this.hp.max;
-    this.hp.max = this.baseHp + (this.attributes.strength + this.statsModifiers['strength'] + this.statsModifiers['hp']) * 3;
+    this.hp.max = this.baseHp + (this.attributes.strength + this.statsModifiers['strength'] + this.statsModifiers['hp']) * 5;
     this.hp.current = this.hp.max * hpPercent;
 
     const mpPercent = this.mp.current / this.mp.max;
@@ -195,7 +197,7 @@ export class Unit extends Entity {
   getMovementSpeed() {
     return (
       this.movementSpeed
-      - (this.statsModifiers.movementSpeed * 10)
+      - (this.statsModifiers.movementSpeed * 30)
     );
   }
 
@@ -218,7 +220,14 @@ export class Unit extends Entity {
     const minDamage = this.attributes[damageAttribute] + this.statsModifiers[damageAttribute];
     const maxDamage = minDamage + this.statsModifiers.damage;
 
-    return this.state.rand.intBetween(minDamage, maxDamage);
+    let damage = this.state.rand.intBetween(minDamage, maxDamage);
+
+    // magical damage!
+    if (damageAttribute === "intelligence") {
+      damage += (this.attributes.intelligence + this.statsModifiers.intelligence) / 10;
+    }
+
+    return damage
   }
 
   getArmor() {

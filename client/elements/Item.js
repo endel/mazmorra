@@ -26,8 +26,6 @@ export default class Item extends THREE.Object3D {
       this.highlight.addBehaviour(new Stretchable);
       this.add(this.highlight)
 
-      window.highlight = this.highlight;
-
       // var light = new THREE.SpotLight(0xffffff, 0.5, 50);
       // light.penumbra = 1
       // light.addBehaviour(new LightOscillator, 0.5, 0.6, 0.05)
@@ -41,8 +39,15 @@ export default class Item extends THREE.Object3D {
 
     this.sprite.addBehaviour(new Pickable)
 
-    this.getEntity().on('mouseover', this.onMouseOver.bind(this))
-    this.getEntity().on('mouseout', this.onMouseOut.bind(this))
+    this.onMouseOver = this.onMouseOver.bind(this);
+    this.onMouseOut = this.onMouseOut.bind(this);
+
+    this.getEntity().on('destroy', () => {
+      this.sprite.getEntity().destroy();
+    })
+
+    this.getEntity().on('mouseover', this.onMouseOver);
+    this.getEntity().on('mouseout', this.onMouseOut);
   }
 
   get label () {

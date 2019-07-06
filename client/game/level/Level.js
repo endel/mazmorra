@@ -375,8 +375,7 @@ export default class Level extends THREE.Object3D {
 
     state.entities.onRemove = (entity, key) => {
       if (this.entities[key]) {
-        this.removeEntity(this.entities[key])
-        delete this.entities[key];
+        this.removeEntity(key)
       }
     }
   }
@@ -516,11 +515,13 @@ export default class Level extends THREE.Object3D {
     }
   }
 
-  removeEntity (object) {
+  removeEntity (key, force) {
+    var object = this.entities[key]
+    delete this.entities[key];
 
     // entity may already be removed by this client somehow (text event?)
     if (object.parent) {
-      if (object.sprite) {
+      if (object.sprite && !force) {
         // fade out objects with sprite
         App.tweens.add(object.sprite.scale)
           .to({
@@ -528,15 +529,18 @@ export default class Level extends THREE.Object3D {
             y: 0,
             z: 0,
           }, 100, Tweener.ease.quadOut)
-          .then(() => object.parent.remove(object));
+          .then(() => {
+            if (object.destroy) { object.destroy() }
+            object.parent.remove(object);
+          });
 
       } else {
+        if (object.destroy) { object.destroy() }
         object.parent.remove(object);
       }
     }
 
     object.getEntity().destroy();
-
   }
 
   playSound (soundName) {
@@ -650,32 +654,25 @@ export default class Level extends THREE.Object3D {
   }
 
   cleanup () {
-    this.factory.cleanup()
+    this.setTileSelection(null);
+
+    this.factory.cleanup();
 
     // remove 'selection' from scene
 
-    this.remove(this.selection)
-    this.remove(this.camera)
+    this.remove(this.selection);
+    this.remove(this.camera);
 
     for (var id in this.entities) {
-      this.entities[ id ].getEntity().destroy() // destroy from entity-component system
-      if (this.entities[ id ].parent) {
-        // call destroy method if it's implemented
-        if (this.entities[ id ].destroy) {
-          this.entities[ id ].destroy()
-        }
-
-        // remove from display list
-        this.entities[ id ].parent.remove(this.entities[ id ])
-      }
-      delete this.entities[ id ] // remove from memory
+      this.removeEntity(id, true);
     }
 
+    // remaining children are mostly lights!
     var i = this.children.length;
     while (i--) {
-      let object = this.children[i]
+      let object = this.children[i];
       if (object.__ENTITY__) object.getEntity().destroy()
-      this.remove(object)
+      this.remove(object);
     }
 
   }

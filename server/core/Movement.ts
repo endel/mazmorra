@@ -57,13 +57,15 @@ export class Movement extends Position {
     var now = Date.now()
 
     // force to move instantly if last move
-    if (now - this.lastMove > this.unit.getMovementSpeed()) {
+    if (
+      pending.length > 0 &&
+      (now - this.lastMove > this.unit.getMovementSpeed())
+    ) {
       this.lastMove = now - this.unit.getMovementSpeed();
     }
 
     this.pending = pending
   }
-
 
 
   update (currentTime) {

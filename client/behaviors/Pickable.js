@@ -14,6 +14,9 @@ export default class Pickable extends Behaviour {
 
     this.object.position.y = this.initY - 1
 
+    this.goUp = this.goUp.bind(this);
+    this.goDown = this.goDown.bind(this);
+
     App.tweens.
       add(this.object.scale).
       from({x: 0.1, y: 0.1, z: 0.1}, 600, Tweener.ease.quartOut)
@@ -31,19 +34,20 @@ export default class Pickable extends Behaviour {
     this.tween = App.tweens.
       add(this.object.position).
       to({ y: this.destY }, this.duration, Tweener.ease.cubicInOut).
-      then(this.goDown.bind(this))
+      then(this.goDown)
   }
 
   goDown () {
     this.tween = App.tweens.
       add(this.object.position).
       to({ y: this.initY }, this.duration, Tweener.ease.cubicInOut).
-      then(this.goUp.bind(this))
+      then(this.goUp)
   }
 
   onDetach () {
+    App.tweens.remove(this.object.position);
     clearTimeout(this.initTimeout)
-    if (this.tween) this.tween.dispose()
+    if (this.tween) { this.tween.dispose(); }
   }
 
 }

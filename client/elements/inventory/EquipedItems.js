@@ -14,11 +14,8 @@ export default class EquipedItems extends THREE.Object3D {
 
     this.inventoryType = "equipedItems";
 
-    this.add(this.head)
-    this.add(this.left)
-    this.add(this.right)
-    this.add(this.body)
-    this.add(this.feet)
+    this.slots = [ this.head, this.left, this.right, this.body, this.feet ];
+    this.slots.forEach(slot => this.add(slot));
 
     this.head.position.y = this.head.height + config.HUD_SCALE;
     this.feet.position.y = -this.feet.height - config.HUD_SCALE;
@@ -30,11 +27,7 @@ export default class EquipedItems extends THREE.Object3D {
   }
 
   set enabled (bool) {
-    this.head.enabled = bool;
-    this.left.enabled = bool;
-    this.right.enabled = bool;
-    this.body.enabled = bool;
-    this.feet.enabled = bool;
+    this.slots.forEach(slot => slot.enabled = bool);
     this._enabled = bool;
   }
 
@@ -50,7 +43,7 @@ export default class EquipedItems extends THREE.Object3D {
 
       // clear previous item
       if (this[slotName].item) {
-        this[slotName].item.getEntity().detachAll();
+        this[slotName].item.getEntity().destroy();
         this[slotName].item = null;
       }
 

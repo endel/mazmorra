@@ -33,7 +33,7 @@ export class Player extends Unit {
 
   purchase: Inventory = new Inventory({ capacity: 12 });
 
-  movementSpeed = 600;
+  movementSpeed = 550;
   attackSpeed = 900;
 
   shouldSaveCoords: boolean = false;

@@ -155,7 +155,7 @@ export default class HUD extends THREE.Scene {
     } else if (e.which === Keycode.A) {
       this.dispatchEvent({type: "atk"});
 
-    } else if (e.which === Keycode.KEY_1 || e.which === Keycode.NUMPAD_1 || e.which === Keycode.Q) {
+    } else if (e.which === Keycode.KEY_1 || e.which === Keycode.NUMPAD_1) {
       this.quickInventory.slots[0].dispatchEvent({
         type: "dblclick",
         target: this.quickInventory.slots[0]
@@ -286,7 +286,7 @@ export default class HUD extends THREE.Scene {
       this.controller.playerObject = player;
     }
 
-    this.inventory.getEntity().detachAll()
+    this.inventory.getEntity().destroy();// RIGHT?!
     this.inventory.addBehaviour(new InventoryBehaviour(), player)
 
     // bind inventory objects

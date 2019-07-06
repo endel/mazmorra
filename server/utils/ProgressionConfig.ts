@@ -29,20 +29,25 @@ export type MapConfig = {
   boss?: string[]
 };
 
-export const NUM_LEVELS_PER_MAP = 18;
-// export const NUM_LEVELS_PER_MAP = 4;
+// export const NUM_LEVELS_PER_MAP = 18;
+export const NUM_LEVELS_PER_MAP = 3;
 export const NUM_LEVELS_PER_CHECKPOINT = 8;
 export const NUM_LEVELS_PER_LOOT_ROOM = 12;
 
 /**
  * Maximum attribute modifiers
  */
-export const MAX_HELMET_ARMOR = 15;
-export const MAX_SHIELD_ARMOR = 20;
-export const MAX_ARMOR_ARMOR = 75;
+// export const MAX_ARMOR_ARMOR = 75;
+// export const MAX_SHIELD_ARMOR = 20;
+// export const MAX_HELMET_ARMOR = 15;
+// export const MAX_BOOTS_ARMOR = 10;
 
-export const MAX_BOOTS_ARMOR = 10;
-export const MAX_BOOTS_MOVEMENT_SPEED = 12;
+export const MAX_ARMOR_ARMOR = 50;
+export const MAX_SHIELD_ARMOR = 15;
+export const MAX_HELMET_ARMOR = 10;
+export const MAX_BOOTS_ARMOR = 8;
+
+export const MAX_BOOTS_MOVEMENT_SPEED = 14;
 
 export const MAX_WEAPON_DAMAGE = 30;
 
@@ -364,7 +369,9 @@ export const MONSTER_BASE_ATTRIBUTES: {
       intelligence: 1
     },
     modifiers: {
-      damage: 4
+      damage: 4,
+      movementSpeed: 3,
+      attackSpeed: 3,
     }
   },
   'goblin-2': {
@@ -374,7 +381,10 @@ export const MONSTER_BASE_ATTRIBUTES: {
       agility: 2,
       intelligence: 1
     },
-    modifiers: {}
+    modifiers: {
+      movementSpeed: 3,
+      attackSpeed: 3,
+    }
   },
   'goblin-3': {
     base: {
@@ -384,8 +394,8 @@ export const MONSTER_BASE_ATTRIBUTES: {
       intelligence: 2
     },
     modifiers: {
-      movementSpeed: 5,
-      attackSpeed: 5
+      movementSpeed: 7,
+      attackSpeed: 7
     }
   },
   'goblin-boss': {
@@ -398,8 +408,8 @@ export const MONSTER_BASE_ATTRIBUTES: {
     modifiers: {
       damage: 12,
       hp: 300,
-      movementSpeed: 2,
-      attackSpeed: 3
+      movementSpeed: 3,
+      attackSpeed: 4
     }
   },
   //////////
@@ -451,7 +461,8 @@ export const MONSTER_BASE_ATTRIBUTES: {
       intelligence: 1
     },
     modifiers: {
-      damage: 5,
+      damage: 50,
+      attackSpeed: -10,
       hp: 100,
     }
   },

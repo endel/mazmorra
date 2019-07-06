@@ -126,7 +126,6 @@ export class DungeonRoom extends Room<DungeonState> {
       this.state.move(player, value, true)
 
     } else if (key == 'atk') {
-      console.log("AUTO ATTACK POSITION:", value);
       player.autoAttack(value);
 
     } else if (key == 'distribute-point') {

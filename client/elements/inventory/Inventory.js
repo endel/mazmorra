@@ -117,14 +117,14 @@ export default class Inventory extends THREE.Object3D {
 
       // fade item inside ItemSlot, in case there's any
       if (el instanceof ItemSlot && el.item) {
-        App.tweens.add(el.item.material).wait(i * 15).to({ opacity: (targetOpacity > 0) ? 1 : 0 }, 500, Tweener.ease.quintOut)
+        App.tweens.add(el.item.material).wait(i * 15).to({ opacity: (targetOpacity > 0) ? 1 : 0 }, 300, Tweener.ease.quintOut)
 
         if (targetOpacity > 0 && el.hasItem()) {
           targetOpacity = ItemSlot.OCCUPIED_OPACITY;
         }
       }
 
-      App.tweens.add(el.material).wait(i * 15).to({ opacity: targetOpacity }, 500, Tweener.ease.quintOut)
+      App.tweens.add(el.material).wait(i * 15).to({ opacity: targetOpacity }, 300, Tweener.ease.quintOut)
     });
 
     const opacity = ((this.isOpen) ? 1 : 0);

@@ -12,6 +12,7 @@ import { Scroll } from "./consumable/Scroll";
 import { ArmorItem } from "./equipable/ArmorItem";
 import { ConsumableItem } from "./ConsumableItem";
 import { Key } from "./consumable/Key";
+import { PotionPoints } from "./consumable/PotionPoints";
 
 export function createItem(data: Item | DBItem, position?: Point): Item {
   let item: Item;
@@ -35,6 +36,13 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
     case helpers.ENTITIES.ELIXIR_POTION_3:
     case helpers.ENTITIES.ELIXIR_POTION_4:
       item = new Potion();
+      break;
+
+    case helpers.ENTITIES.POINTS_POTION_1:
+    case helpers.ENTITIES.POINTS_POTION_2:
+    case helpers.ENTITIES.POINTS_POTION_3:
+    case helpers.ENTITIES.POINTS_POTION_4:
+      item = new PotionPoints();
       break;
 
     // Generic consumables

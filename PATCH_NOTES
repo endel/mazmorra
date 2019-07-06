@@ -1,9 +1,7 @@
-05/07/2019 - Patch notes!
+06/07/2019 - Patch notes!
 
-- New feature: attack, and auto-attack!
-  - Right click near an enemy will attack it instead of moving
-  - Pressing "A" attacks the closest enemy
-- black/gray screen bug: I still don't know how to fix it, so if room 5 has the bug, for example, you'll skip it and go to room 6. room 5 will be available after a few seconds
+- Introduced points redistribution potions (LIMITED SALE OFFER ON THE ELDER, gonna be pricier on next update!)
+- Black/Gray Screen bug: I still don't know how to fix it, so if room 5 has the bug, for example, you'll skip it and go to room 6. room 5 will be available after a few seconds
 - Portals are not overriden in the Castle anymore
 - Agility points do not increase movement speed anymore
 - Agility points do not increase armor anymore
@@ -11,14 +9,25 @@
 - Chests and doors of boss rooms now remain locked until the boss is alive.
 - Bosses drop rare and magical items
 - Boss chests now drop only rare items
+- New feature: attack, and auto-attack!
+  - Right click near an enemy will attack it instead of moving
+  - Pressing "A" attacks the closest enemy
+- New base armor:
+  - Strength: 0
+  - Agility: -1.5
+  - Intelligence: -2
+- New movement speed:
+  - Movement speed is displayed as "tiles per second"
+  - Base movement speed is 1.8
+  - Each point in movement speed reduces 30ms to walk
 - Updated maximum values each item can provide, which follows:
   - Total number of levels in the game: 108
   - Number of levels between different maps: 18
   - Number levels between checkpoints: 8
-  - Max. Body Armor: 75
-  - Max. Shield Armor: 20
-  - Max. Boots Armor: 10
-  - Max. Helmet Armor: 15
+  - Max. Body Armor: 50
+  - Max. Shield Armor: 15
+  - Max. Helmet Armor: 10
+  - Max. Boots Armor: 8
   - Max. Boots Movement Speed: 12
   - Max. Melee Weapon Damage: 30
   - Max. Bow Damage: 20

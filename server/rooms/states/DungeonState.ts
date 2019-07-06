@@ -301,11 +301,6 @@ export class DungeonState extends Schema {
     // dead units cannot move!
     if (!unit.isAlive) { return; }
 
-    // if (unit instanceof Player) {
-    //   console.log("RECEIVED MOVE", { destiny, allowChangeTarget });
-    //   console.log("UNIT CURRENT POSITION", unit.position.x, unit.position.y);
-    // }
-
     // prioritize getting Unit entities before
     let targetEntity = this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit);
 
@@ -377,10 +372,6 @@ export class DungeonState extends Schema {
         unit.attack(null);
       }
     }
-
-    // if (unit instanceof Player) {
-    //   console.log("Let's move to", moves);
-    // }
 
     unit.position.moveTo(moves);
   }

@@ -5,6 +5,9 @@ import LevelUpButton from './LevelUpButton';
 import { humanize } from '../../utils';
 import hint from './Hint';
 
+// export const BASE_MOVEMENT_SPEED = 550;
+// export const MOVEMENT_SPEED_RATIO = 30;
+
 export default class Character extends THREE.Object3D {
 
   constructor () {
@@ -250,17 +253,17 @@ export default class Character extends THREE.Object3D {
 
     // Level up hints!
     this.strUpButton.userData.hint = `<strong class="strength">Strength${(data.primaryAttribute === "strength") ? " (primary)" : ""}:</strong><br />
-      ${(data.primaryAttribute === "strength") ? "Increase damage<br/>" : ""}
-      Increase max hp<br />
+      ${(data.primaryAttribute === "strength") ? "Increase damage (+1)<br/>" : ""}
+      Increase max hp (+5)<br />
     `;
     this.agiUpButton.userData.hint = `<strong class="agility">Agility${(data.primaryAttribute === "agility") ? " (primary)" : ""}:</strong><br/>
-      ${(data.primaryAttribute === "agility") ? "Increase damage<br/>" : ""}
-      Increase attack speed<br/>
+      ${(data.primaryAttribute === "agility") ? "Increase damage (+1)<br/>" : ""}
+      Increase attack speed (+0.5)<br/>
     `;
     this.intUpButton.userData.hint = `<strong class="intelligence">Intelligence${(data.primaryAttribute === "intelligence") ? " (primary)" : ""}:</strong><br/>
-      ${(data.primaryAttribute === "intelligence") ? "Increase damage<br/>" : ""}
-      Increase max mp<br/>
-      Increase magical damage<br/>
+      ${(data.primaryAttribute === "intelligence") ? "Increase damage (+1)<br/>" : ""}
+      Increase max mp (+3)<br/>
+      Increase magical damage (+0.1)<br/>
     `;
 
     // var hpMax = (data.attributes.strength + statsModifiers['strength']) * 5;
@@ -269,7 +272,10 @@ export default class Character extends THREE.Object3D {
 
     this.levelText.text = "Level " + data.lvl;
 
-    this.movementSpeedText.text = (data.attributes.agility * 0.5 + statsModifiers.movementSpeed).toFixed(1);
+    // const movementSpeed = BASE_MOVEMENT_SPEED - (statsModifiers.movementSpeed * MOVEMENT_SPEED_RATIO);
+    // this.movementSpeedText.text = `${statsModifiers.movementSpeed} (${(1000 / movementSpeed).toFixed(1)}/s)`;
+
+    this.movementSpeedText.text = `${statsModifiers.movementSpeed}`;
     this.attackSpeedText.text = (data.attributes.agility * 0.5 + statsModifiers.attackSpeed).toFixed(1);
 
     this.attackDistanceText.text = statsModifiers.attackDistance.toString();

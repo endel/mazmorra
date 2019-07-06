@@ -22,6 +22,7 @@ export class TextEvent extends Entity {
     this.ttl = ttl; // ttl on interface
 
     this.creationTime =  Date.now();
+    this.walkable = true;
 
     if (kind) { this.kind = kind; }
     if (small) { this.small = true; }

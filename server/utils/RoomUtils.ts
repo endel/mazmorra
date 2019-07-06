@@ -565,20 +565,21 @@ export class RoomUtils {
 
     this.state.addEntity(new Fountain({ x: elder.position.x, y: elder.position.y - 1 }));
 
-    this.startPosition = {
-      x: elder.position.x,
-      y: elder.position.y - 3
-    };
-    this.endPosition = this.startPosition;
-
     // add door
-    const initialDoor = new Door({
+    this.endPosition = {
       x: merchant.position.x - 2,
       y: merchant.position.y
-    }, new DoorDestiny({
+    };
+    const initialDoor = new Door(this.endPosition, new DoorDestiny({
       progress: 2
     }));
     this.state.addEntity(initialDoor);
+
+    // Start position on lobby
+    this.startPosition = {
+      x: room.position.y + Math.ceil(room.size.y / 2) - 1,
+      y: room.position.x + Math.ceil(room.size.x / 2) - 1,
+    }
 
     /**
      * Lady
@@ -603,8 +604,13 @@ export class RoomUtils {
      */
     this.addEntity(this.endRoom, (position) => {
       const majesty = new NPC('majesty', {}, this.state);
-      majesty.wanderer = true;
-      majesty.position.set(position);
+      majesty.wanderer = false;
+      majesty.position.set({
+        x: lady.position.x - 1,
+        y: lady.position.y + 2,
+      });
+      // majesty.wanderer = true;
+      // majesty.position.set(position);
       return majesty;
     })
 
@@ -719,7 +725,7 @@ export class RoomUtils {
 
       // gold
       if (chance < 0.5) {
-        const amount = this.realRand.intBetween(Math.floor(this.state.progress / 2), this.state.progress);
+        const amount = this.realRand.intBetween(this.state.progress, this.state.progress * 1.5);
         itemToDrop = new Gold(amount);
 
       // potion
