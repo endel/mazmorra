@@ -530,16 +530,17 @@ export default class Level extends THREE.Object3D {
           }, 100, Tweener.ease.quadOut)
           .then(() => {
             if (object.destroy) { object.destroy() }
+            object.getEntity().destroy();
             object.parent.remove(object);
           });
 
       } else {
         if (object.destroy) { object.destroy() }
+        object.getEntity().destroy();
         object.parent.remove(object);
       }
     }
 
-    object.getEntity().destroy();
   }
 
   playSound (soundName) {

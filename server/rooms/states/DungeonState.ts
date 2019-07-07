@@ -252,6 +252,8 @@ export class DungeonState extends Schema {
   }
 
   checkOverlapingEntities (targetEntity: Entity, moveEvent: MoveEvent, x, y) {
+    if (targetEntity.removed) { return; }
+
     const unit = moveEvent.target;
 
     let doorEntity: Door;

@@ -196,15 +196,11 @@ export class Unit extends Entity {
   }
 
   getMovementSpeed() {
-    return Math.max(1, this.movementSpeed - (this.statsModifiers.movementSpeed * 30));
+    return Math.max(10, this.movementSpeed - (this.statsModifiers.movementSpeed * 30));
   }
 
   getAttackSpeed() {
-    return (
-      this.attackSpeed
-      - (this.statsModifiers.attackSpeed * 10)
-      - (this.attributes.agility * 5)
-    );
+    return Math.max(10, (this.attackSpeed - (this.statsModifiers.attackSpeed * 10) - (this.attributes.agility * 5)));
   }
 
   getAttackDistance() {
