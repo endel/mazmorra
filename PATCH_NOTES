@@ -1,3 +1,12 @@
+**07/07/2019 - Patch notes!**
+- Fixed Majesty NPC walking around
+- Loot doors have the name of the key on them
+- Only one player is allowed inside the loot rooms
+- Experimental: There's a PVP door next to the checkpoint in the castle. You don't lose or gain anything for dueling in PVP.
+- Attack speed is not re-set anymore when changing attack target (Attack speed "hack" pressing `Right Click` + `A` no longer possible)
+- Potion recovery values have been from 30/60/120/200 to 15/30/50/80
+- Fixed some memory leaks in the server (server should stay up and healthy for longer!)
+
 **06/07/2019 - Patch notes!**
 
 - Introduced points redistribution potions (LIMITED SALE OFFER ON THE ELDER, gonna be pricier on next update!)

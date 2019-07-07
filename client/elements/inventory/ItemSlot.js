@@ -13,7 +13,6 @@ export default class ItemSlot extends THREE.Object3D {
     super()
 
     this._item = null
-    // this.userData.hud = true;
 
     this.accepts = options.accepts
 

@@ -64,6 +64,7 @@ export default class Composition extends THREE.Object3D {
   }
 
   destroy () {
+    this.remove(this.sprite);
     HeroSkinBuilder.deleteTexture(this)
   }
 

@@ -12,7 +12,7 @@ import { debugLog } from "../utils/Debug";
 const TICK_RATE = 20 // 20 ticks per second
 
 export class DungeonRoom extends Room<DungeonState> {
-  maxClients = 8;
+  maxClients = 50;
   progress: number;
 
   players = new WeakMap<Client, Player>();
@@ -67,19 +67,19 @@ export class DungeonRoom extends Room<DungeonState> {
   }
 
   requestJoin (options, isNew) {
-    var success = true;
+    if (this.roomName === "loot") {
+      // force to have a new loot room for this player!
+      return isNew;
 
-    if (options.progress) {
-      success = (success && options.progress === this.progress);
+    } else {
+      var success = true;
+
+      if (options.progress) {
+        success = (success && options.progress === this.progress);
+      }
+
+      return success;
     }
-
-    // if previous connection had error, create a fresh new room and let the old one dispose itself!
-    if (options.workaround) {
-      debugLog(">>>>>>>>>>> WORKAROUND!");
-      success = success && isNew;
-    }
-
-    return success;
   }
 
   async onJoin (client: Client, options: any, hero: DBHero) {
@@ -296,8 +296,9 @@ export class DungeonRoom extends Room<DungeonState> {
     this.state.update(this.clock.currentTime)
   }
 
-  // dispose () {
-  //   console.log("dispose MatchRoom", this.roomId)
-  // }
+  dispose () {
+    this.state.dispose();
+    delete this.state;
+  }
 
 }

@@ -402,6 +402,24 @@ export class RoomUtils {
     });
   }
 
+  populatePVP () {
+    // entrance
+    this.state.addEntity(new Door(this.startPosition, new DoorDestiny({
+      progress: DoorProgress.HOME
+    })));
+
+    this.state.mapkind = MapKind.CASTLE;
+    this.state.daylight = false;
+
+    this.rooms.forEach(room => {
+      for (let i=0; i<2; i++) {
+        if (this.realRand.intBetween(0, 1) === 0) {
+          this.addRandomAesthetics(room);
+        }
+      }
+    });
+  }
+
   populateRoomsWithLoot () {
     // entrance
     this.state.addEntity(new Door(this.startPosition, new DoorDestiny({
@@ -589,6 +607,16 @@ export class RoomUtils {
     lady.position.set(this.endRoom.position.y + 1, this.endRoom.position.x + Math.ceil(this.endRoom.size.x / 2) - 2);
     this.state.addEntity(lady);
 
+    // Door for PVP
+    const pvpDoor = new Door({
+      x: lady.position.x + 2,
+      y: lady.position.y - 1,
+    }, new DoorDestiny({
+      progress: this.realRand.intBetween(4, 6),
+      room: "pvp"
+    }));
+    this.state.addEntity(pvpDoor);
+
     /**
      * Locksmith
      */
@@ -714,7 +742,6 @@ export class RoomUtils {
     let itemToDrop: Item;
     // itemToDrop = new Scroll();
 
-
     // 0~10% don't drop anything.
     if (chance >= 0.1) {
 
@@ -788,7 +815,7 @@ export class RoomUtils {
         //   this.assignEquipableItemModifiers(itemToDrop);
         // }
 
-      } else if (chance >= 0.99) {
+      } else if (chance >= 0.995) {
         // drop diamond!
         const amount = this.realRand.intBetween(1, 2);
         itemToDrop = new Diamond(amount);
@@ -1050,8 +1077,6 @@ export class RoomUtils {
     // cap max tier
     let tier = Math.floor(ratio * totalTiers);
     if (tier > totalTiers - 1) { tier = totalTiers - 1; }
-
-    console.log({ tier, ratio });
 
     return { ratio, tier, type: allTiers[tier] };
   }

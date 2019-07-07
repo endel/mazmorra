@@ -56,13 +56,13 @@ export class Movement extends Position {
   moveTo (pending) {
     var now = Date.now()
 
-    // force to move instantly if last move
-    if (
-      pending.length > 0 &&
-      (now - this.lastMove > this.unit.getMovementSpeed())
-    ) {
-      this.lastMove = now - this.unit.getMovementSpeed();
-    }
+    // // force to move instantly if last move
+    // if (
+    //   pending.length > 0 &&
+    //   (now - this.lastMove > this.unit.getMovementSpeed())
+    // ) {
+    //   this.lastMove = now - this.unit.getMovementSpeed();
+    // }
 
     this.pending = pending
   }
@@ -92,18 +92,26 @@ export class Movement extends Position {
   }
 
   touch (currentTime) {
-    this.lastMove = currentTime
-
     // change direction
     if (
       (!this.unit.action || !this.unit.action.isEligible) && // fix unit's direction while attacking.
       this.pending.length > 0
     ) {
+      this.lastMove = currentTime
+
       const x = this.pending[0][0];
       const y = this.pending[0][1];
 
       this.unit.updateDirection(x, y);
     }
+  }
+
+  dispose() {
+    delete this.unit;
+    delete this.target;
+
+    this.events.removeAllListeners();
+    delete this.events;
   }
 
 }

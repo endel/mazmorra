@@ -82,4 +82,9 @@ export class EquipedItems extends Inventory {
     return false;
   }
 
+  dispose() {
+    this.events.removeAllListeners();
+    delete this.events;
+  }
+
 }

@@ -44,6 +44,7 @@ export default class Item extends THREE.Object3D {
 
     this.getEntity().on('destroy', () => {
       this.sprite.getEntity().destroy();
+      this.remove(this.sprite);
     })
 
     this.getEntity().on('mouseover', this.onMouseOver);

@@ -256,6 +256,10 @@ export class Player extends Unit {
   drop () {
     if (!this.state) { return; }
 
+    if (this.state.isPVPAllowed) {
+      return;
+    }
+
     // if (this.state.isPVPAllowed) {
     // }
 
@@ -263,6 +267,15 @@ export class Player extends Unit {
 
     if (itemToDrop) {
       this.state.addEntity(createItem(itemToDrop, this.position));
+    }
+  }
+
+  getXPWorth () {
+    if (this.state.isPVPAllowed) {
+      return 0;
+
+    } else {
+      return super.getXPWorth();
     }
   }
 
@@ -323,6 +336,13 @@ export class Player extends Unit {
     if (item && inventory.remove(itemId)) {
       this.state.dropItemFrom(this, item.clone());
     }
+  }
+
+  dispose() {
+    super.dispose();
+
+    delete this.properties;
+    delete this.purchase;
   }
 
 }

@@ -46,4 +46,11 @@ export class Bar extends Schema {
 
     this.current = Math.max(0, Math.min(value, this.max));
   }
+
+  dispose() {
+    if (this.events) {
+      this.events.removeAllListeners();
+      delete this.events;
+    }
+  }
 }

@@ -81,9 +81,12 @@ export default class Door extends THREE.Object3D {
     //   HOME = 0,
     //   LATEST = 10,
     // }
-
     let label = "";
-    if (progress === -2) {
+
+    if (this.userData.destiny.room) {
+      label = this.userData.destiny.room;
+
+    } else if (progress === -2) {
       label = `Forward to ${this.currentProgress + 1}`;
 
     } else if (progress === -1) {

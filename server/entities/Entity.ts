@@ -11,6 +11,8 @@ export class Entity extends Schema {
   walkable: boolean;
   state: DungeonState;
 
+  removed?: boolean;
+
   constructor (id?: string) {
     super();
 
@@ -20,6 +22,11 @@ export class Entity extends Schema {
 
   update(currentTime?: number) {
     /* does nothing */
+  }
+
+  dispose() {
+    this.removed = true;
+    delete this.position;
   }
 
 }

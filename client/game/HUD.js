@@ -286,9 +286,6 @@ export default class HUD extends THREE.Scene {
       this.controller.playerObject = player;
     }
 
-    this.inventory.getEntity().destroy();// RIGHT?!
-    this.inventory.addBehaviour(new InventoryBehaviour(), player)
-
     // bind inventory objects
     this.inventory.slots.userData = data.inventory;
     this.quickInventory.userData = data.quickInventory;

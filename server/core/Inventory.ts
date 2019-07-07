@@ -63,4 +63,8 @@ export class Inventory extends Schema {
     return Object.keys(this.slots).length < this.capacity;
   }
 
+  dispose() {
+    delete this.slots;
+  }
+
 }

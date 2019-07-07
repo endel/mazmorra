@@ -46,10 +46,12 @@ export class UnitAttributes extends Schema {
 
 export class Unit extends Entity {
   // Items / Inventory
-  @type(Inventory) inventory = new Inventory({ capacity: 12 });
+  @type(Inventory) inventory: Inventory;
   @type(EquipedItems) equipedItems = new EquipedItems();
   @type(Inventory) quickInventory = new Inventory({ capacity: 6 });
+
   @type(BattleAction) action: BattleAction;
+  lastBattleActionTime: number = Date.now();
 
   @type("string") direction: UnitDirection;
 
@@ -108,7 +110,6 @@ export class Unit extends Entity {
 
   dropOptions: ItemDropOptions;
   damageTakenFrom = new Set<Unit>();
-  removed?: boolean;
 
   doNotGiveXP: boolean;
 
@@ -119,7 +120,7 @@ export class Unit extends Entity {
     this.action = null;
 
     this.quickInventory.set(hero.quickInventory || []);
-    this.inventory.set(hero.inventory || []);
+    this.inventory = new Inventory({ capacity: hero.inventoryCapacity || 12 }, hero.inventory || []);
 
     this.equipedItems.set(hero.equipedItems || []);
     this.equipedItems.events.on('change', () => this.onEquipedItemsChange());
@@ -195,10 +196,7 @@ export class Unit extends Entity {
   }
 
   getMovementSpeed() {
-    return (
-      this.movementSpeed
-      - (this.statsModifiers.movementSpeed * 30)
-    );
+    return Math.max(1, this.movementSpeed - (this.statsModifiers.movementSpeed * 30));
   }
 
   getAttackSpeed() {
@@ -243,7 +241,16 @@ export class Unit extends Entity {
   }
 
   onMove(moveEvent: MoveEvent, prevX, prevY, currentX, currentY) {
-    if (this.position.target) {
+    //
+    // Re-set battle action time
+    // TODO: First strike skill, do not update this.
+    //
+    this.lastBattleActionTime = Date.now();
+
+    if (
+      this.position.target &&
+      !this.position.target.removed
+    ) {
       // check if target position has been changed
       if (
         this.position.destiny && (
@@ -309,17 +316,15 @@ export class Unit extends Entity {
   }
 
   attack (defender) {
+    if (this.action) {
+      this.lastBattleActionTime = this.action.lastUpdateTime;
+    }
+
     if (defender === null || !defender.isAlive) {
-      console.log("CLEAR BATTLE ACTION");
       this.action = null;
 
     } else if (!this.isBattlingAgainst(defender)) {
-      let lastUpdateTime: number;
-
-      if (this.action) { lastUpdateTime = this.action.lastUpdateTime; }
-
-      console.log("NEW BATTLE ACTION")
-      this.action = new BattleAction(this, defender, lastUpdateTime);
+      this.action = new BattleAction(this, defender, this.lastBattleActionTime);
     }
   }
 
@@ -415,5 +420,36 @@ export class Unit extends Entity {
     this.xp.max = this.xpMax;
   }
 
+  dispose() {
+    super.dispose();
+
+    // cleanup memory
+    if (this.action) {
+      this.action.dispose();
+      delete this.action;
+    }
+
+    this.damageTakenFrom.clear();
+
+    this.inventory.dispose();
+    delete this.inventory;
+
+    this.equipedItems.dispose();
+    delete this.equipedItems;
+
+    this.quickInventory.dispose();
+    delete this.quickInventory;
+
+    this.hp.dispose();
+    delete this.hp;
+
+    this.mp.dispose();
+    delete this.mp;
+
+    this.xp.dispose();
+    delete this.xp;
+
+    delete this.attributes;
+  }
 
 }

@@ -112,6 +112,11 @@ export default class Cursor extends THREE.Object3D {
   onDrag(e) {
     if (e.item) {
       this.remove(this[this.kindActive])
+
+      for (let i=this.dragging.children.length-1; i>=0; i--) {
+        this.dragging.remove(this.dragging.children[i]);
+      }
+
       this.dragging.add(e.item)
 
     } else {

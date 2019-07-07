@@ -27,6 +27,7 @@ const gameServer = new Server({ server: server });
 
 gameServer.register('chat', ChatRoom);
 gameServer.register('dungeon', DungeonRoom);
+gameServer.register('pvp', DungeonRoom);
 gameServer.register('loot', DungeonRoom);
 
 if (process.env.ENVIRONMENT !== "production") {

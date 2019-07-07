@@ -30,9 +30,15 @@ export class BattleAction extends Action {
 
     // allow first attack to be instant.
     this.lastUpdateTime = lastUpdateTime || Date.now();
+    // this.lastUpdateTime = Date.now() - (this.attacker.getAttackSpeed() / 2);
   }
 
   get isEligible() {
+    // FIXME!
+    if (this.attacker.removed || this.defender.removed) {
+      return false;
+    }
+
     let _distance = distance(this.attacker.position, this.defender.position);
 
     // allow to attack in diagonal
@@ -51,10 +57,9 @@ export class BattleAction extends Action {
   }
 
   attack() {
-    if (!this.isEligible || this.defender.removed) {
+    if (!this.isEligible) {
       // clear BattleAction
-      this.attacker.action = null;
-      this.events.removeAllListeners();
+      this.dispose();
     }
 
     const percent = Math.random();
@@ -150,6 +155,14 @@ export class BattleAction extends Action {
       this.lastUpdateTime = currentTime;
     }
 
+  }
+
+  dispose() {
+    this.attacker.action = null;
+    this.attacker = null;
+    this.defender = null;
+    this.events.removeAllListeners();
+    this.position = null;
   }
 
 }

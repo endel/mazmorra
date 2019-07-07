@@ -6,7 +6,6 @@ import helpers from "../../shared/helpers";
 import { Player } from "./Player";
 import { Potion, POTION_1_MODIFIER, POTION_2_MODIFIER, POTION_4_MODIFIER, POTION_3_MODIFIER } from "./items/consumable/Potion";
 import { Scroll } from "./items/consumable/Scroll";
-import { ConsumableItem } from "./items/ConsumableItem";
 import { Key } from "./items/consumable/Key";
 import { NUM_LEVELS_PER_CHECKPOINT, MAX_LEVELS } from "../utils/ProgressionConfig";
 import { PotionPoints } from "./items/consumable/PotionPoints";
@@ -82,6 +81,8 @@ export class NPC extends Player {
       state.createTextEvent(genericMessages[Math.floor(Math.random() * genericMessages.length)], this.position, 'white', 1000);
 
       setTimeout(() => {
+        if (player.removed) { return; }
+
         const itemDropOptions = {
           progress: (!isLastLevel)
             ? this.state.roomUtils.realRand.intBetween(player.latestProgress, player.latestProgress + NUM_LEVELS_PER_CHECKPOINT)
@@ -127,10 +128,8 @@ export class NPC extends Player {
 
     } else {
       const messages = (!isLastLevel) ? [
-        `PvP is coming eventually!`,
-        `Join the Discord Server!`,
-        `Save us from their curse!`,
-        `Be safe!`,
+        `PvP is experimental.`,
+        `Join the Discord Server for feedback!`,
       ] : [
         `You're awesome!`,
         `Majesty has the best items you can find.`

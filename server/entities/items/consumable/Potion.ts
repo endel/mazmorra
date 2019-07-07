@@ -3,10 +3,10 @@ import helpers from "../../../../shared/helpers";
 import { DBAttributeModifier } from "../../../db/Hero";
 import { Bar } from "../../../core/Bar";
 
-export const POTION_1_MODIFIER = 30;
-export const POTION_2_MODIFIER = 60;
-export const POTION_3_MODIFIER = 120;
-export const POTION_4_MODIFIER = 200;
+export const POTION_1_MODIFIER = 15;
+export const POTION_2_MODIFIER = 30;
+export const POTION_3_MODIFIER = 50;
+export const POTION_4_MODIFIER = 80;
 
 export class Potion extends ConsumableItem {
 

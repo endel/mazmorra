@@ -122,9 +122,12 @@ export class DungeonState extends Schema {
       // lobby
       this.roomUtils.populateLobby(this.rooms);
 
+    } else if (roomType === "pvp") {
+      this.roomUtils.populatePVP();
+
     } else {
       // regular room
-      this.roomUtils.populateRooms()
+      this.roomUtils.populateRooms();
     }
 
     // 0 = walkable, 1 = blocked
@@ -148,6 +151,9 @@ export class DungeonState extends Schema {
   }
 
   removeEntity (entity) {
+    // cleanup memory!
+    entity.dispose();
+
     delete this.entities[entity.id]
 
     if (entity instanceof Enemy) {
@@ -225,7 +231,6 @@ export class DungeonState extends Schema {
   }
 
   removePlayer (player: Player) {
-    player.removed = true;
     delete this.players[ player.id ];
     this.removeEntity(player);
   }
@@ -279,10 +284,12 @@ export class DungeonState extends Schema {
           } else if (entity instanceof Door && !(entity instanceof Portal)) {
             doorEntity = entity;
 
-          } else if (
-            entity instanceof Interactive ||
-            entity instanceof NPC
-          ) {
+          } else if (entity instanceof NPC) {
+            // skip all other interactions if interacting with NPC
+            entity.interact(moveEvent, unit, this);
+            return;
+
+          } else if (entity instanceof Interactive) {
             entity.interact(moveEvent, unit, this);
 
           }
@@ -411,7 +418,9 @@ export class DungeonState extends Schema {
     }
 
     for (var id in this.entities) {
-      this.entities[id].update(currentTime)
+      if (!this.entities[id].removed) {
+        this.entities[id].update(currentTime)
+      }
     }
   }
 
@@ -432,5 +441,16 @@ export class DungeonState extends Schema {
 
     return flattened;
   };
+
+  dispose() {
+    // free up memory!
+
+    this.rand.done();
+    this.roomUtils.realRand.done();
+
+    delete this['entities'];
+    delete this['players'];
+    delete this['enemies'];
+  }
 
 }
