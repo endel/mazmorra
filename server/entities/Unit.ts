@@ -310,10 +310,16 @@ export class Unit extends Entity {
 
   attack (defender) {
     if (defender === null || !defender.isAlive) {
+      console.log("CLEAR BATTLE ACTION");
       this.action = null;
 
     } else if (!this.isBattlingAgainst(defender)) {
-      this.action = new BattleAction(this, defender)
+      let lastUpdateTime: number;
+
+      if (this.action) { lastUpdateTime = this.action.lastUpdateTime; }
+
+      console.log("NEW BATTLE ACTION")
+      this.action = new BattleAction(this, defender, lastUpdateTime);
     }
   }
 

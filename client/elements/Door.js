@@ -99,6 +99,10 @@ export default class Door extends THREE.Object3D {
       label = `Down to ${progress}`;
     }
 
+    if (this.userData.mapkind) {
+      label += ` (${this.userData.mapkind})`;
+    }
+
     return label;
   }
 

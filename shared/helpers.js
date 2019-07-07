@@ -76,7 +76,7 @@ var helpers = {
 
       // scrolls / books
       SCROLL: 'scroll-regular',
-      SCROLL_RED: 'scroll-red',
+      SCROLL_MAGIC: 'scroll-magic',
       SCROLL_GREEN: 'scroll-green',
       SCROLL_BLUE: 'scroll-blue',
 

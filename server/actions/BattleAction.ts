@@ -20,7 +20,7 @@ export class BattleAction extends Action {
 
   events = new EventEmitter();
 
-  constructor(attacker: Unit, defender: Unit) {
+  constructor(attacker: Unit, defender: Unit, lastUpdateTime?: number) {
     super();
 
     this.attacker = attacker;
@@ -29,7 +29,7 @@ export class BattleAction extends Action {
     this.attackDistance = this.attacker.getAttackDistance();
 
     // allow first attack to be instant.
-    this.lastUpdateTime = Date.now() - attacker.getAttackSpeed();
+    this.lastUpdateTime = lastUpdateTime || Date.now();
   }
 
   get isEligible() {

@@ -685,7 +685,7 @@ export default class Level extends THREE.Object3D {
         this.totalSessions = Number(window.localStorage.getItem("totalSessions") || 0);
       }
 
-      const sessionsForAd = 4;
+      const sessionsForAd = 3;
       this.totalSessions++;
 
       if (roomName !== this.lastRoomName) {

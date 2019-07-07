@@ -287,7 +287,7 @@ export default class Character extends THREE.Object3D {
     this.damageText.text = damage;
 
     const baseArmor = { strength: 0, agility: -1, intelligence: -2 };
-    this.armorText.text = (statsModifiers.armor + (data.attributes.agility * 0.16) + baseArmor[data.primaryAttribute]).toFixed(1);
+    this.armorText.text = (statsModifiers.armor + baseArmor[data.primaryAttribute]).toFixed(1);
 
     // base attributes
     let strength = data.attributes.strength;
