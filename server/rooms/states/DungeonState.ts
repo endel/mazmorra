@@ -252,7 +252,7 @@ export class DungeonState extends Schema {
   }
 
   checkOverlapingEntities (targetEntity: Entity, moveEvent: MoveEvent, x, y) {
-    if (targetEntity.removed) { return; }
+    if (targetEntity.removed || !targetEntity.position) { return; }
 
     const unit = moveEvent.target;
 
@@ -262,7 +262,7 @@ export class DungeonState extends Schema {
     const entities = this.gridUtils.getAllEntitiesAt(y, x);
     for (var i=0; i<entities.length; i++) {
       let entity = entities[i] as Entity;
-      if (entity.removed) { continue; }
+      if (entity.removed || !entity.position) { continue; }
 
       if (unit instanceof Enemy && entity instanceof Unit) {
         // if (
