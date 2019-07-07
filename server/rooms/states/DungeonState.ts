@@ -44,6 +44,7 @@ export class DungeonState extends Schema {
   @type("number") width: number;
   @type("number") height: number;
   @type({ map: Entity }) entities = new MapSchema<Entity>();
+  entitiesToRemove: Entity[] = [];
 
   @type("boolean") isPVPAllowed: boolean;
 
@@ -152,7 +153,7 @@ export class DungeonState extends Schema {
 
   removeEntity (entity) {
     // cleanup memory!
-    entity.dispose();
+    this.entitiesToRemove.push(entity);
 
     delete this.entities[entity.id]
 
@@ -252,8 +253,6 @@ export class DungeonState extends Schema {
   }
 
   checkOverlapingEntities (targetEntity: Entity, moveEvent: MoveEvent, x, y) {
-    if (targetEntity.removed || !targetEntity.position) { return; }
-
     const unit = moveEvent.target;
 
     let doorEntity: Door;
@@ -262,8 +261,6 @@ export class DungeonState extends Schema {
     const entities = this.gridUtils.getAllEntitiesAt(y, x);
     for (var i=0; i<entities.length; i++) {
       let entity = entities[i] as Entity;
-      if (entity.removed || !entity.position) { continue; }
-
       if (unit instanceof Enemy && entity instanceof Unit) {
         // if (
         //   targetEntity.position.x === entity.position.x &&
@@ -424,6 +421,14 @@ export class DungeonState extends Schema {
       if (!this.entities[id].removed) {
         this.entities[id].update(currentTime)
       }
+    }
+
+    if (this.entitiesToRemove.length > 0) {
+      for (let i = 0; i < this.entitiesToRemove.length; i++) {
+        this.entitiesToRemove[i].dispose();
+      }
+
+      this.entitiesToRemove = [];
     }
   }
 
