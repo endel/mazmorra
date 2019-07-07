@@ -358,7 +358,11 @@ export class Unit extends Entity {
     while (unit = damageTakenFrom.next().value) {
       // compute experience this unit received by killing another one
       // var xp =  unit.lvl / (this.lvl / 2)
-      unit.xp.increment(xpWorth / unit.lvl);
+
+      // some players might've left the room and are invalid here
+      if (unit && unit.xp) {
+        unit.xp.increment(xpWorth / unit.lvl);
+      }
     }
 
     this.drop();
