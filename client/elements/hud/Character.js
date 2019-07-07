@@ -44,9 +44,6 @@ export default class Character extends THREE.Object3D {
     // Damage
     this.damageIcon = ResourceManager.getHUDElement("icons-damage");
     this.damageIcon.position.y = this.levelIcon.position.y - this.levelIcon.height - margin;
-    this.damageIcon.addEventListener("mouseover", () => {
-      console.log("MOUSE OVER DAMAGE ICON!");
-    })
 
     this.damageText = new MeshText2D("0", {
       align: textAlign.left,
@@ -286,7 +283,7 @@ export default class Character extends THREE.Object3D {
     if (statsModifiers.damage) { damage = `${damage}-${damage + statsModifiers.damage}` }
     this.damageText.text = damage;
 
-    const baseArmor = { strength: 0, agility: -1, intelligence: -2 };
+    const baseArmor = { strength: 0, agility: -1.5, intelligence: -2 };
     this.armorText.text = (statsModifiers.armor + baseArmor[data.primaryAttribute]).toFixed(1);
 
     // base attributes

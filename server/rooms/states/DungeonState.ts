@@ -260,6 +260,7 @@ export class DungeonState extends Schema {
     const entities = this.gridUtils.getAllEntitiesAt(y, x);
     for (var i=0; i<entities.length; i++) {
       let entity = entities[i] as Entity;
+      if (entity.removed) { continue; }
 
       if (unit instanceof Enemy && entity instanceof Unit) {
         // if (

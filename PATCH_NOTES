@@ -1,9 +1,14 @@
 **07/07/2019 - Patch notes!**
+
 - Fixed Majesty NPC walking around
 - Loot doors have the name of the key on them
 - Only one player is allowed inside the loot rooms
 - Experimental: There's a PVP door next to the checkpoint in the castle. You don't lose or gain anything for dueling in PVP.
-- Attack speed is not re-set anymore when changing attack target (Attack speed "hack" pressing `Right Click` + `A` no longer possible)
+- Movement speed / Attack speed fix:
+    - When moving to a different tile, attack-speed is re-set
+    - When changing attack targets, without moving, attack speed is preserved
+    - (Attack speed "hack" pressing `Right Click` + `A` no longer possible)
+- Attack speed is not re-set anymore when changing attack target
 - Potion recovery values have been from 30/60/120/200 to 15/30/50/80
 - Fixed some memory leaks in the server (server should stay up and healthy for longer!)
 

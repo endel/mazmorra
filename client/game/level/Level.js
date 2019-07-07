@@ -99,7 +99,6 @@ export default class Level extends THREE.Object3D {
     });
 
     this.hud.addEventListener("checkpoint", (e) => {
-      console.log("hud event, checkpoint =>", e.progress);
       this.room.send(["checkpoint", e.progress]);
     });
   }
