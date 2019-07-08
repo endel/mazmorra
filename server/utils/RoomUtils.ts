@@ -822,7 +822,7 @@ export class RoomUtils {
 
       }
     } else {
-      console.log("EMPTY DROP");
+      // empty drop
     }
 
     return itemToDrop;
@@ -989,7 +989,7 @@ export class RoomUtils {
 
     if (dropOptions.isRare) {
       item.isRare = true;
-      this.assignBetterItemModifiers(item, ['armor', 'movementSpeed'], goodness);
+      this.assignBetterItemModifiers(item, ['armor', 'movementSpeed', 'evasion'], goodness);
     }
 
     if (dropOptions.isMagical) {

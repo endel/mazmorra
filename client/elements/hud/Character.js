@@ -12,6 +12,9 @@ export default class Character extends THREE.Object3D {
 
   constructor () {
     super()
+    this.userData.hud = true;
+    this.addEventListener("mouseover", (e) => this.onMouseOver(e));
+    this.addEventListener("mouseout", (e) => this.onMouseOut(e))
 
     const margin = config.HUD_MARGIN * 2 + 1;
     this.width = (MAX_CHAR_WIDTH *  config.HUD_SCALE)
@@ -31,6 +34,7 @@ export default class Character extends THREE.Object3D {
 
     this.levelIcon = ResourceManager.getHUDElement("character-body-0-hud-face")
     this.levelIcon.position.y = -this.stairsIcon.height * 1.5;
+    delete this.levelIcon.userData.hud;
 
     this.levelText = new MeshText2D(" ", {
       align: textAlign.left,
@@ -44,6 +48,7 @@ export default class Character extends THREE.Object3D {
     // Damage
     this.damageIcon = ResourceManager.getHUDElement("icons-damage");
     this.damageIcon.position.y = this.levelIcon.position.y - this.levelIcon.height - margin;
+    this.damageIcon.userData.label = "Damage";
 
     this.damageText = new MeshText2D("0", {
       align: textAlign.left,
@@ -57,6 +62,7 @@ export default class Character extends THREE.Object3D {
     // Armor
     this.armorIcon = ResourceManager.getHUDElement("icons-armor");
     this.armorIcon.position.y = this.damageIcon.position.y - this.damageIcon.height - margin;
+    this.armorIcon.userData.label = "Armor";
 
     this.armorText = new MeshText2D("0", {
       align: textAlign.left,
@@ -70,6 +76,7 @@ export default class Character extends THREE.Object3D {
     // Attack speed
     this.attackSpeedIcon = ResourceManager.getHUDElement("icons-attack-speed");
     this.attackSpeedIcon.position.y = this.armorIcon.position.y - this.armorIcon.height - margin;
+    this.attackSpeedIcon.userData.label = "Attack speed";
 
     this.attackSpeedText = new MeshText2D("0", {
       align: textAlign.left,
@@ -83,6 +90,7 @@ export default class Character extends THREE.Object3D {
     // Movement speed
     this.movementSpeedIcon = ResourceManager.getHUDElement("icons-movement-speed");
     this.movementSpeedIcon.position.y = this.attackSpeedIcon.position.y - this.attackSpeedIcon.height - margin;
+    this.movementSpeedIcon.userData.label = "Movement speed";
 
     this.movementSpeedText = new MeshText2D("0", {
       align: textAlign.left,
@@ -96,6 +104,7 @@ export default class Character extends THREE.Object3D {
     // Attack distance
     this.attackDistanceIcon = ResourceManager.getHUDElement("icons-attack-distance");
     this.attackDistanceIcon.position.y = this.movementSpeedIcon.position.y - this.movementSpeedIcon.height - margin;
+    this.attackDistanceIcon.userData.label = "Attack distance";
 
     this.attackDistanceText = new MeshText2D("0", {
       align: textAlign.left,
@@ -202,7 +211,10 @@ export default class Character extends THREE.Object3D {
   }
 
   onMouseOver(e) {
-    hint.show(e.target.userData.hud, e.target)
+    const icon = e.path[e.path.length - 1];
+    if (icon && icon.object && icon.object.userData.label) {
+      hint.show(icon.object.userData.label, icon.object)
+    }
   }
 
   onMouseOut(e) {
@@ -267,7 +279,7 @@ export default class Character extends THREE.Object3D {
     // var mpMax = (data.attributes.intelligence + statsModifiers['intelligence']) * 3;
     this.stairsText.text = `${player.parent.progress.toString()} - ${humanize(player.parent.mapkind)}`;
 
-    this.levelText.text = "Level " + data.lvl;
+    this.levelText.text = `${data.name} (Level ${data.lvl})`;
 
     // const movementSpeed = BASE_MOVEMENT_SPEED - (statsModifiers.movementSpeed * MOVEMENT_SPEED_RATIO);
     // this.movementSpeedText.text = `${statsModifiers.movementSpeed} (${(1000 / movementSpeed).toFixed(1)}/s)`;

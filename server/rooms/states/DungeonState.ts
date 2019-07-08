@@ -89,7 +89,7 @@ export class DungeonState extends Schema {
           )
         );
 
-    debugLog(`Dungeon config, size: ${{ x: this.width, y: this.height }}, ${{minRoomSize}}, ${{maxRoomSize}}, ${{numRooms}}`);
+    debugLog(`Dungeon config, size: { x: ${this.width}, y: ${this.height} }, { minRoomSize: ${minRoomSize}, maxRoomSize: ${maxRoomSize}, numRooms: ${numRooms} }`);
 
     const [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, minRoomSize, maxRoomSize, numRooms);
 
@@ -163,7 +163,7 @@ export class DungeonState extends Schema {
   }
 
   createPlayer (client, hero: DBHero, options: any) {
-    var player = new Player(client.id, hero, this);
+    var player = new Player(client.sessionId, hero, this);
 
     if (
       options.isPortal &&

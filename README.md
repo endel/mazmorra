@@ -6,4 +6,4 @@ Work in progress!
 
 ## LICENSE
 
-Copyright © Endel Dreyer
+Copyright © Endel Dreyer. See [LICENSE.md](LICENSE.md) for more details.

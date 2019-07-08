@@ -31,6 +31,8 @@ export class Player extends Unit {
   @type("number") latestProgress: number;
   @type("number") pointsToDistribute: number;
 
+  @type("boolean") isTyping: boolean;
+
   purchase: Inventory = new Inventory({ capacity: 12 });
 
   movementSpeed = 550;
@@ -225,6 +227,11 @@ export class Player extends Unit {
           break;
         }
       }
+
+      // no inventory with availability found! skip it.
+      if (!toInventory) {
+        return;
+      }
     }
 
     let hasAvailability = toInventory.hasAvailability();
@@ -245,6 +252,9 @@ export class Player extends Unit {
       }
 
       if (success) {
+        // update price to sell price once player bought it
+        item.price = item.getSellPrice();
+
         item.id = generateId();
         toInventory.add(item);
       }

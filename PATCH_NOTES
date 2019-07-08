@@ -1,3 +1,9 @@
+**08/07/2019 - Patch notes!**
+- Bug fix: player dissapears but can still see others moving
+- Stats icons have hint for its description
+- Fix selling price after purchasing an item
+- Timeout to reset dungeons without players/portals is 0 instead of 5 seconds
+
 **07/07/2019 - Patch notes!**
 
 - Fixed Majesty NPC walking around

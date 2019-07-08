@@ -19,7 +19,7 @@ export class DungeonRoom extends Room<DungeonState> {
   heroes = new WeakMap<Client, DBHero>();
   clientMap = new WeakMap<Player, Client>();
 
-  disposeTimeout = 5; // 5 seconds default
+  disposeTimeout = 0; // 5 seconds default
 
   async onInit (options) {
     this.progress = options.progress || 1;
@@ -128,18 +128,21 @@ export class DungeonRoom extends Room<DungeonState> {
     } else if (key == 'atk') {
       player.autoAttack(value);
 
+    } else if (key == 'type') {
+      player.isTyping = value;
+
     } else if (key == 'distribute-point') {
       const { attribute } = value;
       player.distributePoint(attribute);
 
     } else if (key == 'inventory-drag') {
       const { fromInventoryType, toInventoryType, itemId, switchItemId } = value;
-      debugLog(`trading from '${fromInventoryType}' to ${toInventoryType}`);;
+      // debugLog(`trading from '${fromInventoryType}' to ${toInventoryType}`);;
       player.inventoryDrag(fromInventoryType, toInventoryType, itemId, switchItemId);
 
     } else if (key == 'inventory-sell') {
       const { fromInventoryType, itemId } = value;
-      debugLog(`selling from '${fromInventoryType}'`);
+      // debugLog(`selling from '${fromInventoryType}'`);
       player.inventorySell(fromInventoryType, itemId);
 
     } else if (key == 'use-item') {
@@ -287,7 +290,9 @@ export class DungeonRoom extends Room<DungeonState> {
       autoDisposeTimeout += additionalTime;;
     }
 
-    this.resetAutoDisposeTimeout(autoDisposeTimeout);
+    if (autoDisposeTimeout > 0) {
+      this.resetAutoDisposeTimeout(autoDisposeTimeout);
+    }
   }
 
   tick () {
