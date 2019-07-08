@@ -35,7 +35,7 @@ export class Scroll extends ConsumableItem {
           const entity = state.entities[id];
           if (
             entity.type === helpers.ENTITIES.PORTAL &&
-            entity.ownerId === player.id
+            entity.ownerId === player.hero.userId.toString()
           ) {
             state.removeEntity(entity);
           }
@@ -46,7 +46,7 @@ export class Scroll extends ConsumableItem {
           y: availablePosition[0]
         }, new DoorDestiny({ progress: DoorProgress.HOME }));
 
-        portal.ownerId = player.id;
+        portal.ownerId = player.hero.userId.toString();
         portal.state = state;
 
         player.mp.increment(-mpCost);

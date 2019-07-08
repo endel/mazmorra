@@ -30,29 +30,34 @@ export default class Cursor extends THREE.Object3D {
     this.pointer.material.alphaTest = 0.5
     this.pointer.position.x += this.pointer.height / 2
     this.pointer.position.y -= this.pointer.width / 2
+    // this.pointer.userData.hud = false;
 
     this.attack = ResourceManager.getHUDElement('cursor-attack')
     this.attack.material.alphaTest = 0.5
     this.attack.position.x += this.attack.height / 2
     this.attack.position.y -= this.attack.width / 2
+    // this.attack.userData.hud = false;
 
     this.activate = ResourceManager.getHUDElement('cursor-activate')
     this.activate.material.alphaTest = 0.5
     this.activate.position.x += this.activate.height / 2
     this.activate.position.y -= this.activate.width / 2
+    // this.activate.userData.hud = false;
 
     this.magic = ResourceManager.getHUDElement('cursor-magic')
     this.magic.material.alphaTest = 0.5
     this.magic.position.x += this.magic.height / 2
     this.magic.position.y -= this.magic.width / 2
+    // this.magic.userData.hud = false;
 
     this.loading = ResourceManager.getHUDElement('cursor-loading')
     this.loading.material.alphaTest = 0.5
     this.loading.position.x += this.loading.height / 2
     this.loading.position.y -= this.loading.width / 2
+    // this.loading.userData.hud = false;
 
-    this.dragging = new THREE.Object3D()
-    this.add(this.dragging)
+    this.dragging = new THREE.Object3D();
+    this.add(this.dragging);
 
     this.onUpdateCursor({ kind: "pointer" });
 

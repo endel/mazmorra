@@ -186,7 +186,7 @@ export class DungeonState extends Schema {
           progress: hero.currentProgress,
           room: hero.currentRoom
         }));
-        portalBack.ownerId = player.id;
+        portalBack.ownerId = hero.userId.toString();
         // City's portal has 1 second less of life,
         // to avoid created room from being created again
         portalBack.ttl -= 1000;
@@ -199,7 +199,7 @@ export class DungeonState extends Schema {
       } else {
         // back from a portal!
 
-        const portal = this.getAllEntitiesOfType<Portal>(Portal).find(portal => portal.ownerId === player.id);
+        const portal = this.getAllEntitiesOfType<Portal>(Portal).find(portal => portal.ownerId === hero.userId.toString());
         if (portal) {
           this.removeEntity(portal);
         }

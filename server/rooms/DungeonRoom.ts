@@ -67,19 +67,13 @@ export class DungeonRoom extends Room<DungeonState> {
   }
 
   requestJoin (options, isNew) {
-    if (this.roomName === "loot") {
-      // force to have a new loot room for this player!
-      return isNew;
+    var success = true;
 
-    } else {
-      var success = true;
-
-      if (options.progress) {
-        success = (success && options.progress === this.progress);
-      }
-
-      return success;
+    if (options.progress) {
+      success = (success && options.progress === this.progress);
     }
+
+    return success;
   }
 
   async onJoin (client: Client, options: any, hero: DBHero) {

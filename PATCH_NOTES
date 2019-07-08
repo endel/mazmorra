@@ -1,8 +1,11 @@
 **08/07/2019 - Patch notes!**
-- Bug fix: player dissapears but can still see others moving
+- Added a tutorial screen for the first time you open the game
+- Roll back unique loot rooms. More than one player can enter the same loot room!
+    - (The previous update to have unique loot rooms allowed loot rooms to be consumed infinitely using portals)
 - Stats icons have hint for its description
 - Fix selling price after purchasing an item
 - Timeout to reset dungeons without players/portals is 0 instead of 5 seconds
+- Bug fix: player dissapears but can still see others moving
 
 **07/07/2019 - Patch notes!**
 

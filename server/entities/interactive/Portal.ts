@@ -1,3 +1,4 @@
+import { ObjectId } from "@colyseus/social";
 import { Schema, type } from "@colyseus/schema";
 import helpers from "../../../shared/helpers";
 
@@ -5,7 +6,7 @@ import { Point } from "../../rooms/states/DungeonState";
 import { Door, DoorDestiny } from "./Door";
 
 export class Portal extends Door {
-  ownerId: string;
+  ownerId: ObjectId;
 
   creationTime: number;
   ttl: number = 3 * 60 * 1000; // 3 minutes
@@ -26,14 +27,14 @@ export class Portal extends Door {
     if (
       !player.isAlive ||
       player.isSwitchingDungeons ||
-      this.ownerId !== player.id
+      this.ownerId !== player.hero.userId.toString()
     ) {
       return;
     }
 
     // remove portal when using it.
     // only the portal owner can enter this portal.
-    if (this.ownerId !== player.id) {
+    if (this.ownerId !== player.hero.userId.toString()) {
       return;
     }
 

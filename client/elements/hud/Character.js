@@ -124,6 +124,7 @@ export default class Character extends THREE.Object3D {
     // Strength
     this.strIcon = ResourceManager.getHUDElement("icons-red");
     this.strIcon.position.y = this.attackDistanceIcon.position.y - this.attackDistanceIcon.height - (margin * 2);
+    this.strIcon.userData.label = "Strength";
 
     this.strText = new MeshText2D("0", {
       align: textAlign.left,
@@ -137,6 +138,7 @@ export default class Character extends THREE.Object3D {
     // Agility
     this.agiIcon = ResourceManager.getHUDElement("icons-green");
     this.agiIcon.position.y = this.strIcon.position.y - this.strIcon.height - margin;
+    this.agiIcon.userData.label = "Agility";
 
     this.agiText = new MeshText2D("0", {
       align: textAlign.left,
@@ -150,6 +152,7 @@ export default class Character extends THREE.Object3D {
     // Intelligence
     this.intIcon = ResourceManager.getHUDElement("icons-blue");
     this.intIcon.position.y = this.agiIcon.position.y - this.agiIcon.height - margin;
+    this.intIcon.userData.label = "Intelligence";
 
     this.intText = new MeshText2D("0", {
       align: textAlign.left,
@@ -163,6 +166,7 @@ export default class Character extends THREE.Object3D {
     // Available points
     this.pointsToDistributeIcon = ResourceManager.getHUDElement("icons-points-to-distribute");
     this.pointsToDistributeIcon.position.y = this.intIcon.position.y - this.intIcon.height - margin;
+    this.pointsToDistributeIcon.userData.label = "Points to distribute";
 
     this.pointsToDistributeText = new MeshText2D("0", {
       align: textAlign.left,
@@ -211,8 +215,8 @@ export default class Character extends THREE.Object3D {
   }
 
   onMouseOver(e) {
-    const icon = e.path[e.path.length - 1];
-    if (icon && icon.object && icon.object.userData.label) {
+    const icon = e.path.find(path => path.object.userData.label);
+    if (icon) {
       hint.show(icon.object.userData.label, icon.object)
     }
   }
