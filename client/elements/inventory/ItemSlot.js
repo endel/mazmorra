@@ -151,7 +151,6 @@ export default class ItemSlot extends THREE.Object3D {
   }
 
   dispatchSell(itemData) {
-    console.log("SELL!");
     trackEvent('trade-sell', { event_category: 'Trade', event_label: 'Sell' });
 
     this.dispatchEvent({

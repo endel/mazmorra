@@ -1,0 +1,61 @@
+#tutorial
+  h2
+    margin 14vh 0 4vh 0
+    // text-decoration underline
+
+  .contents
+    position relative
+    margin auto
+    font-size 28px
+    text-align center
+    width 600px
+    background #3c2404
+    color #cca874
+    border-radius 6px
+
+    for n in (1..9)
+      &.step-{n}
+        >div:not(.step-{n})
+          display none
+
+    // first step
+    &.step-1
+      a.nav.left
+        display none
+
+    // last step
+    &.step-9
+      a.nav.right
+        display none
+
+    &:not(.step-9)
+      a.nav.last
+        display none
+
+
+    > div
+      pointer-events none
+
+    a.nav
+      position absolute
+      bottom 0
+      color inherit
+      padding 18px 12px
+      z-index 1
+      font-size 22px
+      cursor pointer
+      &.left
+        left 0
+      &.right
+        right 0
+      &.last
+        right 0
+
+    img
+      width 100%
+      display block
+
+    p
+      padding 14px
+      text-shadow -1px 0 #000, 0 -1px #000, 1px 0 #000, 0px 2px #000
+      color #fff

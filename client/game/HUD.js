@@ -134,6 +134,11 @@ export default class HUD extends THREE.Scene {
   }
 
   onKeyPress (e) {
+    // skip if player is not connected.
+    if (!window.player) {
+      return;
+    }
+
     if (
       e.which === Keycode.I + 32 || e.which === Keycode.I ||
       e.which === Keycode.B + 32 || e.which === Keycode.B ||

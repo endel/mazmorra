@@ -3,6 +3,7 @@ import { DungeonState } from "../../rooms/states/DungeonState";
 import { EquipmentSlot } from "../../core/EquipmentSlot";
 import { type } from "@colyseus/schema";
 import { Unit } from "../Unit";
+import { Inventory } from "../../core/Inventory";
 
 export abstract class EquipableItem extends Item {
   @type("string") abstract slotName: EquipmentSlot;
@@ -21,8 +22,22 @@ export abstract class EquipableItem extends Item {
     } else {
       // swap with previously equiped item.
       const equipedItem = player.equipedItems.getItem(this.slotName);
-      player.inventory.remove(this.id);
-      player.inventory.add(equipedItem);
+
+      let inventoryFrom: Inventory;
+      if (player.inventory.getItem(this.id)) {
+        player.inventory.remove(this.id);
+        inventoryFrom = player.inventory;
+
+      } else if (player.quickInventory.getItem(this.id)) {
+        player.quickInventory.remove(this.id);
+        inventoryFrom = player.quickInventory;
+      }
+
+      if (!inventoryFrom) {
+        return false;
+      }
+
+      inventoryFrom.add(equipedItem);
       player.equipedItems.add(this, true);
       return false;
     }

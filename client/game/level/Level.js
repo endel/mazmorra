@@ -13,6 +13,7 @@ import * as sounds from '../../core/sound';
 import { doorSound, playRandom } from '../../core/sound';
 import { trackEvent } from '../../utils';
 import Chat from '../../behaviors/Chat';
+import { isTutorialComplete, showTutorial } from '../../web/tutorial';
 
 export default class Level extends THREE.Object3D {
 
@@ -34,6 +35,10 @@ export default class Level extends THREE.Object3D {
 
     this.factory = new Factory(this);
     this.isPVPAllowed = false;
+
+    if (!isTutorialComplete()) {
+      showTutorial();
+    }
 
     this.lastRoomName = 'dungeon';
 

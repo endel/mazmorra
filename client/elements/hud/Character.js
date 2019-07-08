@@ -352,6 +352,8 @@ export default class Character extends THREE.Object3D {
   }
 
   updateLevelUpButtons (){
+    if (!player) return;
+
     const hud = this.parent;
 
     const hasPointsToDistribute = (player.userData.pointsToDistribute > 0);
