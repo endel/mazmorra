@@ -23,7 +23,7 @@ export default class Chat extends Behaviour {
     this.messagesContainer = this.chat.querySelector('.messages');
     this.messages = this.messagesContainer.querySelector('.contents');
     this.form = this.chat.querySelector('form')
-    this.button = this.form.querySelector('button')
+    // this.button = this.form.querySelector('button')
     this.input = this.form.querySelector('input')
 
     this.chat.classList.remove("hidden");
@@ -41,7 +41,7 @@ export default class Chat extends Behaviour {
     this.input.addEventListener("blur", (e) => this.deactivate());
 
     this.input.addEventListener("click", (e) => this.stopPropagation(e));
-    this.button.addEventListener("click", (e) => this.stopPropagation(e));
+    // this.button.addEventListener("click", (e) => this.stopPropagation(e));
 
   }
 

@@ -59,14 +59,16 @@ section#chat
       display none
     .messages
       pointer-events none
+      overflow-y none
 
   &.active
     height 35vh
 
   div.messages
-    flex 1
-    overflow scroll
-    display flex
+    flex 1 1 auto
+    overflow-y auto
+    min-height 0px
+    // display flex
     .contents
       align-self flex-end
       // padding 12px
@@ -89,18 +91,6 @@ section#chat
       padding 8px
       flex 1
       outline none
-    button
-      font-family inherit
-      display inline-block
-      width 20%
-      font-size 13px
-      background #cca874
-      color #342000
-      border 0
-      &:hover
-        cursor pointer
-        background #644014
-        color #cca874
 
 div.adblock
   position absolute
