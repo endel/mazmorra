@@ -17,7 +17,7 @@ export class DungeonRoom extends Room<DungeonState> {
   maxClients = 50;
   progress: number;
 
-  players = new Map<Client, Player>();
+  players = new WeakMap<Client, Player>();
   clientMap = new WeakMap<Player, Client>();
 
   disposeTimeout = 5; // 5 seconds default
@@ -251,9 +251,11 @@ export class DungeonRoom extends Room<DungeonState> {
       return;
     }
 
+    let autoDisposeTimeout = this.disposeTimeout;
+
     // if a player dies on this dungeon, the timeout is 2 minutes.
     if (player.hp.current <= 0 || this.progress === 1) {
-      this.disposeTimeout = 60 * 2;
+      autoDisposeTimeout = 60 * 2;
     }
 
     const quickInventory = Object.values(player.quickInventory.slots).map(slot => slot.toJSON());
@@ -304,16 +306,13 @@ export class DungeonRoom extends Room<DungeonState> {
     this.clientMap.delete(player);
     this.state.removePlayer(player);
 
-    let autoDisposeTimeout = this.disposeTimeout;
-
     // prevent loot dungeons from being looted multiple times using portals.
     const lastPortalOpened = this.state.getAllEntitiesOfType<Portal>(Portal).sort((a, b) =>
       b.creationTime - a.creationTime)[0];
     if (lastPortalOpened) {
-      console.log({ lastPortalOpened });
       const elapsedPortalTime = (Date.now() - lastPortalOpened.creationTime);
       const additionalTime = (lastPortalOpened.ttl - elapsedPortalTime) / 1000;
-      autoDisposeTimeout += additionalTime;;
+      autoDisposeTimeout += additionalTime;
     }
 
     this.resetAutoDisposeTimeout(autoDisposeTimeout);
