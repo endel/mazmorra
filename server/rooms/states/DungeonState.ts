@@ -423,13 +423,7 @@ export class DungeonState extends Schema {
       }
     }
 
-    if (this.entitiesToRemove.length > 0) {
-      for (let i = 0; i < this.entitiesToRemove.length; i++) {
-        this.entitiesToRemove[i].dispose();
-      }
-
-      this.entitiesToRemove = [];
-    }
+    this.disposeEntities();
   }
 
   flattenGrid (grid: any[][], width, height) {
@@ -450,8 +444,18 @@ export class DungeonState extends Schema {
     return flattened;
   };
 
+  disposeEntities() {
+    if (this.entitiesToRemove.length > 0) {
+      for (let i = 0; i < this.entitiesToRemove.length; i++) {
+        this.entitiesToRemove[i].dispose();
+      }
+      this.entitiesToRemove = [];
+    }
+  }
+
   dispose() {
     // free up memory!
+    this.disposeEntities();
 
     this.rand.done();
     this.roomUtils.realRand.done();

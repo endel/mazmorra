@@ -25,7 +25,7 @@ export class DungeonRoom extends Room<DungeonState> {
   async onInit (options) {
     this.progress = options.progress || 1;
 
-    this.players = new Map();
+    this.players = new WeakMap();
     this.clientMap = new WeakMap();
 
     // Get season/random seed for this room.
@@ -245,7 +245,7 @@ export class DungeonRoom extends Room<DungeonState> {
 
   async onLeave (client) {
     const player = this.players.get(client);
-    const hero = player && player.hero;
+    const hero: DBHero = player && player.hero;
 
     if (!hero || !hero._id) {
       return;

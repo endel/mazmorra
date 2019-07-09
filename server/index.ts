@@ -25,7 +25,10 @@ const basicAuth = expressBasicAuth({
 });
 
 const server = http.createServer(app);
-const gameServer = new Server({ server: server });
+const gameServer = new Server({
+  server: server,
+  perMessageDeflate: false
+});
 
 connectDatabase(async () => {
   // ensure players are set as offline when booting up.
