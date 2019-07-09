@@ -1,3 +1,5 @@
+import helpers from "../../shared/helpers";
+
 import { Room, Client, generateId } from "colyseus";
 import { DungeonState } from "./states/DungeonState";
 import { verifyToken } from "@colyseus/social";
@@ -75,6 +77,20 @@ export class DungeonRoom extends Room<DungeonState> {
   }
 
   async onJoin (client: Client, options: any, hero: DBHero) {
+    //
+    // // TODO: AdBlock trolling!
+    //
+    // if (options.adBlock) {
+    //   const player: any = this.state.roomUtils.createEnemy("rat");
+    //   player.id = client.sessionId;
+
+    //   this.state.addEntity(player);
+
+    //   this.players.set(client, player)
+    //   this.clientMap.set(player, client)
+    //   return;
+    // }
+
     if (hero.online) {
       // prevent users from opening multiple tabs
       this.send(client, ["already-logged-in"]);
@@ -87,9 +103,6 @@ export class DungeonRoom extends Room<DungeonState> {
     }
 
     const player = this.state.createPlayer(client, hero, options);
-    // const player: any = this.state.roomUtils.createEnemy("rat");
-    // this.state.addEntity(player);
-
     this.players.set(client, player)
     this.clientMap.set(player, client)
 

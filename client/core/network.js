@@ -17,6 +17,9 @@ export function enterRoom (name, options = {}) {
 
   options.token = credentials.token
 
+  // Troll adblock users
+  if (window.adBlock) { options.adBlock = true; }
+
   room = client.join(name, options);
   room.onJoin.addOnce(() =>
     App.cursor.dispatchEvent({ type: "cursor", kind: "pointer" }));

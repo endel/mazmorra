@@ -45,9 +45,11 @@ export default class Door extends THREE.Object3D {
     light.position.set(0, 0.7, -0.25)
     this.add(light)
 
-
-    if (this.userData.destiny.progress === 2 && !localStorage.getItem("tutorial")) {
-      // Door down! Show indicator!
+    // Tutorial: show indicator for first door
+    if (
+      this.userData.destiny.progress === 2 &&
+      !localStorage.getItem("tutorial")
+    ) {
       this.addBehaviour(new QuestIndicator());
     }
 
