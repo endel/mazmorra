@@ -15,17 +15,15 @@ export class DungeonRoom extends Room<DungeonState> {
   maxClients = 50;
   progress: number;
 
-  players = new WeakMap<Client, Player>();
-  heroes = new WeakMap<Client, DBHero>();
+  players = new Map<Client, Player>();
   clientMap = new WeakMap<Player, Client>();
 
-  disposeTimeout = 0; // 5 seconds default
+  disposeTimeout = 5; // 5 seconds default
 
   async onInit (options) {
     this.progress = options.progress || 1;
 
-    this.players = new WeakMap();
-    this.heroes = new WeakMap();
+    this.players = new Map();
     this.clientMap = new WeakMap();
 
     // Get season/random seed for this room.
@@ -77,9 +75,21 @@ export class DungeonRoom extends Room<DungeonState> {
   }
 
   async onJoin (client: Client, options: any, hero: DBHero) {
-    const player = this.state.createPlayer(client, hero, options);
+    if (hero.online) {
+      // prevent users from opening multiple tabs
+      this.send(client, ["already-logged-in"]);
+      client.close();
+      return false;
 
-    this.heroes.set(client, hero)
+    } else {
+      hero.online = true;
+      await hero.save();
+    }
+
+    const player = this.state.createPlayer(client, hero, options);
+    // const player: any = this.state.roomUtils.createEnemy("rat");
+    // this.state.addEntity(player);
+
     this.players.set(client, player)
     this.clientMap.set(player, client)
 
@@ -101,6 +111,11 @@ export class DungeonRoom extends Room<DungeonState> {
   }
 
   onMessage (client: Client, data) {
+    if (!data || !data.length) {
+      // invalid command arrived!
+      return;
+    }
+
     const key = data[0]
         , value = data[1]
         , player = this.players.get(client)
@@ -161,7 +176,7 @@ export class DungeonRoom extends Room<DungeonState> {
 
   onGoTo (player, destiny, params: any = {}) {
     const client = this.clientMap.get(player);
-    const hero = this.heroes.get(client);
+    const hero = player.hero;
 
     if (!hero) {
       // FIXME: NPC's shouldn't try to go to another place.
@@ -216,10 +231,12 @@ export class DungeonRoom extends Room<DungeonState> {
   }
 
   async onLeave (client) {
-    const hero = this.heroes.get(client)
-      , player = this.players.get(client)
+    const player = this.players.get(client);
+    const hero = player && player.hero;
 
-    if (!hero._id) return;
+    if (!hero || !hero._id) {
+      return;
+    }
 
     // if a player dies on this dungeon, the timeout is 2 minutes.
     if (player.hp.current <= 0 || this.progress === 1) {
@@ -244,6 +261,8 @@ export class DungeonRoom extends Room<DungeonState> {
 
     const $update: any = {
       $set: {
+        online: false,
+
         lvl: player.lvl,
         strength: player.attributes.strength,
         agility: player.attributes.agility,
@@ -270,7 +289,6 @@ export class DungeonRoom extends Room<DungeonState> {
 
     this.players.delete(client);
     this.clientMap.delete(player);
-    this.heroes.delete(client);
     this.state.removePlayer(player);
 
     let autoDisposeTimeout = this.disposeTimeout;
@@ -279,14 +297,13 @@ export class DungeonRoom extends Room<DungeonState> {
     const lastPortalOpened = this.state.getAllEntitiesOfType<Portal>(Portal).sort((a, b) =>
       b.creationTime - a.creationTime)[0];
     if (lastPortalOpened) {
+      console.log({ lastPortalOpened });
       const elapsedPortalTime = (Date.now() - lastPortalOpened.creationTime);
       const additionalTime = (lastPortalOpened.ttl - elapsedPortalTime) / 1000;
       autoDisposeTimeout += additionalTime;;
     }
 
-    if (autoDisposeTimeout > 0) {
-      this.resetAutoDisposeTimeout(autoDisposeTimeout);
-    }
+    this.resetAutoDisposeTimeout(autoDisposeTimeout);
   }
 
   tick () {

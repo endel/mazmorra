@@ -59,6 +59,7 @@ const Skill = new mongoose.Schema<DBItem>({
  */
 export interface DBHero extends mongoose.Document {
   userId: ObjectId;
+  online: boolean;
 
   name: string;
   klass: number;
@@ -108,6 +109,7 @@ export interface DBHero extends mongoose.Document {
 export const ATTRIBUTE_BASE_VALUE = 5;
 export const Hero = mongoose.model<DBHero>('Hero', new Schema<DBHero>({
   userId: Schema.Types.ObjectId,
+  online: { type: Boolean, default: false },
 
   name: String,
   klass: { type: Number, default: 0 },

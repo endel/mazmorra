@@ -22,7 +22,7 @@ export default class Enemy extends THREE.Object3D {
 
     this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: this.textures[ this._direction ],
-      fog: true
+      // fog: true
     }))
     this.originalColor = this.sprite.material.color.getHex()
 
@@ -35,7 +35,7 @@ export default class Enemy extends THREE.Object3D {
     // only attach lifebar if enemy is alive
     if (data.hp.current > 0) {
       this.addBehaviour(new DangerousThing);
-      this.addBehaviour(new Shadow);
+      // this.addBehaviour(new Shadow);
       this.addBehaviour(new HasLifebar);
 
       App.tweens.add(this.sprite.position).from({ y: -1.5 }, 300, Tweener.ease.quadOut);

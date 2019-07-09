@@ -10,8 +10,7 @@ export class PotionPoints extends ConsumableItem {
   }
 
   getPrice() {
-    return 10;
-    // return 800;
+    return 500;
   }
 
   use(player, state) {

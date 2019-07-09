@@ -683,7 +683,7 @@ export class RoomUtils {
     }
   }
 
-  createEnemy(type: string, enemyKlass: new (...args: any[]) => Enemy, lvl?: number): Enemy {
+  createEnemy(type: string, enemyKlass: (new (...args: any[]) => Enemy) = Enemy, lvl?: number): Enemy {
     if (!lvl) {
       const minLvl = Math.ceil(this.state.progress / 3);
       lvl = this.realRand.intBetween(minLvl, minLvl + 1);

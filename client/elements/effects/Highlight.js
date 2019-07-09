@@ -6,7 +6,7 @@ export default class Highlight extends THREE.Sprite {
     super(new THREE.SpriteMaterial({
       map: ResourceManager.get( `effects-highlight-${type}`),
       color: 0xffffff,
-      fog: true,
+      // fog: true,
       transparent: true
     }))
     this.scale.normalizeWithTexture(this.material.map)

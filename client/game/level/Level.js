@@ -151,6 +151,7 @@ export default class Level extends THREE.Object3D {
     this.room.onStateChange.addOnce((state) => this.setInitialState(state));
 
     this.room.onError.add((err, e, data) => {
+
       // "black screen" workaround
       // this is real messy!
       if (err === "setState") {
@@ -158,6 +159,7 @@ export default class Level extends THREE.Object3D {
         options.progress++;
         this.enterRoom(name, options);
       }
+
       console.error(err);
     });
     // this.room.onLeave.add(() => this.cleanup());
@@ -215,6 +217,9 @@ export default class Level extends THREE.Object3D {
 
       } else if (evt === "sound") {
         this.playSound(data);
+
+      } else if (evt === "already-logged-in") {
+        alert("Already logged in. If you think this message is a bug please report in the Discord Server.");
       }
     });
 

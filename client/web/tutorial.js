@@ -49,48 +49,48 @@ export function showTutorial() {
     <a class="nav last" href="#">Play!</a>
 
     <div class="step-1">
-      <img src="images/tutorial/move.png" alt="How to move" />
       <p>Left click or touch to move</p>
+      <img src="images/tutorial/move.png" alt="How to move" />
     </div>
 
     <div class="step-2">
-      <img src="images/tutorial/chests.png" alt="Opening chests" />
       <p>Chests can give you potions, gold, and items to equip</p>
+      <img src="images/tutorial/chests.png" alt="Opening chests" />
     </div>
 
     <div class="step-3">
-      <img src="images/tutorial/enemies.png" alt="Killing enemies" />
       <p>Right click on enemies to attack them</p>
+      <img src="images/tutorial/enemies.png" alt="Killing enemies" />
     </div>
 
     <div class="step-4">
-      <img src="images/tutorial/level-up-1.png" alt="Level up button" />
       <p>When you level up, you can increase your hero's stats</p>
+      <img src="images/tutorial/level-up-1.png" alt="Level up button" />
     </div>
 
     <div class="step-5">
-      <img src="images/tutorial/level-up-2.png" alt="Level up button" />
       <p>Choose wisely which stat to increase</p>
+      <img src="images/tutorial/level-up-2.png" alt="Level up button" />
     </div>
 
     <div class="step-6">
-      <img src="images/tutorial/inventory-1.png" alt="Inventory: Toggle" />
       <p>Click on the bag, or press "I" or "B" to open inventory</p>
+      <img src="images/tutorial/inventory-1.png" alt="Inventory: Toggle" />
     </div>
 
     <div class="step-7">
-      <img src="images/tutorial/inventory-2.png" alt="Inventory: Bag" />
       <p>Consume, equip or trade items from the bag</p>
+      <img src="images/tutorial/inventory-2.png" alt="Inventory: Bag" />
     </div>
 
     <div class="step-8">
-      <img src="images/tutorial/inventory-3.png" alt="Inventory: Equipped Items" />
       <p>Equipped items can increase your stats, and improve your hero</p>
+      <img src="images/tutorial/inventory-3.png" alt="Inventory: Equipped Items" />
     </div>
 
     <div class="step-9">
-      <img src="images/tutorial/inventory-4.png" alt="Inventory: Quick access" />
       <p>Number keys (1, 2, 3, etc.) will consume items on quick area</p>
+      <img src="images/tutorial/inventory-4.png" alt="Inventory: Quick access" />
     </div>
 
   </div>

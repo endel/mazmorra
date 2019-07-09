@@ -21,7 +21,7 @@ export default class NPC extends THREE.Object3D {
 
     this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: this.textures[ this._direction ],
-      fog: true
+      // fog: true
     }))
     this.originalColor = this.sprite.material.color.getHex()
 

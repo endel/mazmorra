@@ -1,5 +1,6 @@
 'use strict';
 import helpers from '../../shared/helpers'
+import QuestIndicator from '../behaviors/QuestIndicator';
 
 export default class Door extends THREE.Object3D {
 
@@ -44,6 +45,12 @@ export default class Door extends THREE.Object3D {
     light.position.set(0, 0.7, -0.25)
     this.add(light)
 
+
+    if (this.userData.destiny.progress === 2 && !localStorage.getItem("tutorial")) {
+      // Door down! Show indicator!
+      this.addBehaviour(new QuestIndicator());
+    }
+
     this.getEntity().on('mouseover', this.onMouseOver.bind(this))
     this.getEntity().on('mouseout', this.onMouseOut.bind(this))
 
@@ -54,13 +61,6 @@ export default class Door extends THREE.Object3D {
     const doorStyle = (this.isLocked)
       ? "locked"
       : (this.userData.destiny.progress === -1) ? "up" : "down";
-
-    if (this.userData.destiny.progress === -1) {
-      window.doorUp = this;
-
-    } else {
-      window.doorDown = this;
-    }
 
     return ResourceManager.get('billboards-door-' + this.mapkind + "-" + doorStyle);
   }
