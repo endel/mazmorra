@@ -2,6 +2,7 @@ import { Behaviour } from 'behaviour.js'
 import Keycode from 'keycode.js'
 
 import { enterChat } from '../core/network';
+import { trackEvent } from '../utils';
 
 export default class Chat extends Behaviour {
 
@@ -13,6 +14,10 @@ export default class Chat extends Behaviour {
     this.room.onMessage.add((message) => this.addMessage(message))
     this.room.onLeave.add(() => {
       if (confirm("The server has been restarted, refresh the game? Please join the Discord Server if you think this is a bug.")) {
+        trackEvent('unexpected-disconnect', {
+          event_category: 'Unexpected disconnect',
+          event_label: 'Disconnect',
+        });
         window.location.reload();
       }
     })

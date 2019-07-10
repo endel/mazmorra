@@ -155,6 +155,11 @@ export default class Level extends THREE.Object3D {
       // "black screen" workaround
       // this is real messy!
       if (err === "setState") {
+        trackEvent('black-screen-bug', {
+          event_category: 'Black screen bug',
+          event_label: 'Bug',
+        });
+
         this.room.leave();
         options.progress++;
         this.enterRoom(name, options);

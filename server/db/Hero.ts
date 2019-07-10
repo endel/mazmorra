@@ -127,9 +127,9 @@ export const Hero = mongoose.model<DBHero>('Hero', new Schema<DBHero>({
 
   // how deep is the hero in the campaign?
   currentRoom: { type: String, default: "dungeon" },
-  currentProgress: { type: Number, default: 2 },
+  currentProgress: { type: Number, default: 1 },
   currentCoords: { type: { x: Number, y: Number } },
-  latestProgress: { type: Number, default: 2 },
+  latestProgress: { type: Number, default: 1 },
 
   alive: { type: Boolean, default: true },
 

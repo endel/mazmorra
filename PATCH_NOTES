@@ -1,5 +1,10 @@
+**10/07/2019 - Patch notes!**
+
+
 **09/07/2019 - Patch notes!**
+- Fixed a huge memory leak in the server. It should be more stable from now on!
 - Points redistribution potion price is now 500 gold
+- Remove the possibility for item duplication
 
 **08/07/2019 - Patch notes!**
 - Added a tutorial screen for the first time you open the game
