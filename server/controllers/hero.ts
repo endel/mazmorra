@@ -26,7 +26,7 @@ router.post('/', jwtMiddleware, async (req, res) => {
   res.json(await Hero.create({
     userId: req.auth._id,
 
-    name: req.body.name,
+    name: req.body.name.substr(0, 20),
     klass: req.body.klass,
     hair: req.body.hair,
     hairColor: req.body.hairColor,

@@ -139,8 +139,6 @@ export class DungeonState extends Schema {
         return (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1;
       });
     }))
-
-    console.log("mapkind:", this.mapkind);
   }
 
   addEntity (entity) {

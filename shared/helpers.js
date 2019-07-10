@@ -220,6 +220,7 @@ var helpers = {
       ROCK: 'rock',
       FOUNTAIN: 'fountain',
       CHECK_POINT: 'check-point',
+      LEADERBOARD: 'leaderboard',
 
       // PROJECTILES
       PROJECTILE_MAGIC: 'projectile-magic',

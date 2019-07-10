@@ -98,7 +98,7 @@ export default class CheckPointSelector extends THREE.Object3D {
     return checkpoint;
   }
 
-  toggleOpen () {
+  toggleOpen (cb) {
     this.isOpen = !this.isOpen
     this.visible = true;
 
@@ -138,6 +138,7 @@ export default class CheckPointSelector extends THREE.Object3D {
     App.tweens.remove(this.scale)
     App.tweens.add(this.scale).to({ x: scaleTo, y: scaleTo, z: scaleTo }, 500, Tweener.ease.quintOut).then(() => {
       if (!this.isOpen) this.visible = false;
+      if (cb) cb();
     });
   }
 

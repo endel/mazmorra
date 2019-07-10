@@ -20,6 +20,7 @@ import Projectile from '../../elements/effects/Projectile';
 
 import { getClientId } from '../../core/network'
 import CheckPoint from '../../elements/CheckPoint';
+import Leaderboard from '../../elements/Leaderboard';
 
 export default class Factory {
 
@@ -114,6 +115,10 @@ export default class Factory {
 
       case helpers.ENTITIES.CHECK_POINT:
         element = new CheckPoint(data);
+        break;
+
+      case helpers.ENTITIES.LEADERBOARD:
+        element = new Leaderboard(data);
         break;
 
       case helpers.ENTITIES.TEXT_EVENT:

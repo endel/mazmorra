@@ -17,6 +17,7 @@ import CheckPointSelector from "../elements/hud/CheckPointSelector";
 import { MeshText2D, textAlign } from 'three-text2d'
 import { inventorySound } from '../core/sound';
 import NewQuestOverlay from "../elements/hud/NewQuestOverlay";
+import LeaderboardOverlay from "../elements/hud/LeaderboardOverlay";
 
 export default class HUD extends THREE.Scene {
 
@@ -105,6 +106,8 @@ export default class HUD extends THREE.Scene {
     this.overlay.material.opacity = 0;
     this.overlay.visible = false;
 
+    this.currentOverlay = null;
+
     window.hud = this;
     window.addEventListener("keydown", this.onKeyPress.bind(this));
 
@@ -129,8 +132,6 @@ export default class HUD extends THREE.Scene {
     // this.add(this.skillsInventory);
 
     this.add(this.openInventoryButton);
-
-    this.add(this.checkPointSelector);
   }
 
   onKeyPress (e) {
@@ -148,7 +149,7 @@ export default class HUD extends THREE.Scene {
         (e.key === "Escape" || e.key === " ")
       )
     ) {
-      if (this.checkPointSelector.isOpen) {
+      if (this.currentOverlay && this.currentOverlay.isOpen) {
         this.forceCloseOverlay();
 
       } else {
@@ -219,10 +220,30 @@ export default class HUD extends THREE.Scene {
     }
   }
 
-  onOpenQuests() {
+  openQuests() {
     const newQuestOverlay = new NewQuestOverlay();
     this.add(newQuestOverlay);
     this.showOverlay();
+
+    this.currentOverlay = newQuestOverlay;
+  }
+
+  openLeaderboard(data) {
+    // skip opening multiple leaderboards.
+    if (
+      this.currentOverlay &&
+      this.currentOverlay instanceof LeaderboardOverlay
+    ) {
+      return;
+    }
+
+    const leaderboard = new LeaderboardOverlay(data);
+    leaderboard.toggleOpen();
+
+    this.add(leaderboard);
+    this.showOverlay();
+
+    this.currentOverlay = leaderboard;
   }
 
   onOpenCheckPoints(numbers) {
@@ -231,7 +252,11 @@ export default class HUD extends THREE.Scene {
     }
 
     const isOpen = this.checkPointSelector.isOpen;
+
+    this.add(this.checkPointSelector);
     this.checkPointSelector.openWithCheckPoints(numbers);
+
+    this.currentOverlay = this.checkPointSelector;
 
     if (isOpen) {
       this.hideOverlay();
@@ -257,9 +282,17 @@ export default class HUD extends THREE.Scene {
       this.onToggleInventory();
     }
 
-    if (this.checkPointSelector.isOpen) {
+    if (this.currentOverlay && this.currentOverlay.isOpen)  {
       hasOverlay = true;
-      this.checkPointSelector.toggleOpen();
+
+      const previousCurrentOverlay = this.currentOverlay;
+      this.currentOverlay.toggleOpen(() => {
+        // currentOverlay may have changed in the mean time!
+        if (previousCurrentOverlay === this.currentOverlay) {
+          this.remove(this.currentOverlay);
+          delete this.currentOverlay
+        }
+      });
     }
 
     if (hasOverlay) {

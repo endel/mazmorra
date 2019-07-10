@@ -1,5 +1,7 @@
 **10/07/2019 - Patch notes!**
-
+- Hall of Fame! There's a totem close to the checkpoint, listing the top 12 players!
+- Fixed glitchy characters in the Castle
+- Fixed some memory leaks in the client-side
 
 **09/07/2019 - Patch notes!**
 - Fixed a huge memory leak in the server. It should be more stable from now on!

@@ -35,6 +35,7 @@ import { EquipableItem } from "../entities/items/EquipableItem";
 import { DBAttributeModifier } from "../db/Hero";
 import { CheckPoint } from "../entities/interactive/CheckPoint";
 import { Key } from "../entities/items/consumable/Key";
+import { Leaderboard } from "../entities/interactive/Leaderboard";
 
 const ALL_BOOTS = [
   helpers.ENTITIES.BOOTS_1,
@@ -609,13 +610,20 @@ export class RoomUtils {
 
     // Door for PVP
     const pvpDoor = new Door({
-      x: lady.position.x + 2,
+      x: lady.position.x + 4,
       y: lady.position.y - 1,
     }, new DoorDestiny({
       progress: this.realRand.intBetween(4, 6),
       room: "pvp"
     }));
     this.state.addEntity(pvpDoor);
+
+    // Leaderboard
+    const leaderboard = new Leaderboard({
+      x: lady.position.x + 1,
+      y: lady.position.y - 1,
+    });
+    this.state.addEntity(leaderboard);
 
     /**
      * Locksmith

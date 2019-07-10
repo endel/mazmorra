@@ -11,8 +11,8 @@ export default class Composition extends THREE.Object3D {
       cape: props.klass || 0,
       cloth: props.klass || 0,
       hair: props.hair || 0,
-      eye: 0,
-      body: 0
+      eye: props.eye || 0,
+      body: props.body || 0
     }
 
     this.colors = {
@@ -61,6 +61,10 @@ export default class Composition extends THREE.Object3D {
 
   updateDirection () {
     this.sprite.material.map = HeroSkinBuilder.get(this)
+  }
+
+  get material () {
+    return this.sprite.material;
   }
 
   destroy () {

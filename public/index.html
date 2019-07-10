@@ -26,7 +26,7 @@
 
     <script>
       window.isAdsAllowed = function() {
-        var adsNotAllowedFor = ['kongregate.com', 'ungrounded.net']
+        var adsNotAllowedFor = ['kongregate.com', 'ungrounded.net', 'localhost']
         var referrer = document.referrer;
         for (var i = 0; i < adsNotAllowedFor.length; i++) {
           if (referrer.indexOf(adsNotAllowedFor[i]) !== -1) {
@@ -152,7 +152,7 @@
       </p>
 
       <div class="register hidden">
-        <input type="text" name="name" placeholder="Anonymous" />
+        <input type="text" name="name" maxlength="20" placeholder="Anonymous" />
         <div>
           <a href="#" class="register">Create hero</a>
         </div>

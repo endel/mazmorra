@@ -1,11 +1,14 @@
 var initialized = false
   , characters = {}
 
+export const TEXTURE_WIDTH = 256;
+export const TEXTURE_HEIGHT = 256;
+
 export const MAX_CHAR_WIDTH = 7
 export const MAX_CHAR_HEIGHT = 10
-// export const TOTAL_CHAR_WIDTH = 7 * 4
-export const TOTAL_CHAR_WIDTH = 7 * 5 // with head
-export const TEXTURE_SIZE = 256
+export const TOTAL_CHAR_WIDTH = 7 * 5 // 4 directions + head
+
+const MAX_CHARS_PER_ROW = Math.floor(TEXTURE_WIDTH / TOTAL_CHAR_WIDTH);
 
 export class HeroSkinBuilder {
 
@@ -43,9 +46,21 @@ export class HeroSkinBuilder {
 
     // montage canvas
     this.textureCanvas = document.createElement('canvas')
-    this.textureCanvas.height = TEXTURE_SIZE
-    this.textureCanvas.width = TEXTURE_SIZE
+    this.textureCanvas.width = TEXTURE_WIDTH;
+    this.textureCanvas.height = TEXTURE_HEIGHT;
     this.textureCanvasCtx = this.textureCanvas.getContext('2d')
+
+    //
+    // // DEBUGGING MOUNTAGE TEXTURE
+    //
+    // this.textureCanvas.style.position = "absolute";
+    // this.textureCanvas.style.zIndex = '9999';
+    // this.textureCanvas.style.top = "0";
+    // this.textureCanvas.style.left = "0";
+    // this.textureCanvas.style.width = TEXTURE_WIDTH * 3 + "px";
+    // this.textureCanvas.style.height = TEXTURE_HEIGHT * 3 + "px";
+    // this.textureCanvas.style.imageRendering = "pixelated";
+    // document.body.appendChild(this.textureCanvas);
 
     this.montage = document.createElement('canvas')
     this.montage.height = MAX_CHAR_HEIGHT
@@ -59,9 +74,13 @@ export class HeroSkinBuilder {
   }
 
   static getCurrentOffset () {
-    if (!initialized) { this.init() }
-    var value = this.availableOffsets.shift()
-    return (typeof(value)==='number') ? value : this.offset++
+    if (!initialized) {
+      this.init();
+    }
+
+    const reuseOffset = this.availableOffsets.shift();
+
+    return (typeof(reuseOffset)==='number') ? reuseOffset : this.offset++
   }
 
   static get (character, direction = null) {
@@ -71,7 +90,9 @@ export class HeroSkinBuilder {
 
   static deleteTexture (character) {
     // flag deleted offset as avaialble for reuse
-    this.availableOffsets.push(character.textureOffset)
+    if (this.availableOffsets.indexOf(character.textureOffset) === -1) {
+      this.availableOffsets.push(character.textureOffset);
+    }
 
     delete characters[character.textureOffset]
   }
@@ -84,8 +105,11 @@ export class HeroSkinBuilder {
       , montageCtx = this.montage.getContext('2d')
       , bufferCtx = this.buffer.getContext('2d')
 
+      , offsetX = (character.textureOffset % MAX_CHARS_PER_ROW) * TOTAL_CHAR_WIDTH
+      , offsetY = Math.floor((character.textureOffset / MAX_CHARS_PER_ROW)) * MAX_CHAR_HEIGHT;
+
     // clear only this character on global texture canvas
-    this.textureCanvasCtx.clearRect(character.textureOffset * TOTAL_CHAR_WIDTH, 0, TOTAL_CHAR_WIDTH, MAX_CHAR_HEIGHT)
+    this.textureCanvasCtx.clearRect(offsetX, offsetY, TOTAL_CHAR_WIDTH, MAX_CHAR_HEIGHT)
 
     for (var di = 0; di < this.directions.length; di++) {
       let direction = this.directions[ di ]
@@ -156,7 +180,7 @@ export class HeroSkinBuilder {
         montageCtx.drawImage(this.buffer, 0, 0)
       }
 
-      this.textureCanvasCtx.drawImage(this.montage, (character.textureOffset * TOTAL_CHAR_WIDTH) + di * MAX_CHAR_WIDTH, 0)
+      this.textureCanvasCtx.drawImage(this.montage, offsetX + di * MAX_CHAR_WIDTH, offsetY);
     }
 
     this.textureImage.src = this.textureCanvas.toDataURL()
@@ -169,19 +193,19 @@ export class HeroSkinBuilder {
     for (var di = 0; di < this.directions.length; di++) {
       let texture = this.texture.createInstance()
         , frame = {
-            x: (character.textureOffset * TOTAL_CHAR_WIDTH) + (di * MAX_CHAR_WIDTH),
-            y: 0,
+            x: offsetX + (di * MAX_CHAR_WIDTH),
+            y: offsetY,
             w: MAX_CHAR_WIDTH,
             h: MAX_CHAR_HEIGHT
           }
 
       texture.frame = frame
 
-      texture.repeat.x = frame.w / TEXTURE_SIZE
-      texture.repeat.y = frame.h / TEXTURE_SIZE
+      texture.repeat.x = frame.w / TEXTURE_WIDTH
+      texture.repeat.y = frame.h / TEXTURE_HEIGHT
 
-      texture.offset.x = frame.x / TEXTURE_SIZE
-      texture.offset.y = 1 - ((frame.y + frame.h) / TEXTURE_SIZE)
+      texture.offset.x = frame.x / TEXTURE_WIDTH
+      texture.offset.y = 1 - ((frame.y + frame.h) / TEXTURE_HEIGHT)
 
       texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 

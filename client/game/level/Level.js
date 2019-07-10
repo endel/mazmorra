@@ -223,6 +223,9 @@ export default class Level extends THREE.Object3D {
       } else if (evt === "sound") {
         this.playSound(data);
 
+      } else if (evt === "leaderboard") {
+        this.hud.openLeaderboard(data);
+
       } else if (evt === "already-logged-in") {
         alert("Already logged in. If you think this message is a bug please report in the Discord Server.");
       }
@@ -669,6 +672,9 @@ export default class Level extends THREE.Object3D {
   }
 
   cleanup () {
+    // clean up renderer memory leaks!
+    renderer.renderLists.dispose();
+
     this.setTileSelection(null);
 
     this.factory.cleanup();
