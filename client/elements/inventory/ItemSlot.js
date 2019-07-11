@@ -270,7 +270,6 @@ export default class ItemSlot extends THREE.Object3D {
         // force to close inventory if it's open.
         // FIXME: this code is duplicated all over the place!
         if (hud.isInventoryOpen()) {
-          hud.openInventoryButton.onClick();
           hud.onToggleInventory();
         }
 

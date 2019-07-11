@@ -212,7 +212,6 @@ export default class Level extends THREE.Object3D {
         // FIXME: this piece of code is repeated in many places!
         // force to open inventory if it's closed
         if (!this.hud.isInventoryOpen()) {
-          this.hud.openInventoryButton.onClick();
           this.hud.onToggleInventory();
         }
 

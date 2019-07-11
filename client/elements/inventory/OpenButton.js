@@ -32,19 +32,24 @@ export default class OpenInventoryButton extends THREE.Object3D {
     // toggle open
 
     if (this.isOpen) {
-      this.add(this.closed)
-      this.remove(this.open)
-      App.tweens.add(this.closed.position).to({ y: 0 }, 200, Tweener.ease.quintOut)
-
     } else {
-      App.clock.setTimeout(() => {
-        this.add(this.open)
-        this.remove(this.closed)
-      }, 80)
-      App.tweens.add(this.closed.position).to({ y: -this.openYOffset *  config.HUD_SCALE }, 150, Tweener.ease.quintOut)
     }
 
     this.isOpen = !this.isOpen
+  }
+
+  onOpen() {
+    App.clock.setTimeout(() => {
+      this.add(this.open)
+      this.remove(this.closed)
+    }, 80)
+    App.tweens.add(this.closed.position).to({ y: -this.openYOffset * config.HUD_SCALE }, 150, Tweener.ease.quintOut)
+  }
+
+  onClose() {
+    this.add(this.closed)
+    this.remove(this.open)
+    App.tweens.add(this.closed.position).to({ y: 0 }, 200, Tweener.ease.quintOut)
   }
 
   onMouseOver () {

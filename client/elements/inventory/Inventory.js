@@ -75,6 +75,7 @@ export default class Inventory extends THREE.Object3D {
   }
 
   toggleOpen () {
+
     this.isOpen = !this.isOpen
 
     // emit toggle event
@@ -86,10 +87,16 @@ export default class Inventory extends THREE.Object3D {
     this.scale.set(scaleFrom, scaleFrom, scaleFrom)
 
     if (this.isOpen) {
+      this.parent.openInventoryButton.onOpen();
+      this.parent.character.onOpenInventory();
+
       this.titleText.text = "Inventory";
       this.visible = true
 
     } else {
+      this.parent.openInventoryButton.onClose();
+      this.parent.character.onCloseInventory();
+
       // remove trading UI
       this.isTrading = false;
       this.remove(this.exchangeSymbol);

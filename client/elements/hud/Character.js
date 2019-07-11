@@ -323,7 +323,6 @@ export default class Character extends THREE.Object3D {
     const hud = this.parent;
 
     if (!hud.inventory.isOpen) {
-      hud.openInventoryButton.onClick();// FIXME: this is repeated on at least 3 places.
       hud.onToggleInventory();
     }
   }

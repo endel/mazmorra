@@ -41,6 +41,7 @@ gameServer.register('chat', ChatRoom);
 gameServer.register('dungeon', DungeonRoom);
 gameServer.register('pvp', DungeonRoom);
 gameServer.register('loot', DungeonRoom);
+gameServer.register('infinite', DungeonRoom);
 
 if (process.env.ENVIRONMENT !== "production") {
   gameServer.register('test-items', DungeonRoom);

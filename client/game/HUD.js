@@ -154,7 +154,6 @@ export default class HUD extends THREE.Scene {
 
       } else {
         // open inventory pressing "i" or "b"
-        this.openInventoryButton.onClick();
         this.onToggleInventory();
       }
 
@@ -201,12 +200,18 @@ export default class HUD extends THREE.Scene {
   }
 
   onToggleInventory () {
-    if (this.checkPointSelector.isOpen) {
+    if (this.currentOverlay && this.currentOverlay.isOpen) {
       this.forceCloseOverlay();
+
+      if (this.currentOverlay instanceof Inventory) {
+        return;
+      }
     }
 
     const isOpen = this.inventory.isOpen;
     this.inventory.toggleOpen();
+
+    this.currentOverlay = this.inventory;
 
     if (isOpen) {
       this.character.onCloseInventory();
@@ -247,7 +252,7 @@ export default class HUD extends THREE.Scene {
   }
 
   onOpenCheckPoints(numbers) {
-    if (this.isInventoryOpen()) {
+    if (this.currentOverlay && this.currentOverlay.isOpen) {
       this.forceCloseOverlay();
     }
 
@@ -274,13 +279,6 @@ export default class HUD extends THREE.Scene {
 
   forceCloseOverlay() {
     let hasOverlay;
-
-    if (this.isInventoryOpen()) {
-      hasOverlay = true;
-
-      this.openInventoryButton.onClick();
-      this.onToggleInventory();
-    }
 
     if (this.currentOverlay && this.currentOverlay.isOpen)  {
       hasOverlay = true;
