@@ -180,7 +180,12 @@ export class DungeonRoom extends Room<DungeonState> {
       player.dropItem(inventoryType, itemId);
 
     } else if (key == 'checkpoint') {
-      this.onGoTo(player, { progress: parseInt(value) }, { isCheckPoint: true });
+      const progress = parseInt(value);
+
+      // TODO: check if player is actually on top of a checkpoint tile
+      if (player.hero.checkPoints.includes(progress)) {
+        this.onGoTo(player, { progress }, { isCheckPoint: true });
+      }
 
     } else if (key == 'msg') {
       this.state.addMessage(player, value);

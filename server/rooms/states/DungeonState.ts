@@ -304,7 +304,14 @@ export class DungeonState extends Schema {
 
   move (unit: Unit, destiny: Point, allowChangeTarget: boolean = true) {
     // dead units cannot move!
-    if (!unit.isAlive) { return; }
+    if (!unit.isAlive) {
+      return;
+    }
+
+    // skip if invalid destiny
+    if (!('x' in destiny) || !('y' in destiny)) {
+      return
+    }
 
     // prioritize getting Unit entities before
     let targetEntity = this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit);
