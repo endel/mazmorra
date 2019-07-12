@@ -16,7 +16,7 @@ export default class Game {
 
 
     this.renderer = new THREE.WebGLRenderer();
-    window.renderer = this.renderer;
+    global.renderer = this.renderer;
 
     // Use clipping for health bars?
     // this.renderer.localClippingEnabled = true;

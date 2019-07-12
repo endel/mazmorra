@@ -673,7 +673,7 @@ export default class Level extends THREE.Object3D {
 
   cleanup () {
     // clean up renderer memory leaks!
-    renderer.renderLists.dispose();
+    global.renderer.renderLists.dispose();
 
     this.setTileSelection(null);
 

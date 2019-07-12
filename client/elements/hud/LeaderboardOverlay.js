@@ -22,8 +22,8 @@ export default class LeaderboardOverlay extends THREE.Object3D {
     this.add(this.titleText);
 
     const HEROS_PER_LINE = 3;
-    const HERO_WIDTH = 250;
-    const HERO_HEIGHT = 80;
+    const HERO_WIDTH = 42 * config.HUD_SCALE;
+    const HERO_HEIGHT = 14 * config.HUD_SCALE;
 
     this.heroes = new THREE.Object3D();
     this.heroes.position.x = (-HERO_WIDTH * HEROS_PER_LINE) / 2.5;
