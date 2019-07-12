@@ -22,7 +22,7 @@ export default class CharacterController extends Behaviour {
     this.lightDistance = 8;
 
     // this.light = new THREE.SpotLight(0xffffff, 1, 300, 10);
-    if (!window.IS_DAY) {
+    if (!global.IS_DAY) {
       this.light = new THREE.SpotLight(0xffffff);
       this.light.penumbra = 1;
       this.light.target = this.object;

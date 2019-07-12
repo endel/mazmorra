@@ -18,7 +18,7 @@ export default class GameObject extends Behaviour {
       this.nextPoint = point;
 
       // play "step" sound for current player
-      if (this.object === window.player) {
+      if (this.object === global.player) {
         playRandom(stepSounds);
       }
     });

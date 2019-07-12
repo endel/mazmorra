@@ -248,7 +248,7 @@ export default class Level extends THREE.Object3D {
 
       if (object.userData.id === getClientId()) {
         // SET GLOBAL CURRENT PLAYER OBJECT
-        window.player = object;
+        global.player = object;
         this.createPlayerBehaviour(object, entity);
 
         // FIXME: this piece of code is duplicated.
@@ -409,7 +409,7 @@ export default class Level extends THREE.Object3D {
 
     this.dispatchEvent({ type: 'setup', state: state })
 
-    window.IS_DAY = state.daylight
+    global.IS_DAY = state.daylight
     this.mapkind = state.mapkind;
     this.mapvariation = state.mapvariation;
     this.mapwidth = state.width;
@@ -433,7 +433,7 @@ export default class Level extends THREE.Object3D {
     // Global ambient light
     var light = new THREE.AmbientLight(0xffffff); // soft white light
     this.add(light);
-    window.light = light
+    global.light = light
 
     /**
      * Custom aestetics per mapkind
@@ -704,6 +704,15 @@ export default class Level extends THREE.Object3D {
 
       if (!this.totalSessions) {
         this.totalSessions = Number(window.localStorage.getItem("totalSessions") || 0);
+      }
+
+      // skip ad of player died, he had enough!
+      if (
+        global.player &&
+        global.player.userData.hp.current <= 0
+      ) {
+        resolve();
+        return;
       }
 
       const sessionsForAd = 3;

@@ -37,7 +37,7 @@ export default class Game {
     this.camera.zoom = config.ZOOM;
     this.camera.updateProjectionMatrix();
 
-    window.camera = this.camera;
+    global.camera = this.camera;
 
     // ORTOGRAPHIC
     // this.camera.position.y = 10;
@@ -57,7 +57,7 @@ export default class Game {
     // this.scene.rotateY(-0.4)
     this.scene.addBehaviour(new Raycaster(), this.camera, hudRaycaster);
 
-    window.scene = this.scene;
+    global.scene = this.scene;
     for (let i=0;i<getLightPoolCount();i++) {
       removeLight(getLightFromPool());
     }

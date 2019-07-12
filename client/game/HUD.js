@@ -108,7 +108,7 @@ export default class HUD extends THREE.Scene {
 
     this.currentOverlay = null;
 
-    window.hud = this;
+    global.hud = this;
     window.addEventListener("keydown", this.onKeyPress.bind(this));
 
     this.resize()
@@ -136,7 +136,7 @@ export default class HUD extends THREE.Scene {
 
   onKeyPress (e) {
     // skip if player is not connected.
-    if (!window.player) {
+    if (!global.player) {
       return;
     }
 

@@ -412,15 +412,19 @@ export class RoomUtils {
       this.state.addEntity(secretDoor);
     }
 
-    // JAIL TIME
-    const branch = this.rooms[1].branches[0];
-    const jail = new Jail({ x: branch.y, y: branch.x }, branch.dir);
-    this.state.addEntity(jail);
-    this.addEntity(this.rooms[0], (position) => {
-      const lever = new Lever(position);
-      lever.unlock = [jail];
-      return lever;
-    });
+    if (this.state.progress % 4 === 0) {
+      // JAIL TIME
+      const branch = this.endRoom.branches[0];
+      const jail = new Jail({ x: branch.y, y: branch.x }, branch.dir);
+      this.state.addEntity(jail);
+
+      const randomRoom = this.getRandomRoom([this.endRoom])
+      this.addEntity(randomRoom, (position) => {
+        const lever = new Lever(position);
+        lever.unlock = [jail];
+        return lever;
+      });
+    }
 
     this.rooms.forEach(room => {
       if (this.isBossDungeon && room === this.endRoom) {
@@ -696,7 +700,8 @@ export class RoomUtils {
 
     const maxEnemies = Math.min(this.state.progress, Math.floor((room.size.x * room.size.y) / 10));
 
-    let numEnemies = this.realRand.intBetween(minEnemies, maxEnemies);
+    // let numEnemies = this.realRand.intBetween(minEnemies, maxEnemies);
+    let numEnemies = 5;
 
     const enemyList = this.state.config.enemies;
     const enemyNames = Object.keys(enemyList);

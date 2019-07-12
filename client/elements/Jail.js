@@ -44,6 +44,8 @@ export default class Jail extends THREE.Object3D {
       mesh.rotateY(Math.PI/2);
     }
 
+    this.onUpdate();
+
     mesh.scale.normalizeWithTexture(this.material.map, true)
     this.add(mesh);
 

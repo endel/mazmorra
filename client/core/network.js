@@ -10,7 +10,7 @@ export const client = new Client(endpoint);
 export let room = null;
 
 // export const client = new Client(`ws://${ window.location.hostname }`);
-window.client = client;
+global.client = client;
 
 export function enterRoom (name, options = {}) {
   App.cursor.dispatchEvent({ type: "cursor", kind: "loading" });

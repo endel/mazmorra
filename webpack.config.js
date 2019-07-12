@@ -4,10 +4,13 @@ const webpack = require('webpack')
 const SpritesheetPlugin = require('./webpack/SpritesheetPlugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const AudioSprite = require("audiosprite-loader");
+const TerserPlugin = require('terser-webpack-plugin');
 
 // var stylusLoader = ExtractTextPlugin.extract("style-loader", "css-loader!stylus-loader");
 const stylusLoader = ExtractTextPlugin.extract({ fallback: "style-loader", use: ["css-loader", "stylus-loader"] })
 const mode = process.env.NODE_ENV || "development";
+
+console.log("PRODUCTION?", (mode === "production"));
 
 module.exports = {
   mode,
@@ -59,6 +62,22 @@ module.exports = {
       padding: 1
     })
   ],
+
+  optimization: {
+    minimize: (mode === "production"),
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {},
+          mangle: true,
+          toplevel: true,
+          output: {
+            comments: false
+          }
+        }
+      })
+    ],
+  },
 
   resolve: {
     extensions: ['.js', '.jsx', '.json']

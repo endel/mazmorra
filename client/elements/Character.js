@@ -18,7 +18,7 @@ export default class Character extends THREE.Object3D {
   }
 
   get label () {
-    return (this !== window.player)
+    return (this !== global.player)
       ? `${ this.userData.name } - lvl ${ this.userData.lvl }`
       : undefined;
   }

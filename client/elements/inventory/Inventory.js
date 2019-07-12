@@ -15,7 +15,6 @@ export default class Inventory extends THREE.Object3D {
     this.title = ResourceManager.getHUDElement('hud-big-title-regular');
     this.title.position.y = this.title.height * 2;
     this.add(this.title);
-    window.bg = this.title;
 
     this.titleText = new SpriteText2D("Inventory", {
       align: textAlign.center ,

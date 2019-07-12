@@ -33,7 +33,7 @@ export default class Factory {
     this.ground = []
     this.wall = []
 
-    window.factory = this;
+    global.factory = this;
   }
 
   setGrid (grid) {

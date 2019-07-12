@@ -18,9 +18,9 @@ export default class NearPlayerOpacity extends Behaviour {
 
   update () {
     // no need to apply opacity on daylight
-    if (window.player) {
+    if (global.player) {
       var v1 = this.object.position
-        , v2 = window.player.position
+        , v2 = global.player.position
 
         , dx = v1.x - v2.x
         , dy = v1.y - v2.y
