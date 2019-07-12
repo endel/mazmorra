@@ -33,6 +33,9 @@ export class Boss extends Enemy {
     // unlock chests and doors!
     this.thingsToUnlockWhenDead.forEach((thing) => {
       thing.isLocked = false;
+
+      // FIXME: use .unlock instead.
+      // thing.unlock();
     });
   }
 

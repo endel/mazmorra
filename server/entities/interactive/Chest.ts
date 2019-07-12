@@ -23,6 +23,10 @@ export class Chest extends Interactive {
     }
   }
 
+  unlock() {
+    this.isLocked = false;
+  }
+
   interact (moveEvent, player, state) {
     if (this.isLocked) {
       state.createTextEvent(`Chest is locked!`, this.position, "white", 100);

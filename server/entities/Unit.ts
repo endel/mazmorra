@@ -23,6 +23,11 @@ export type StatsModifiers = {
   mp?: number;
   xp?: number;
 
+  // enemies
+  aiDistance?: number;
+  minDamage?: number;
+  maxDamage?: number;
+
   // permanent
   strength: number;
   agility: number;
@@ -78,8 +83,8 @@ export class Unit extends Entity {
 
   baseArmor: { [id in Attribute]: number } = {
     strength: 0,
-    agility: -1.5,
-    intelligence: -2
+    agility: -1,
+    intelligence: -1.5
   };
 
   lastHpRegenerationTime: number = 0;
@@ -92,6 +97,33 @@ export class Unit extends Entity {
   statsModifiers: StatsModifiers = {
     hp: 0,
     mp: 0,
+
+    aiDistance: 0,
+    minDamage: 0,
+    maxDamage: 0,
+
+    strength: 0,
+    agility: 0,
+    intelligence: 0,
+
+    armor: 0,
+    damage: 0,
+
+    movementSpeed: 0,
+    attackDistance: 0,
+    attackSpeed: 0,
+
+    evasion: 0,
+    criticalStrikeChance: 0,
+  };
+
+  statsBoostModifiers: StatsModifiers = {
+    hp: 0,
+    mp: 0,
+
+    aiDistance: 0,
+    minDamage: 0,
+    maxDamage: 0,
 
     strength: 0,
     agility: 0,
@@ -179,11 +211,19 @@ export class Unit extends Entity {
     }
 
     const hpPercent = this.hp.current / this.hp.max;
-    this.hp.max = this.baseHp + (this.attributes.strength + this.statsModifiers['strength'] + this.statsModifiers['hp']) * 5;
+    this.hp.max = this.baseHp + this.statsModifiers['hp'] + this.statsBoostModifiers['hp'] + (
+      this.attributes.strength +
+      this.statsModifiers['strength'] +
+      this.statsBoostModifiers['strength']
+    ) * 4;
     this.hp.current = this.hp.max * hpPercent;
 
     const mpPercent = this.mp.current / this.mp.max;
-    this.mp.max = this.baseMp + (this.attributes.intelligence + this.statsModifiers['intelligence'] + this.statsModifiers['mp']) * 3;
+    this.mp.max = this.baseMp + this.statsModifiers['mp'] + this.statsBoostModifiers['mp'] + (
+      this.attributes.intelligence +
+      this.statsModifiers['intelligence'] +
+      this.statsBoostModifiers['intelligence']
+    ) * 3;
     this.mp.current = this.mp.max * mpPercent;
   }
 
@@ -196,15 +236,27 @@ export class Unit extends Entity {
   }
 
   getMovementSpeed() {
-    return Math.max(10, this.movementSpeed - (this.statsModifiers.movementSpeed * 30));
+    return Math.max(
+      10,
+      this.movementSpeed - ((this.statsModifiers.movementSpeed + this.statsBoostModifiers.movementSpeed) * 30)
+    );
   }
 
   getAttackSpeed() {
-    return Math.max(10, (this.attackSpeed - (this.statsModifiers.attackSpeed * 10) - (this.attributes.agility * 5)));
+    return Math.max(
+      10,
+      (this.attackSpeed - ((this.statsModifiers.attackSpeed + this.statsBoostModifiers.attackSpeed) * 10) - (this.attributes.agility * 5))
+    );
   }
 
   getAttackDistance() {
-    return 1 + this.statsModifiers.attackDistance;
+    return 1 +
+      this.statsModifiers.attackDistance +
+      this.statsBoostModifiers.attackDistance;
+  }
+
+  getAIDistance() {
+    return this.statsBoostModifiers.aiDistance || 3;
   }
 
   getDamage() {

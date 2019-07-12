@@ -14,6 +14,7 @@ import { doorSound, playRandom } from '../../core/sound';
 import { trackEvent } from '../../utils';
 import Chat from '../../behaviors/Chat';
 import { isTutorialComplete, showTutorial } from '../../web/tutorial';
+import { PlayerPrefs } from '../../core/PlayerPrefs';
 
 export default class Level extends THREE.Object3D {
 

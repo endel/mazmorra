@@ -195,6 +195,12 @@ export class Player extends Unit {
 
   inventorySell(fromInventoryType: InventoryType, itemId: string) {
     const fromInventory = this[fromInventoryType];
+
+    // prevent hacking.
+    if (!(fromInventory instanceof Inventory)) {
+      return;
+    }
+
     const item: Item = fromInventory.getItem(itemId);
 
     if (item && fromInventory !== this.purchase) {

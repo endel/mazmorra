@@ -205,8 +205,8 @@ var dungeon = {
             case helpers.DIRECTION.NORTH:
                 grid[branchPos.x][branchPos.y - 1] = helpers.TILE_TYPE.FLOOR | helpers.DIRECTION.NORTH;
 
-                branches.push({ x: branchPos.x, y: branchPos.y - 2 });
-                branches.push({ x: branchPos.x, y: branchPos.y + 1 });
+                branches.push({ dir: branchPos.dir, x: branchPos.x, y: branchPos.y - 2 });
+                branches.push({ dir: branchPos.dir, x: branchPos.x, y: branchPos.y + 1 });
 
                 // grid[branchPos.x + 1][branchPos.y - 1] = helpers.TILE_TYPE.FLOOR | helpers.DIRECTION.NORTH;
                 // grid[branchPos.x][branchPos.y - 1] = helpers.TILE_TYPE.FLOOR;
@@ -215,8 +215,8 @@ var dungeon = {
             case helpers.DIRECTION.SOUTH:
                 grid[branchPos.x][branchPos.y + 1] = helpers.TILE_TYPE.FLOOR | helpers.DIRECTION.SOUTH;
 
-                branches.push({ x: branchPos.x, y: branchPos.y + 2 });
-                branches.push({ x: branchPos.x, y: branchPos.y - 1 });
+                branches.push({ dir: branchPos.dir, x: branchPos.x, y: branchPos.y + 2 });
+                branches.push({ dir: branchPos.dir, x: branchPos.x, y: branchPos.y - 1 });
 
                 // double sized!
                 // grid[branchPos.x][branchPos.y + 1] = helpers.TILE_TYPE.FLOOR;
@@ -227,15 +227,15 @@ var dungeon = {
             case helpers.DIRECTION.EAST:
                 grid[branchPos.x + 1][branchPos.y] = helpers.TILE_TYPE.FLOOR | helpers.DIRECTION.EAST;
 
-                branches.push({ x: branchPos.x + 2, y: branchPos.y });
-                branches.push({ x: branchPos.x - 1, y: branchPos.y });
+                branches.push({ dir: branchPos.dir, x: branchPos.x + 2, y: branchPos.y });
+                branches.push({ dir: branchPos.dir, x: branchPos.x - 1, y: branchPos.y });
                 break;
 
             case helpers.DIRECTION.WEST:
                 grid[branchPos.x - 1][branchPos.y] = helpers.TILE_TYPE.FLOOR | helpers.DIRECTION.WEST;
 
-                branches.push({ x: branchPos.x - 2, y: branchPos.y });
-                branches.push({ x: branchPos.x + 1, y: branchPos.y });
+                branches.push({ dir: branchPos.dir, x: branchPos.x - 2, y: branchPos.y });
+                branches.push({ dir: branchPos.dir, x: branchPos.x + 1, y: branchPos.y });
                 break;
         }
 

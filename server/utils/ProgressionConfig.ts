@@ -11,11 +11,6 @@ export enum MapKind {
   CASTLE = 'castle',
 };
 
-export type MapMonsterList = {
-  day: {regular: string[], boss?: string[]},
-  night: { regular: string[], boss ?: string[] },
-};
-
 export type MapConfig = {
   daylight: boolean,
   mapkind: MapKind,
@@ -29,7 +24,7 @@ export type MapConfig = {
   boss?: string[]
 };
 
-export const NUM_LEVELS_PER_MAP = 18;
+export const NUM_LEVELS_PER_MAP = 20;
 // export const NUM_LEVELS_PER_MAP = 3;
 export const NUM_LEVELS_PER_CHECKPOINT = 8;
 export const NUM_LEVELS_PER_LOOT_ROOM = 12;
@@ -107,8 +102,8 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: true,
     mapkind: MapKind.ROCK,
-    getMapWidth: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
-    getMapHeight: (progress: number) => 15 + progress % NUM_LEVELS_PER_MAP,
+    getMapWidth: (progress: number) => Math.floor(18 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    getMapHeight: (progress: number) => Math.floor(18 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 7, y: 7 },
     enemies: { 'bat': 0.33, 'rat': 0.33, 'spider': 0.33, 'spider-medium': 0.01 },
@@ -140,8 +135,8 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: false,
     mapkind: MapKind.GRASS,
-    getMapWidth: (progress: number) => 18 + progress % NUM_LEVELS_PER_MAP,
-    getMapHeight: (progress: number) => 18 + progress % NUM_LEVELS_PER_MAP,
+    getMapWidth: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
+    getMapHeight: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'goblin': 0.33, 'goblin-2': 0.33, 'goblin-3': 0.33, 'skeleton-2': 0.01 },
@@ -151,8 +146,8 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: true,
     mapkind: MapKind.INFERNO,
-    getMapWidth: (progress: number) => 18 + progress % NUM_LEVELS_PER_MAP,
-    getMapHeight: (progress: number) => 18 + progress % NUM_LEVELS_PER_MAP,
+    getMapWidth: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
+    getMapHeight: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'lava-ogre': 0.33, 'lava-totem': 0.33, 'beholder': 0.33, 'golem': 0.01 },
@@ -163,8 +158,8 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: false,
     mapkind: MapKind.INFERNO,
-    getMapWidth: (progress: number) => 18 + progress % NUM_LEVELS_PER_MAP,
-    getMapHeight: (progress: number) => 18 + progress % NUM_LEVELS_PER_MAP,
+    getMapWidth: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
+    getMapHeight: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'demon': 0.33, 'lava-totem': 0.33, 'beholder': 0.33, 'winged-demon': 0.01 },
@@ -175,8 +170,9 @@ export const MAP_CONFIGS: MapConfig[] = [
 
 export const MAX_LEVELS = MAP_CONFIGS.length * NUM_LEVELS_PER_MAP;;
 
-export const MONSTER_BASE_ATTRIBUTES: {
+export const ENEMY_CONFIGS: {
   [id: string]: {
+    ratio: number, // LVL ratio, 0 = current progress
     base: Partial<DBHero>,
     modifiers: Partial<StatsModifiers>,
     spawner?: UnitSpawner
@@ -184,18 +180,21 @@ export const MONSTER_BASE_ATTRIBUTES: {
 } = {
   // MapType.ROCK
   'bat': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 1,
-      agility: 1,
-      intelligence: 1,
+      agility: 0,
+      intelligence: 0,
     },
     modifiers: {
-      damage: 1
+      movementSpeed: 10,
+      aiDistance: 7
     }
   },
 
   'rat': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 1,
@@ -203,11 +202,13 @@ export const MONSTER_BASE_ATTRIBUTES: {
       intelligence: 1,
     },
     modifiers: {
+      aiDistance: 3,
       damage: 2
     }
   },
 
   'spider': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 1,
@@ -215,11 +216,13 @@ export const MONSTER_BASE_ATTRIBUTES: {
       intelligence: 1,
     },
     modifiers: {
-      damage: 1
+      aiDistance: 5,
+      attackSpeed: 5
     }
   },
 
   'scorpion': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 1,
@@ -231,8 +234,8 @@ export const MONSTER_BASE_ATTRIBUTES: {
     }
   },
 
-
   'spider-medium': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 3,
@@ -240,11 +243,13 @@ export const MONSTER_BASE_ATTRIBUTES: {
       intelligence: 1,
     },
     modifiers: {
-      damage: 3
+      movementSpeed: 5,
+      damage: 5
     }
   },
 
   'spider-giant': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 15,
@@ -262,6 +267,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
   },
 
   'slime': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 3,
@@ -274,6 +280,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
   },
 
   'slime-2': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 3,
@@ -286,6 +293,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
   },
 
   'slime-cube': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 4,
@@ -298,6 +306,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
   },
 
   'slime-big': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 8,
@@ -313,6 +322,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
 
 
   'skeleton-1': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 5,
@@ -321,7 +331,9 @@ export const MONSTER_BASE_ATTRIBUTES: {
     },
     modifiers: {}
   },
+
   'skeleton-2': {
+    ratio: 0,
     base: {
       primaryAttribute: "agility",
       strength: 5,
@@ -332,7 +344,9 @@ export const MONSTER_BASE_ATTRIBUTES: {
       attackDistance: 2
     }
   },
+
   'skeleton-3': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 6,
@@ -343,7 +357,9 @@ export const MONSTER_BASE_ATTRIBUTES: {
       damage: 3
     }
   },
+
   'necromancer': {
+    ratio: 0,
     base: {
       primaryAttribute: "intelligence",
       strength: 2,
@@ -362,6 +378,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
   //////////
 
   'goblin': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 6,
@@ -374,7 +391,9 @@ export const MONSTER_BASE_ATTRIBUTES: {
       attackSpeed: 3,
     }
   },
+
   'goblin-2': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 5,
@@ -386,7 +405,9 @@ export const MONSTER_BASE_ATTRIBUTES: {
       attackSpeed: 3,
     }
   },
+
   'goblin-3': {
+    ratio: 0,
     base: {
       primaryAttribute: "agility",
       strength: 4,
@@ -398,7 +419,9 @@ export const MONSTER_BASE_ATTRIBUTES: {
       attackSpeed: 7
     }
   },
+
   'goblin-boss': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 10,
@@ -415,6 +438,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
   //////////
 
   'lava-ogre': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 10,
@@ -428,6 +452,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
   },
 
   'lava-totem': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 10,
@@ -441,6 +466,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
   },
 
   'beholder': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 10,
@@ -454,6 +480,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
   },
 
   'golem': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 10,
@@ -468,6 +495,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
   },
 
   'scorpion-boss': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 10,
@@ -504,6 +532,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
   //////////////
 
   'demon': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 15,
@@ -517,6 +546,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
   },
 
   'winged-demon': {
+    ratio: 0,
     base: {
       primaryAttribute: "strength",
       strength: 20,
@@ -530,6 +560,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
   },
 
   'monkey-king': {
+    ratio: 0,
     base: {
       primaryAttribute: "agility",
       strength: 10,
@@ -549,6 +580,7 @@ export const MONSTER_BASE_ATTRIBUTES: {
   },
 
   'monkey': {
+    ratio: 0,
     base: {
       primaryAttribute: "agility",
       strength: 5,

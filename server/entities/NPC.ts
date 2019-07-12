@@ -58,7 +58,7 @@ export class NPC extends Player {
       player.setTradingItems(items);
 
     } else if (this.kind === "merchant") {
-      const progress = this.state.roomUtils.realRand.intBetween(player.latestProgress, player.latestProgress + 2)
+      const progress = this.state.roomUtils.realRand.intBetween(Math.max(1, player.latestProgress - 1), player.latestProgress + 1)
       player.setTradingItems([
         this.state.roomUtils.createArmor({ progress }),
         this.state.roomUtils.createBoot({ progress }),

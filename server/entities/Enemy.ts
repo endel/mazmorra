@@ -16,8 +16,6 @@ export class Enemy extends Unit {
   aiUpdateTime = 500;
   lastUpdateTime = Date.now();
 
-  isMoving: boolean = false;
-
   constructor (kind, data: Partial<DBHero>, modifiers: Partial<StatsModifiers> = {}) {
     super(undefined, data);
     this.type = helpers.ENTITIES.ENEMY
@@ -25,24 +23,12 @@ export class Enemy extends Unit {
     this.kind = kind;
     this.lvl = data.lvl || 1;
 
-    // apply stats modifiers
-    if (Object.keys(modifiers).length > 0) {
-      // equip dummy item to allow stats calculation.
-      const item = new WeaponItem();
-      for (const statName in modifiers) {
-        const modifier = new ItemModifier();
-        modifier.attr = statName as keyof StatsModifiers;
-        modifier.modifier = modifiers[statName];
-        item.modifiers.push(modifier);
-      }
-      this.equipedItems.add(item);
-
-      this.recalculateStatsModifiers();
+    // give boost on provided modifiers.
+    for (let statName in modifiers) {
+      this.statsBoostModifiers[statName] = modifiers[statName];
     }
-  }
 
-  get aiDistance () {
-    return Math.max(Math.round(this.state.progress / 3), 3);
+    this.recalculateStatsModifiers();
   }
 
   update (currentTime) {
@@ -52,12 +38,14 @@ export class Enemy extends Unit {
     const aiAllowed = timeDiff > this.aiUpdateTime
 
     if (aiAllowed && (!this.action || !this.action.isEligible)) {
+      const aiDistance = this.getAIDistance();
+
       let closePlayer: Player;
 
       for (let sessionId in this.state.players) {
         const player: Player = this.state.players[sessionId];
 
-        if (player.isAlive && distance(this.position, player.position) <= this.aiDistance) {
+        if (player.isAlive && distance(this.position, player.position) <= aiDistance) {
           closePlayer = player;
           break;
         }

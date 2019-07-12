@@ -42,11 +42,16 @@ export class Door extends Interactive {
   @type("string") mapkind: string;
 
   walkable = true;
+  lockedMessage?: string;
 
   constructor (position: Point, destiny: DoorDestiny, isLocked: boolean = false) {
     super(helpers.ENTITIES.DOOR, position);
     this.destiny = destiny;
     this.isLocked = isLocked;
+  }
+
+  unlock() {
+    this.isLocked = false;
   }
 
   interact (moveEvent, player, state) {
@@ -63,9 +68,7 @@ export class Door extends Interactive {
         !itemId ||
         !player.useItem(inventoryType, itemId, true)
       ) {
-        setTimeout(() => {
-          state.createTextEvent(`Door is locked!`, player.position, "white", 100);
-        }, 1);
+        state.createTextEvent(this.lockedMessage || `Door is locked!`, this.position, "white", 500);
         return;
 
       } else if (this.destiny.room === undefined) { // do not unlock special rooms!

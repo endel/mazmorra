@@ -234,13 +234,13 @@ export default class HUD extends THREE.Scene {
   }
 
   openLeaderboard(data) {
-    // skip opening multiple leaderboards.
-    if (
-      this.currentOverlay &&
-      this.currentOverlay instanceof LeaderboardOverlay
-    ) {
-      return;
-    }
+    // // skip opening multiple leaderboards.
+    // if (
+    //   this.currentOverlay &&
+    //   this.currentOverlay instanceof LeaderboardOverlay
+    // ) {
+    //   return;
+    // }
 
     const leaderboard = new LeaderboardOverlay(data);
     leaderboard.toggleOpen();

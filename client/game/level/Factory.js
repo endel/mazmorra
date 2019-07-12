@@ -21,6 +21,8 @@ import Projectile from '../../elements/effects/Projectile';
 import { getClientId } from '../../core/network'
 import CheckPoint from '../../elements/CheckPoint';
 import Leaderboard from '../../elements/Leaderboard';
+import Lever from '../../elements/Lever';
+import Jail from '../../elements/Jail';
 
 export default class Factory {
 
@@ -58,6 +60,11 @@ export default class Factory {
 
         element = new Door(data, this.level.progress, this.level.mapkind, gridItem);
         element.userData.interactive = true;
+        break;
+
+      case helpers.ENTITIES.JAIL:
+        element = new Jail(data, this.level.progress, this.level.mapkind);
+        // element.userData.interactive = true;
         break;
 
       case helpers.ENTITIES.ENEMY:
@@ -111,6 +118,10 @@ export default class Factory {
 
       case helpers.ENTITIES.FOUNTAIN:
         element = new Fountain(data);
+        break;
+
+      case helpers.ENTITIES.LEVER:
+        element = new Lever(data);
         break;
 
       case helpers.ENTITIES.CHECK_POINT:

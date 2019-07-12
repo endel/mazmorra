@@ -29,13 +29,15 @@ import { HelmetItem } from "../entities/items/equipable/HelmetItem";
 import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 import { Diamond } from "../entities/items/Diamond";
 import { Scroll } from "../entities/items/consumable/Scroll";
-import { MONSTER_BASE_ATTRIBUTES, isBossMap, MapKind, isCheckPointMap, getMapKind, NUM_LEVELS_PER_LOOT_ROOM, NUM_LEVELS_PER_CHECKPOINT, MAX_LEVELS, MAX_WEAPON_DAMAGE, MAX_BOW_DAMAGE, MAX_STAFF_DAMAGE, MAX_BOW_ATTACK_DISTANCE, MAX_STAFF_ATTACK_DISTANCE, MAX_BOOTS_ARMOR, MAX_BOOTS_MOVEMENT_SPEED, MAX_HELMET_ARMOR, MAX_ARMOR_ARMOR, MAX_SHIELD_ARMOR } from "./ProgressionConfig";
+import { ENEMY_CONFIGS, isBossMap, MapKind, isCheckPointMap, getMapKind, NUM_LEVELS_PER_LOOT_ROOM, NUM_LEVELS_PER_CHECKPOINT, MAX_LEVELS, MAX_WEAPON_DAMAGE, MAX_BOW_DAMAGE, MAX_STAFF_DAMAGE, MAX_BOW_ATTACK_DISTANCE, MAX_STAFF_ATTACK_DISTANCE, MAX_BOOTS_ARMOR, MAX_BOOTS_MOVEMENT_SPEED, MAX_HELMET_ARMOR, MAX_ARMOR_ARMOR, MAX_SHIELD_ARMOR } from "./ProgressionConfig";
 import { ConsumableItem } from "../entities/items/ConsumableItem";
 import { EquipableItem } from "../entities/items/EquipableItem";
 import { DBAttributeModifier } from "../db/Hero";
 import { CheckPoint } from "../entities/interactive/CheckPoint";
 import { Key } from "../entities/items/consumable/Key";
 import { Leaderboard } from "../entities/interactive/Leaderboard";
+import { Lever } from "../entities/interactive/Lever";
+import { Jail } from "../entities/interactive/Jail";
 
 const ALL_BOOTS = [
   helpers.ENTITIES.BOOTS_1,
@@ -155,7 +157,7 @@ export interface DungeonRoom {
   size: Point;
   tiles: any[];
   walls: any[];
-  branches: Point[];
+  branches: (Point & { dir: number })[];
 }
 
 export interface ItemDropOptions {
@@ -183,8 +185,11 @@ export class RoomUtils {
 
   startRoom: DungeonRoom;
   startPosition: any;
+  startDoor: Door;
+
   endRoom: DungeonRoom;
   endPosition: any;
+  endDoor: Door;
 
   hasSecretDoor: boolean = false;
 
@@ -308,17 +313,18 @@ export class RoomUtils {
     const isLastLevel = (this.state.progress === MAX_LEVELS - 1);
 
     // entrance
-    this.state.addEntity(new Door(this.startPosition, new DoorDestiny({
+    this.startDoor = new Door(this.startPosition, new DoorDestiny({
       progress: DoorProgress.BACK
-    })));
+    }))
+    this.state.addEntity(this.startDoor);
 
     // out
     // obs: door is locked on boss dungeons!
-    const endDoor = new Door(this.endPosition, new DoorDestiny({
+    this.endDoor = new Door(this.endPosition, new DoorDestiny({
       progress: DoorProgress.FORWARD
     }), isLocked)
 
-    this.state.addEntity(endDoor);
+    this.state.addEntity(this.endDoor);
 
     // create the BOSS for the dungeon.
     if (this.isBossDungeon) {
@@ -327,7 +333,7 @@ export class RoomUtils {
         const bossType = this.state.config.boss[0];
         const boss = this.createEnemy(bossType, Boss) as Boss;
         boss.position.set(this.endPosition);
-        boss.unitSpawner = MONSTER_BASE_ATTRIBUTES[bossType].spawner;
+        boss.unitSpawner = ENEMY_CONFIGS[bossType].spawner;
 
         this.bosses = [boss];
 
@@ -350,7 +356,7 @@ export class RoomUtils {
             boss.position.set(position);
 
             if (isFirstBoss) {
-              boss.unitSpawner = MONSTER_BASE_ATTRIBUTES[bossType].spawner;
+              boss.unitSpawner = ENEMY_CONFIGS[bossType].spawner;
               boss.dropOptions = { isRare: true, isMagical: true };
               this.bosses = [boss];
 
@@ -363,7 +369,7 @@ export class RoomUtils {
         });
       }
 
-      this.bosses[0].thingsToUnlockWhenDead.push(endDoor);
+      this.bosses[0].thingsToUnlockWhenDead.push(this.endDoor);
     }
 
     if (isCheckPointMap(this.state.progress)) {
@@ -390,8 +396,31 @@ export class RoomUtils {
       secretDoor.isLocked = true;
       secretDoor.mapkind = getMapKind(this.state.progress, 2);
 
+      // Easter Egg
+      // During every 10 starting minutes of the hour, there's a lever
+      // with 3 people required to open the loot room.
+      var now = new Date();
+      if (now.getMinutes() <= 10) {
+        this.addEntity(secredDoorRoom, (position) => {
+          const lever = new Lever(position);
+          lever.unlock = [secretDoor];
+          lever.numPlayersToUnlock = 3;
+          return lever;
+        });
+      }
+
       this.state.addEntity(secretDoor);
     }
+
+    // JAIL TIME
+    const branch = this.rooms[1].branches[0];
+    const jail = new Jail({ x: branch.y, y: branch.x }, branch.dir);
+    this.state.addEntity(jail);
+    this.addEntity(this.rooms[0], (position) => {
+      const lever = new Lever(position);
+      lever.unlock = [jail];
+      return lever;
+    });
 
     this.rooms.forEach(room => {
       if (this.isBossDungeon && room === this.endRoom) {
@@ -661,9 +690,11 @@ export class RoomUtils {
     // allow 0 enemies on room?
     const minEnemies = (this.realRand.intBetween(0, 3) === 0) ? 0 : 1;
 
-    const maxEnemies = (this.state.progress <= 8)
-      ? 1
-      : Math.min(this.state.progress, Math.floor((room.size.x * room.size.y) / 10));
+    // const maxEnemies = (this.state.progress <= 8)
+    //   ? 1
+    //   : Math.min(this.state.progress, Math.floor((room.size.x * room.size.y) / 10));
+
+    const maxEnemies = Math.min(this.state.progress, Math.floor((room.size.x * room.size.y) / 10));
 
     let numEnemies = this.realRand.intBetween(minEnemies, maxEnemies);
 
@@ -693,11 +724,11 @@ export class RoomUtils {
 
   createEnemy(type: string, enemyKlass: (new (...args: any[]) => Enemy) = Enemy, lvl?: number): Enemy {
     if (!lvl) {
-      const minLvl = Math.ceil(this.state.progress / 3);
-      lvl = this.realRand.intBetween(minLvl, minLvl + 1);
+      lvl = Math.ceil(this.state.progress / 4);
+      // lvl = this.realRand.intBetween(minLvl, minLvl + 1);
     }
 
-    const attributes = MONSTER_BASE_ATTRIBUTES[type];
+    const attributes = ENEMY_CONFIGS[type];
 
     const baseAttributes = {...attributes.base};
     const modifiers = {...attributes.modifiers};
@@ -767,7 +798,7 @@ export class RoomUtils {
         let modifierIndex = 0;
         // 30% chance to drop current level potion
         if (this.realRand.floatBetween(0, 1) > 0.6) {
-          let ratio = this._quadOut(this.state.progress / MAX_LEVELS);
+          let ratio = this._sineOut(this.state.progress / MAX_LEVELS);
           const totalPotionModifiers = ALL_POTION_MODIFIERS.length;
           modifierIndex = Math.floor(ratio * totalPotionModifiers);
           // cap max tier
@@ -788,8 +819,8 @@ export class RoomUtils {
       } else if (chance < 0.99) {
         const dropOptions: ItemDropOptions = {
           progress: this.state.progress,
-          isRare: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.955),
-          isMagical: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.985)
+          isRare: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.965),
+          isMagical: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.990)
         };
 
         const itemType = this.realRand.intBetween(0, 5);
@@ -911,7 +942,6 @@ export class RoomUtils {
       maxAttackDistance = Math.ceil(MAX_BOW_ATTACK_DISTANCE * goodness.ratio);
 
     } else if (item.damageAttribute === "intelligence") {
-      item.manaCost = 2;
       goodness = this.getItemGoodness(dropOptions, ALL_STAFFS);
 
       minDamage = Math.floor(MAX_STAFF_DAMAGE * goodness.ratio);
@@ -1139,6 +1169,11 @@ export class RoomUtils {
     return array;
   }
 
+  _sineOut(t) {
+    return Math.sin(t * Math.PI / 2)
+  }
+
+  // not used anymore
   _quadOut(t) {
     return -t * (t - 2.0);
   }

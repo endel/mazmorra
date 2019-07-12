@@ -75,6 +75,7 @@ export const battleStartSound = {
 
 export const activatableSound = {
   fountain: require('../resource/sounds/fountain.wav'),
+  lever: require('../resource/sounds/effects/lever.mp3')
 };
 
 export const stepSounds = [
@@ -110,6 +111,8 @@ export const spellSound = require('../resource/sounds/spells/generic.mp3');
 
 export const portal = require('../resource/sounds/effects/portal.mp3');
 export const checkpoint = require('../resource/sounds/effects/checkpoint.mp3');
+
+export const pendingSound = require('../resource/sounds/effects/pending.mp3');
 
 /**
  * Weapons

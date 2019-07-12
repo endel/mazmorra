@@ -45,6 +45,8 @@ var helpers = {
       PLAYER: '10',
       TEXT_EVENT: '11',
 
+      JAIL: '12',
+
       NPC: '20',
 
       // gold / diamond
@@ -221,6 +223,7 @@ var helpers = {
       FOUNTAIN: 'fountain',
       CHECK_POINT: 'check-point',
       LEADERBOARD: 'leaderboard',
+      LEVER: 'lever',
 
       // PROJECTILES
       PROJECTILE_MAGIC: 'projectile-magic',

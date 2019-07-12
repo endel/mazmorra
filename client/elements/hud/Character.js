@@ -267,7 +267,7 @@ export default class Character extends THREE.Object3D {
     // Level up hints!
     this.strUpButton.userData.hint = `<strong class="strength">Strength${(data.primaryAttribute === "strength") ? " (primary)" : ""}:</strong><br />
       ${(data.primaryAttribute === "strength") ? "Increase damage (+1)<br/>" : ""}
-      Increase max hp (+5)<br />
+      Increase max hp (+4)<br />
     `;
     this.agiUpButton.userData.hint = `<strong class="agility">Agility${(data.primaryAttribute === "agility") ? " (primary)" : ""}:</strong><br/>
       ${(data.primaryAttribute === "agility") ? "Increase damage (+1)<br/>" : ""}
@@ -299,7 +299,7 @@ export default class Character extends THREE.Object3D {
     if (statsModifiers.damage) { damage = `${damage}-${damage + statsModifiers.damage}` }
     this.damageText.text = damage;
 
-    const baseArmor = { strength: 0, agility: -1.5, intelligence: -2 };
+    const baseArmor = { strength: 0, agility: -1, intelligence: -1.5 };
     this.armorText.text = (statsModifiers.armor + baseArmor[data.primaryAttribute]).toFixed(1);
 
     // base attributes

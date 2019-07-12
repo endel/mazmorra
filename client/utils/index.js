@@ -1,4 +1,6 @@
 export function humanize (value) {
+  if (!value) { value = ""; }
+
   const camelMatch = /([A-Z])/g;
   const underscoreMatch = /_/g;
 

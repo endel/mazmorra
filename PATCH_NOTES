@@ -1,3 +1,13 @@
+**11/07/2019 - Balancing items, enemies and dungeons!**
+- Items: drops are progressing more slowly than it used to.
+- Enemies progression: ...
+- Reduced chance to drop rare and magical items from regular drops
+- Staffs do not cost mana to cast anymore.
+- Changed base armor of heroes
+    - Strength: 0 (no change)
+    - Agility: -1 (was -1.5)
+    - Intelligence: -1.5 (was -2)
+
 **10/07/2019 - Hall of Fame, and bug fixes!**
 - Hall of Fame! There's a totem close to the checkpoint, listing the top 12 players!
 - Fixed glitchy characters in the Castle

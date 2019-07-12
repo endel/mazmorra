@@ -85,7 +85,7 @@ export class HeroSkinBuilder {
 
   static get (character, direction = null) {
     var di = this.directions.indexOf(direction || character._direction)
-    return characters[character.textureOffset][di]
+    return characters[character.textureOffset] && characters[character.textureOffset][di]
   }
 
   static deleteTexture (character) {

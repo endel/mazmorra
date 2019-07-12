@@ -28,6 +28,7 @@ import { NPC } from "../../entities/NPC";
 import { DoorDestiny, DoorProgress, Door } from "../../entities/interactive/Door";
 import { Portal } from "../../entities/interactive/Portal";
 import { debugLog } from "../../utils/Debug";
+import { Jail } from "../../entities/interactive/Jail";
 
 export interface Point {
   x: number;
@@ -146,6 +147,9 @@ export class DungeonState extends Schema {
 
     if (entity instanceof Enemy) {
       this.enemies[entity.id] = entity;
+
+    } else if (entity instanceof Jail) {
+      // this.pathgrid.setWalkableAt(entity.position.x, entity.position.y, false);
     }
   }
 
@@ -309,7 +313,7 @@ export class DungeonState extends Schema {
     }
 
     // skip if invalid destiny
-    if (!('x' in destiny) || !('y' in destiny)) {
+    if (!destiny || !('x' in destiny) || !('y' in destiny)) {
       return
     }
 

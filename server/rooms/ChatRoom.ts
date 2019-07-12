@@ -11,6 +11,9 @@ export class ChatRoom extends Room {
     this.setPatchRate(null);
 
     this.lastMessages = (await ChatLog.find().sort({_id: -1}).limit(30)).reverse();
+
+    // every 20 minutes
+    // this.setSimulationInterval(() => this.sendBetaMessage(), 20 * 1000 * 60);
   }
 
   onAuth (options) {
@@ -21,7 +24,19 @@ export class ChatRoom extends Room {
     this.lastMessages.forEach(msg => this.send(client, msg));
   }
 
+  sendBetaMessage () {
+    this.broadcast({
+      name: "Mazmorra (beta)",
+      lvl: 1,
+      progress: 1,
+      text: "Please join Discord to report issues or suggest improvements. Link in the bottom right.",
+      timestamp: Date.now()
+    });
+  }
+
   onMessage (client: Client, message) {
+    if (!Array.isArray(message)) { return; }
+
     const [command, data] = message;
 
     if (command == "msg") {
