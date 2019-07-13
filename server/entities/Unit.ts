@@ -243,10 +243,10 @@ export class Unit extends Entity {
   }
 
   getAttackSpeed() {
-    return Math.max(
-      10,
-      (this.attackSpeed - ((this.statsModifiers.attackSpeed + this.statsBoostModifiers.attackSpeed) * 10) - (this.attributes.agility * 5))
-    );
+    const modifierAttackSpeed = this.statsModifiers.attackSpeed;
+    const boostAttackSpeed = this.statsBoostModifiers.attackSpeed;
+
+    return Math.max(10, (this.attackSpeed - ((modifierAttackSpeed + boostAttackSpeed) * 10)));
   }
 
   getAttackDistance() {
@@ -256,7 +256,7 @@ export class Unit extends Entity {
   }
 
   getAIDistance() {
-    return this.statsBoostModifiers.aiDistance || 3;
+    return this.statsBoostModifiers.aiDistance || Math.ceil(this.state.progress / 5);
   }
 
   getDamage() {
@@ -391,6 +391,9 @@ export class Unit extends Entity {
 
   onDie () {
     this.walkable = true;
+
+    // remove battle action when dead!
+    this.action = null;
 
     // skip xp if spawned units.
     if (this.doNotGiveXP) {

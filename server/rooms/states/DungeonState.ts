@@ -157,8 +157,6 @@ export class DungeonState extends Schema {
     // cleanup memory!
     this.entitiesToRemove.push(entity);
 
-    delete this.entities[entity.id]
-
     if (entity instanceof Enemy) {
       delete this.enemies[entity.id];
     }
@@ -456,7 +454,9 @@ export class DungeonState extends Schema {
   disposeEntities() {
     if (this.entitiesToRemove.length > 0) {
       for (let i = 0; i < this.entitiesToRemove.length; i++) {
-        this.entitiesToRemove[i].dispose();
+        const entity = this.entitiesToRemove[i];
+        delete this.entities[entity.id];
+        entity.dispose();
       }
       this.entitiesToRemove = [];
     }
