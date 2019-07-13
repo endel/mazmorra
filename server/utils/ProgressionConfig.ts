@@ -25,7 +25,6 @@ export type MapConfig = {
 };
 
 export const NUM_LEVELS_PER_MAP = 20;
-// export const NUM_LEVELS_PER_MAP = 3;
 export const NUM_LEVELS_PER_CHECKPOINT = 8;
 export const NUM_LEVELS_PER_LOOT_ROOM = 12;
 
@@ -128,7 +127,7 @@ export const MAP_CONFIGS: MapConfig[] = [
     getMapHeight: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
-    enemies: { 'skeleton-1': 0.33, 'skeleton-2': 0.33, 'skeleton-3': 0.33, 'spider-medium': 0.01 },
+    enemies: { 'skeleton-1': 0.33, 'skeleton-2': 0.33, 'skeleton-3': 0.33, 'skeleton-4': 0.01 },
     boss: ['necromancer']
   },
 
@@ -260,7 +259,7 @@ export const ENEMY_CONFIGS: {
     },
     modifiers: {
       damage: 5,
-      hp: 70
+      hp: 80
     },
     spawner: {
       type: ['spider'],
@@ -290,7 +289,8 @@ export const ENEMY_CONFIGS: {
       intelligence: 1,
     },
     modifiers: {
-      damage: 2
+      damage: 2,
+      movementSpeed: 5
     }
   },
 
@@ -357,6 +357,21 @@ export const ENEMY_CONFIGS: {
     },
     modifiers: {
       damage: 3
+    }
+  },
+
+  'skeleton-4': {
+    ratio: 0,
+    base: {
+      primaryAttribute: "strength",
+      strength: 8,
+      agility: 4,
+      intelligence: 1
+    },
+    modifiers: {
+      movementSpeed: 10,
+      attackSpeed: 10,
+      damage: 4
     }
   },
 

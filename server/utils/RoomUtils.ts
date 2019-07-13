@@ -29,7 +29,7 @@ import { HelmetItem } from "../entities/items/equipable/HelmetItem";
 import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 import { Diamond } from "../entities/items/Diamond";
 import { Scroll } from "../entities/items/consumable/Scroll";
-import { ENEMY_CONFIGS, isBossMap, MapKind, isCheckPointMap, getMapKind, NUM_LEVELS_PER_LOOT_ROOM, NUM_LEVELS_PER_CHECKPOINT, MAX_LEVELS, MAX_WEAPON_DAMAGE, MAX_BOW_DAMAGE, MAX_STAFF_DAMAGE, MAX_BOW_ATTACK_DISTANCE, MAX_STAFF_ATTACK_DISTANCE, MAX_BOOTS_ARMOR, MAX_BOOTS_MOVEMENT_SPEED, MAX_HELMET_ARMOR, MAX_ARMOR_ARMOR, MAX_SHIELD_ARMOR } from "./ProgressionConfig";
+import { ENEMY_CONFIGS, isBossMap, MapKind, isCheckPointMap, getMapKind, NUM_LEVELS_PER_LOOT_ROOM, NUM_LEVELS_PER_CHECKPOINT, MAX_LEVELS, MAX_WEAPON_DAMAGE, MAX_BOW_DAMAGE, MAX_STAFF_DAMAGE, MAX_BOW_ATTACK_DISTANCE, MAX_STAFF_ATTACK_DISTANCE, MAX_BOOTS_ARMOR, MAX_BOOTS_MOVEMENT_SPEED, MAX_HELMET_ARMOR, MAX_ARMOR_ARMOR, MAX_SHIELD_ARMOR, NUM_LEVELS_PER_MAP } from "./ProgressionConfig";
 import { ConsumableItem } from "../entities/items/ConsumableItem";
 import { EquipableItem } from "../entities/items/EquipableItem";
 import { DBAttributeModifier } from "../db/Hero";
@@ -199,12 +199,15 @@ export class RoomUtils {
   hasFountain: boolean = false;
   checkPoint?: CheckPoint;
 
+  difficultyGap: number;
+
   constructor (rand, state, rooms: DungeonRoom[]) {
     this.rand = rand
     this.state = state
-
     this.rooms = rooms
+
     this.isBossDungeon = isBossMap(this.state.progress);
+    this.difficultyGap = Math.floor(state.progress / NUM_LEVELS_PER_MAP);
 
     this.cacheRoomData();
 
@@ -372,17 +375,6 @@ export class RoomUtils {
       this.bosses[0].thingsToUnlockWhenDead.push(this.endDoor);
     }
 
-    if (isCheckPointMap(this.state.progress)) {
-      const checkPointRoom = this.getRandomRoom([this.startRoom, this.endRoom]);
-      this.rooms = this.rooms.filter(r => r !== checkPointRoom);
-
-      this.checkPoint = new CheckPoint({
-        x: checkPointRoom.position.y + Math.ceil(checkPointRoom.size.y / 2) - 1,
-        y: checkPointRoom.position.x + Math.ceil(checkPointRoom.size.x / 2) - 1,
-      })
-      this.state.addEntity(this.checkPoint);
-    }
-
     if (((this.state.progress + 1) % NUM_LEVELS_PER_LOOT_ROOM) === 0) {
       this.hasSecretDoor = true;
 
@@ -431,12 +423,16 @@ export class RoomUtils {
     /**
      * JAIL TIME
      */
+    let lockedRoom: DungeonRoom;
     if (
       this.rooms.length > 3 &&
       (this.state.progress % 3 === 0)
     ) {
+      // -2 because the last room may have a boss
       const lockedRoomIndex = this.rand.intBetween(1, this.rooms.length - 2);
-      const branch = this.rooms[lockedRoomIndex].branches[0];
+      lockedRoom = this.rooms[lockedRoomIndex];
+
+      const branch = lockedRoom.branches[0];
       if (branch) {
         const jail = new Jail({ x: branch.y, y: branch.x }, branch.dir);
         this.state.addEntity(jail);
@@ -452,7 +448,12 @@ export class RoomUtils {
         // create a higher level enemy inside jails
         this.addEntity(this.rooms[lockedRoomIndex], (position) => {
           const enemyKeys = Object.keys(this.state.config.enemies);
-          const enemy = this.createEnemy(enemyKeys[enemyKeys.length - 1], Enemy, this.getEnemyLevel() + 10);
+          const enemy = this.createEnemy(
+            enemyKeys[enemyKeys.length - 1],
+            Enemy,
+            this.getEnemyLevel() + 5,
+            { aiDistance: 20 }
+          );
           enemy.position.set(position);
           enemy.dropOptions = {
             progress: this.state.progress + 10
@@ -461,6 +462,23 @@ export class RoomUtils {
         })
       }
     }
+
+    // create checkpoint after "JAIL TIME", so we prevent placing checking after a locked room.
+    if (isCheckPointMap(this.state.progress)) {
+      const checkPointRoom = this.getRandomRoom(
+        (lockedRoom)
+          ? [lockedRoom, this.endRoom]
+          : [this.endRoom]
+      );
+      this.rooms = this.rooms.filter(r => r !== checkPointRoom);
+
+      this.checkPoint = new CheckPoint({
+        x: checkPointRoom.position.y + Math.ceil(checkPointRoom.size.y / 2) - 1,
+        y: checkPointRoom.position.x + Math.ceil(checkPointRoom.size.x / 2) - 1,
+      })
+      this.state.addEntity(this.checkPoint);
+    }
+
 
     this.rooms.forEach(room => {
       if (this.isBossDungeon && room === this.endRoom) {
@@ -771,8 +789,14 @@ export class RoomUtils {
   createEnemy(
     type: string,
     enemyKlass: (new (...args: any[]) => Enemy) = Enemy,
-    lvl = this.getEnemyLevel()
+    lvl = this.getEnemyLevel(),
+    statBoost?: Partial<StatsModifiers>
   ): Enemy {
+    // increase difficulty
+    if (this.difficultyGap > 0) {
+      lvl += (2 * this.difficultyGap);
+    }
+
     const attributes = ENEMY_CONFIGS[type];
 
     const baseAttributes = {...attributes.base};
@@ -786,6 +810,16 @@ export class RoomUtils {
       baseAttributes.intelligence += 1;
       baseAttributes.agility += 1;
       baseAttributes[baseAttributes.primaryAttribute] += 1;
+    }
+
+    // boost given stats
+    if (statBoost) {
+      for (let statName in statBoost) {
+        if (!modifiers[statName]) {
+          modifiers[statName] = 0;
+        }
+        modifiers[statName] += statBoost[statName];
+      }
     }
 
     const enemy = new enemyKlass(type, baseAttributes, modifiers);
