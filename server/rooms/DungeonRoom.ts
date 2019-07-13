@@ -55,6 +55,7 @@ export class DungeonRoom extends Room<DungeonState> {
     }
 
     this.state.events.on('goto', this.onGoTo.bind(this));
+    this.state.events.on('disconnect', this.onDisconnect.bind(this));
     this.state.events.on('sound', this.broadcastSound.bind(this));
     this.state.events.on('send', this.sendToPlayer.bind(this));
 
@@ -138,6 +139,8 @@ export class DungeonRoom extends Room<DungeonState> {
       return
     }
 
+    player.lastInteractionTime = this.clock.currentTime;
+
     if (!player.isAlive) {
       console.log("a dead player cannot perform actions!");
       return;
@@ -217,7 +220,12 @@ export class DungeonRoom extends Room<DungeonState> {
       destinyParams.progress = hero.latestProgress;
     }
 
-    this.send(this.clientMap.get(player), ['goto', destinyParams, params]);
+    this.send(client, ['goto', destinyParams, params]);
+  }
+
+  onDisconnect (player) {
+    const client = this.clientMap.get(player);
+    if (client) { client.close(); }
   }
 
   sendToPlayer (player, data) {

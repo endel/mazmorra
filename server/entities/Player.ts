@@ -21,6 +21,8 @@ export class SkinProperties extends Schema {
   @type("number") body: number;
 }
 
+const INACTIVE_TIME_FOR_DISCONNECTION = 3 * 60 * 1000; // 3 minutes
+
 export class Player extends Unit {
   @type("string") name: string;
   @type(SkinProperties) properties = new SkinProperties();
@@ -43,6 +45,8 @@ export class Player extends Unit {
 
   hero: DBHero;
   isSwitchingDungeons: boolean = false;
+
+  lastInteractionTime: number = Date.now();
 
   constructor (id, hero: DBHero, state?) {
     super(id, hero, state)
@@ -70,6 +74,19 @@ export class Player extends Unit {
     this.walkable = true;
 
     this.hero = hero;
+  }
+
+  update(currentTime) {
+    super.update(currentTime);
+
+    // switch back to Castle if user is inactive!
+    if (
+      currentTime >= this.lastInteractionTime + INACTIVE_TIME_FOR_DISCONNECTION &&
+      !this.isSwitchingDungeons
+    ) {
+      this.isSwitchingDungeons = true;
+      this.state.events.emit('disconnect', this);
+    }
   }
 
   getItemByType(type: string) {
