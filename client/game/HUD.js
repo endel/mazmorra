@@ -18,6 +18,7 @@ import { MeshText2D, textAlign } from 'three-text2d'
 import { inventorySound } from '../core/sound';
 import NewQuestOverlay from "../elements/hud/NewQuestOverlay";
 import LeaderboardOverlay from "../elements/hud/LeaderboardOverlay";
+import SkillButton from "../elements/hud/SkillButton";
 
 export default class HUD extends THREE.Scene {
 
@@ -70,19 +71,15 @@ export default class HUD extends THREE.Scene {
     this.openInventoryButton = new OpenInventoryButton()
     this.openInventoryButton.addEventListener('click', this.onToggleInventory.bind(this))
 
-    // Usable skills / items
-    this.skillsInventory = new SlotStrip({
-      columns: 1,
-      slots: 3,
-      accepts: 'skill'
-    })
-
     this.quickInventory = new SlotStrip({
       columns: 1,
       slots: 6,
       inventoryType: "quickInventory"
     });
     this.quickInventory.enabled = true;
+
+    this.skill1Button = new SkillButton("attack-speed");
+    this.skill2Button = new SkillButton("movement-speed");
 
     // Label
     this.selectionText = new MeshText2D("Welcome", {
@@ -129,7 +126,9 @@ export default class HUD extends THREE.Scene {
 
     this.add(this.inventory);
     this.add(this.quickInventory);
-    // this.add(this.skillsInventory);
+
+    this.add(this.skill1Button);
+    this.add(this.skill2Button);
 
     this.add(this.openInventoryButton);
   }
@@ -353,9 +352,6 @@ export default class HUD extends THREE.Scene {
       0
     )
 
-    this.skillsInventory.position.x = - window.innerWidth / 2 + this.skillsInventory.width/2 + margin
-    this.skillsInventory.position.y = - window.innerHeight / 2 + this.skillsInventory.slotSize/2 + margin
-
     //
     // RIGHT SIDE
     //
@@ -397,6 +393,14 @@ export default class HUD extends THREE.Scene {
       this.expbar.position.y + this.expText.height / 2.5,
       this.expbar.position.z
     );
+
+    //
+    // SKILLS
+    //
+    this.skill1Button.position.x = this.manabar.position.x + this.lifebar.width / 2 + (this.skill1Button.width * 2);
+    this.skill1Button.position.y = this.manabar.position.y;
+    this.skill2Button.position.x = this.skill1Button.position.x + (this.skill2Button.width * 2) + config.HUD_SCALE;
+    this.skill2Button.position.y = this.skill1Button.position.y;
 
     // update orthogonal camera aspect ratio / projection matrix
     this.camera.aspect = window.innerWidth / window.innerHeight;
