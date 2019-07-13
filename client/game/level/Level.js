@@ -234,6 +234,11 @@ export default class Level extends THREE.Object3D {
         var skillDuration = payload[3];
         if (object) {
           object.add(new SkillUse(skillName, skillDuration));
+
+          // if (skillName === "movement-speed") {
+          //   player.getEntity().emit('zoom', 0.7);
+          //   setTimeout(() => player.getEntity().emit('zoom', 1), skillDuration);
+          // }
         }
 
       } else if (evt === "sound") {

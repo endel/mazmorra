@@ -253,20 +253,17 @@ export class Unit extends Entity {
       skill = new MovementSpeedSkill();
     }
 
-    if (
-      skill &&
-      !this.activeSkills[skillName] &&
-      this.mp.current >= skill.manaCost
-    ) {
-      this.state.events.emit("broadcast", ['skill', this.id, skillName, skill.duration]);
+    if (skill && !this.activeSkills[skillName]) {
+      if (this.mp.current >= skill.manaCost) {
+        this.state.events.emit("broadcast", ['skill', this.id, skillName, skill.duration]);
 
-      this.activeSkills[skillName] = skill;
-      skill.activate(this);
-      this.mp.increment(-skill.manaCost);
+        this.activeSkills[skillName] = skill;
+        skill.activate(this);
+        this.mp.increment(-skill.manaCost);
 
-    } else {
-      this.state.createTextEvent(`Not enough mana.`, this.position, 'white', 100);
-
+      } else {
+        this.state.createTextEvent(`Not enough mana.`, this.position, 'white', 100);
+      }
     }
   }
 
@@ -280,16 +277,19 @@ export class Unit extends Entity {
 
   getMovementSpeed() {
     return Math.max(
-      20,
+      50,
       this.movementSpeed - ((this.statsModifiers.movementSpeed + this.statsBoostModifiers.movementSpeed) * 30)
     );
+  }
+
+  getSwitchTargetTime() {
   }
 
   getAttackSpeed() {
     const modifierAttackSpeed = this.statsModifiers.attackSpeed;
     const boostAttackSpeed = this.statsBoostModifiers.attackSpeed;
 
-    return Math.max(20, (this.attackSpeed - ((modifierAttackSpeed + boostAttackSpeed) * 10)));
+    return Math.max(50, (this.attackSpeed - ((modifierAttackSpeed + boostAttackSpeed) * 10)));
   }
 
   getAttackDistance() {

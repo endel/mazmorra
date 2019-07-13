@@ -387,7 +387,7 @@ export const ENEMY_CONFIGS: {
       damage: 10,
       movementSpeed: 3,
       attackDistance: 2,
-      hp: 250
+      hp: 1000
     },
     spawner: {
       type: ['skeleton-1', 'skeleton-2'],

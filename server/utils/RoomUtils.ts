@@ -291,9 +291,20 @@ export class RoomUtils {
     return this.getNumPositionsRemaining(room) > 0
   }
 
-  getNextAvailablePosition (room: DungeonRoom) {
+  getNextAvailablePosition (room: DungeonRoom, avoidCorners?) {
     let positions = this.cache.get(room)
-    return positions.shift()
+
+    if (avoidCorners) {
+      const index = positions.findIndex(position => {
+        return position.y < room.position.x + room.size.x - 2 &&
+        position.x < room.position.y + room.size.y - 2
+      });
+
+      return positions.splice(index, 1)[0];
+
+    } else {
+      return positions.shift()
+    }
   }
 
   getRandomRoom(excluding?: DungeonRoom[]) {
@@ -443,7 +454,7 @@ export class RoomUtils {
           const lever = new Lever(position);
           lever.unlock = [jail];
           return lever;
-        });
+        }, true);
 
         // create a higher level enemy inside jails
         this.addEntity(this.rooms[lockedRoomIndex], (position) => {
@@ -459,7 +470,7 @@ export class RoomUtils {
             progress: this.state.progress + 10
           }
           return enemy;
-        })
+        });
       }
     }
 
@@ -586,7 +597,7 @@ export class RoomUtils {
           isMagical: this.realRand.intBetween(0, 1) === 0
         };
         return chest;
-      });
+      }, true);
     }
 
     for (let i=0; i<3; i++) {
@@ -597,7 +608,7 @@ export class RoomUtils {
           isMagical: this.realRand.intBetween(0, 1) === 0
         };
         return chest;
-      });
+      }, true);
     }
 
     for (let i=0; i<5; i++) {
@@ -608,14 +619,14 @@ export class RoomUtils {
           isMagical: this.realRand.intBetween(0, 1) === 0
         };
         return chest;
-      });
+      }, true);
     }
 
     for (let i=0; i<2; i++) {
       var entity = new Entity();
       entity.type = helpers.ENTITIES.AESTHETICS
       entity.walkable = true;
-      entity.position.set(this.getNextAvailablePosition(room));
+      entity.position.set(this.getNextAvailablePosition(room, true));
       this.state.addEntity(entity)
     }
   }
@@ -694,6 +705,7 @@ export class RoomUtils {
      */
     const lady = new NPC('woman', {}, this.state);
     lady.wanderer = false;
+    lady.walkable = false;
     lady.position.set(this.endRoom.position.y + 1, this.endRoom.position.x + Math.ceil(this.endRoom.size.x / 2) - 2);
     this.state.addEntity(lady);
 
@@ -794,7 +806,7 @@ export class RoomUtils {
   ): Enemy {
     // increase difficulty
     if (this.difficultyGap > 0) {
-      lvl += (2 * this.difficultyGap);
+      lvl += (3 * this.difficultyGap);
     }
 
     const attributes = ENEMY_CONFIGS[type];
@@ -825,6 +837,12 @@ export class RoomUtils {
     const enemy = new enemyKlass(type, baseAttributes, modifiers);
     enemy.state = this.state;
 
+    // equip enemy!
+    if (baseAttributes.primaryAttribute === "intelligence") {
+      const equipment = this.createWeapon("intelligence", { progress: this.state.progress + 10 });
+      enemy.equipedItems.add(equipment);
+    }
+
     return enemy;
   }
 
@@ -836,13 +854,13 @@ export class RoomUtils {
     var entity = new Entity();
     entity.type = helpers.ENTITIES.AESTHETICS
     entity.walkable = true;
-    entity.position.set(this.getNextAvailablePosition(room));
+    entity.position.set(this.getNextAvailablePosition(room, true));
     this.state.addEntity(entity)
   }
 
-  addEntity (room: DungeonRoom, getEntity) {
+  addEntity (room: DungeonRoom, getEntity, avoidCorners?: boolean) {
     if (this.hasPositionsRemaining(room)) {
-      this.state.addEntity(getEntity(this.getNextAvailablePosition(room)))
+      this.state.addEntity(getEntity(this.getNextAvailablePosition(room, avoidCorners)))
     }
   }
 

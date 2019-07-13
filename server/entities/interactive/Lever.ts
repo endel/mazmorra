@@ -9,6 +9,7 @@ export class Lever extends Interactive {
   playersInteracted: Set<string>;
 
   _unlock?: any[];
+  walkable = true;
 
   constructor (position) {
     super(helpers.ENTITIES.LEVER, position)

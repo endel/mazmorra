@@ -11,7 +11,7 @@ export class AttackSpeedSkill extends Skill {
   activate(unit: Unit) {
     super.activate(unit);
 
-    this.increasedValue = Math.min(Math.ceil(unit.attributes.agility * 0.75), 20);
+    this.increasedValue = Math.floor(unit.attributes.agility * 0.75);
     unit.statsBoostModifiers.attackSpeed += this.increasedValue;
   }
 
