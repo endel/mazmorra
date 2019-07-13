@@ -1,5 +1,5 @@
 import { Room, Client, generateId } from "colyseus";
-import { DungeonState } from "./states/DungeonState";
+import { DungeonState, RoomType, roomTypes } from "./states/DungeonState";
 import { verifyToken } from "@colyseus/social";
 import { Hero, DBHero } from "../db/Hero";
 import { Player } from "../entities/Player";
@@ -15,7 +15,7 @@ const TICK_RATE = 20 // 20 ticks per second
 export class DungeonRoom extends Room<DungeonState> {
   maxClients = 50;
   progress: number;
-
+  roomName: RoomType;
   players = new WeakMap<Client, Player>();
   clientMap = new WeakMap<Player, Client>();
 
@@ -25,11 +25,16 @@ export class DungeonRoom extends Room<DungeonState> {
   async onInit (options) {
     this.progress = options.progress || 1;
 
+
     // maximum of 5 players allowed on each room.
     if (this.progress !== 1 && this.progress !== MAX_LEVELS) {
       this.maxClients = 5;
     }
 
+    if (roomTypes.indexOf(this.roomName) === -1) {
+      console.log(`ERROR: The roomType "" is not valid`, `Expected values are (${roomTypes.join(', ')}) `);
+    }
+      
     this.players = new WeakMap();
     this.clientMap = new WeakMap();
 

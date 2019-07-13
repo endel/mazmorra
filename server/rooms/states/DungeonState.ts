@@ -34,6 +34,9 @@ export interface Point {
   y: number;
 }
 
+export type RoomType = 'dungeon' | 'pvp' | 'loot' | 'infinite' | 'truehell';
+export const roomTypes: RoomType[] = ['dungeon', 'pvp', 'loot', 'infinite', 'truehell'];
+
 export class DungeonState extends Schema {
   @type("number") progress: number;
   @type("boolean") daylight: boolean;
@@ -65,7 +68,7 @@ export class DungeonState extends Schema {
 
   events = new EventEmitter();
 
-  constructor (progress, seed: string, roomType: string) {
+  constructor (progress, seed: string, roomType: RoomType) {
     super()
 
     this.rand = gen.create(seed + progress);

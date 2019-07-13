@@ -1,6 +1,7 @@
 import { DBHero } from "../db/Hero";
 import { StatsModifiers } from "../entities/Unit";
 import { UnitSpawner } from "../entities/Boss";
+import { RoomType } from "../rooms/states/DungeonState";
 
 export enum MapKind {
   ROCK = 'rock',
@@ -57,7 +58,7 @@ export function getMapKind(progress: number, multiplier: number = 0) {
   return (config && config.mapkind) || MapKind.INFERNO;
 }
 
-export function getMapConfig(progress: number, roomType?: string) {
+export function getMapConfig(progress: number, roomType?: RoomType) {
   if (roomType === "loot") {
     return {
       daylight: Math.random() > 0.5,
