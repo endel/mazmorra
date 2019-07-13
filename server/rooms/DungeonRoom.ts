@@ -199,7 +199,7 @@ export class DungeonRoom extends Room<DungeonState> {
     const client = this.clientMap.get(player);
     const hero = player.hero;
 
-    if (!hero) {
+    if (!hero || !player.isSwitchingDungeons) {
       // FIXME: NPC's shouldn't try to go to another place.
       return;
     }

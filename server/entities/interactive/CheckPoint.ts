@@ -37,6 +37,7 @@ export class CheckPoint extends Interactive {
       }, 1);
 
     } else {
+      player.isSwitchingDungeons = true;
       state.events.emit("send", player, ["checkpoints", player.hero.checkPoints]);
     }
 

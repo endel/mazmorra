@@ -60,7 +60,11 @@ export class Inventory extends Schema {
   }
 
   hasAvailability () {
-    return Object.keys(this.slots).length < this.capacity;
+    return this.numItems < this.capacity;
+  }
+
+  get numItems () {
+    return Object.keys(this.slots).length;
   }
 
   dispose() {
