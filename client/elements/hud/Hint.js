@@ -1,6 +1,8 @@
 import config from "../../config";
 import { humanize, toScreenPosition } from "../../utils";
 
+const ITEM_SLOT_SIZE = 9;
+
 class Hint  {
   constructor() {
     this.el = document.querySelector("#hint");
@@ -31,6 +33,15 @@ class Hint  {
 
     var position = toScreenPosition(hud.camera, sprite);
 
+    if (position.y >= window.innerHeight / 2) {
+      this.el.style.top = (position.y - (config.HUD_SCALE * 5) - this.el.clientHeight + (ITEM_SLOT_SIZE * config.HUD_SCALE)) + "px";
+      this.el.classList.add("bottom");
+
+    } else {
+      this.el.style.top = (position.y - (config.HUD_SCALE * 5)) + "px";
+      this.el.classList.remove("bottom");
+    }
+
     if (position.x >= window.innerWidth / 2) {
       this.el.style.left = (position.x - (config.HUD_SCALE * 5) - this.el.clientWidth - config.HUD_SCALE) + "px";
       this.el.classList.add("left");
@@ -40,7 +51,6 @@ class Hint  {
       this.el.classList.remove("left");
     }
 
-    this.el.style.top = (position.y - (config.HUD_SCALE * 5)) + "px";
   }
 
   update () {

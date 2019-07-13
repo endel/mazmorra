@@ -10,6 +10,21 @@
   @media only screen and (max-width: 768px)
     font-size 20px
 
+  &:not(.bottom)
+    &::after
+      top 24px
+      bottom 0
+    &.left
+      &::before
+        top 30px
+
+  &.bottom
+    &::after
+      bottom 24px
+    &.left
+      &::before
+        bottom 18px
+
   &::after
     content ' '
     position absolute
@@ -17,8 +32,6 @@
     background #cca874
     width: 6px
     height 6px
-    top 24px
-    bottom 0
 
   &:not(.left)
     &::after
@@ -36,7 +49,6 @@
       background #b49054
       width: 6px
       height 6px
-      top 30px
       bottom 0
       right -12px
 
