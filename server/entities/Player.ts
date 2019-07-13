@@ -214,7 +214,10 @@ export class Player extends Unit {
     const fromInventory = this[fromInventoryType];
 
     // prevent hacking.
-    if (!(fromInventory instanceof Inventory)) {
+    if (
+      !(fromInventory instanceof Inventory) ||
+      this.purchase.numItems === 0 // not on purchase mode!
+    ) {
       return;
     }
 
