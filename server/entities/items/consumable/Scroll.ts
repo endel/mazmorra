@@ -23,40 +23,32 @@ export class Scroll extends ConsumableItem {
       return false;
     }
 
-    const mpCost = 10;
     const availablePosition = this.getAvailablePosition(player, state);
 
     if (availablePosition) {
-      if (player.mp.current >= mpCost) {
-        //
-        // remove previous portals from this player.
-        //
-        for (let id in state.entities) {
-          const entity = state.entities[id];
-          if (
-            entity.type === helpers.ENTITIES.PORTAL &&
-            entity.ownerId === player.hero.userId.toString()
-          ) {
-            state.removeEntity(entity);
-          }
+      //
+      // remove previous portals from this player.
+      //
+      for (let id in state.entities) {
+        const entity = state.entities[id];
+        if (
+          entity.type === helpers.ENTITIES.PORTAL &&
+          entity.ownerId === player.hero.userId.toString()
+        ) {
+          state.removeEntity(entity);
         }
-
-        const portal = new Portal({
-          x: availablePosition[1],
-          y: availablePosition[0]
-        }, new DoorDestiny({ progress: DoorProgress.HOME }));
-
-        portal.ownerId = player.hero.userId.toString();
-        portal.state = state;
-
-        player.mp.increment(-mpCost);
-
-        state.addEntity(portal);
-        return true;
-
-      } else {
-        state.createTextEvent(`Not enough mana.`, player.position, 'white', 100);
       }
+
+      const portal = new Portal({
+        x: availablePosition[1],
+        y: availablePosition[0]
+      }, new DoorDestiny({ progress: DoorProgress.HOME }));
+
+      portal.ownerId = player.hero.userId.toString();
+      portal.state = state;
+
+      state.addEntity(portal);
+      return true;
 
     } else {
       state.createTextEvent(`I need more space`, player.position, 'white', 100);
