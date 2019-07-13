@@ -117,6 +117,10 @@ export class BattleAction extends Action {
     const timeDiff = currentTime - this.lastUpdateTime
     const nextAttackAllowed = timeDiff > this.attacker.getAttackSpeed();
 
+    if (!(this.attacker instanceof Enemy)) {
+      console.log("PLAYER ATTACK SPEED:", this.attacker.getAttackSpeed())
+    }
+
     let active = nextAttackAllowed && this.isEligible;
 
     if (nextAttackAllowed) {

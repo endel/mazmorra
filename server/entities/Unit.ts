@@ -14,6 +14,11 @@ import { Item } from "./Item";
 import { WeaponItem } from "./items/equipable/WeaponItem";
 import { ItemDropOptions } from "../utils/RoomUtils";
 
+// Skills
+import { Skill } from "./skills/Skill";
+import { AttackSpeedSkill } from "./skills/AttackSpeedSkill";
+import { MovementSpeedSkill } from "./skills/MovementSpeedSkill";
+
 export type Attribute = 'strength' | 'agility' | 'intelligence';
 export type InventoryType = 'inventory' | 'quickInventory';
 
@@ -145,6 +150,8 @@ export class Unit extends Entity {
 
   doNotGiveXP: boolean;
 
+  activeSkills?: {[skillName: string]: Skill};
+
   constructor(id?: string, hero: Partial<DBHero> = {}, state?) {
     super(id)
 
@@ -227,6 +234,37 @@ export class Unit extends Entity {
     this.mp.current = this.mp.max * mpPercent;
   }
 
+  useSkill (skillName: string) {
+    if (!this.activeSkills) {
+      this.activeSkills = {};
+    }
+
+    let skill: Skill;
+
+    if (skillName === "attack-speed") {
+      skill = new AttackSpeedSkill();
+
+    } else if (skillName === "movement-speed") {
+      skill = new MovementSpeedSkill();
+    }
+
+    if (
+      skill &&
+      !this.activeSkills[skillName] &&
+      this.mp.current >= skill.manaCost
+    ) {
+      this.state.events.emit("broadcast", ['skill', this.id, skillName, skill.duration]);
+
+      this.activeSkills[skillName] = skill;
+      skill.activate(this);
+      this.mp.increment(-skill.manaCost);
+
+    } else {
+      this.state.createTextEvent(`Not enough mana.`, this.position, 'white', 100);
+
+    }
+  }
+
   onEquipedItemsChange(): void {
     this.recalculateStatsModifiers();
   }
@@ -237,7 +275,7 @@ export class Unit extends Entity {
 
   getMovementSpeed() {
     return Math.max(
-      10,
+      20,
       this.movementSpeed - ((this.statsModifiers.movementSpeed + this.statsBoostModifiers.movementSpeed) * 30)
     );
   }
@@ -246,7 +284,7 @@ export class Unit extends Entity {
     const modifierAttackSpeed = this.statsModifiers.attackSpeed;
     const boostAttackSpeed = this.statsBoostModifiers.attackSpeed;
 
-    return Math.max(10, (this.attackSpeed - ((modifierAttackSpeed + boostAttackSpeed) * 10)));
+    return Math.max(20, (this.attackSpeed - ((modifierAttackSpeed + boostAttackSpeed) * 10)));
   }
 
   getAttackDistance() {
@@ -325,8 +363,19 @@ export class Unit extends Entity {
     }
 
     if (currentTime > this.lastHpRegenerationTime + this.hpRegenerationInterval) {
-      this.hp.set( this.hp.current + this.hpRegeneration )
+      this.hp.set(this.hp.current + this.hpRegeneration);
       this.lastHpRegenerationTime = currentTime;
+    }
+
+    // loop through active skills!
+    if (this.activeSkills) {
+      for (let skillName in this.activeSkills) {
+        if (!this.activeSkills[skillName].update(this, currentTime)) {
+          // deactivate and remove skill
+          this.activeSkills[skillName].deactivate(this);
+          delete this.activeSkills[skillName];
+        }
+      }
     }
 
     if (this.action)  {
@@ -482,6 +531,10 @@ export class Unit extends Entity {
     if (this.action) {
       this.action.dispose();
       delete this.action;
+    }
+
+    if (this.activeSkills) {
+      delete this.activeSkills;
     }
 
     this.damageTakenFrom.clear();

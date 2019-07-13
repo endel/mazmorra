@@ -59,6 +59,7 @@ export class DungeonRoom extends Room<DungeonState> {
     this.state.events.on('disconnect', this.onDisconnect.bind(this));
     this.state.events.on('sound', this.broadcastSound.bind(this));
     this.state.events.on('send', this.sendToPlayer.bind(this));
+    this.state.events.on('broadcast', this.broadcastToAll.bind(this));
 
     this.setSimulationInterval(() => this.tick(), 1000 / TICK_RATE);
   }
@@ -175,6 +176,9 @@ export class DungeonRoom extends Room<DungeonState> {
       const { inventoryType, itemId } = value;
       player.useItem(inventoryType, itemId);
 
+    } else if (key == 'skill') {
+      player.useSkill(value);
+
     } else if (key == 'cast') {
       const { inventoryType, itemId, position } = value;
       player.castItem(inventoryType, itemId, position);
@@ -243,6 +247,10 @@ export class DungeonRoom extends Room<DungeonState> {
     if (player && client) {
       this.send(client, data);
     }
+  }
+
+  broadcastToAll (data) {
+    this.broadcast(data);
   }
 
   broadcastSound (soundName, player) {

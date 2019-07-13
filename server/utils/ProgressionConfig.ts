@@ -465,8 +465,10 @@ export const ENEMY_CONFIGS: {
       intelligence: 1
     },
     modifiers: {
-      damage: 5,
+      damage: 10,
       hp: 50,
+      movementSpeed: 5,
+      attackSpeed: 5
     }
   },
 
@@ -479,8 +481,10 @@ export const ENEMY_CONFIGS: {
       intelligence: 1
     },
     modifiers: {
-      damage: 5,
+      damage: 20,
       hp: 50,
+      movementSpeed: 1,
+      attackSpeed: 5
     }
   },
 
@@ -495,6 +499,8 @@ export const ENEMY_CONFIGS: {
     modifiers: {
       damage: 5,
       hp: 50,
+      movementSpeed: 8,
+      attackSpeed: 8
     }
   },
 
@@ -559,7 +565,7 @@ export const ENEMY_CONFIGS: {
       intelligence: 1
     },
     modifiers: {
-      damage: 5,
+      damage: 10,
       hp: 50,
     }
   },
@@ -608,8 +614,8 @@ export const ENEMY_CONFIGS: {
     },
     modifiers: {
       damage: 10,
-      movementSpeed: 5,
-      attackSpeed: 5
+      movementSpeed: 12,
+      attackSpeed: 12
     }
   },
 

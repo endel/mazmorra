@@ -158,7 +158,13 @@ export default class HUD extends THREE.Scene {
       }
 
     } else if (e.which === Keycode.A) {
-      this.dispatchEvent({type: "atk"});
+      this.dispatchEvent({ type: "atk" });
+
+    } else if (e.which === Keycode.Q) {
+      this.dispatchEvent({ type: "skill", skill: "attack-speed" });
+
+    } else if (e.which === Keycode.W) {
+      this.dispatchEvent({ type: "skill", skill: "movement-speed" });
 
     } else if (e.which === Keycode.KEY_1 || e.which === Keycode.NUMPAD_1) {
       this.quickInventory.slots[0].dispatchEvent({

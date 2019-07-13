@@ -134,6 +134,23 @@ export const staffSound = [
   require('../resource/sounds/weapons/staff-2.mp3'),
 ];
 
+
+/**
+ * Skills
+ */
+
+export const skillAttackSpeedSound = [
+  require('../resource/sounds/skills/attack-speed-1.mp3'),
+  require('../resource/sounds/skills/attack-speed-2.mp3'),
+  require('../resource/sounds/skills/attack-speed-3.mp3')
+];
+
+export const skillMovementSpeedSound = [
+  require('../resource/sounds/skills/movement-speed-1.mp3'),
+  require('../resource/sounds/skills/movement-speed-2.mp3'),
+  require('../resource/sounds/skills/movement-speed-3.mp3'),
+];
+
 /**
  * Inventory
  */

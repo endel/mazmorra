@@ -1022,6 +1022,7 @@ export class RoomUtils {
       maxAttackDistance = Math.ceil(MAX_BOW_ATTACK_DISTANCE * goodness.ratio);
 
     } else if (item.damageAttribute === "intelligence") {
+      item.manaCost = 2;
       goodness = this.getItemGoodness(dropOptions, ALL_STAFFS);
 
       minDamage = Math.floor(MAX_STAFF_DAMAGE * goodness.ratio);

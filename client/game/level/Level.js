@@ -15,6 +15,7 @@ import { trackEvent } from '../../utils';
 import Chat from '../../behaviors/Chat';
 import { isTutorialComplete, showTutorial } from '../../web/tutorial';
 import { PlayerPrefs } from '../../core/PlayerPrefs';
+import SkillUse from '../../elements/effects/SkillUse';
 
 export default class Level extends THREE.Object3D {
 
@@ -62,6 +63,12 @@ export default class Level extends THREE.Object3D {
     this.hud.addEventListener("atk", (e) => {
       e.stopPropagation = true;
       this.room.send(["atk"]);
+    });
+
+    // skill!
+    this.hud.addEventListener("skill", (e) => {
+      e.stopPropagation = true;
+      this.room.send(["skill", e.skill]);
     });
 
     // allow to consume items!
@@ -219,6 +226,15 @@ export default class Level extends THREE.Object3D {
         this.playSound("approve");
 
         this.hud.inventory.setTradingItems(data);
+
+      } else if (evt === "skill") {
+        // this.playSound(data);
+        var object = this.entities[data];
+        var skillName = payload[2];
+        var skillDuration = payload[3];
+        if (object) {
+          object.add(new SkillUse(skillName, skillDuration));
+        }
 
       } else if (evt === "sound") {
         this.playSound(data);
