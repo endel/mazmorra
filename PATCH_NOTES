@@ -3,6 +3,7 @@
   - Black/gray screen issues should be gone (hopefully!)
   - Display the correct eye color of players
   - Cannot walk over Merchant and Elder (no more trolls stacking items on them)
+  - Hints are never cut-off the screen
 
 - NEW FEATURE:
   - Introduced Levers and Cages (see when they appear below)
@@ -12,25 +13,25 @@
   - Added 3 new armor skins (T2/T3/T4), previous ones have been pushed to T5 onwards
 
 - EXPERIMENTAL SKILLS:
+  - Now that skills use mana, portals have no mana cost!
   - Bonus attack speed: (`Q` HOTKEY)
     - Costs 15 mana
-    - Gives (agility / 2) bonus attack speed (max=20)
+    - Gives (agility * 0.75) bonus attack speed (max=20)
     - Duration: 3 seconds
   - Bonus movement speed: (`W` HOTKEY)
     - Costs 10 mana
-    - Gives (agility / 3) bonus movement speed (max=20)
+    - Gives (agility * 0.5) bonus movement speed (max=20)
     - Duration: 2 seconds
-  - Portals have no mana cost now!
   - NOTES FOR NEXT VERSIONS:
       - Need a cooldown system
       - Need different skills per class
       - Need to learn/upgrade skills somehow
+      - Bosses will also use skills!
 
 - BALANCING:
   - Items: drops are progressing more slowly than it used to.
   - Dungeons are spread over 20 levels instead of 18
   - Reduced chance to drop rare and magical items from regular drops
-  - Staffs do not cost mana to cast anymore.
   - Changed base armor of heroes
       - Strength: 0 (no change)
       - Agility: -1 (was -1.5)

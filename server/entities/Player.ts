@@ -81,6 +81,7 @@ export class Player extends Unit {
 
     // switch back to Castle if user is inactive!
     if (
+      this.state.progress !== 1 &&
       currentTime >= this.lastInteractionTime + INACTIVE_TIME_FOR_DISCONNECTION &&
       !this.isSwitchingDungeons
     ) {

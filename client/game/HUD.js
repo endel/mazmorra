@@ -78,8 +78,8 @@ export default class HUD extends THREE.Scene {
     });
     this.quickInventory.enabled = true;
 
-    this.skill1Button = new SkillButton("attack-speed");
-    this.skill2Button = new SkillButton("movement-speed");
+    this.skill1Button = new SkillButton("attack-speed", "Q");
+    this.skill2Button = new SkillButton("movement-speed", "W");
 
     // Label
     this.selectionText = new MeshText2D("Welcome", {
@@ -160,10 +160,10 @@ export default class HUD extends THREE.Scene {
       this.dispatchEvent({ type: "atk" });
 
     } else if (e.which === Keycode.Q) {
-      this.dispatchEvent({ type: "skill", skill: "attack-speed" });
+      this.skill1Button.dispatchEvent({ type: "click" });
 
     } else if (e.which === Keycode.W) {
-      this.dispatchEvent({ type: "skill", skill: "movement-speed" });
+      this.skill2Button.dispatchEvent({ type: "click" });
 
     } else if (e.which === Keycode.KEY_1 || e.which === Keycode.NUMPAD_1) {
       this.quickInventory.slots[0].dispatchEvent({

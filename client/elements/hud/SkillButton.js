@@ -2,16 +2,22 @@ import Hint from "./Hint";
 
 export default class SkillButton extends THREE.Object3D {
 
-  constructor (skillName) {
+  constructor (skillName, hotkey) {
     super()
 
     this.userData.hud = true;
 
-    if (skillName === "attack-speed") {
-      this.userData.hint = "Increases attack speed for 3s";
+    this.userData.hint = `(${hotkey}) `;
 
-    } else if (skillName == "movement-speed") {
-      this.userData.hint = "Increases movement speed for 2s";
+    if (skillName === "attack-speed") {
+      this.userData.hint += `Increases attack speed<br/>
+        <strong>Duration:</strong> 3s<br/>
+        <strong class="intelligence">Mana cost:</strong> 15`;
+
+    } else if (skillName === "movement-speed") {
+      this.userData.hint += `Increases movement speed<br />
+        <strong>Duration:</strong> 2s<br/>
+        <strong class="intelligence">Mana cost:</strong> 10`;
     }
 
     this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: ResourceManager.get(`skills-${skillName}`) }))
@@ -38,7 +44,7 @@ export default class SkillButton extends THREE.Object3D {
 
       this.scale.x = this.initialScale.x - 5;
       this.scale.y = this.initialScale.y - 5;
-      this.onMouseOver();
+      this.onMouseOut();
     });
   }
 
