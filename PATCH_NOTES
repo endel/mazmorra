@@ -1,8 +1,10 @@
 **13/07/2019 - Balancing items, enemies and dungeons!**
 - BUG FIX: Black/gray screen issues should be gone (hopefully!)
 - Items: drops are progressing more slowly than it used to.
+- Added 3 new armor skins (T2/T3/T4), previous ones have been pushed to T5 onwards
 
-- Increased difficulty gap between dungeon styles:
+- Dungeons are spread over 20 levels instead of 18
+- Difficulty gap slighly increased between dungeon styles
 
 - Reduced chance to drop rare and magical items from regular drops
 - Staffs do not cost mana to cast anymore.
@@ -15,6 +17,7 @@
 - No mana cost to cast portals!
 - Introduced Levers and Cages - some levels can have a cage with a slighly more dangerous enemy (5 levels higher than others). Find the lever to open the cage.
 - BONUS: At every hour, there is a 10 minute gap which a lever is available to open loot rooms. 3 people must push the lever to open the door.
+- Majesty from latest level still gives you crazy offers but not to crazy as before
 
 **10/07/2019 - Hall of Fame, and bug fixes!**
 - Hall of Fame! There's a totem close to the checkpoint, listing the top 12 players!

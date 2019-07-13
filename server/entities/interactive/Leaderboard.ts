@@ -48,9 +48,7 @@ export class Leaderboard extends Interactive {
       } else {
         player.leaderboardRequested = false;
         state.events.emit("send", player, ['leaderboard', this.cachedLeaderboard.map(hero => {
-          if (hero._id.toString() === player.hero._id.toString()) {
-            hero.current = true;
-          }
+          hero.current = (hero._id.toString() === player.hero._id.toString());
           return hero;
         })]);
 

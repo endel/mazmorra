@@ -385,6 +385,8 @@ export const ENEMY_CONFIGS: {
     },
     modifiers: {
       damage: 10,
+      movementSpeed: 3,
+      attackDistance: 2,
       hp: 250
     },
     spawner: {

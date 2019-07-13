@@ -10,6 +10,7 @@ import { Season } from "../db/Season";
 import { Movement } from "../core/Movement";
 import { Portal } from "../entities/interactive/Portal";
 import { debugLog } from "../utils/Debug";
+import { CheckPoint } from "../entities/interactive/CheckPoint";
 
 const TICK_RATE = 20 // 20 ticks per second
 
@@ -199,8 +200,16 @@ export class DungeonRoom extends Room<DungeonState> {
     const client = this.clientMap.get(player);
     const hero = player.hero;
 
+    // validate checkpoint usage
+    if (
+      params.isCheckPoint &&
+      this.state.roomUtils.checkPoint &&
+      this.state.roomUtils.checkPoint.position.equals(player.position)
+    ) {
+      player.isSwitchingDungeons = true;
+    }
+
     if (!hero || !player.isSwitchingDungeons) {
-      // FIXME: NPC's shouldn't try to go to another place.
       return;
     }
 

@@ -31,11 +31,13 @@ export default class HasLifebar extends Behaviour {
   onMouseOver (tileSelection) {
     this.lifebar.visible = true
 
-    tileSelection.setColor(config.COLOR_RED)
-
     if (this.object.userData.kind || this.isPVPAllowed) {
       // update cursor to 'attack'
       App.cursor.dispatchEvent({ type: 'cursor', kind: 'attack' })
+      tileSelection.setColor(config.COLOR_RED)
+
+    } else {
+      tileSelection.setColor(config.COLOR_GREEN)
     }
   }
 

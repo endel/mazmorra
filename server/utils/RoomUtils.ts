@@ -451,7 +451,7 @@ export class RoomUtils {
           const enemy = this.createEnemy(
             enemyKeys[enemyKeys.length - 1],
             Enemy,
-            this.getEnemyLevel() + 5,
+            this.getEnemyLevel() + 4,
             { aiDistance: 20 }
           );
           enemy.position.set(position);
@@ -877,7 +877,8 @@ export class RoomUtils {
         let modifierIndex = 0;
         // 30% chance to drop current level potion
         if (this.realRand.floatBetween(0, 1) > 0.6) {
-          let ratio = this._sineOut(this.state.progress / MAX_LEVELS);
+          // let ratio = this._sineOut(this.state.progress / MAX_LEVELS);
+          let ratio = this.state.progress / MAX_LEVELS;
           const totalPotionModifiers = ALL_POTION_MODIFIERS.length;
           modifierIndex = Math.floor(ratio * totalPotionModifiers);
           // cap max tier
@@ -1180,15 +1181,15 @@ export class RoomUtils {
     }
 
     const totalTiers = allTiers.length;
-
     let ratio = dropOptions.progress / MAX_LEVELS;
 
+    const ONE_LEVEL_RATIO = 1 / MAX_LEVELS;
     if (dropOptions.isRare) {
-      ratio += this.realRand.floatBetween(0.01, 0.1);
+      ratio += this.realRand.floatBetween(ONE_LEVEL_RATIO, ONE_LEVEL_RATIO * 2);
     }
 
     if (dropOptions.isMagical) {
-      ratio += this.realRand.floatBetween(0.01, 0.1);
+      ratio += this.realRand.floatBetween(ONE_LEVEL_RATIO, ONE_LEVEL_RATIO * 2);
     }
 
     // cap max tier

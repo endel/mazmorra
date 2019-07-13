@@ -86,7 +86,7 @@ export class NPC extends Player {
         const itemDropOptions = {
           progress: (!isLastLevel)
             ? this.state.roomUtils.realRand.intBetween(player.latestProgress, player.latestProgress + NUM_LEVELS_PER_CHECKPOINT)
-            : MAX_LEVELS * 2,
+            : MAX_LEVELS * 1.5,
           isMagical: true,
           isRare: true
         };
