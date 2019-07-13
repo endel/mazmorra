@@ -31,9 +31,8 @@ export default class Jail extends THREE.Object3D {
       mesh.position.z = 1.5;
 
     } else if (this.userData.direction === helpers.DIRECTION.WEST) {
-      // TODO:
       this.position.x = 0.5;
-      mesh.position.x = -1.499;
+      mesh.position.x = 1.499;
       mesh.position.y = 1;
       mesh.rotateY(Math.PI/2);
 

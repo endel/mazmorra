@@ -106,15 +106,15 @@ export const MAP_CONFIGS: MapConfig[] = [
     getMapHeight: (progress: number) => Math.floor(18 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 7, y: 7 },
-    enemies: { 'bat': 0.33, 'rat': 0.33, 'spider': 0.33, 'spider-medium': 0.01 },
+    enemies: { 'rat': 0.33, 'spider': 0.33, 'bat': 0.33, 'spider-medium': 0.01 },
     boss: ['spider-giant']
   },
 
   {
     daylight: false,
     mapkind: MapKind.CAVE,
-    getMapWidth: (progress: number) => 16 + progress % NUM_LEVELS_PER_MAP,
-    getMapHeight: (progress: number) => 16 + progress % NUM_LEVELS_PER_MAP,
+    getMapWidth: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    getMapHeight: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'slime': 0.33, 'slime-2': 0.33, 'skeleton-1': 0.33, 'slime-cube': 0.01, },
@@ -124,8 +124,8 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: true,
     mapkind: MapKind.GRASS,
-    getMapWidth: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
-    getMapHeight: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
+    getMapWidth: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    getMapHeight: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'skeleton-1': 0.33, 'skeleton-2': 0.33, 'skeleton-3': 0.33, 'spider-medium': 0.01 },
@@ -135,8 +135,8 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: false,
     mapkind: MapKind.GRASS,
-    getMapWidth: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
-    getMapHeight: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
+    getMapWidth: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    getMapHeight: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'goblin': 0.33, 'goblin-2': 0.33, 'goblin-3': 0.33, 'skeleton-2': 0.01 },
@@ -146,8 +146,8 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: true,
     mapkind: MapKind.INFERNO,
-    getMapWidth: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
-    getMapHeight: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
+    getMapWidth: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    getMapHeight: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'lava-ogre': 0.33, 'lava-totem': 0.33, 'beholder': 0.33, 'golem': 0.01 },
@@ -158,8 +158,8 @@ export const MAP_CONFIGS: MapConfig[] = [
   {
     daylight: false,
     mapkind: MapKind.INFERNO,
-    getMapWidth: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
-    getMapHeight: (progress: number) => 17 + progress % NUM_LEVELS_PER_MAP,
+    getMapWidth: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    getMapHeight: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: { 'demon': 0.33, 'lava-totem': 0.33, 'beholder': 0.33, 'winged-demon': 0.01 },
@@ -230,7 +230,9 @@ export const ENEMY_CONFIGS: {
       intelligence: 1,
     },
     modifiers: {
-      damage: 10
+      damage: 10,
+      movementSpeed: 5,
+      // attackSpeed: -5
     }
   },
 

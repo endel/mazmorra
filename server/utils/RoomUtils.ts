@@ -412,18 +412,54 @@ export class RoomUtils {
       this.state.addEntity(secretDoor);
     }
 
-    if (this.state.progress % 4 === 0) {
-      // JAIL TIME
-      const branch = this.endRoom.branches[0];
-      const jail = new Jail({ x: branch.y, y: branch.x }, branch.dir);
-      this.state.addEntity(jail);
+    // // 2 levels behind a checkpoint there's a lever to reach the latest room.
+    // if (isCheckPointMap(this.state.progress + 2)) {
+    //   const branch = this.endRoom.branches[0];
+    //   if (branch) {
+    //     const jail = new Jail({ x: branch.y, y: branch.x }, branch.dir);
+    //     this.state.addEntity(jail);
 
-      const randomRoom = this.getRandomRoom([this.endRoom])
-      this.addEntity(randomRoom, (position) => {
-        const lever = new Lever(position);
-        lever.unlock = [jail];
-        return lever;
-      });
+    //     const randomRoom = this.getRandomRoom([this.endRoom])
+    //     this.addEntity(randomRoom, (position) => {
+    //       const lever = new Lever(position);
+    //       lever.unlock = [jail];
+    //       return lever;
+    //     });
+    //   }
+    // }
+
+    /**
+     * JAIL TIME
+     */
+    if (
+      this.rooms.length > 3 &&
+      (this.state.progress % 3 === 0)
+    ) {
+      const lockedRoomIndex = this.rand.intBetween(1, this.rooms.length - 2);
+      const branch = this.rooms[lockedRoomIndex].branches[0];
+      if (branch) {
+        const jail = new Jail({ x: branch.y, y: branch.x }, branch.dir);
+        this.state.addEntity(jail);
+
+        const leverRoomIndex = this.rand.intBetween(0, lockedRoomIndex-1);
+
+        this.addEntity(this.rooms[leverRoomIndex], (position) => {
+          const lever = new Lever(position);
+          lever.unlock = [jail];
+          return lever;
+        });
+
+        // create a higher level enemy inside jails
+        this.addEntity(this.rooms[lockedRoomIndex], (position) => {
+          const enemyKeys = Object.keys(this.state.config.enemies);
+          const enemy = this.createEnemy(enemyKeys[enemyKeys.length - 1], Enemy, this.getEnemyLevel() + 10);
+          enemy.position.set(position);
+          enemy.dropOptions = {
+            progress: this.state.progress + 10
+          }
+          return enemy;
+        })
+      }
     }
 
     this.rooms.forEach(room => {
@@ -590,6 +626,7 @@ export class RoomUtils {
      */
     const merchant = new NPC('merchant', {}, this.state);
     merchant.wanderer = false;
+    merchant.walkable = false;
     merchant.position.set(room.position.x + Math.floor(room.size.x / 2), room.position.y + 1);
     this.state.addEntity(merchant);
 
@@ -605,6 +642,7 @@ export class RoomUtils {
      */
     const elder = new NPC('elder', {}, this.state);
     elder.wanderer = false;
+    elder.walkable = false;
     elder.position.set(room.position.x + 1, room.position.y + Math.floor(room.size.y / 2));
     this.state.addEntity(elder);
 
@@ -700,8 +738,7 @@ export class RoomUtils {
 
     const maxEnemies = Math.min(this.state.progress, Math.floor((room.size.x * room.size.y) / 10));
 
-    // let numEnemies = this.realRand.intBetween(minEnemies, maxEnemies);
-    let numEnemies = 5;
+    let numEnemies = this.realRand.intBetween(minEnemies, maxEnemies);
 
     const enemyList = this.state.config.enemies;
     const enemyNames = Object.keys(enemyList);
@@ -727,12 +764,15 @@ export class RoomUtils {
     }
   }
 
-  createEnemy(type: string, enemyKlass: (new (...args: any[]) => Enemy) = Enemy, lvl?: number): Enemy {
-    if (!lvl) {
-      lvl = Math.ceil(this.state.progress / 4);
-      // lvl = this.realRand.intBetween(minLvl, minLvl + 1);
-    }
+  getEnemyLevel() {
+    return Math.ceil(this.state.progress / 4);
+  }
 
+  createEnemy(
+    type: string,
+    enemyKlass: (new (...args: any[]) => Enemy) = Enemy,
+    lvl = this.getEnemyLevel()
+  ): Enemy {
     const attributes = ENEMY_CONFIGS[type];
 
     const baseAttributes = {...attributes.base};
