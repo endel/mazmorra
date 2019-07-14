@@ -565,6 +565,11 @@ export class RoomUtils {
     });
   }
 
+  populateTrueHell () {
+    this.state.mapkind = MapKind.INFERNO;
+    this.state.daylight = true;
+  }
+
   populateRoomsWithLoot () {
     // entrance
     this.state.addEntity(new Door(this.startPosition, new DoorDestiny({
@@ -764,6 +769,16 @@ export class RoomUtils {
       room: "pvp"
     }));
     this.state.addEntity(pvpDoor);
+    
+    // Door for TrueHell
+    // const hellDoor = new Door({
+    //   x: merchant.position.x - 3,
+    //   y: merchant.position.y + 1
+    // }, new DoorDestiny({
+    //   progress: 2,
+    //   room: "truehell"
+    // }));
+    // this.state.addEntity(hellDoor);
 
     // Leaderboard
     const leaderboard = new Leaderboard({

@@ -364,7 +364,7 @@ export class DungeonRoom extends Room<DungeonState> {
     this.state.removePlayer(player);
 
     // prevent loot dungeons from being looted multiple times using portals.
-    const lastPortalOpened = this.state.getAllEntitiesOfType<Portal>(Portal).sort((a, b) =>
+    const lastPortalOpened = this.state.getAllEntitiesOfType(Portal).sort((a, b) =>
       b.creationTime - a.creationTime)[0];
     if (lastPortalOpened) {
       const elapsedPortalTime = (Date.now() - lastPortalOpened.creationTime);

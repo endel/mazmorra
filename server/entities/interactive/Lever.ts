@@ -1,6 +1,7 @@
 import { type } from "@colyseus/schema";
 import { Interactive } from "../Interactive";
 import helpers from "../../../shared/helpers";
+import { Point } from "../../rooms/states/DungeonState";
 
 export class Lever extends Interactive {
   @type("boolean") active: boolean = false;
@@ -11,7 +12,7 @@ export class Lever extends Interactive {
   _unlock?: any[];
   walkable = true;
 
-  constructor (position) {
+  constructor (position: Point) {
     super(helpers.ENTITIES.LEVER, position)
   }
 

@@ -34,6 +34,8 @@ export interface Point {
   y: number;
 }
 
+type EntityConstructor<U extends Entity> = {new(...args: any[]): U; };
+
 export type RoomType = 'dungeon' | 'pvp' | 'loot' | 'infinite' | 'truehell';
 export const roomTypes: RoomType[] = ['dungeon', 'pvp', 'loot', 'infinite', 'truehell'];
 
@@ -147,6 +149,9 @@ export class DungeonState extends Schema {
     } else if (roomType === "pvp") {
       this.roomUtils.populatePVP();
 
+    } else if (roomType === "truehell") {
+      this.roomUtils.populateTrueHell();
+
     } else {
       // regular room
       this.roomUtils.populateRooms();
@@ -205,6 +210,7 @@ export class DungeonState extends Schema {
 
       } else {
         // back from a portal!
+        const portal = this.getAllEntitiesOfType(Portal).find(portal => portal.ownerId === hero._id.toString());
         if (portal) {
           player.position.set(portal.position);
           this.removeEntity(portal);
@@ -443,12 +449,12 @@ export class DungeonState extends Schema {
 
     return textEvent;
   }
-
-  getAllEntitiesOfType<T>(T: any) {
+  
+  getAllEntitiesOfType<T extends Entity>(klass: EntityConstructor<T>) {
     const entities: T[] = [];
 
     for (var id in this.entities) {
-      if (this.entities[id] instanceof T) {
+      if (this.entities[id] instanceof klass) {
         entities.push(this.entities[id]);
       }
     }
