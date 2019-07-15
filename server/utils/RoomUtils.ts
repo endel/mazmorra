@@ -839,7 +839,7 @@ export class RoomUtils {
 
     // equip enemy!
     if (baseAttributes.primaryAttribute === "intelligence") {
-      const equipment = this.createWeapon("intelligence", { progress: this.state.progress + 10 });
+      const equipment = this.createWeapon("intelligence", { progress: 1 });
       enemy.equipedItems.add(equipment);
     }
 
