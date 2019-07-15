@@ -561,6 +561,8 @@ export default class Level extends THREE.Object3D {
     if (object.parent) {
       if (object.sprite && !force) {
         // fade out objects with sprite
+        App.tweens.remove(object.sprite.scale);
+
         App.tweens.add(object.sprite.scale)
           .to({
             x: 0,
