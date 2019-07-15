@@ -399,6 +399,9 @@ export class DungeonState extends Schema {
   }
 
   createTextEvent (text, position, kind, ttl, small?) {
+    // skip if no position was provided
+    if (!position) { return; }
+
     var textEvent = new TextEvent(text, position, kind, ttl, small);
     textEvent.state = this;
     this.addEntity(textEvent);
