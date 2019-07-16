@@ -28,4 +28,22 @@ export class PlayerPrefs  {
     localStorage.clear();
   }
 
+  static hasSeenBoss(type, bool) {
+    if (bool) {
+      return localStorage.setItem(`boss-${type}-seen`, bool);
+
+    } else {
+      return localStorage.getItem(`boss-${type}-seen`);
+    }
+  }
+
+  static hasKilledBoss(type, bool) {
+    if (bool) {
+      return localStorage.setItem(`boss-${type}-killed`, bool);
+
+    } else {
+      return localStorage.getItem(`boss-${type}-killed`);
+    }
+  }
+
 }
