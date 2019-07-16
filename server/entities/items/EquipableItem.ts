@@ -7,10 +7,19 @@ import { Inventory } from "../../core/Inventory";
 
 export abstract class EquipableItem extends Item {
   @type("string") abstract slotName: EquipmentSlot;
+  @type("number") progressRequired: number;
 
   use(player: Unit, state: DungeonState) {
     // prevent performing action on already equiped item.
     if (player.equipedItems.getItem(this.slotName) === this) {
+      return false;
+    }
+
+    // is player allowed to equip?
+    if (
+      this.progressRequired &&
+      this.progressRequired > (player as any).latestProgress
+    ) {
       return false;
     }
 

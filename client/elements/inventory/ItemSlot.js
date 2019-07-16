@@ -184,22 +184,27 @@ export default class ItemSlot extends THREE.Object3D {
     //
     // EquipedItems: check if target slot accepts this type of item.
     //
-    if (
-      (
-        draggingItem &&
-        draggingItem.userData.item.slotName &&
-        this.accepts &&
-        draggingItem.userData.item.slotName !== this.accepts
-      ) ||
-      (
-        draggingItem &&
-        !draggingItem.userData.item.slotName &&
-        this.parent instanceof EquipedItems
-      )
-    ) {
-      // cancel drop if slotName doesn't match dropped slot.
-      this._revertDraggingItem(true);
-      return;
+    if (this.parent instanceof EquipedItems) {
+      if (
+        ( // is incorrect slot?
+          draggingItem &&
+          draggingItem.userData.item.slotName &&
+          this.accepts &&
+          draggingItem.userData.item.slotName !== this.accepts
+        ) ||
+        ( // doesn't have a
+          draggingItem &&
+          !draggingItem.userData.item.slotName
+        ) ||
+        ( // doesn't meet requiredProgress
+          draggingItem.userData.item.progressRequired &&
+          draggingItem.userData.item.progressRequired > player.userData.latestProgress
+        )
+      ) {
+        // cancel drop if slotName doesn't match dropped slot.
+        this._revertDraggingItem(true);
+        return;
+      }
     }
 
     if (draggingItem) {

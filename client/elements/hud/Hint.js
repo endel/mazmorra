@@ -80,6 +80,10 @@ ${(item.price !== undefined)
   : ""}
 </h2>
 
+${(item.progressRequired && item.progressRequired > player.userData.latestProgress)
+  ? `<p class="strength">Equipable after dungeon ${item.progressRequired}</p>`
+  : "" }
+
 ${(item.damageAttribute)
   ? `<p>Damage attribute: <span class="${item.damageAttribute}">${humanize(item.damageAttribute)}</span></p>`
   : "" }

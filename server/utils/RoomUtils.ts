@@ -437,7 +437,7 @@ export class RoomUtils {
     let lockedRoom: DungeonRoom;
     if (
       this.rooms.length > 3 &&
-      (this.state.progress % 3 === 0)
+      (this.state.progress % 2 === 0)
     ) {
       // -2 because the last room may have a boss
       const lockedRoomIndex = this.rand.intBetween(1, this.rooms.length - 2);
@@ -1065,6 +1065,8 @@ export class RoomUtils {
       this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], goodness);
     }
 
+    this.setItemProgressRequired(item);
+
     return item;
   }
 
@@ -1091,6 +1093,8 @@ export class RoomUtils {
       item.isMagical = true;
       this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], goodness);
     }
+
+    this.setItemProgressRequired(item);
 
     return item;
   }
@@ -1124,6 +1128,8 @@ export class RoomUtils {
       this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], goodness);
     }
 
+    this.setItemProgressRequired(item);
+
     return item;
   }
 
@@ -1150,6 +1156,8 @@ export class RoomUtils {
       item.isMagical = true;
       this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], goodness);
     }
+
+    this.setItemProgressRequired(item);
 
     return item;
   }
@@ -1180,6 +1188,8 @@ export class RoomUtils {
       this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], goodness);
     }
 
+    this.setItemProgressRequired(item);
+
     return item;
   }
 
@@ -1206,6 +1216,10 @@ export class RoomUtils {
     if (tier > totalTiers - 1) { tier = totalTiers - 1; }
 
     return { ratio, tier, type: allTiers[tier] };
+  }
+
+  setItemProgressRequired(item: EquipableItem) {
+    item.progressRequired = Math.max(2, this.state.progress - 5);
   }
 
   // assignItemModifier(item: Item, options)

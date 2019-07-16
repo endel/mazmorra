@@ -261,7 +261,9 @@ export class DungeonState extends Schema {
     const entities = this.gridUtils.getAllEntitiesAt(y, x);
     for (var i=0; i<entities.length; i++) {
       let entity = entities[i] as Entity;
-      if (unit instanceof Enemy && entity instanceof Unit) {
+
+      if (unit instanceof Enemy && entity instanceof Enemy) {
+        moveEvent.cancel();
         // if (
         //   targetEntity.position.x === entity.position.x &&
         //   targetEntity.position.y === entity.position.y

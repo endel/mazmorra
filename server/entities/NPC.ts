@@ -23,8 +23,6 @@ export class NPC extends Player {
 
     this.type = helpers.ENTITIES.NPC;
     this.kind = kind;
-
-    this.walkable = true;
   }
 
   updateMovementSpeed () {

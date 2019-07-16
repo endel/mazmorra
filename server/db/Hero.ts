@@ -29,7 +29,8 @@ export interface DBItem {
   manaCost?: number,
   isRare?: boolean,
   isMagical?: boolean,
-  premium?: boolean,
+  premium?: boolean, // exchange for diamonds?
+  progressRequired?: number;
 }
 
 const Item = new mongoose.Schema<DBItem>({
@@ -41,6 +42,7 @@ const Item = new mongoose.Schema<DBItem>({
   isMagical: Boolean,
   damageAttribute: String,
   manaCost: Number,
+  progressRequired: Number,
 }, { _id: false });
 
 /**

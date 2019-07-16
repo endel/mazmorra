@@ -10,9 +10,9 @@ import { HelmetItem } from "./equipable/HelmetItem";
 import { DBItem } from "../../db/Hero";
 import { Scroll } from "./consumable/Scroll";
 import { ArmorItem } from "./equipable/ArmorItem";
-import { ConsumableItem } from "./ConsumableItem";
 import { Key } from "./consumable/Key";
 import { PotionPoints } from "./consumable/PotionPoints";
+import { EquipableItem } from "./EquipableItem";
 
 export function createItem(data: Item | DBItem, position?: Point): Item {
   let item: Item;
@@ -180,6 +180,10 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
   if (data.premium) { item.premium = data.premium; }
   if (data.isRare) { item.isRare = data.isRare; }
   if (data.isMagical) { item.isMagical = data.isMagical; }
+
+  if ((data as EquipableItem).progressRequired) {
+    (item as EquipableItem).progressRequired = (data as EquipableItem).progressRequired;
+  }
 
   item.type = data.type;
   item.position.set(position);

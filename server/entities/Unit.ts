@@ -151,6 +151,7 @@ export class Unit extends Entity {
   doNotGiveXP: boolean;
 
   activeSkills?: {[skillName: string]: Skill};
+  walkable = true;
 
   constructor(id?: string, hero: Partial<DBHero> = {}, state?) {
     super(id)
@@ -289,7 +290,17 @@ export class Unit extends Entity {
     const modifierAttackSpeed = this.statsModifiers.attackSpeed;
     const boostAttackSpeed = this.statsBoostModifiers.attackSpeed;
 
-    return Math.max(50, (this.attackSpeed - ((modifierAttackSpeed + boostAttackSpeed) * 10)));
+    const agility = this.attributes.agility + this.statsModifiers.agility;
+
+    let attackSpeed = this.attackSpeed -
+      (modifierAttackSpeed + boostAttackSpeed) * 16 -
+      agility * 8;
+
+    if (this.activeSkills && this.activeSkills['attack-speed']) {
+      attackSpeed /= 2;
+    }
+
+    return Math.max(50, attackSpeed);
   }
 
   getAttackDistance() {
@@ -444,8 +455,6 @@ export class Unit extends Entity {
   }
 
   onDie () {
-    this.walkable = true;
-
     // remove battle action when dead!
     this.action = null;
 
