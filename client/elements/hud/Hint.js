@@ -97,7 +97,8 @@ ${(
   ?
     "<p>" +
       item.modifiers.map(modifier => {
-        const equipedItemModifier = equipedItems[item.slotName] && equipedItems[item.slotName].modifiers.filter(mod => mod.attr === modifier.attr)[0];
+        const equipedItem = equipedItems[item.slotName];
+        const equipedItemModifier = equipedItem && equipedItem.modifiers.filter(mod => mod.attr === modifier.attr)[0];
         let equipedModifier = (!equipedItemModifier)
           ? 0
           : equipedItemModifier.modifier;
@@ -111,7 +112,7 @@ ${(
 
         // calculate damage modifier based on `primaryAttribute`
         if (modifier.attr === "damage" && item.damageAttribute) {
-          equipedModifier += player.userData.attributes[player.userData.primaryAttribute];
+          equipedModifier += player.userData.attributes[(equipedItem && equipedItem.damageAttribute) || player.userData.primaryAttribute];
           modifierValue += player.userData.attributes[item.damageAttribute];
         }
 
