@@ -28,21 +28,21 @@ export class PlayerPrefs  {
     localStorage.clear();
   }
 
-  static hasSeenBoss(type, bool) {
+  static hasSeenBoss(entity, bool) {
     if (bool) {
-      return localStorage.setItem(`boss-${type}-seen`, bool);
+      return localStorage.setItem(`boss-${entity.kind}-seen`, bool);
 
     } else {
-      return localStorage.getItem(`boss-${type}-seen`);
+      return localStorage.getItem(`boss-${entity.kind}-seen`);
     }
   }
 
-  static hasKilledBoss(type, bool) {
+  static hasKilledBoss(entity, bool) {
     if (bool) {
-      return localStorage.setItem(`boss-${type}-killed`, bool);
+      return localStorage.setItem(`boss-${entity.kind}-killed`, bool);
 
     } else {
-      return localStorage.getItem(`boss-${type}-killed`);
+      return localStorage.getItem(`boss-${entity.kind}-killed`);
     }
   }
 

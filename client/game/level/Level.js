@@ -300,10 +300,10 @@ export default class Level extends THREE.Object3D {
                 // kill boss camera effect!
 
                 if (
-                  !PlayerPrefs.hasKilledBoss(entity.type) &&
-                  entity.isBoss
+                  entity.isBoss &&
+                  !PlayerPrefs.hasKilledBoss(entity)
                 ) {
-                  PlayerPrefs.hasKilledBoss(entity.type, true);
+                  PlayerPrefs.hasKilledBoss(entity, true);
                   this.playSound("killBoss");
 
                   player.getEntity().emit('target', object);
@@ -399,12 +399,12 @@ export default class Level extends THREE.Object3D {
 
       // boss camera effect
       if (
-        !PlayerPrefs.hasSeenBoss(entity.type) &&
         entity.isBoss &&
+        !PlayerPrefs.hasSeenBoss(entity) &&
         entity.hp.current > 0
       ) {
         setTimeout(() => {
-          PlayerPrefs.hasSeenBoss(entity.type, true);
+          PlayerPrefs.hasSeenBoss(entity, true);
 
           this.playSound("boss");
 
