@@ -20,7 +20,8 @@ export type MapConfig = {
   minRoomSize: {x: number, y: number},
   maxRoomSize: {x: number, y: number},
 
-  enemies: {[id: string]: number},
+  enemies: string[],
+  strongerEnemies: string[],
   boss?: string[]
 };
 
@@ -105,7 +106,8 @@ export const MAP_CONFIGS: MapConfig[] = [
     getMapHeight: (progress: number) => Math.floor(18 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 7, y: 7 },
-    enemies: { 'rat': 0.33, 'spider': 0.33, 'bat': 0.33, 'spider-medium': 0.01 },
+    enemies: ['rat', 'spider', 'bat'],
+    strongerEnemies: ['spider-medium'],
     boss: ['spider-giant']
   },
 
@@ -116,7 +118,8 @@ export const MAP_CONFIGS: MapConfig[] = [
     getMapHeight: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 8, y: 8 },
-    enemies: { 'slime': 0.33, 'slime-2': 0.33, 'skeleton-1': 0.33, 'slime-cube': 0.01, },
+    enemies: ['slime', 'slime-2', 'skeleton-1', 'slime-cube'],
+    strongerEnemies: ['slime-cube'],
     boss: ['slime-big']
   },
 
@@ -127,7 +130,8 @@ export const MAP_CONFIGS: MapConfig[] = [
     getMapHeight: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 8, y: 8 },
-    enemies: { 'skeleton-1': 0.33, 'skeleton-2': 0.33, 'skeleton-3': 0.33, 'skeleton-4': 0.01 },
+    enemies: ['skeleton-1', 'skeleton-2', 'skeleton-3'],
+    strongerEnemies: ['skeleton-4'],
     boss: ['necromancer']
   },
 
@@ -138,7 +142,8 @@ export const MAP_CONFIGS: MapConfig[] = [
     getMapHeight: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 8, y: 8 },
-    enemies: { 'goblin': 0.33, 'goblin-2': 0.33, 'goblin-3': 0.33, 'skeleton-2': 0.01 },
+    enemies: ['goblin', 'goblin-2', 'goblin-3'],
+    strongerEnemies: ['skeleton-2'],
     boss: ['goblin-boss']
   },
 
@@ -149,7 +154,8 @@ export const MAP_CONFIGS: MapConfig[] = [
     getMapHeight: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
-    enemies: { 'lava-ogre': 0.33, 'lava-totem': 0.33, 'beholder': 0.33, 'golem': 0.01 },
+    enemies: ['lava-ogre', 'lava-totem', 'beholder'],
+    strongerEnemies: ['golem'],
     boss: ['scorpion-boss']
     // boss: ['evil-majesty']
   },
@@ -161,7 +167,8 @@ export const MAP_CONFIGS: MapConfig[] = [
     getMapHeight: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
-    enemies: { 'demon': 0.33, 'lava-totem': 0.33, 'beholder': 0.33, 'winged-demon': 0.01 },
+    enemies: ['demon', 'lava-totem', 'beholder'],
+    strongerEnemies: ['winged-demon'],
     boss: ['monkey-king', 'scorpion-boss', 'goblin-boss', 'necromancer', 'slime-big', 'spider-giant']
   },
 

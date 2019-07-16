@@ -458,9 +458,11 @@ export class RoomUtils {
 
         // create a higher level enemy inside jails
         this.addEntity(this.rooms[lockedRoomIndex], (position) => {
-          const enemyKeys = Object.keys(this.state.config.enemies);
+          const enemyList = this.state.config.strongerEnemies;
+          const rand = this.realRand.intBetween(0, enemyList.length - 1);
+
           const enemy = this.createEnemy(
-            enemyKeys[enemyKeys.length - 1],
+            enemyList[rand],
             Enemy,
             this.getEnemyLevel() + 4,
             { aiDistance: 20 }
@@ -659,12 +661,12 @@ export class RoomUtils {
     merchant.position.set(room.position.x + Math.floor(room.size.x / 2), room.position.y + 1);
     this.state.addEntity(merchant);
 
-    const merchantChest = new Chest({
-      x: merchant.position.x + 1,
-      y: merchant.position.y
-    }, 'chest', true);
-    merchantChest.walkable = false;
-    this.state.addEntity(merchantChest);
+    // const merchantChest = new Chest({
+    //   x: merchant.position.x + 1,
+    //   y: merchant.position.y
+    // }, 'chest', true);
+    // merchantChest.walkable = false;
+    // this.state.addEntity(merchantChest);
 
     /**
      * Elder
@@ -675,12 +677,12 @@ export class RoomUtils {
     elder.position.set(room.position.x + 1, room.position.y + Math.floor(room.size.y / 2));
     this.state.addEntity(elder);
 
-    const elderChest = new Chest({
-      x: elder.position.x,
-      y: elder.position.y + 1
-    }, 'bucket', true);
-    elderChest.walkable = false;
-    this.state.addEntity(elderChest);
+    // const elderChest = new Chest({
+    //   x: elder.position.x,
+    //   y: elder.position.y + 1
+    // }, 'bucket', true);
+    // elderChest.walkable = false;
+    // this.state.addEntity(elderChest);
 
     this.state.addEntity(new Fountain({ x: elder.position.x, y: elder.position.y - 1 }));
 
@@ -771,23 +773,11 @@ export class RoomUtils {
     let numEnemies = this.realRand.intBetween(minEnemies, maxEnemies);
 
     const enemyList = this.state.config.enemies;
-    const enemyNames = Object.keys(enemyList);
-
-    let currentRange = 0;
-    const enemyRange = [];
-    enemyNames.forEach((enemyId) => {
-      currentRange += enemyList[enemyId];
-      enemyRange.push(currentRange);
-    });
 
     while (numEnemies--) {
       this.addEntity(room, (position) => {
-        const rand = this.realRand.floatBetween(0, 1);
-
-        const enemyTypeIndex = enemyRange.findIndex(range => rand <= range);
-        const enemyType = enemyNames[enemyTypeIndex];
-
-        const enemy = this.createEnemy(enemyType, Enemy);
+        const rand = this.realRand.intBetween(0, enemyList.length - 1);
+        const enemy = this.createEnemy(enemyList[rand], Enemy);
         enemy.position.set(position);
         return enemy;
       })
