@@ -98,11 +98,15 @@
       gtag('config', 'UA-112311879-2');
     </script>
 
-    <!-- Facebook Auth -->
+    <!-- Facebook -->
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.3&appId=423509175166200&autoLogAppEvents=1"></script>
+
     <script>
       window.fbAsyncInit = function() {
         FB.init({
-          appId      : '423509175166200',
+          appId      : '423509175166200', // Production
+          // appId      : '2370808886332893', // Development
           cookie     : true,
           xfbml      : true,
           version    : 'v3.3'
@@ -125,6 +129,9 @@
     <section id="hint"></section>
 
     <section id="credentials" class="modal active">
+      <div class="fb-like" data-href="https://mazmorra.io" data-width="" data-layout="button_count" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+
+      <div class="featured-youtuber"><a href="https://discord.gg/32A2kuU">Send us your video</a></div>
 
       <!-- Adinplay banners -->
       <div id='mazmorra-io_300x250' class="ad-left">
@@ -137,7 +144,7 @@
 
       <!-- Updates! -->
       <div class="updates">
-        <h2>(13/07/2019) Balancing, levers, and experimental skills!</h2>
+        <h2>(15/07/2019) Facebook login, and multiple heroes!</h2>
         <a href="https://discord.gg/32A2kuU" target="_blank">Join Discord for Announcements</a>
       </div>
 
@@ -145,18 +152,30 @@
 
       <p class="not-loaded">Loading, please wait...</p>
 
-      <p class="login hidden">
-        <a href="#" class="login">Continue</a>
-        <br />
-        <a href="#" class="new-hero">(Create new hero)</a>
-      </p>
+      <script type="plain/text" id="hero-template">
+        <li>
+          <a href="#" data-index="{index}">
+            <span class="skin" style="background-image: url({background-image}); background-position: {background-position};"></span>
+            <span class="name">{name}</span>
+            <span class="lvl">{lvl}</span>
+          </a>
+          <a href="#" data-remove="{index}">X</a>
+        </li>
+      </script>
 
-      <div class="register hidden">
-        <input type="text" name="name" maxlength="20" placeholder="Anonymous" />
+      <section class="login hidden">
+        <a href="#" class="fb-login hidden">Connect with Facebook</a>
+        <ul class="heroes"></ul>
+        <a href="#" class="new-hero">Create New Hero</a>
+      </section>
+
+      <section class="register hidden">
+        <a href="#" class="fb-login hidden">Login with Facebook</a>
+        <input type="text" name="name" maxlength="20" placeholder="Anonymous" autofocus />
         <div>
           <a href="#" class="register">Create hero</a>
         </div>
-      </div>
+      </section>
     </section>
 
     <main id="game"></main>

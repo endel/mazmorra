@@ -1,5 +1,6 @@
 import { Client } from 'colyseus.js'
 import credentials from '../web/login'
+import { PlayerPrefs } from './PlayerPrefs';
 
 const protocol = window.location.protocol.replace("http", "ws");
 const endpoint = (process.env.NODE_ENV === "production")
@@ -16,6 +17,10 @@ export function enterRoom (name, options = {}) {
   App.cursor.dispatchEvent({ type: "cursor", kind: "loading" });
 
   options.token = credentials.token
+
+  // Assign current hero id
+  const heroId = PlayerPrefs.get('heroId');
+  if (heroId) { options.heroId = heroId; }
 
   // Troll adblock users
   if (window.adBlock) { options.adBlock = true; }

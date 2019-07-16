@@ -289,7 +289,8 @@ export default class Character extends THREE.Object3D {
     // this.movementSpeedText.text = `${statsModifiers.movementSpeed} (${(1000 / movementSpeed).toFixed(1)}/s)`;
 
     this.movementSpeedText.text = `${statsModifiers.movementSpeed}`;
-    this.attackSpeedText.text = (data.attributes.agility * 0.5 + statsModifiers.attackSpeed).toFixed(1);
+    // this.attackSpeedText.text = (data.attributes.agility * 0.5 + statsModifiers.attackSpeed).toFixed(1);
+    this.attackSpeedText.text = (statsModifiers.attackSpeed).toFixed(1);
 
     this.attackDistanceText.text = statsModifiers.attackDistance.toString();
 

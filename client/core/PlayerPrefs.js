@@ -1,30 +1,31 @@
-const PREFIX = "$unixie$"
+const localStorage = window.localStorage || {
+  //
+  // some browser configurations may block `localStorage` usage from an iframe
+  // e.g.: "Failed to read the 'localStorage' property from 'Window': Access is denied for this document."
+  //
+  _data: {},
+  setItem(k, v) { this._data[k] = v },
+  getItem(k) { return this._data[k] },
+  removeItem(k) { delete this._data[k] },
+  clear() { this._data = {}; }
+}
 
 export class PlayerPrefs  {
 
-    static set (key, value) {
-        if (typeof(key)==="string") {
-            // set a single value
-            localStorage.setItem(`${PREFIX}${key}`, JSON.stringify(value));
+  static set (key, value) {
+    localStorage.setItem(key, value);
+  }
 
-        } else if (typeof(key)==="object" && typeof(value)==="undefined") {
-            // set multiple values
-            for (let k in key) {
-                this.set(k, key[k]);
-            }
-        }
-    }
+  static get (key) {
+    return localStorage.getItem(key);
+  }
 
-    static get (key) {
-        return JSON.parse(localStorage.getItem(`${PREFIX}${key}`));
-    }
+  static remove (key) {
+    localStorage.removeItem(key);
+  }
 
-    static remove (key) {
-        localStorage.removeItem(`${PREFIX}${key}`);
-    }
-
-    static clear () {
-        localStorage.clear();
-    }
+  static clear () {
+    localStorage.clear();
+  }
 
 }

@@ -36,7 +36,7 @@ module.exports = {
         loader: 'babel-loader',
       },
       { test: /\.styl$/, loader: stylusLoader },
-      { test: /\.(woff|woff2|eot|ttf|svg|jpg)$/, loader: 'file-loader?limit=1024&name=[name].[ext]' },
+      { test: /\.(woff|woff2|eot|ttf|svg|jpg|png)$/, loader: 'file-loader?limit=1024&name=[name].[ext]' },
       { test: /\.(wav|ogg|mp3|aif)$/, loader: AudioSprite.loader() }
     ],
 
@@ -48,8 +48,8 @@ module.exports = {
     new webpack.ProvidePlugin({
       THREE: "three",
       Tweener: "tweener",
-      App: __dirname + "/client/core/App",
-      ResourceManager: __dirname + '/client/resource/manager',
+      App: [__dirname + "/client/core/App", "default"],
+      ResourceManager: [__dirname + '/client/resource/manager', 'default'],
       config: __dirname + '/client/config'
     }),
 

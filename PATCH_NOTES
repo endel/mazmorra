@@ -1,3 +1,7 @@
+**13/07/2019 - Facebook login, and multiple heroes!**
+- Allow to create up to 3 heros
+- Heroes are persisted on multiple devices by using Facebook Connect
+
 **13/07/2019 - Balancing, levers, and experimental skills!**
 - BUG FIXES:
   - Black/gray screen issues should be gone (hopefully!)
@@ -37,7 +41,7 @@
       - Agility: -1 (was -1.5)
       - Intelligence: -1.5 (was -2)
   - Dungeons are a bit smaller than before.
-  - Majesty from latest level still gives you crazy offers but not to crazy as before
+  - Majesty from latest level still gives you crazy offers, just not as crazy as before
 
 **10/07/2019 - Hall of Fame, and bug fixes!**
 - Hall of Fame! There's a totem close to the checkpoint, listing the top 12 players!

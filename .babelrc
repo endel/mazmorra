@@ -4,7 +4,11 @@
       "@babel/preset-env",
       {
         "targets": {
-          "esmodules": true
+          "browsers": [
+            "last 1 version",
+            "not ie <= 9",
+            "not dead",
+          ]
         }
       }
     ],

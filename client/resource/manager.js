@@ -1,6 +1,10 @@
-const data = require('./data.json');
-const spritesheet = require('../../public/images/spritesheet.json');
-const config = require('../config');
+// const data = require('./data.json');
+// const spritesheet = require('../../public/images/spritesheet.json');
+// const config = require('../config');
+
+import data from './data.json';
+import spritesheet from '../../public/images/spritesheet.json';
+import config from '../config';
 
 // allow to clone textures without duplicating it in memory
 THREE.Texture.prototype.createInstance = function() {
@@ -179,4 +183,6 @@ class ResourceManager {
 
 }
 
-module.exports = ResourceManager;
+
+export default ResourceManager;
+// module.exports = ResourceManager;

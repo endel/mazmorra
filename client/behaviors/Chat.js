@@ -16,6 +16,11 @@ export default class Chat extends Behaviour {
       setInterval(() => this.room.send(['ping']), 30 * 1000);
     });
 
+    this.room.onError.add((e) => {
+      console.log("CHAT ROOM ERROR", e)
+      this.room.removeAllListeners();
+    });
+
     this.room.onMessage.add((message) => this.addMessage(message))
     this.room.onLeave.add(() => {
       if (confirm("The server has been restarted, refresh the game? Please join the Discord Server if you think this is a bug.")) {

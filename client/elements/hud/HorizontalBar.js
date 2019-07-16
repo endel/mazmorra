@@ -1,4 +1,3 @@
-import Hint from "./Hint";
 
 export default class HorizontalBar extends THREE.Object3D {
 

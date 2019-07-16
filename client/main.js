@@ -1,4 +1,10 @@
-/* jshint devel:true */
+// > Polyfills
+// import "core-js/stable";
+import "core-js/stable/object/assign";
+import "core-js/stable/array/from";
+import "regenerator-runtime/runtime";
+// < end of Polyfills!
+
 require('./css/main.styl');
 
 import ResourceManager from './resource/manager'
@@ -21,16 +27,12 @@ ResourceManager.load(() => {
   game.render();
 
   login.on('register', (data) => {
-    // game.characterBuilder.setHero(data.heros[0])
+    console.log("LOGIN, ON REGISTER!", data);
     game.buildCharacter(data);
-    // game.characterBuilder.setHero({});
-  })
-
-  login.on('login', (data) => {
-    // game.characterBuilder.setHero(data.heros[0])
-    // game.characterBuilder.setHero(data);
+  });
+  login.on('login', () => {
     game.init();
-  })
+  });
 
   login.init();
 })

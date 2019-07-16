@@ -7,6 +7,7 @@ import login from '../web/login'
 
 import config from '../config'
 import { getLightPoolCount, getLightFromPool, removeLight } from '../utils';
+import { PlayerPrefs } from '../core/PlayerPrefs';
 
 export default class Game {
 
@@ -95,6 +96,9 @@ export default class Game {
 
   async createHero(data) {
     const hero = await login.createHero({ ...this.characterBuilder.getHero(), ...data });
+
+    PlayerPrefs.set("heroId", hero._id);
+
     this.init();
   }
 

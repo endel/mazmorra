@@ -65,8 +65,7 @@ export class DungeonRoom extends Room<DungeonState> {
   }
 
   async onAuth (options) {
-    const userId = verifyToken(options.token)._id;
-    return await Hero.findOne({ userId, alive: true });
+    return verifyToken(options.token)._id;
   }
 
   requestJoin (options, isNew) {
@@ -79,7 +78,7 @@ export class DungeonRoom extends Room<DungeonState> {
     return success;
   }
 
-  async onJoin (client: Client, options: any, hero: DBHero) {
+  async onJoin (client: Client, options: any, userId: string) {
     //
     // // TODO: AdBlock trolling!
     //
@@ -93,6 +92,13 @@ export class DungeonRoom extends Room<DungeonState> {
     //   this.clientMap.set(player, client)
     //   return;
     // }
+
+    const _id = options.heroId;
+    const hero = await Hero.findOne({ userId, _id });
+
+    if (!hero) {
+      return false;
+    }
 
     if (hero.online) {
       // prevent users from opening multiple tabs
