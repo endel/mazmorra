@@ -11,13 +11,13 @@ export default class SkillButton extends THREE.Object3D {
 
     if (skillName === "attack-speed") {
       this.userData.hint += `Enchanted weapon<br/>
-        Increases attack speed by 3/4 of your <strong class="agility">agility</strong><br/>
+        Increase attack speed by 2x<br/>
         <strong>Duration:</strong> 3s<br/>
         <strong class="intelligence">Mana cost:</strong> 15`;
 
     } else if (skillName === "movement-speed") {
       this.userData.hint += `Enchanted boots<br />
-        Increases attack speed by 1/2 of your <strong class="agility">agility</strong><br/>
+        Increase movement speed by 2x<br/>
         <strong>Duration:</strong> 2s<br/>
         <strong class="intelligence">Mana cost:</strong> 10`;
     }

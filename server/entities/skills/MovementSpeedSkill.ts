@@ -11,13 +11,13 @@ export class MovementSpeedSkill extends Skill {
   activate(unit: Unit) {
     super.activate(unit);
 
-    this.increasedValue = Math.floor(unit.attributes.agility * 0.5);
-    unit.statsBoostModifiers.movementSpeed += this.increasedValue;
+    // this.increasedValue = Math.floor(unit.attributes.agility * 0.5);
+    // unit.statsBoostModifiers.movementSpeed += this.increasedValue;
   }
 
   deactivate(unit: Unit) {
     super.deactivate(unit);
 
-    unit.statsBoostModifiers.movementSpeed -= this.increasedValue;
+    // unit.statsBoostModifiers.movementSpeed -= this.increasedValue;
   }
 }

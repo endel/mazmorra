@@ -60,7 +60,9 @@ export class DungeonState extends Schema {
   roomUtils: RoomUtils;
 
   pathgrid: PF.Grid;
-  finder = new PF.AStarFinder({ allowDiagonal: true } as any);
+  finder = new PF.AStarFinder({
+    diagonalMovement: PF.DiagonalMovement.Always
+  } as any);
 
   events = new EventEmitter();
 
@@ -102,6 +104,15 @@ export class DungeonState extends Schema {
       this.grid[i] = flatgrid[i];
     }
 
+    // 0 = walkable, 1 = blocked
+    this.pathgrid = new PF.Grid(grid.map((line, x) => {
+      return line.map((type, y) => {
+        // const hasInteractive = this.gridUtils.getEntityAt(x, y, Interactive, 'actAsObstacle');
+        // console.log("has interactive?", x, y, hasInteractive);
+        return (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1;
+      });
+    }))
+
     /**
     ////////////////
     let i = 0;
@@ -131,15 +142,6 @@ export class DungeonState extends Schema {
       // regular room
       this.roomUtils.populateRooms();
     }
-
-    // 0 = walkable, 1 = blocked
-    this.pathgrid = new PF.Grid(grid.map((line, x) => {
-      return line.map((type, y) => {
-        // const hasInteractive = this.gridUtils.getEntityAt(x, y, Interactive, 'actAsObstacle');
-        // console.log("has interactive?", x, y, hasInteractive);
-        return (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1;
-      });
-    }))
   }
 
   addEntity (entity) {
@@ -149,7 +151,9 @@ export class DungeonState extends Schema {
       this.enemies[entity.id] = entity;
 
     } else if (entity instanceof Jail) {
-      // this.pathgrid.setWalkableAt(entity.position.x, entity.position.y, false);
+      entity.getLockedTiles().forEach(position => {
+        this.pathgrid.setWalkableAt(position.x, position.y, false);
+      })
     }
   }
 
@@ -165,18 +169,7 @@ export class DungeonState extends Schema {
   createPlayer (client, hero: DBHero, options: any) {
     var player = new Player(client.sessionId, hero, this);
 
-    if (
-      options.isPortal &&
-      (
-        (
-          this.progress > 1 &&
-          hero.currentCoords &&
-          this.roomUtils.isValidTile(hero.currentCoords) // original room may have been expired
-        ) || (
-          this.progress === 1
-        )
-      )
-    ) {
+    if (options.isPortal) {
       if (this.progress === 1) {
         // created a portal in a dungeon!
         const portalBack = new Portal({
@@ -186,7 +179,7 @@ export class DungeonState extends Schema {
           progress: hero.currentProgress,
           room: hero.currentRoom
         }));
-        portalBack.ownerId = hero.userId.toString();
+        portalBack.ownerId = hero._id.toString();
         // City's portal has 1 second less of life,
         // to avoid created room from being created again
         portalBack.ttl -= 1000;
@@ -198,13 +191,17 @@ export class DungeonState extends Schema {
 
       } else {
         // back from a portal!
-
-        const portal = this.getAllEntitiesOfType<Portal>(Portal).find(portal => portal.ownerId === hero.userId.toString());
+        const portal = this.getAllEntitiesOfType<Portal>(Portal).find(portal => portal.ownerId === hero._id.toString());
         if (portal) {
+          player.position.set(portal.position);
           this.removeEntity(portal);
+
+        } else {
+          // fallback in case of error
+          debugLog(`portal hack? ${player.hero.name} - lvl ${player.hero.lvl} (${hero.userId})`);
+          player.position.set(this.roomUtils.startPosition);
         }
 
-        player.position.set(hero.currentCoords);
       }
 
     } else if (
@@ -262,7 +259,11 @@ export class DungeonState extends Schema {
     for (var i=0; i<entities.length; i++) {
       let entity = entities[i] as Entity;
 
-      if (unit instanceof Enemy && entity instanceof Enemy) {
+      if (
+        unit instanceof Enemy &&
+        entity instanceof Unit &&
+        entity.isAlive
+      ) {
         moveEvent.cancel();
         // if (
         //   targetEntity.position.x === entity.position.x &&
@@ -318,7 +319,9 @@ export class DungeonState extends Schema {
     }
 
     // prioritize getting Unit entities before
-    let targetEntity = this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit);
+    let targetEntity = (unit instanceof Enemy)
+      ? this.gridUtils.getEntityAt(destiny.x, destiny.y, Player, 'isAlive') // enemies prioritize players
+      : this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit, 'isAlive'); // players have no priority
 
     if (!targetEntity) {
       targetEntity = this.gridUtils.getEntityAt(destiny.x, destiny.y)
@@ -330,9 +333,19 @@ export class DungeonState extends Schema {
     for (const id in this.entities) {
       const entity: Entity = this.entities[id];
 
+
       if (
-        !entity.walkable &&
-        (!targetEntity || !entity.position.equals(targetEntity.position))
+        (
+          !entity.walkable &&
+          (!targetEntity || !entity.position.equals(targetEntity.position))
+        ) ||
+        // attacking enemies block pathfinding for other enemies
+        (
+          unit instanceof Enemy &&
+          entity instanceof Enemy &&
+          entity !== unit &&
+          (entity.action && entity.action.isEligible)
+        )
       ) {
         allowedPath.setWalkableAt(entity.position.x, entity.position.y, false);
       }
@@ -351,8 +364,7 @@ export class DungeonState extends Schema {
     }
 
     if (allowChangeTarget) {
-      unit.position.target = this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit, 'isAlive')
-        || targetEntity
+      unit.position.target = targetEntity || this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit, 'isAlive');
 
       let isValidBattleAction = (
         unit.position.target instanceof Unit &&
@@ -424,10 +436,10 @@ export class DungeonState extends Schema {
   }
 
   update (currentTime) {
-    // skip update if no actual players are connected
-    if (Object.keys(this.players).length === 0) {
-      return;
-    }
+    // // skip update if no actual players are connected
+    // if (Object.keys(this.players).length === 0) {
+    //   return;
+    // }
 
     for (var id in this.entities) {
       if (!this.entities[id].removed) {

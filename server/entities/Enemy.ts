@@ -32,6 +32,8 @@ export class Enemy extends Unit {
   }
 
   update (currentTime) {
+    if (!this.isAlive) { return; }
+
     super.update(currentTime)
 
     const timeDiff = currentTime - this.lastUpdateTime
@@ -45,7 +47,12 @@ export class Enemy extends Unit {
       for (let sessionId in this.state.players) {
         const player: Player = this.state.players[sessionId];
 
-        if (player.isAlive && distance(this.position, player.position) <= aiDistance) {
+        if (
+          !player.isSwitchingDungeons &&
+          !player.removed &&
+          player.isAlive &&
+          distance(this.position, player.position) <= aiDistance
+        ) {
           closePlayer = player;
           break;
         }
@@ -54,9 +61,23 @@ export class Enemy extends Unit {
       if (closePlayer) {
         this.state.move(this, { x: closePlayer.position.y, y: closePlayer.position.x }, true)
 
-      // } else {
-      //   console.log("doesn't have close player, return...");
-      //   this.state.move(this, { x: this.position.y, y: this.position.x }, true);
+      } else if (
+        !this.action &&
+        (
+          (
+            this.position.destiny &&
+            (
+              this.position.destiny.x !== this.position.initialPosition.x &&
+              this.position.destiny.y !== this.position.initialPosition.y
+            )
+          ) || (
+            this.position.x !== this.position.initialPosition.x &&
+            this.position.y !== this.position.initialPosition.y
+          )
+        )
+      ) {
+        // Move back to initial position!
+        this.state.move(this, { x: this.position.initialPosition.y, y: this.position.initialPosition.x }, true);
       }
 
       this.lastUpdateTime = currentTime;

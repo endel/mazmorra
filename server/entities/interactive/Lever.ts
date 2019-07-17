@@ -24,14 +24,14 @@ export class Lever extends Interactive {
     this._unlock = doors;
   }
 
-  activate () {
+  activate (state) {
     this.active = true
 
     this.playersInteracted.clear();
     delete this.playersInteracted;
 
     if (this._unlock) {
-      this._unlock.forEach(unlock => unlock.unlock());
+      this._unlock.forEach(unlock => unlock.unlock(state));
     }
 
     this._unlock = null;
@@ -50,7 +50,7 @@ export class Lever extends Interactive {
 
     // activate!
     if (playersMissing <= 0) {
-      this.activate();
+      this.activate(state);
 
     } else {
       const isPlural = (playersMissing > 1);

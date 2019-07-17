@@ -57,11 +57,6 @@ export class BattleAction extends Action {
   }
 
   attack() {
-    if (!this.isEligible) {
-      // clear BattleAction
-      this.dispose();
-    }
-
     const percent = Math.random();
 
     this.missed = (percent <= this.defender.getEvasion());
@@ -114,6 +109,10 @@ export class BattleAction extends Action {
   }
 
   update(currentTime) {
+    if (this.attacker.removed || this.defender.removed) {
+      return this.dispose();
+    }
+
     const timeDiff = currentTime - this.lastUpdateTime
     const nextAttackAllowed = timeDiff > this.attacker.getAttackSpeed();
 

@@ -172,8 +172,8 @@ export class Unit extends Entity {
     this.attributes.agility = hero.agility || 1;
     this.attributes.intelligence = hero.intelligence || 1;
 
-    // this.baseHp = (hero.userId) ? 10 : 0;
-    // this.baseMp = (hero.userId) ? 10 : 0;
+    // this.baseHp = (hero._id) ? 10 : 0;
+    // this.baseMp = (hero._id) ? 10 : 0;
     this.baseHp = 0;
     this.baseMp = 0;
 
@@ -277,10 +277,19 @@ export class Unit extends Entity {
   }
 
   getMovementSpeed() {
-    return Math.max(
-      50,
-      this.movementSpeed - ((this.statsModifiers.movementSpeed + this.statsBoostModifiers.movementSpeed) * 30)
-    );
+    // const agility = this.attributes.agility + this.statsModifiers.agility;
+
+    let movementSpeed = Math.max(200,
+      this.movementSpeed -
+      // agility * 5 -
+      ((this.statsModifiers.movementSpeed + this.statsBoostModifiers.movementSpeed) * 20)
+    )
+
+    if (this.activeSkills && this.activeSkills['movement-speed']) {
+      movementSpeed /= 2;
+    }
+
+    return movementSpeed;
   }
 
   getSwitchTargetTime() {
@@ -292,15 +301,17 @@ export class Unit extends Entity {
 
     const agility = this.attributes.agility + this.statsModifiers.agility;
 
-    let attackSpeed = this.attackSpeed -
-      (modifierAttackSpeed + boostAttackSpeed) * 16 -
-      agility * 8;
+    let attackSpeed = Math.max(200,
+      this.attackSpeed -
+        (modifierAttackSpeed + boostAttackSpeed) * 10 -
+        agility * 5
+    )
 
     if (this.activeSkills && this.activeSkills['attack-speed']) {
       attackSpeed /= 2;
     }
 
-    return Math.max(50, attackSpeed);
+    return attackSpeed;
   }
 
   getAttackDistance() {
@@ -429,14 +440,17 @@ export class Unit extends Entity {
   }
 
   attack (defender) {
+    const isValidAttack = (defender !== null && defender.isAlive)
+
     if (this.action) {
       this.lastBattleActionTime = this.action.lastUpdateTime;
+
+      if (!isValidAttack) {
+        this.action = null;
+      }
     }
 
-    if (defender === null || !defender.isAlive) {
-      this.action = null;
-
-    } else if (!this.isBattlingAgainst(defender)) {
+    if (isValidAttack && !this.isBattlingAgainst(defender)) {
       this.action = new BattleAction(this, defender, this.lastBattleActionTime);
     }
   }
@@ -484,6 +498,7 @@ export class Unit extends Entity {
 
   clearPendingMovement () {
     // clear pending movement
+    this.position.target = undefined;
     this.position.pending = [];
   }
 

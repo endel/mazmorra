@@ -5,6 +5,26 @@ import LevelUpButton from './LevelUpButton';
 import { humanize } from '../../utils';
 import hint from './Hint';
 
+/**
+ * Maximum Attack Speed
+ * (Initial Attack Speed: 900ms)
+ * (Cap Attack Speed: 200ms)
+ * (Attack Speed points reduces 10ms of initial Attack Speed)
+ * (70 * 10 = 700ms)
+ */
+//
+const MAX_ATTACK_SPEED = 70;
+
+/**
+ * Maximum Movement Speed
+ * (Initial Movement Speed: 520ms)
+ * (Cap Movement Speed: 200ms)
+ * (Movement Speed points reduces 20ms of initial Movement Speed)
+ * (16 * 20 = 320ms)
+ */
+//
+const MAX_MOVEMENT_SPEED = 16;
+
 // export const BASE_MOVEMENT_SPEED = 550;
 // export const MOVEMENT_SPEED_RATIO = 30;
 
@@ -76,7 +96,7 @@ export default class Character extends THREE.Object3D {
     // Attack speed
     this.attackSpeedIcon = ResourceManager.getHUDElement("icons-attack-speed");
     this.attackSpeedIcon.position.y = this.armorIcon.position.y - this.armorIcon.height - margin;
-    this.attackSpeedIcon.userData.label = "Attack speed";
+    this.attackSpeedIcon.userData.label = `Attack speed (${MAX_ATTACK_SPEED} max)`;
 
     this.attackSpeedText = new MeshText2D("0", {
       align: textAlign.left,
@@ -90,7 +110,7 @@ export default class Character extends THREE.Object3D {
     // Movement speed
     this.movementSpeedIcon = ResourceManager.getHUDElement("icons-movement-speed");
     this.movementSpeedIcon.position.y = this.attackSpeedIcon.position.y - this.attackSpeedIcon.height - margin;
-    this.movementSpeedIcon.userData.label = "Movement speed";
+    this.movementSpeedIcon.userData.label = `Movement speed (${MAX_MOVEMENT_SPEED} max)`;
 
     this.movementSpeedText = new MeshText2D("0", {
       align: textAlign.left,
@@ -271,6 +291,7 @@ export default class Character extends THREE.Object3D {
     `;
     this.agiUpButton.userData.hint = `<strong class="agility">Agility${(data.primaryAttribute === "agility") ? " (primary)" : ""}:</strong><br/>
       ${(data.primaryAttribute === "agility") ? "Increase damage (+1)<br/>" : ""}
+      Increase attack speed (+0.5)<br />
     `;
       // Increase attack speed (+0.5)<br/>
     this.intUpButton.userData.hint = `<strong class="intelligence">Intelligence${(data.primaryAttribute === "intelligence") ? " (primary)" : ""}:</strong><br/>
@@ -288,9 +309,14 @@ export default class Character extends THREE.Object3D {
     // const movementSpeed = BASE_MOVEMENT_SPEED - (statsModifiers.movementSpeed * MOVEMENT_SPEED_RATIO);
     // this.movementSpeedText.text = `${statsModifiers.movementSpeed} (${(1000 / movementSpeed).toFixed(1)}/s)`;
 
-    this.movementSpeedText.text = `${statsModifiers.movementSpeed}`;
-    // this.attackSpeedText.text = (data.attributes.agility * 0.5 + statsModifiers.attackSpeed).toFixed(1);
-    this.attackSpeedText.text = (statsModifiers.attackSpeed).toFixed(1);
+    this.movementSpeedText.text = (statsModifiers.movementSpeed >= MAX_MOVEMENT_SPEED)
+      ? `${MAX_MOVEMENT_SPEED} (max)`
+      : `${statsModifiers.movementSpeed}`;
+
+    const attackSpeed = (data.attributes.agility * 0.5 + statsModifiers.attackSpeed);
+    this.attackSpeedText.text = (attackSpeed >= MAX_ATTACK_SPEED)
+      ? `${MAX_ATTACK_SPEED} (max)`
+      : `${attackSpeed.toFixed(1)}`;
 
     this.attackDistanceText.text = statsModifiers.attackDistance.toString();
 

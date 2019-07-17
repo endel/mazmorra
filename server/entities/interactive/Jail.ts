@@ -14,9 +14,28 @@ export class Jail extends Interactive {
     this.direction = direction;
   }
 
-  unlock () {
+  getLockedTiles() {
+    if (this.direction === helpers.DIRECTION.SOUTH) {
+      return [{ x: this.position.x - 1, y: this.position.y }];
+
+    } else if (this.direction === helpers.DIRECTION.NORTH) {
+      return [{ x: this.position.x + 1, y: this.position.y }];
+
+    } else if (this.direction === helpers.DIRECTION.WEST) {
+      return [{ x: this.position.x, y: this.position.y + 1 }];
+
+    } else if (this.direction === helpers.DIRECTION.EAST) {
+      return [{ x: this.position.x, y: this.position.y - 1 }];
+    }
+  }
+
+  unlock (state) {
     this.isLocked = false;
     this.walkable = true;
+
+    this.getLockedTiles().forEach(position => {
+      state.pathgrid.setWalkableAt(position.x, position.y, true);
+    });
   }
 
   interact (moveEvent, player, state) {

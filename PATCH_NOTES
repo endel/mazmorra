@@ -1,5 +1,21 @@
 **17/07/2019 - Facebook login, and multiple heroes!**
-- Enemies do not block path from walking anymore
+- Enemies do not block player's walking path anymore
+- Enemies do not (always) "camp" on doors anymore - when no player is nearby, they return to their initial position
+- Enemies walk a bit more smarter to surround the player
+- Attack speed:
+    - Initial attack speed is 900ms
+    - Attack speed points reduces 10ms
+    - Agility points reduce 5ms
+    - Maximum attack speed is 200ms per attack
+    - "Enchanted weapon" skill gives 2x bonus attack speed, even if you reached the max
+    - User interface displays if you reached maximum attack speed value
+- Movement speed:
+    - Initial movement speed is 520ms
+    - Movement speed points reduces 20ms
+    - Maximum movement speed is 200ms per tile (5 tiles per second)
+    - "Enchanted boots" skill gives 2x bonus movement speed, even if you reached the max
+    - User interface displays if you reached maximum movement speed value
+- Fixed "damage" difference tooltip when using an equipment with different damage attribute from primary
 
 **16/07/2019 - Facebook login, and multiple heroes!**
 - Allow to create up to 3 heros

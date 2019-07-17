@@ -42,7 +42,7 @@ export const MAX_SHIELD_ARMOR = 15;
 export const MAX_HELMET_ARMOR = 10;
 export const MAX_BOOTS_ARMOR = 8;
 
-export const MAX_BOOTS_MOVEMENT_SPEED = 14;
+export const MAX_BOOTS_MOVEMENT_SPEED = 16;
 
 export const MAX_WEAPON_DAMAGE = 30;
 

@@ -27,14 +27,14 @@ export class Portal extends Door {
     if (
       !player.isAlive ||
       player.isSwitchingDungeons ||
-      this.ownerId !== player.hero.userId.toString()
+      this.ownerId !== player.hero._id.toString()
     ) {
       return;
     }
 
     // remove portal when using it.
     // only the portal owner can enter this portal.
-    if (this.ownerId !== player.hero.userId.toString()) {
+    if (this.ownerId !== player.hero._id.toString()) {
       return;
     }
 

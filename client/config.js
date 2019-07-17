@@ -13,7 +13,7 @@ module.exports = {
   colors: {
     dark: 0x000000,    // black
     grass: 0x002a0d,   // green
-    rock: 0x343434,    // gray
+    rock: 0x1e2129,    // gray
     ice: 0x000c4c,     // blue
     inferno: 0x440000, // red
     castle: 0x443434   // brown

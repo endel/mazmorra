@@ -303,13 +303,6 @@ export class DungeonRoom extends Room<DungeonState> {
     additionalData.currentProgress = hero.currentProgress;
     additionalData.currentRoom = hero.currentRoom;
 
-    if (this.state.progress !== 1) {
-    // saved coords are used when entering Portals.
-      additionalData.currentCoords = (player.shouldSaveCoords)
-        ? { x: player.position.x, y: player.position.y }
-        : null;
-    }
-
     const $update: any = {
       $set: {
         online: false,
