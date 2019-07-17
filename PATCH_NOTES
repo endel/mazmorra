@@ -17,6 +17,7 @@
     - User interface displays if you reached maximum movement speed value
 - Fixed "damage" difference tooltip when using an equipment with different damage attribute from primary
 - Fixed infinite portal bug
+- Boss camera effect will run only in the first time the player saw/killed that type of boss.
 
 **16/07/2019 - Facebook login, and multiple heroes!**
 - Allow to create up to 3 heros
