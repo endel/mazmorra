@@ -1,4 +1,4 @@
-**17/07/2019 - Facebook login, and multiple heroes!**
+**17/07/2019 - Smarter enemies; attack speed and movement speed changed!**
 - Enemies do not block player's walking path anymore
 - Enemies do not (always) "camp" on doors anymore - when no player is nearby, they return to their initial position
 - Enemies walk a bit more smarter to surround the player
@@ -16,6 +16,7 @@
     - "Enchanted boots" skill gives 2x bonus movement speed, even if you reached the max
     - User interface displays if you reached maximum movement speed value
 - Fixed "damage" difference tooltip when using an equipment with different damage attribute from primary
+- Fixed infinite portal bug
 
 **16/07/2019 - Facebook login, and multiple heroes!**
 - Allow to create up to 3 heros
