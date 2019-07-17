@@ -15,7 +15,7 @@
     - Maximum movement speed is 200ms per tile (5 tiles per second)
     - "Enchanted boots" skill gives 2x bonus movement speed, even if you reached the max
     - User interface displays if you reached maximum movement speed value
-- Fixed "damage" difference tooltip when using an equipment with different damage attribute from primary
+- Fixed "damage" difference tooltip when using an equipment with different damage attribute than primary
 - Fixed infinite portal bug
 - Boss camera effect will run only in the first time the player saw/killed that type of boss.
 
