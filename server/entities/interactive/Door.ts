@@ -68,9 +68,10 @@ export class Door extends Interactive {
         return;
 
       } else if (this.destiny.room === undefined) { // do not unlock special rooms!
-        player.useItem('inventory', item.id, true);
         this.isLocked = false;
       }
+
+      player.useItem('inventory', item.id, true);
     }
 
     player.isSwitchingDungeons = true;

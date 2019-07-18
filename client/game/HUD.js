@@ -149,8 +149,7 @@ export default class HUD extends THREE.Scene {
     }
 
     if (
-      e.which === Keycode.I + 32 || e.which === Keycode.I ||
-      e.which === Keycode.B + 32 || e.which === Keycode.B ||
+      e.which === Keycode.I || e.which === Keycode.B ||
       (
         // close the inventory hitting ESC
         (this.inventory.isOpen || this.checkPointSelector.isOpen) &&
