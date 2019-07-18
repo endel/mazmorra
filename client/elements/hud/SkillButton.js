@@ -7,18 +7,18 @@ export default class SkillButton extends THREE.Object3D {
 
     this.userData.hud = true;
 
-    this.userData.hint = `(${hotkey}) `;
+    this.userData.hint = `<span class="shortcut">${hotkey}</span> `;
 
     if (skillName === "attack-speed") {
       this.userData.hint += `Enchanted weapon<br/>
         Increase attack speed by 2x<br/>
-        <strong>Duration:</strong> 3s<br/>
+        <strong>Duration:</strong> 2s<br/>
         <strong class="intelligence">Mana cost:</strong> 15`;
 
     } else if (skillName === "movement-speed") {
       this.userData.hint += `Enchanted boots<br />
         Increase movement speed by 2x<br/>
-        <strong>Duration:</strong> 2s<br/>
+        <strong>Duration:</strong> 2.5s<br/>
         <strong class="intelligence">Mana cost:</strong> 10`;
     }
 

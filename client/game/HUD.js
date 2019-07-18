@@ -20,6 +20,7 @@ import NewQuestOverlay from "../elements/hud/NewQuestOverlay";
 import LeaderboardOverlay from "../elements/hud/LeaderboardOverlay";
 import SkillButton from "../elements/hud/SkillButton";
 import ConsumableShortcut from "../elements/inventory/ConsumableShortcut";
+import { isMobile } from "../utils/device";
 
 export default class HUD extends THREE.Scene {
 
@@ -70,18 +71,14 @@ export default class HUD extends THREE.Scene {
     this.equipedItems = this.inventory.equipedItems;
 
     this.openInventoryButton = new OpenInventoryButton()
-    this.openInventoryButton.addEventListener('click', this.onToggleInventory.bind(this))
+
+    this.onToggleInventory = this.onToggleInventory.bind(this);
+
+    this.openInventoryButton.addEventListener('click', this.onToggleInventory)
 
     this.shortcutHpPotion = new ConsumableShortcut({ type: "hp-potion-", shortcutKey: "1" });
     this.shortcutMpPotion = new ConsumableShortcut({ type: "mp-potion-", shortcutKey: "2" });
     this.shortcutScroll = new ConsumableShortcut({ type: "scroll-", shortcutKey: "3" });
-
-    // this.quickInventory = new SlotStrip({
-    //   columns: 1,
-    //   slots: 6,
-    //   inventoryType: "quickInventory"
-    // });
-    // this.quickInventory.enabled = true;
 
     this.skill1Button = new SkillButton("attack-speed", "Q");
     this.skill2Button = new SkillButton("movement-speed", "W");
@@ -130,7 +127,6 @@ export default class HUD extends THREE.Scene {
     this.add(this.expText);
 
     this.add(this.inventory);
-    // this.add(this.quickInventory);
 
     this.add(this.shortcutHpPotion);
     this.add(this.shortcutMpPotion);
@@ -356,9 +352,6 @@ export default class HUD extends THREE.Scene {
 
     this.shortcutScroll.position.x = this.shortcutHpPotion.position.x;
     this.shortcutScroll.position.y = -this.shortcutScroll.height - config.HUD_SCALE;
-
-    // this.quickInventory.position.x = this.resources.position.x - (margin/2);
-    // this.quickInventory.position.y = this.openInventoryButton.position.y - this.quickInventory.height - margin;
 
     //
     // BOTTOM

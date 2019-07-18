@@ -2,6 +2,7 @@ import hint from "../hud/Hint";
 import EquipedItems from "./EquipedItems";
 import { trackEvent, humanize } from "../../utils";
 import { MeshText2D, textAlign } from "three-text2d";
+import { isMobile } from "../../utils/device";
 
 let draggingItem = null
   , draggingFrom = null
@@ -46,17 +47,24 @@ export default class ItemSlot extends THREE.Object3D {
     this.onDragEnd = this.onDragEnd.bind(this);
     this.onDoubleClick = this.onDoubleClick.bind(this);
 
-    // mouse-over / mouse-out
-    this.addEventListener('mouseover', this.onMouseOver)
-    this.addEventListener('mouseout', this.onMouseOut)
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchEnd = this.onTouchEnd.bind(this);
 
-    // drag start
-    this.addEventListener('mousedown', this.onDragStart)
-    this.addEventListener('touchstart', this.onDragStart)
+    if (!isMobile) {
+      // desktop mouse-over / mouse-out
+      this.addEventListener('mouseover', this.onMouseOver);
+      this.addEventListener('mouseout', this.onMouseOut);
 
-    // drag end
-    this.addEventListener('mouseup', this.onDragEnd)
-    this.addEventListener('touchend', this.onDragEnd)
+      // drag start
+      this.addEventListener('mousedown', this.onDragStart);
+      this.addEventListener('mouseup', this.onDragEnd);
+
+    } else {
+      // mobile / touch events
+      this.addEventListener('touchstart', this.onTouchStart);
+      this.addEventListener('touchend', this.onTouchEnd);
+
+    }
 
     // double click
     this.addEventListener('dblclick', this.onDoubleClick)
@@ -326,6 +334,25 @@ export default class ItemSlot extends THREE.Object3D {
 
     } else {
       e.stopPropagation = true;
+    }
+  }
+
+  onTouchStart (e) {
+    this._showHint();
+
+    console.log("TOUCH START");
+
+    clearTimeout(global.startDragTimeout);
+    global.startDragTimeout = setTimeout(() => this.onDragStart(e), 300);
+  }
+
+  onTouchEnd (e) {
+    clearTimeout(global.startDragTimeout);
+    console.log("TOUCH END");
+
+    if (draggingItem) {
+      this.onDragEnd(e);
+      this.onMouseOut();
     }
   }
 

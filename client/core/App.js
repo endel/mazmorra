@@ -17,7 +17,14 @@ class App {
     this.mouse = new THREE.Vector2();
 
     if (isMobile) {
-      // window.addEventListener('touchstart', this.onMouseMove.bind(this), false);
+      window.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.onMouseMove({
+          clientX: e.touches[0].clientX,
+          clientY: e.touches[0].clientY,
+        })
+      }, false);
 
     } else {
       window.addEventListener('mousemove', this.onMouseMove.bind(this), false);

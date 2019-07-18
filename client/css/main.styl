@@ -16,11 +16,12 @@
 
 html, body
   overflow hidden
+  position fixed
 
 body
   font 38px primary
   color #fff
-  background #000
+  background-color #000
 
   &.loading
     cursor progress
@@ -33,6 +34,13 @@ body
 
 .hidden
   display none !important
+
+// #game
+//   &.wardrobe
+//     background-image url(../../public/images/wardrobe-background.jpg)
+//     background-position center bottom
+//     background-repeat no-repeat
+//     background-size cover
 
 canvas
   width 100vw

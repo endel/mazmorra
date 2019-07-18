@@ -55,7 +55,7 @@ export default class ConsumableShortcut extends THREE.Object3D {
   }
 
   onMouseOver ( e ) {
-    hint.show(`(${this.shortcutKey}) Use ${humanize(this.type)}`, this);
+    hint.show(`<span class="shortcut">${this.shortcutKey}</span> Use ${humanize(this.type)}`, this);
 
     if (this._item) {
       App.tweens.remove(this.scale)

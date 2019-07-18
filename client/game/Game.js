@@ -16,7 +16,7 @@ export default class Game {
     this.container.innerHTML = "";
 
 
-    this.renderer = new THREE.WebGLRenderer();
+    this.renderer = new THREE.WebGLRenderer(); // {alpha: true}
     global.renderer = this.renderer;
 
     // Use clipping for health bars?
@@ -87,6 +87,9 @@ export default class Game {
   }
 
   buildCharacter(heroData) {
+    // this.renderer.setClearColor(config.colors.dark, 0.35);
+    // this.renderer.setClearAlpha(0);
+
     this.characterBuilder = new CharacterBuilder(this.hud, this.camera);
     this.characterBuilder.addEventListener("complete", () => this.createHero(heroData));
     this.characterBuilder.setHero(heroData);;
@@ -99,6 +102,7 @@ export default class Game {
 
     PlayerPrefs.set("heroId", hero._id);
 
+    // this.container.classList.remove("wardrobe");
     this.init();
   }
 
@@ -113,8 +117,9 @@ export default class Game {
   onSetupLevel (e) {
     this.hud.hideOverlay();
 
-    let clearColor = (e.state.daylight) ? config.colors[ e.state.mapkind ] : config.colors.dark
-    this.renderer.setClearColor( clearColor );
+    let clearColor = (e.state.daylight) ? config.colors[e.state.mapkind] : config.colors.dark
+    this.renderer.setClearColor(clearColor);
+    // this.renderer.setClearAlpha(1);
     // this.scene.fog = new THREE.FogExp2( clearColor, 1 );
   }
 

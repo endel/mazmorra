@@ -16,6 +16,7 @@ export default class Raycaster extends Behaviour {
 
     // do raycast at every 200ms
     if (!isMobile) {
+
       if (parentRaycaster) {
         setInterval(() => this.doRaycast(true), 200);
 
@@ -23,16 +24,19 @@ export default class Raycaster extends Behaviour {
         // hud frequency
         setInterval(() => this.doRaycast(true), 500);
       }
-    }
 
-    window.addEventListener("mousemove", this.doRaycast.bind(this), false);
-    window.addEventListener("touchstart", this.onTouchStart.bind(this), false);
-    window.addEventListener("touchend", this.onTouchEnd.bind(this), false);
-    window.addEventListener("click", this.onClick.bind(this), false);
-    window.addEventListener("dblclick", this.onDoubleClick.bind(this), false);
-    window.addEventListener("contextmenu", this.onContextMenu.bind(this), false);
-    window.addEventListener("mousedown", this.onMouseDown.bind(this), false);
-    window.addEventListener("mouseup", this.onMouseUp.bind(this), false);
+      window.addEventListener("mousemove", this.doRaycast.bind(this), false);
+      window.addEventListener("click", this.onClick.bind(this), false);
+      window.addEventListener("dblclick", this.onDoubleClick.bind(this), false);
+      window.addEventListener("contextmenu", this.onContextMenu.bind(this), false);
+      window.addEventListener("mousedown", this.onMouseDown.bind(this), false);
+      window.addEventListener("mouseup", this.onMouseUp.bind(this), false);
+
+    } else {
+      window.addEventListener("touchmove", this.doRaycast.bind(this), false);
+      window.addEventListener("touchstart", this.onTouchStart.bind(this), false);
+      window.addEventListener("touchend", this.onTouchEnd.bind(this), false);
+    }
 
   }
 
@@ -91,7 +95,7 @@ export default class Raycaster extends Behaviour {
       }
 
       // mouseover
-      if (nextTargetObject) {
+      if (!isMobile && nextTargetObject) {
         nextTargetObject.dispatchEvent({
           type: "mouseover",
           bubbles: true,
@@ -111,27 +115,59 @@ export default class Raycaster extends Behaviour {
       // allow to double click
       if (this.lastTapTarget == this.targetObject && Date.now() - this.lastTapTime < 200) {
         this.onDoubleClick(e);
+
+        this.targetObject.dispatchEvent({
+          type: "mouseout", // "touchend"
+          bubbles: true,
+          path: this.path
+        });
+
         return;
       }
 
       App.onMouseMove(touch)
       this.doRaycast();
 
-      this.onClick(e);
       this.lastTapTarget = this.targetObject;
       this.lastTapTime = Date.now();
+
+      if (this.targetObject) {
+        this.targetObject.dispatchEvent({
+          type: "touchstart",
+          bubbles: true,
+          path: this.path
+        })
+
+        this.targetObject.dispatchEvent({
+          type: "mouseover",
+          bubbles: true,
+          path: this.path
+        })
+      }
+
     }
   }
 
   onTouchEnd (e) {
-    if (e.touches && e.touches[0] && this.isTargetReachable) {
+    clearInterval(this.mouseOverInterval);
 
+    // perform "click" if `touchend` matches the same target as `touchstart`
+    if (this.lastTapTarget == this.targetObject) {
+      this.onClick(e);
+    }
+
+    if (this.targetObject) {
       this.targetObject.dispatchEvent({
-        type: "touchend",
+        type: "touchend", // "touchend"
         bubbles: true,
         path: this.path
       })
 
+      this.targetObject.dispatchEvent({
+        type: "mouseout", // "touchend"
+        bubbles: true,
+        path: this.path
+      })
     }
   }
 
@@ -143,7 +179,7 @@ export default class Raycaster extends Behaviour {
       e.preventDefault()
 
       this.targetObject.dispatchEvent({
-        type: "click",
+        type: "click", // e.type
         bubbles: true,
         path: this.path
       })

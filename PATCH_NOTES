@@ -1,4 +1,8 @@
+**19/07/2019 - Surprising chests.**
+- Mobile: improved drag & drop on Inventory. Mobile experience may still be "laggy" depending on the device you use.
+
 **18/07/2019 - Stackable items on the inventory, and new quick use for them.**
+- Agility and Intelligence heroes start the game with a T1 weapon: 1 attack distance, 0 damage
 - Inventory and Quick Inventory changes:
     - Quick inventory has been removed!
     - Now there are 3 shorcuts on the interface to consume HP/MP/Portals from the Inventory.

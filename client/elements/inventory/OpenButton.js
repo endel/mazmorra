@@ -53,7 +53,7 @@ export default class OpenInventoryButton extends THREE.Object3D {
   }
 
   onMouseOver () {
-    Hint.show("(I / B) Inventory", this);
+    Hint.show(`<span class="shortcut">I</span> <span class="shortcut">B</span> Inventory`, this);
 
     App.tweens.remove(this.scale)
     App.tweens.add(this.scale).to({ x: 1.1, y: 1.1 }, 200, Tweener.ease.quadOut)
