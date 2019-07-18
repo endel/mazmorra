@@ -1,7 +1,8 @@
 import { isMobile } from "../utils/device";
+import { PlayerPrefs } from "../core/PlayerPrefs";
 
 export function isTutorialComplete() {
-  return isMobile || window.localStorage.getItem("tutorial") || false;
+  return isMobile || PlayerPrefs.get("tutorial") || false;
 }
 
 export function showTutorial() {
@@ -25,7 +26,7 @@ export function showTutorial() {
 
     if (e.target.classList.contains("last")) {
       document.body.removeChild(div);
-      window.localStorage.setItem("tutorial", true);
+      PlayerPrefs.set("tutorial", true);
 
     } else if (e.target.classList.contains("right")) {
       contents.classList.remove(`step-${currentStep}`);
@@ -89,7 +90,7 @@ export function showTutorial() {
     </div>
 
     <div class="step-9">
-      <p>Number keys (1, 2, 3, etc.) will consume items on quick area</p>
+      <p>Use number keys (1, 2, 3) to consume HP/MP/Scrolls</p>
       <img src="images/tutorial/inventory-4.png" alt="Inventory: Quick access" />
     </div>
 
