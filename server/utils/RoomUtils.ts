@@ -1219,7 +1219,7 @@ export class RoomUtils {
   }
 
   setItemProgressRequired(item: EquipableItem) {
-    item.progressRequired = Math.max(2, this.state.progress - NUM_LEVELS_PER_CHECKPOINT);
+    item.progressRequired = Math.max(1, this.state.progress - NUM_LEVELS_PER_CHECKPOINT);
   }
 
   // assignItemModifier(item: Item, options)

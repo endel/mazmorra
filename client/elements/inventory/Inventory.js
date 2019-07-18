@@ -13,7 +13,7 @@ export default class Inventory extends THREE.Object3D {
     this.isTrading = false;
 
     this.title = ResourceManager.getHUDElement('hud-big-title-regular');
-    this.title.position.y = this.title.height * 2;
+    this.title.position.y = this.title.height * 2.1;
     this.add(this.title);
 
     this.titleText = new SpriteText2D("Inventory", {
@@ -25,11 +25,11 @@ export default class Inventory extends THREE.Object3D {
     this.add(this.titleText);
 
     this.equipedItems = new EquipedItems()
-    this.slots = new SlotStrip({ slots: 12, columns: 4, inventoryType: "inventory" })
+    this.slots = new SlotStrip({ slots: 15, columns: 5, inventoryType: "inventory" })
     // this.exchangeSlots = new SlotStrip({ slots: 1, allowRemove: true, inventoryType: "exchange" })
 
-    this.equipedItems.position.x -= this.equipedItems.width/2 + this.slots.slotSize/1.5
-    this.slots.position.x = this.equipedItems.position.x + (this.equipedItems.width/2 + this.slots.slotSize / 2 +  config.HUD_SCALE * 2)
+    this.equipedItems.position.x -= this.equipedItems.width / 2 + this.slots.slotSize - config.HUD_SCALE;
+    this.slots.position.x = this.equipedItems.position.x + (this.equipedItems.width / 2 + this.slots.slotSize / 2 + config.HUD_SCALE)
     this.slots.position.y = -this.slots.height/3
 
     // this.exchangeSlots.position.x = this.equipedItems.position.x + (this.equipedItems.width/2 + this.slots.slotSize / 2 +  config.HUD_SCALE * 2) + (this.exchangeSlots.width / 2)
@@ -44,7 +44,7 @@ export default class Inventory extends THREE.Object3D {
       inventoryType: "purchase",
       accepts: "sell"
     });
-    this.purchaseSlots.position.x = this.equipedItems.position.x - this.slots.slotSize / 2;
+    this.purchaseSlots.position.x = this.equipedItems.position.x + (config.HUD_SCALE * 1.5);
     this.purchaseSlots.position.y = this.exchangeSymbol.position.y - this.purchaseSlots.height;
 
     this.add(this.equipedItems)
@@ -111,12 +111,9 @@ export default class Inventory extends THREE.Object3D {
     // fade all element materials separately
     // (THREE.js can't change opacity of containers)
     //
-    const elementsToFade = this.equipedItems.children
-      .concat(this.slots.children);
-      // concat(this.exchangeSlots.children).
-      // concat(this.exchangeSymbol)
+    const slotsToFade = this.equipedItems.children.concat(this.slots.children);
 
-    elementsToFade.map((el, i) => {
+    slotsToFade.map((el, i) => {
       let targetOpacity = ((this.isOpen) ? ItemSlot.DEFAULT_OPACITY : 0)
 
       App.tweens.remove(el.material)
@@ -124,6 +121,9 @@ export default class Inventory extends THREE.Object3D {
       // fade item inside ItemSlot, in case there's any
       if (el instanceof ItemSlot && el.item) {
         App.tweens.add(el.item.material).wait(i * 15).to({ opacity: (targetOpacity > 0) ? 1 : 0 }, 300, Tweener.ease.quintOut)
+
+        el.qty.visible = this.isOpen;
+        if (el.qtyText) { el.qtyText.visible = this.isOpen; }
 
         if (targetOpacity > 0 && el.hasItem()) {
           targetOpacity = ItemSlot.OCCUPIED_OPACITY;

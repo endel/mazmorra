@@ -48,10 +48,11 @@ export default class SlotStrip extends THREE.Object3D {
       const item = items[itemId];
 
       if (item) {
-        this.slots[i].item = ResourceManager.getHUDElement(`items-${item.type}`)
-        this.slots[i].item.userData.item = item;
-        this.slots[i].item.userData.itemId = itemId;
-        this.slots[i].item.userData.inventoryType = this.inventoryType;
+        const itemIcon = ResourceManager.getHUDElement(`items-${item.type}`);
+        itemIcon.userData.item = item;
+        itemIcon.userData.itemId = itemId;
+        itemIcon.userData.inventoryType = this.inventoryType;
+        this.slots[i].item = itemIcon;
       }
 
       this.slots[i].enabled = this.enabled;
@@ -85,8 +86,8 @@ export default class SlotStrip extends THREE.Object3D {
       row = Math.floor(i / this.columns)
 
       slot = new ItemSlot({ accepts: this.accepts });
-      slot.position.x = (slot.width + config.HUD_SCALE) * (column);
-      slot.position.y = (slot.height + config.HUD_SCALE) * (maxRows - row);
+      slot.position.x = (slot.width - config.HUD_SCALE) * (column);
+      slot.position.y = (slot.height - config.HUD_SCALE) * (maxRows - row);
 
       this.slots.push(slot);
       this.add(slot);
@@ -111,7 +112,7 @@ export default class SlotStrip extends THREE.Object3D {
     */
 
     this.width = slot.position.x + slot.width
-    this.height = (slot.height +  config.HUD_SCALE) * (row+1)
+    this.height = (slot.height - config.HUD_SCALE) * (row+1)
   }
 
   get slotSize () {

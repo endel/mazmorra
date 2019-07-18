@@ -26,6 +26,8 @@ export class Scroll extends ConsumableItem {
     const availablePosition = this.getAvailablePosition(player, state);
 
     if (availablePosition) {
+      const shouldRemoveFromInventory = super.use(player, state);
+
       //
       // remove previous portals from this player.
       //
@@ -48,7 +50,8 @@ export class Scroll extends ConsumableItem {
       portal.state = state;
 
       state.addEntity(portal);
-      return true;
+
+      return shouldRemoveFromInventory;
 
     } else {
       state.createTextEvent(`I need more space`, player.position, 'white', 100);

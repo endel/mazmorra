@@ -181,7 +181,7 @@ export default class Level extends THREE.Object3D {
       const [ evt, data ] = payload;
 
       if (evt === "checkpoints") {
-        this.hud.onOpenCheckPoints(data.filter(n => n !== this.progress).sort((a, b) => a - b));
+        this.hud.onOpenCheckPoints(data.sort((a, b) => a - b), this.progress);
 
       } else if (evt === "goto") {
         const params = payload[2];
@@ -278,9 +278,6 @@ export default class Level extends THREE.Object3D {
         /**
          * update inventory
          */
-        entity.quickInventory.onChange = (_) => { this.hud.getEntity().emit('update-inventory', 'quickInventory'); }
-        entity.quickInventory.triggerAll();
-
         entity.inventory.onChange = (_) => { this.hud.getEntity().emit('update-inventory', 'inventory'); }
         entity.inventory.triggerAll();
 

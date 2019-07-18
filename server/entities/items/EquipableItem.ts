@@ -18,7 +18,7 @@ export abstract class EquipableItem extends Item {
     // is player allowed to equip?
     if (
       this.progressRequired &&
-      this.progressRequired >= (player as any).latestProgress
+      this.progressRequired >= Math.max((player as any).latestProgress, state.progress)
     ) {
       return false;
     }
@@ -37,9 +37,9 @@ export abstract class EquipableItem extends Item {
         player.inventory.remove(this.id);
         inventoryFrom = player.inventory;
 
-      } else if (player.quickInventory.getItem(this.id)) {
-        player.quickInventory.remove(this.id);
-        inventoryFrom = player.quickInventory;
+      // } else if (player.quickInventory.getItem(this.id)) {
+      //   player.quickInventory.remove(this.id);
+      //   inventoryFrom = player.quickInventory;
       }
 
       if (!inventoryFrom) {

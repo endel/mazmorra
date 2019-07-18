@@ -13,6 +13,7 @@ import { ArmorItem } from "./equipable/ArmorItem";
 import { Key } from "./consumable/Key";
 import { PotionPoints } from "./consumable/PotionPoints";
 import { EquipableItem } from "./EquipableItem";
+import { ConsumableItem } from "./ConsumableItem";
 
 export function createItem(data: Item | DBItem, position?: Point): Item {
   let item: Item;
@@ -36,6 +37,7 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
     case helpers.ENTITIES.ELIXIR_POTION_3:
     case helpers.ENTITIES.ELIXIR_POTION_4:
       item = new Potion();
+
       break;
 
     case helpers.ENTITIES.POINTS_POTION_1:
@@ -183,6 +185,10 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
 
   if ((data as EquipableItem).progressRequired) {
     (item as EquipableItem).progressRequired = (data as EquipableItem).progressRequired;
+  }
+
+  if (item instanceof ConsumableItem) {
+    item.qty = (data as DBItem).qty || 1;
   }
 
   item.type = data.type;

@@ -68,6 +68,8 @@ export class Potion extends ConsumableItem {
   }
 
   use(player, state) {
+    const shouldBeRemovedFromInventory = super.use(player, state);
+
     const attr = this.modifiers[0].attr;
     const amount = this.modifiers[0].modifier;
 
@@ -84,7 +86,7 @@ export class Potion extends ConsumableItem {
     state.createTextEvent(`+ ${amount} ${attr}`, player.position, COLORS[attr], 100);
     state.events.emit("sound", "potion", player);
 
-    return true;
+    return shouldBeRemovedFromInventory;
   }
 
 }

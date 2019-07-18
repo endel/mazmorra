@@ -27,7 +27,7 @@ export default class CheckPointSelector extends THREE.Object3D {
     this.height = this.title.height;
   }
 
-  openWithCheckPoints (numbers) {
+  openWithCheckPoints (numbers, currentProgress) {
     // remove previous children
     let row, column
       , i = this.options.children.length
@@ -48,6 +48,12 @@ export default class CheckPointSelector extends THREE.Object3D {
 
       const checkpoint = this.createCheckPointEntry(numbers[i]);
       this.options.add(checkpoint);
+
+      if (numbers[i] === currentProgress) {
+        checkpoint.userData.hud = false;
+        checkpoint.children[0].material.opacity = 0.2;
+        // checkpoint.children[1].material.opacity = 0.5;
+      }
 
       checkpoint.position.x = (checkpoint.width + config.HUD_SCALE) * (column);
       checkpoint.position.y = (checkpoint.height + config.HUD_SCALE) * (maxRows - row);

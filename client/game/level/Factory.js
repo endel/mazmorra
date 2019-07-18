@@ -121,7 +121,7 @@ export default class Factory {
         break;
 
       case helpers.ENTITIES.LEVER:
-        element = new Lever(data);
+        element = new Lever(data, this.level.mapkind);
         break;
 
       case helpers.ENTITIES.CHECK_POINT:

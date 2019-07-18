@@ -17,13 +17,13 @@ export default class EquipedItems extends THREE.Object3D {
     this.slots = [ this.head, this.left, this.right, this.body, this.feet ];
     this.slots.forEach(slot => this.add(slot));
 
-    this.head.position.y = this.head.height + config.HUD_SCALE;
-    this.feet.position.y = -this.feet.height - config.HUD_SCALE;
-    this.left.position.x = -this.left.width - config.HUD_SCALE;
-    this.right.position.x = this.right.width + config.HUD_SCALE;
+    this.head.position.y = this.head.height - config.HUD_SCALE;
+    this.feet.position.y = -this.feet.height + config.HUD_SCALE;
+    this.left.position.x = -this.left.width + config.HUD_SCALE;
+    this.right.position.x = this.right.width - config.HUD_SCALE;
 
-    this.width = (this.head.width +  config.HUD_SCALE) * 3;
-    this.height = (this.head.height +  config.HUD_SCALE) * 3;
+    this.width = (this.head.width) * 3;
+    this.height = (this.head.height) * 3;
   }
 
   set enabled (bool) {
@@ -49,10 +49,11 @@ export default class EquipedItems extends THREE.Object3D {
 
       // re-add existing item
       if (item) {
-        this[slotName].item = ResourceManager.getHUDElement(`items-${item.type}`)
-        this[slotName].item.userData.item = item;
-        this[slotName].item.userData.itemId = slotName;
-        this[slotName].item.userData.inventoryType = this.inventoryType;
+        const itemIcon = ResourceManager.getHUDElement(`items-${item.type}`);
+        itemIcon.userData.item = item;
+        itemIcon.userData.itemId = slotName;
+        itemIcon.userData.inventoryType = this.inventoryType;
+        this[slotName].item = itemIcon
         this[slotName].enabled = this.enabled;
       }
     }

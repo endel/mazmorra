@@ -294,11 +294,11 @@ export class DungeonRoom extends Room<DungeonState> {
       autoDisposeTimeout = 60 * 2;
     }
 
-    const quickInventory = Object.values(player.quickInventory.slots).map(slot => slot.toJSON());
+    // const quickInventory = Object.values(player.quickInventory.slots).map(slot => slot.toJSON());
     const inventory = Object.values(player.inventory.slots).map(slot => slot.toJSON());
     const equipedItems = Object.values(player.equipedItems.slots).map(slot => slot.toJSON());
 
-    const additionalData: {[id: string]: any} = { quickInventory, inventory, equipedItems };
+    const additionalData: {[id: string]: any} = { inventory, equipedItems }; // quickInventory,
 
     additionalData.currentProgress = hero.currentProgress;
     additionalData.currentRoom = hero.currentRoom;

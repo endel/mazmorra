@@ -15,17 +15,21 @@ export class PotionPoints extends ConsumableItem {
 
   use(player, state) {
     const amount = 1;
+
     if (
       player.attributes.strength > amount &&
       player.attributes.agility > amount &&
       player.attributes.intelligence > amount
     ) {
+      const shouldRemoveFromInventory = super.use(player, state);
+
       player.attributes.strength -= amount;
       player.attributes.agility -= amount;
       player.attributes.intelligence -= amount;
       player.pointsToDistribute += amount * 3;
       state.events.emit("sound", "potion", player);
-      return true;
+
+      return shouldRemoveFromInventory;
 
     } else {
       state.createTextEvent(`Need ${amount} on each attribute.`, player.position, "white", 200);

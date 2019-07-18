@@ -19,6 +19,7 @@ import { inventorySound } from '../core/sound';
 import NewQuestOverlay from "../elements/hud/NewQuestOverlay";
 import LeaderboardOverlay from "../elements/hud/LeaderboardOverlay";
 import SkillButton from "../elements/hud/SkillButton";
+import ConsumableShortcut from "../elements/inventory/ConsumableShortcut";
 
 export default class HUD extends THREE.Scene {
 
@@ -71,12 +72,16 @@ export default class HUD extends THREE.Scene {
     this.openInventoryButton = new OpenInventoryButton()
     this.openInventoryButton.addEventListener('click', this.onToggleInventory.bind(this))
 
-    this.quickInventory = new SlotStrip({
-      columns: 1,
-      slots: 6,
-      inventoryType: "quickInventory"
-    });
-    this.quickInventory.enabled = true;
+    this.shortcutHpPotion = new ConsumableShortcut({ type: "hp-potion-", shortcutKey: "1" });
+    this.shortcutMpPotion = new ConsumableShortcut({ type: "mp-potion-", shortcutKey: "2" });
+    this.shortcutScroll = new ConsumableShortcut({ type: "scroll-", shortcutKey: "3" });
+
+    // this.quickInventory = new SlotStrip({
+    //   columns: 1,
+    //   slots: 6,
+    //   inventoryType: "quickInventory"
+    // });
+    // this.quickInventory.enabled = true;
 
     this.skill1Button = new SkillButton("attack-speed", "Q");
     this.skill2Button = new SkillButton("movement-speed", "W");
@@ -125,7 +130,11 @@ export default class HUD extends THREE.Scene {
     this.add(this.expText);
 
     this.add(this.inventory);
-    this.add(this.quickInventory);
+    // this.add(this.quickInventory);
+
+    this.add(this.shortcutHpPotion);
+    this.add(this.shortcutMpPotion);
+    this.add(this.shortcutScroll);
 
     this.add(this.skill1Button);
     this.add(this.skill2Button);
@@ -166,41 +175,13 @@ export default class HUD extends THREE.Scene {
       this.skill2Button.dispatchEvent({ type: "click" });
 
     } else if (e.which === Keycode.KEY_1 || e.which === Keycode.NUMPAD_1) {
-      this.quickInventory.slots[0].dispatchEvent({
-        type: "dblclick",
-        target: this.quickInventory.slots[0]
-      })
+      this.shortcutHpPotion.dispatchEvent({ type: "click" });
 
     } else if (e.which === Keycode.KEY_2 || e.which === Keycode.NUMPAD_2) {
-      this.quickInventory.slots[1].dispatchEvent({
-        type: "dblclick",
-        target: this.quickInventory.slots[1]
-      })
+      this.shortcutMpPotion.dispatchEvent({ type: "click" });
 
     } else if (e.which === Keycode.KEY_3 || e.which === Keycode.NUMPAD_3) {
-      this.quickInventory.slots[2].dispatchEvent({
-        type: "dblclick",
-        target: this.quickInventory.slots[2]
-      })
-
-    } else if (e.which === Keycode.KEY_4 || e.which === Keycode.NUMPAD_4) {
-      this.quickInventory.slots[3].dispatchEvent({
-        type: "dblclick",
-        target: this.quickInventory.slots[3]
-      })
-
-    } else if (e.which === Keycode.KEY_5 || e.which === Keycode.NUMPAD_5) {
-      this.quickInventory.slots[4].dispatchEvent({
-        type: "dblclick",
-        target: this.quickInventory.slots[4]
-      })
-
-    } else if (e.which === Keycode.KEY_6 || e.which === Keycode.NUMPAD_6) {
-      this.quickInventory.slots[5].dispatchEvent({
-        type: "dblclick",
-        target: this.quickInventory.slots[5]
-      })
-
+      this.shortcutScroll.dispatchEvent({ type: "click" });
     }
   }
 
@@ -256,7 +237,7 @@ export default class HUD extends THREE.Scene {
     this.currentOverlay = leaderboard;
   }
 
-  onOpenCheckPoints(numbers) {
+  onOpenCheckPoints(numbers, currentProgress) {
     if (this.currentOverlay && this.currentOverlay.isOpen) {
       this.forceCloseOverlay();
     }
@@ -264,7 +245,7 @@ export default class HUD extends THREE.Scene {
     const isOpen = this.checkPointSelector.isOpen;
 
     this.add(this.checkPointSelector);
-    this.checkPointSelector.openWithCheckPoints(numbers);
+    this.checkPointSelector.openWithCheckPoints(numbers, currentProgress);
 
     this.currentOverlay = this.checkPointSelector;
 
@@ -329,26 +310,28 @@ export default class HUD extends THREE.Scene {
 
     // bind inventory objects
     this.inventory.slots.userData = data.inventory;
-    this.quickInventory.userData = data.quickInventory;
     this.inventory.equipedItems.userData = data.equipedItems;
   }
 
   resize() {
     let margin = config.HUD_MARGIN * config.HUD_SCALE
 
+    const halfW = window.innerWidth / 2;
+    const halfH = window.innerHeight / 2;
+
     this.overlay.scale.set(window.innerWidth, window.innerHeight, 1)
 
     //
     // TOP
     //
-    this.selectionText.position.set(0, window.innerHeight / 2 - (margin * 2), 0)
+    this.selectionText.position.set(0, halfH - (margin * 2), 0)
 
     //
     // LEFT SIDE
     //
     this.character.position.set(
-      - window.innerWidth / 2 + this.character.width,
-      window.innerHeight / 2 - this.character.height,
+      - halfW + this.character.width,
+      halfH - this.character.height,
       0
     )
 
@@ -356,8 +339,8 @@ export default class HUD extends THREE.Scene {
     // RIGHT SIDE
     //
     this.resources.position.set(
-      window.innerWidth / 2 - this.resources.width * config.HUD_MARGIN,
-      window.innerHeight / 2 - this.resources.height * config.HUD_MARGIN,
+      halfW - this.resources.width * config.HUD_MARGIN,
+      halfH - this.resources.height * config.HUD_MARGIN,
       0
     );
     this.openInventoryButton.position.set(
@@ -365,13 +348,23 @@ export default class HUD extends THREE.Scene {
       this.resources.position.y - this.resources.height - this.openInventoryButton.height - (config.HUD_MARGIN * config.HUD_SCALE),
       0
     );
-    this.quickInventory.position.x = this.resources.position.x - (margin/2);
-    this.quickInventory.position.y = this.openInventoryButton.position.y - this.quickInventory.height - margin;
+
+    this.shortcutHpPotion.position.x = this.resources.position.x - (margin/2);
+    this.shortcutHpPotion.position.y = this.shortcutHpPotion.height + config.HUD_SCALE;
+
+    this.shortcutMpPotion.position.x = this.shortcutHpPotion.position.x;
+    this.shortcutMpPotion.position.y = 0;
+
+    this.shortcutScroll.position.x = this.shortcutHpPotion.position.x;
+    this.shortcutScroll.position.y = -this.shortcutScroll.height - config.HUD_SCALE;
+
+    // this.quickInventory.position.x = this.resources.position.x - (margin/2);
+    // this.quickInventory.position.y = this.openInventoryButton.position.y - this.quickInventory.height - margin;
 
     //
     // BOTTOM
     //
-    const bottom = - window.innerHeight / 2 + this.expbar.height + (config.HUD_MARGIN * 3);
+    const bottom = - halfH + this.expbar.height + (config.HUD_MARGIN * 3);
     this.lifebar.position.set(- config.HUD_SCALE / 2, bottom + this.lifebar.height + this.expbar.height + (config.HUD_MARGIN + config.HUD_SCALE), 0);
     this.manabar.position.set(- config.HUD_SCALE / 2, bottom + this.expbar.height + (config.HUD_MARGIN + config.HUD_SCALE), 0);
     this.expbar.position.set(- config.HUD_SCALE / 2, bottom, 0);
@@ -404,10 +397,10 @@ export default class HUD extends THREE.Scene {
 
     // update orthogonal camera aspect ratio / projection matrix
     this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.left = - window.innerWidth / 2;
-    this.camera.right = window.innerWidth / 2;
-    this.camera.top = window.innerHeight / 2;
-    this.camera.bottom = - window.innerHeight / 2;
+    this.camera.left = - halfW;
+    this.camera.right = halfW;
+    this.camera.top = halfH
+    this.camera.bottom = - halfH;
     this.camera.updateProjectionMatrix();
   }
 

@@ -1,7 +1,9 @@
 import express from "express";
+import helpers from "../../shared/helpers"
 import { jwtMiddleware } from "@colyseus/social/express";
 
-import { Hero, ATTRIBUTE_BASE_VALUE } from "../db/Hero";
+import { Hero, ATTRIBUTE_BASE_VALUE, DBItem } from "../db/Hero";
+import { Attribute } from "../entities/Unit";
 
 export const router = express.Router()
 
@@ -36,6 +38,34 @@ router.post('/', jwtMiddleware, async (req, res) => {
     'agility',
   ];
 
+  const initialWeapon: { [id: string]: DBItem } = {
+    'strength': {
+      type: helpers.ENTITIES.WEAPON_1, modifiers: [{
+        attr: "damage",
+        modifier: 0
+      }]
+    },
+    'intelligence': {
+      type: helpers.ENTITIES.WAND_1, modifiers: [{
+        attr: "damage",
+        modifier: 0
+      }, {
+        attr: "attackDistance",
+        modifier: 0
+      }],
+      manaCost: 1
+    },
+    'agility': {
+      type: helpers.ENTITIES.BOW_1, modifiers: [{
+        attr: "damage",
+        modifier: 0
+      }, {
+        attr: "attackDistance",
+        modifier: 0
+      }]
+    },
+  }
+
   const primaryAttribute = primaryAttributes[req.body.klass];
 
   // delete previous user's heroes.
@@ -54,7 +84,9 @@ router.post('/', jwtMiddleware, async (req, res) => {
       body: req.body.body,
 
       primaryAttribute,
-      [primaryAttribute]: ATTRIBUTE_BASE_VALUE + 3
+      [primaryAttribute]: ATTRIBUTE_BASE_VALUE + 3,
+
+      equipedItems: [initialWeapon[primaryAttribute]]
     }));
 
   } else {

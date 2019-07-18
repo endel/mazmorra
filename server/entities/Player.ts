@@ -90,10 +90,7 @@ export class Player extends Unit {
   }
 
   getItemByType(type: string) {
-    const inventoriesToSearchFor: InventoryType[] = ['inventory', 'quickInventory'];
-
-    let inventoryType;
-    let itemId;
+    const inventoriesToSearchFor: InventoryType[] = ['inventory']; // , 'quickInventory'
 
     for (let i = 0; i < inventoriesToSearchFor.length; i++) {
       const _inventoryType = inventoriesToSearchFor[i];
@@ -101,14 +98,10 @@ export class Player extends Unit {
       for (const _itemId in inventory.slots) {
         const item: Item = inventory.slots[_itemId];
         if (item.type === type) {
-          inventoryType = _inventoryType;
-          itemId = _itemId;
-          break;
+          return item;
         }
       }
     }
-
-    return { inventoryType, itemId };
   }
 
   useItem(inventoryType: InventoryType, itemId: string, force: boolean = false) {
@@ -153,7 +146,7 @@ export class Player extends Unit {
     [
       this.purchase,
       this.inventory,
-      this.quickInventory,
+      // this.quickInventory,
       this.equipedItems
     ].forEach(inventory => {
       for (let itemId in inventory.slots) {
@@ -242,32 +235,25 @@ export class Player extends Unit {
   }
 
   inventoryBuy (item: Item, toInventory?: Inventory) {
-    if (!toInventory) {
-      const toInventoryPriority = (item instanceof ConsumableItem)
-        ? [this.quickInventory, this.inventory]
-        : [this.inventory, this.quickInventory];
+    if (!toInventory) { toInventory = this.inventory; }
 
-      for (let i=0; i<toInventoryPriority.length; i++) {
-        if (toInventoryPriority[i].hasAvailability()) {
-          toInventory = toInventoryPriority[i];
-          break;
-        }
-      }
+    let hasAvailability = false;
+    let success = false;
+    let sameItemToIncrement: ConsumableItem;
 
-      // no inventory with availability found! skip it.
-      if (!toInventory) {
-        return;
-      }
+    if (item instanceof ConsumableItem) {
+      sameItemToIncrement = item.getSameItemToIncrement(this.inventory.slots);
+      hasAvailability = (sameItemToIncrement !== undefined);
     }
 
-    let hasAvailability = toInventory.hasAvailability();
     if (toInventory instanceof EquipedItems) {
       hasAvailability = toInventory.isSlotAvailable((item as EquipableItem).slotName);
+
+    } else if (!hasAvailability) {
+      hasAvailability = toInventory.hasAvailability();
     }
 
     if (toInventory && hasAvailability) {
-      let success: boolean = false;
-
       if (item.premium && this.diamond >= item.getPrice()) {
         this.diamond -= item.getPrice();
         success = true;
@@ -277,7 +263,16 @@ export class Player extends Unit {
         success = true;
       }
 
-      if (success) {
+      let hasIncrementedQty = false;
+      if (success && item instanceof ConsumableItem) {
+        hasIncrementedQty = item.incrementQtyFromSlots(this.inventory.slots);
+
+        if (sameItemToIncrement) {
+          sameItemToIncrement.price = sameItemToIncrement.getSellPrice();
+        }
+      }
+
+      if (success && !hasIncrementedQty) {
         // update price to sell price once player bought it
         item.price = item.getSellPrice();
 

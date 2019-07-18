@@ -20,7 +20,7 @@ import { AttackSpeedSkill } from "./skills/AttackSpeedSkill";
 import { MovementSpeedSkill } from "./skills/MovementSpeedSkill";
 
 export type Attribute = 'strength' | 'agility' | 'intelligence';
-export type InventoryType = 'inventory' | 'quickInventory';
+export type InventoryType = 'inventory';
 
 export type StatsModifiers = {
   // temporary
@@ -58,7 +58,7 @@ export class Unit extends Entity {
   // Items / Inventory
   @type(Inventory) inventory: Inventory;
   @type(EquipedItems) equipedItems = new EquipedItems();
-  @type(Inventory) quickInventory = new Inventory({ capacity: 6 });
+  // @type(Inventory) quickInventory = new Inventory({ capacity: 6 });
 
   @type(BattleAction) action: BattleAction;
   lastBattleActionTime: number = Date.now();
@@ -159,8 +159,8 @@ export class Unit extends Entity {
     this.state = state;
     this.action = null;
 
-    this.quickInventory.set(hero.quickInventory || []);
-    this.inventory = new Inventory({ capacity: hero.inventoryCapacity || 12 }, hero.inventory || []);
+    // this.quickInventory.set(hero.quickInventory || []);
+    this.inventory = new Inventory({ capacity: 15 }, hero.inventory || []);
 
     this.equipedItems.set(hero.equipedItems || []);
     this.equipedItems.events.on('change', () => this.onEquipedItemsChange());
@@ -574,8 +574,8 @@ export class Unit extends Entity {
     this.equipedItems.dispose();
     delete this.equipedItems;
 
-    this.quickInventory.dispose();
-    delete this.quickInventory;
+    // this.quickInventory.dispose();
+    // delete this.quickInventory;
 
     this.hp.dispose();
     delete this.hp;

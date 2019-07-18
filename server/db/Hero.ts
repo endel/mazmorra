@@ -25,6 +25,7 @@ const AttributeModifier = new mongoose.Schema<DBAttributeModifier>({
 export interface DBItem {
   type: string,
   modifiers?: DBAttributeModifier[]
+  qty?: number, // for consumable items
   damageAttribute?: Attribute,
   manaCost?: number,
   isRare?: boolean,
@@ -36,6 +37,9 @@ export interface DBItem {
 const Item = new mongoose.Schema<DBItem>({
   type: String,
   modifiers: [AttributeModifier],
+
+  // for consumable items
+  qty: Number,
 
   // for weapons
   isRare: Boolean,
@@ -100,7 +104,6 @@ export interface DBHero extends mongoose.Document {
 
   inventory: DBItem[];
   equipedItems: DBItem[];
-  quickInventory: DBItem[];
 
   checkPoints: number[];
 
@@ -116,7 +119,7 @@ export const Hero = mongoose.model<DBHero>('Hero', new Schema<DBHero>({
   klass: { type: Number, default: 0 },
   lvl: { type: Number, default: 1 },
 
-  inventoryCapacity: { type: Number, default: 12 },
+  inventoryCapacity: { type: Number, default: 15 },
 
   kills: { type: Number, default: 0 },
   deaths: { type: Number, default: 0 },
@@ -153,14 +156,12 @@ export const Hero = mongoose.model<DBHero>('Hero', new Schema<DBHero>({
   intelligence: { type: Number, default: ATTRIBUTE_BASE_VALUE },
   pointsToDistribute: { type: Number, default: 3 },
 
-  inventory: { type: [Item], default: [] },
-  equipedItems: { type: [Item], default: [] },
-  quickInventory: { type: [Item], default: [
-    { type: helpers.ENTITIES.HP_POTION_1, modifiers: [{ attr: "hp", modifier: POTION_1_MODIFIER }] },
-    { type: helpers.ENTITIES.HP_POTION_1, modifiers: [{ attr: "hp", modifier: POTION_1_MODIFIER }] },
-    { type: helpers.ENTITIES.MP_POTION_1, modifiers: [{ attr: "mp", modifier: POTION_1_MODIFIER }] },
+  inventory: { type: [Item], default: [
+    { type: helpers.ENTITIES.HP_POTION_1, qty: 2, modifiers: [{ attr: "hp", modifier: POTION_1_MODIFIER }] },
+    { type: helpers.ENTITIES.MP_POTION_1, qty: 2, modifiers: [{ attr: "mp", modifier: POTION_1_MODIFIER }] },
     { type: helpers.ENTITIES.SCROLL },
   ] },
+  equipedItems: { type: [Item], default: [] },
 
   checkPoints: { type: [Number], default: [1] },
 

@@ -1,3 +1,16 @@
+**18/07/2019 - **
+- Inventory and Quick Inventory changes:
+    - Quick inventory has been removed!
+    - Now there are 3 shorcuts on the interface to consume HP/MP/Portals from the Inventory.
+        - If you prefer using the keyboard keys 1/2/3 consume them, respectively.
+    - Inventory now has 15 slots instead of 12
+    - All "consumable" items are stackable on the inventory, up to 9 on each slot.
+- Lever skin more visible on Inferno dungeons
+- Portals bug:
+    - When player enters a room with a portal he owns, that portal will be destroyed. No matter if it was used or not.
+- Checkpoint screen displays your current level for reference
+- Fixes "equipable after dungeon X" issue when the player can clearly equip the item
+
 **17/07/2019 - Smarter enemies; attack speed and movement speed changed!**
 - Enemies do not block player's walking path anymore
 - Enemies do not (always) "camp" on doors anymore - when no player is nearby, they return to their initial position

@@ -14,7 +14,6 @@ import { RoomUtils, ItemDropOptions } from "../../utils/RoomUtils";
 import { Player } from "../../entities/Player";
 import { Enemy } from "../../entities/Enemy";
 import { Unit } from "../../entities/Unit";
-import { Fountain } from "../../entities/interactive/Fountain";
 
 // entity types
 import { Item } from "../../entities/Item";
@@ -23,7 +22,7 @@ import { Interactive } from "../../entities/Interactive";
 import { Entity } from "../../entities/Entity";
 import { MoveEvent } from "../../core/Movement";
 import { DBHero } from "../../db/Hero";
-import { MapKind, MapConfig, getMapConfig, isBossMap, isCheckPointMap, MAX_LEVELS } from "../../utils/ProgressionConfig";
+import { MapKind, MapConfig, getMapConfig, isBossMap, MAX_LEVELS } from "../../utils/ProgressionConfig";
 import { NPC } from "../../entities/NPC";
 import { DoorDestiny, DoorProgress, Door } from "../../entities/interactive/Door";
 import { Portal } from "../../entities/interactive/Portal";
@@ -169,8 +168,13 @@ export class DungeonState extends Schema {
   createPlayer (client, hero: DBHero, options: any) {
     var player = new Player(client.sessionId, hero, this);
 
+    // find and remove portals from this player!
+    const portal = this.getAllEntitiesOfType<Portal>(Portal).find(portal => portal.ownerId === hero._id.toString());
+    if (portal) { this.removeEntity(portal); }
+
     if (options.isPortal) {
       if (this.progress === 1) {
+
         // created a portal in a dungeon!
         const portalBack = new Portal({
           x: this.roomUtils.checkPoint.position.x,
@@ -180,9 +184,9 @@ export class DungeonState extends Schema {
           room: hero.currentRoom
         }));
         portalBack.ownerId = hero._id.toString();
-        // City's portal has 1 second less of life,
+        // City's portal has 2 second less of life,
         // to avoid created room from being created again
-        portalBack.ttl -= 1000;
+        portalBack.ttl -= 2000;
         portalBack.state = this;
 
         this.addEntity(portalBack);
@@ -191,7 +195,6 @@ export class DungeonState extends Schema {
 
       } else {
         // back from a portal!
-        const portal = this.getAllEntitiesOfType<Portal>(Portal).find(portal => portal.ownerId === hero._id.toString());
         if (portal) {
           player.position.set(portal.position);
           this.removeEntity(portal);
@@ -350,6 +353,7 @@ export class DungeonState extends Schema {
         allowedPath.setWalkableAt(entity.position.x, entity.position.y, false);
       }
     }
+
 
     const moves = this.finder.findPath(
       unit.position.x, unit.position.y,

@@ -19,6 +19,22 @@ export default class HUDController extends Behaviour {
 
   onUpdateInventory(inventoryType) {
     this.object[inventoryType].updateItems();
+
+    // also update consumable shortcuts
+    if (inventoryType === "inventory") {
+      const shortcutButtons = [this.object.shortcutHpPotion, this.object.shortcutMpPotion, this.object.shortcutScroll];
+      const slots = this.object.inventory.slots.userData.slots;
+
+      shortcutButtons.forEach((shortcutButton) => {
+        for (let itemId in slots) {
+          if (slots[itemId].type.indexOf(shortcutButton.type) === 0) {
+            shortcutButton.item = slots[itemId];
+            return;
+          }
+        }
+        shortcutButton.item = null;
+      });
+    }
   }
 
   onUpdateAttributes (data) {

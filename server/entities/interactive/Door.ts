@@ -60,18 +60,15 @@ export class Door extends Interactive {
     }
 
     if (this.isLocked) {
-      const { inventoryType, itemId } = player.getItemByType('key-' + (this.mapkind || state.mapkind));
+      const item = player.getItemByType('key-' + (this.mapkind || state.mapkind));
 
       // use key to unlock door
-      if (
-        !inventoryType ||
-        !itemId ||
-        !player.useItem(inventoryType, itemId, true)
-      ) {
+      if (!item) {
         state.createTextEvent(this.lockedMessage || `Door is locked!`, this.position, "white", 500);
         return;
 
       } else if (this.destiny.room === undefined) { // do not unlock special rooms!
+        player.useItem('inventory', item.id, true);
         this.isLocked = false;
       }
     }

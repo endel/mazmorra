@@ -1,6 +1,7 @@
 import hint from "../hud/Hint";
 import EquipedItems from "./EquipedItems";
 import { trackEvent, humanize } from "../../utils";
+import { MeshText2D, textAlign } from "three-text2d";
 
 let draggingItem = null
   , draggingFrom = null
@@ -29,6 +30,15 @@ export default class ItemSlot extends THREE.Object3D {
 
     this.width = useTex.frame.w *  config.HUD_SCALE
     this.height = useTex.frame.h *  config.HUD_SCALE
+
+    var qtyTex = ResourceManager.get("hud-item-slot-qty");
+    this.qty = new THREE.Sprite(new THREE.SpriteMaterial({ map: qtyTex, transparent: true }))
+    this.qty.scale.set(qtyTex.frame.w *  config.HUD_SCALE, qtyTex.frame.h *  config.HUD_SCALE, 1)
+    this.qty.position.x = 3 * config.HUD_SCALE;
+    this.qty.position.y = -3 * config.HUD_SCALE;
+    this.qty.position.z = 2;
+
+    this.qtyText = null;
 
     this.onMouseOver = this.onMouseOver.bind(this);
     this.onMouseOut = this.onMouseOut.bind(this);
@@ -88,12 +98,6 @@ export default class ItemSlot extends THREE.Object3D {
       item.position.y = 0
       item.position.z = 1
 
-      // item.addEventListener("removed", () => {
-      //   if (item.geometry) {
-      //     console.log("destroy ITEM geometry");
-      //     item.geometry.dispose()
-      //   }
-      // });
       this.add(item)
 
     } else {
@@ -105,7 +109,38 @@ export default class ItemSlot extends THREE.Object3D {
       this.add(this.free)
     }
 
-    this._item = item
+    this._item = item;
+
+    this.updateItemQty();
+  }
+
+  updateItemQty() {
+    const qty = this._item && this._item.userData.item && this._item.userData.item.qty;
+
+    if (qty) {
+      this.add(this.qty);
+
+      if (!this.qtyText) {
+        this.qtyText = new MeshText2D(qty.toString(), {
+          align: textAlign.center,
+          font: config.SMALL_FONT,
+          fillStyle: "#d8d8d8"
+        })
+        this.qtyText.scale.set(0.6, 0.6, 0.6);
+        this.qtyText.position.x = this.qty.position.x;
+        this.qtyText.position.y = this.qty.position.y + (this.qtyText.height * this.qtyText.scale.y) / 2.2;
+        this.qtyText.position.z = 3;
+
+      } else {
+        this.qtyText.text = qty.toString();
+      }
+
+      this.add(this.qtyText);
+
+    } else if (this.qtyText) {
+      this.remove(this.qty);
+      this.remove(this.qtyText);
+    }
   }
 
   get item () {
