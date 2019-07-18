@@ -1,4 +1,9 @@
 **19/07/2019 - Surprising chests.**
+- Fixes infinite loot key bug
+- UI: highlight in the tooltips which shortcut key to use on the keyboard (1/2/3/Q/W/I/B)
+- Skills:
+    - Attack speed skill duration has been reduced from 3s to 2s
+    - Movement speed skill duration has been increased from 2s to 2.5s
 - Mobile: improved drag & drop on Inventory. Mobile experience may still be "laggy" depending on the device you use.
 
 **18/07/2019 - Stackable items on the inventory, and new quick use for them.**
