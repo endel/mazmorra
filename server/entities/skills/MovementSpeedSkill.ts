@@ -4,7 +4,7 @@ import { Unit } from "../Unit";
 export class MovementSpeedSkill extends Skill {
   name: string = "movement-speed";
   manaCost: number = 10;
-  duration: number = 2000;
+  duration: number = 2500;
 
   increasedValue: number;
 
