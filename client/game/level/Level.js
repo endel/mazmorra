@@ -62,23 +62,29 @@ export default class Level extends THREE.Object3D {
     // auto-attack!
     this.hud.addEventListener("atk", (e) => {
       e.stopPropagation = true;
-      this.room.send(["atk"]);
+      if (this.room.connection) {
+        this.room.send(["atk"]);
+      }
     });
 
     // skill!
     this.hud.addEventListener("skill", (e) => {
       e.stopPropagation = true;
-      this.room.send(["skill", e.skill]);
+      if (this.room.connection) {
+        this.room.send(["skill", e.skill]);
+      }
     });
 
     // allow to consume items!
     this.hud.addEventListener("use-item", (e) => {
       e.stopPropagation = true;
 
-      this.room.send(["use-item", {
-        inventoryType: e.inventoryType,
-        itemId: e.itemId
-      }]);
+      if (this.room.connection) {
+        this.room.send(["use-item", {
+          inventoryType: e.inventoryType,
+          itemId: e.itemId
+        }]);
+      }
 
       if (e.inventoryType === "purchase") {
         sounds.inventorySound.buy.play();
@@ -88,12 +94,14 @@ export default class Level extends THREE.Object3D {
     this.hud.addEventListener("inventory-drag", (e) => {
       e.stopPropagation = true;
 
-      this.room.send(["inventory-drag", {
-        fromInventoryType: e.fromInventoryType,
-        toInventoryType: e.toInventoryType,
-        itemId: e.itemId,
-        switchItemId: e.switchItemId,
-      }]);
+      if (this.room.connection) {
+        this.room.send(["inventory-drag", {
+          fromInventoryType: e.fromInventoryType,
+          toInventoryType: e.toInventoryType,
+          itemId: e.itemId,
+          switchItemId: e.switchItemId,
+        }]);
+      }
 
       if (e.fromInventoryType === "purchase") {
         sounds.inventorySound.buy.play();
@@ -103,16 +111,20 @@ export default class Level extends THREE.Object3D {
     this.hud.addEventListener("inventory-sell", (e) => {
       e.stopPropagation = true;
 
-      this.room.send(["inventory-sell", {
-        fromInventoryType: e.fromInventoryType,
-        itemId: e.itemId
-      }]);
+      if (this.room.connection) {
+        this.room.send(["inventory-sell", {
+          fromInventoryType: e.fromInventoryType,
+          itemId: e.itemId
+        }]);
+      }
 
       sounds.inventorySound.sell.play();
     });
 
     this.hud.addEventListener("checkpoint", (e) => {
-      this.room.send(["checkpoint", e.progress]);
+      if (this.room.connection) {
+        this.room.send(["checkpoint", e.progress]);
+      }
     });
   }
 
