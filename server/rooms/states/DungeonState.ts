@@ -150,9 +150,7 @@ export class DungeonState extends Schema {
       this.enemies[entity.id] = entity;
 
     } else if (entity instanceof Jail) {
-      entity.getLockedTiles().forEach(position => {
-        this.pathgrid.setWalkableAt(position.x, position.y, false);
-      })
+      entity.lockTiles(this);
     }
   }
 

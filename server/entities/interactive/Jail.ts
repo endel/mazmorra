@@ -14,6 +14,12 @@ export class Jail extends Interactive {
     this.direction = direction;
   }
 
+  lockTiles(state) {
+    this.getLockedTiles().forEach((position) => {
+      state.pathgrid.setWalkableAt(position.x, position.y, false);
+    });
+  }
+
   getLockedTiles() {
     if (this.direction === helpers.DIRECTION.SOUTH) {
       return [{ x: this.position.x - 1, y: this.position.y }];
