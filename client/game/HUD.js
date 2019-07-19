@@ -252,6 +252,10 @@ export default class HUD extends THREE.Scene {
       return;
     }
 
+    if (this.currentOverlay && this.currentOverlay.isOpen) {
+      this.forceCloseOverlay();
+    }
+
     const settings = new SettingsOverlay();
     settings.toggleOpen();
 

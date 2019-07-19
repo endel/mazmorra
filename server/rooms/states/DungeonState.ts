@@ -334,8 +334,8 @@ export class DungeonState extends Schema {
     for (const id in this.entities) {
       const entity: Entity = this.entities[id];
 
-
       if (
+        unit instanceof NPC ||// npc should avoid Checkpoint
         (
           !entity.walkable &&
           (!targetEntity || !entity.position.equals(targetEntity.position))
