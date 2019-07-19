@@ -5,14 +5,16 @@
 - Improved text readability on the interface and during battle
 - In-game chat: a balloon is displayed when player is typing, and text appears on top of him as well as in global chat.
     - Max 20 characters appear in-game.
-- Fix bug: infinite loot key bug
-- Fix bug: occasional "already logged in" when selecting checkpoint
-- Fix bug: NPCs do not block the checkpoint anymore
+- "Evaded" is displayed instead of "miss"
 - UI: highlight in the tooltips which shortcut key to use on the keyboard (1/2/3/Q/W/I/B)
 - Skills:
     - Attack speed skill duration has been reduced from 3s to 2s
     - Movement speed skill duration has been increased from 2s to 2.5s
-- Mobile: improved drag & drop on Inventory. Mobile experience is still not great.
+- Mobile: improved drag & drop on Inventory (Mobile experience is still not great)
+- Fix bug: infinite loot key bug
+- Fix bug: you can play with multiple heroes at once
+- Fix bug: NPCs do not block the checkpoint anymore
+- Fix bug: occasional "already logged in" when selecting checkpoint
 
 **18/07/2019 - Stackable items on the inventory, and new quick use for them.**
 - Agility and Intelligence heroes start the game with a T1 weapon: 1 attack distance, 0 damage
