@@ -2,7 +2,7 @@ import { Behaviour } from 'behaviour.js'
 import helpers from '../../shared/helpers'
 
 import { getClientId } from '../core/network';
-import { battleStartSound, wooshSound, hitSound, playRandom, deathSound, deathStingerSound, bowSound, staffSound, fadeOut } from '../core/sound';
+import { battleStartSound, wooshSound, hitSound, playRandom, deathSound, deathStingerSound, bowSound, staffSound, fadeOut, playRandom3D, playSound3D } from '../core/sound';
 
 export const DEAD_ENTITY_OPACITY = 0.45;
 
@@ -71,7 +71,7 @@ export default class BattleBehaviour extends Behaviour {
       // play battle start sound
       if (this.object.userData.type !== helpers.ENTITIES.PLAYER) {
         let enemyKindSound = battleStartSound[this.object.userData.kind] || battleStartSound.default;
-        enemyKindSound.play();
+        playSound3D(enemyKindSound, this.object);
       }
     }
 
@@ -98,7 +98,7 @@ export default class BattleBehaviour extends Behaviour {
       soundToPlay = wooshSound;
     }
 
-    playRandom(soundToPlay)
+    playRandom3D(soundToPlay, this.object);
 
     // show damage / miss / critical
     let text = `-${ actionData.damage }`

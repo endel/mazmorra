@@ -1,5 +1,5 @@
 import { Behaviour } from 'behaviour.js'
-import { activatableSound } from "../core/sound";
+import { activatableSound, playSound3D } from "../core/sound";
 
 export default class Activatable extends Behaviour {
 
@@ -32,7 +32,9 @@ export default class Activatable extends Behaviour {
     }
 
     var sound = activatableSound[this.object.userData.type];
-    if (sound && canPlaySound) { sound.play(); }
+    if (sound && canPlaySound) {
+      playSound3D(sound, this.object);
+    }
   }
 
   update () {

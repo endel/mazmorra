@@ -2,7 +2,7 @@ import { Behaviour } from 'behaviour.js'
 
 import BattleBehaviour, { DEAD_ENTITY_OPACITY } from './BattleBehaviour'
 import lerp from 'lerp'
-import { stepSounds, playRandom } from '../core/sound';
+import { stepSounds, playRandom, setAudioPosition, playRandom3D } from '../core/sound';
 
 export default class GameObject extends Behaviour {
 
@@ -19,8 +19,15 @@ export default class GameObject extends Behaviour {
 
       // play "step" sound for current player
       if (this.object === global.player) {
-        playRandom(stepSounds);
+        setAudioPosition(this.object);
+        playRandom3D(stepSounds, this.object);
       }
+
+      /*
+      if (!this.object.userData.kind) { // not an enemy!
+        playRandom3D(stepSounds, this.object);
+      }
+      */
     });
   }
 

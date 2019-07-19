@@ -1,14 +1,14 @@
 'use strict';
 
 import Highlight from './Highlight'
-import { levelUpSound } from '../../core/sound';
+import { levelUpSound, playSound3D } from '../../core/sound';
 
 export default class LevelUp extends Highlight {
 
   constructor () {
     super()
 
-    levelUpSound.play();
+    playSound3D(levelUpSound, this);
 
     this.position.y = 1
 

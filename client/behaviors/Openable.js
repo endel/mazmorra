@@ -1,5 +1,5 @@
 import { Behaviour } from 'behaviour.js'
-import { chestSound } from '../core/sound';
+import { chestSound, playSound3D } from '../core/sound';
 
 export default class Openable extends Behaviour {
 
@@ -32,7 +32,7 @@ export default class Openable extends Behaviour {
 
   open(playSound = true) {
     if (playSound) {
-      chestSound.play();
+      playSound3D(chestSound, this.object);
     }
 
     App.tweens.add(this.object.head.position).

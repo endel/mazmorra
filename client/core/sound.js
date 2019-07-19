@@ -1,4 +1,5 @@
 import { Howler, Howl } from "howler";
+import { distanceFromPlayer } from "./utils.js";
 
 /**
  * Music (The Adventurer's Collection Tabletop Soundtrack)
@@ -18,11 +19,45 @@ export function setMusicVolume(volume) {
   soundtrackVolume = newVolume;
 }
 
+let sfxVolume = 1;
 export function setSFXVolume(volume) {
+  sfxVolume = volume;
   $_audiosprite.volume(volume);
 }
 
-export function playRandom(soundOptions) {
+const globalListener = {x: 0, y: 0};
+export function setAudioPosition(object) {
+  /*
+  globalListener.x = object.position.x;
+  globalListener.y = object.position.z;
+  $_audiosprite.pos(globalListener.x, globalListener.y, 0);
+  */
+}
+
+export function playSound3D(sound, source) {
+  // const volume3d = distanceFromPlayer(source);
+  const soundId = sound.play();
+
+  /*
+  $_audiosprite.once('play', () => {
+    if (source === global.player) {
+      $_audiosprite.pos(0, 0, 0, soundId);
+
+    } else {
+      const x = (source.position.x - globalListener.x) / 5;
+      const y = (source.position.z - globalListener.y) / 5;
+      $_audiosprite.pos(x, y, 0, soundId);
+    }
+    $_audiosprite.volume(sfxVolume, soundId);
+  })
+  */
+}
+
+export function playRandom3D(soundOptions, source) {
+  playSound3D(soundOptions[Math.floor(Math.random() * soundOptions.length)], source);
+}
+
+export function playRandom(soundOptions, volume) {
   soundOptions[Math.floor(Math.random() * soundOptions.length)].play();
 }
 
