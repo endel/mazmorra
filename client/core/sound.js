@@ -6,18 +6,31 @@ import { Howler, Howl } from "howler";
  */
 const soundtracks = new Howl(require('../../public/soundtracks.json'));
 
+const MAX_SOUNDTRACK_VOLUME = 0.45;
+
+export let soundtrackVolume = MAX_SOUNDTRACK_VOLUME;
+let curentSoundTrack;
+let curentSoundTrackName;
+
+export function setMusicVolume(volume) {
+  const newVolume = Math.min(volume, MAX_SOUNDTRACK_VOLUME);
+  soundtracks.volume(newVolume);
+  soundtrackVolume = newVolume;
+}
+
+export function setSFXVolume(volume) {
+  $_audiosprite.volume(volume);
+}
+
 export function playRandom(soundOptions) {
   soundOptions[Math.floor(Math.random() * soundOptions.length)].play();
 }
-
-export let soundtrackVolume = 0.45;
-let curentSoundTrack;
-let curentSoundTrackName;
 
 export function fadeOut(soundId) {
   if (!soundId) { soundId = curentSoundTrack; }
   const previousVolume = soundtracks.volume(soundId);
   soundtracks.fade(previousVolume, 0, 1000, soundId);
+  soundtracks.once('fade', () => soundtracks.stop(soundId), soundId);
 }
 
 export function fadeIn(soundId, toVolume) {
@@ -30,25 +43,14 @@ export function switchSoundtrack(trackName) {
     return;
   }
 
-  const previousVolume = soundtracks.volume(curentSoundTrack);
-
-  if (curentSoundTrack && previousVolume > 0) {
-    const soundTrackToFade = curentSoundTrack;
-    soundtracks.on('fade', function (soundId) {
-      if (soundId === soundTrackToFade) {
-        soundtracks.stop(soundId);
-      }
-    });
+  if (curentSoundTrack) {
     fadeOut(curentSoundTrack);
-    // window.$_audiosprite.fade(soundtrackVolume, 0, 1000, curentSoundTrack);
   }
 
   curentSoundTrackName = trackName;
   curentSoundTrack = soundtracks.play(trackName);
   soundtracks.loop(true, curentSoundTrack);
   fadeIn(curentSoundTrack, soundtrackVolume);
-
-  // window.$_audiosprite.fade(0, soundtrackVolume, 1000, curentSoundTrack);
 
   return curentSoundTrack;
 }

@@ -12,6 +12,7 @@ import Game from './game/Game'
 
 import login from './web/login'
 import { switchSoundtrack } from './core/sound';
+import { applySettings } from "./elements/hud/SettingsOverlay";
 
 window.app = App;
 
@@ -21,6 +22,7 @@ ResourceManager.load(() => {
   body.classList.remove("loading");
   body.classList.add("loaded");
 
+  applySettings();
   switchSoundtrack("higure-forest");
 
   const game = new Game(document.getElementById('game'))

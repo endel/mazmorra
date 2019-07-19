@@ -21,6 +21,9 @@ import LeaderboardOverlay from "../elements/hud/LeaderboardOverlay";
 import SkillButton from "../elements/hud/SkillButton";
 import ConsumableShortcut from "../elements/inventory/ConsumableShortcut";
 import { isMobile } from "../utils/device";
+import ResourceManager from "../resource/manager";
+import Hint from "../elements/hud/Hint";
+import SettingsOverlay from "../elements/hud/SettingsOverlay";
 
 export default class HUD extends THREE.Scene {
 
@@ -70,12 +73,30 @@ export default class HUD extends THREE.Scene {
     // FIXME: this is a workaround for `HUDController#onUpdateInventory`
     this.equipedItems = this.inventory.equipedItems;
 
-    this.openInventoryButton = new OpenInventoryButton()
-
     this.onToggleInventory = this.onToggleInventory.bind(this);
-
+    this.openInventoryButton = new OpenInventoryButton()
     this.openInventoryButton.addEventListener('click', this.onToggleInventory)
 
+    // Settings button
+    const openSettingsButton = ResourceManager.getHUDElement("icons-settings");
+    this.openSettingsButton = new THREE.Object3D();
+    this.openSettingsButton.add(openSettingsButton);
+    this.openSettingsButton.addEventListener("mouseover", () => {
+      Hint.show("Settings", this.openSettingsButton);
+      App.tweens.remove(this.openSettingsButton.scale)
+      App.tweens.add(this.openSettingsButton.scale).to({ x: 1.1, y: 1.1 }, 200, Tweener.ease.quadOut);
+    });
+    this.openSettingsButton.addEventListener("mouseout", () => {
+      Hint.hide();
+      App.tweens.remove(this.openSettingsButton.scale);
+      App.tweens.add(this.openSettingsButton.scale).to({ x: 1, y: 1 }, 200, Tweener.ease.quadOut);
+    });
+    this.openSettingsButton.addEventListener("click", () => this.openSettings());
+    this.openSettingsButton.userData.hud = true;
+    this.openSettingsButton.width = openSettingsButton.width;
+    this.openSettingsButton.height = openSettingsButton.height;
+
+    // "Quick inventory" buttons
     this.shortcutHpPotion = new ConsumableShortcut({ type: "hp-potion-", shortcutKey: "1" });
     this.shortcutMpPotion = new ConsumableShortcut({ type: "mp-potion-", shortcutKey: "2" });
     this.shortcutScroll = new ConsumableShortcut({ type: "scroll-", shortcutKey: "3" });
@@ -136,6 +157,7 @@ export default class HUD extends THREE.Scene {
     this.add(this.skill2Button);
 
     this.add(this.openInventoryButton);
+    this.add(this.openSettingsButton);
   }
 
   onKeyPress (e) {
@@ -145,20 +167,14 @@ export default class HUD extends THREE.Scene {
     }
 
     if (
-      e.which === Keycode.I || e.which === Keycode.B ||
-      (
-        // close the inventory hitting ESC
-        (this.inventory.isOpen || this.checkPointSelector.isOpen) &&
-        (e.key === "Escape" || e.key === " ")
-      )
+      (this.currentOverlay && this.currentOverlay.isOpen) &&
+      (e.key === "Escape" || e.key === " ")
     ) {
-      if (this.currentOverlay && this.currentOverlay.isOpen) {
-        this.forceCloseOverlay();
+      // close the inventory hitting ESC / Space
+      this.forceCloseOverlay();
 
-      } else {
-        // open inventory pressing "i" or "b"
-        this.onToggleInventory();
-      }
+    } else if (e.which === Keycode.I || e.which === Keycode.B) {
+      this.onToggleInventory();
 
     } else if (e.which === Keycode.A) {
       this.dispatchEvent({ type: "atk" });
@@ -215,13 +231,10 @@ export default class HUD extends THREE.Scene {
   }
 
   openLeaderboard(data) {
-    // // skip opening multiple leaderboards.
-    // if (
-    //   this.currentOverlay &&
-    //   this.currentOverlay instanceof LeaderboardOverlay
-    // ) {
-    //   return;
-    // }
+    // skip opening multiple leaderboards
+    if (this.currentOverlay instanceof LeaderboardOverlay) {
+      return;
+    }
 
     const leaderboard = new LeaderboardOverlay(data);
     leaderboard.toggleOpen();
@@ -230,6 +243,22 @@ export default class HUD extends THREE.Scene {
     this.showOverlay();
 
     this.currentOverlay = leaderboard;
+  }
+
+  openSettings() {
+    // skip opening multiple leaderboards
+    if (this.currentOverlay instanceof SettingsOverlay) {
+      this.forceCloseOverlay();
+      return;
+    }
+
+    const settings = new SettingsOverlay();
+    settings.toggleOpen();
+
+    this.add(settings);
+    this.showOverlay();
+
+    this.currentOverlay = settings;
   }
 
   onOpenCheckPoints(numbers, currentProgress) {
@@ -341,6 +370,12 @@ export default class HUD extends THREE.Scene {
     this.openInventoryButton.position.set(
       this.resources.position.x,
       this.resources.position.y - this.resources.height - this.openInventoryButton.height - (config.HUD_MARGIN * config.HUD_SCALE),
+      0
+    );
+
+    this.openSettingsButton.position.set(
+      this.resources.position.x,
+      this.openInventoryButton.position.y - this.openInventoryButton.height - (config.HUD_MARGIN),
       0
     );
 

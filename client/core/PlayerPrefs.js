@@ -20,6 +20,10 @@ export class PlayerPrefs  {
     return localStorage.getItem(key);
   }
 
+  static getNumber (key, fallback = "0") {
+    return parseInt(localStorage.getItem(key) || fallback);
+  }
+
   static remove (key) {
     localStorage.removeItem(key);
   }

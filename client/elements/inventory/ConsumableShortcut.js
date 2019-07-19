@@ -55,6 +55,11 @@ export default class ConsumableShortcut extends THREE.Object3D {
   }
 
   onMouseOver ( e ) {
+    // TODO: allow to change what's in the shortcut by dragging them here.
+    if (App.cursor.isDragging) {
+      return;
+    }
+
     hint.show(`<span class="shortcut">${this.shortcutKey}</span> Use ${humanize(this.type)}`, this);
 
     if (this._item) {
