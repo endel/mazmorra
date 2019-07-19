@@ -5,10 +5,12 @@ import { setMusicVolume, setSFXVolume } from '../../core/sound';
 
 const SETTINGS_SOUND_EFFECTS = "settings-sound-effects";
 const SETTINGS_MUSIC = "settings-music";
+const SETTINGS_RESOLUTION = "settings-resolution";
 
 export function applySettings () {
   setMusicVolume(PlayerPrefs.getNumber(SETTINGS_MUSIC, 1));
   setSFXVolume(PlayerPrefs.getNumber(SETTINGS_SOUND_EFFECTS, 1));
+  global.renderer.setPixelRatio(PlayerPrefs.getNumber(SETTINGS_RESOLUTION, 1));
 }
 
 export default class SettingsOverlay extends THREE.Object3D {
@@ -71,6 +73,27 @@ export default class SettingsOverlay extends THREE.Object3D {
 
     this.options.add(musicToggle);
     this.options.add(musicTxt);
+
+
+    // High resolution
+    const highresToggle = new ToggleButton(PlayerPrefs.getNumber(SETTINGS_RESOLUTION, 1) === 1);
+    highresToggle.addEventListener("change", (e) => {
+      PlayerPrefs.set(SETTINGS_RESOLUTION, (e.value) ? 1 : 0.5);
+      applySettings();
+    });
+    highresToggle.position.x -= (config.HUD_MARGIN * config.HUD_SCALE * 5);
+    highresToggle.position.y = musicToggle.position.y + highresToggle.height + (config.HUD_MARGIN * config.HUD_SCALE * 2)
+
+    const highresTxt = new MeshText2D("High resolution", {
+      align: textAlign.left,
+      font: config.DEFAULT_FONT,
+      fillStyle: "#ffffff"
+    })
+    highresTxt.position.x = musicTxt.position.x;
+    highresTxt.position.y = highresToggle.position.y + highresTxt.height / 2.1;
+
+    this.options.add(highresToggle);
+    this.options.add(highresTxt);
 
     this.width = this.title.width;
     this.height = this.title.height;

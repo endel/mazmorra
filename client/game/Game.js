@@ -23,8 +23,7 @@ export default class Game {
     // this.renderer.localClippingEnabled = true;
 
     // this.renderer = new THREE.WebGLRenderer({ antialias: true });
-    this.renderer.setPixelRatio( window.devicePixelRatio );
-    this.renderer.setSize( window.innerWidth, window.innerHeight );
+    this.renderer.setSize( window.innerWidth, window.innerHeight);
     this.renderer.autoClear = false;
 
     // this.renderer.shadowMap.enabled = false;
@@ -75,7 +74,7 @@ export default class Game {
     })
 
     this.updateInterval = setInterval(this.update.bind(this), 1000 / 60)
-    this.container.appendChild( this.renderer.domElement );
+    this.container.appendChild(this.renderer.domElement);
 
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
 

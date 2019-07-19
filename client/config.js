@@ -21,7 +21,8 @@ module.exports = {
 
   // ZOOM: 23
   // ZOOM: 32 / window.devicePixelRatio,
-  ZOOM: 42 / window.devicePixelRatio,
+  // ZOOM: 42 / window.devicePixelRatio,
+  ZOOM: 42,
   // ZOOM: 45 / window.devicePixelRatio,
   IS_DAY: true,
 

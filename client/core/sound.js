@@ -1,5 +1,5 @@
 import { Howler, Howl } from "howler";
-import { distanceFromPlayer } from "./utils.js";
+import { distanceFromPlayer, distance } from "./utils.js";
 
 /**
  * Music (The Adventurer's Collection Tabletop Soundtrack)
@@ -27,11 +27,11 @@ export function setSFXVolume(volume) {
 
 const globalListener = {x: 0, y: 0};
 export function setAudioPosition(object) {
-  /*
-  globalListener.x = object.position.x;
-  globalListener.y = object.position.z;
-  $_audiosprite.pos(globalListener.x, globalListener.y, 0);
-  */
+  // globalListener.x = object.position.x;
+  // globalListener.y = object.position.z;
+  // $_audiosprite.pos(globalListener.x, globalListener.y, 0);
+
+  // $_audiosprite.pos(0, 0, 0);
 }
 
 export function playSound3D(sound, source) {
@@ -44,9 +44,10 @@ export function playSound3D(sound, source) {
       $_audiosprite.pos(0, 0, 0, soundId);
 
     } else {
-      const x = (source.position.x - globalListener.x) / 5;
-      const y = (source.position.z - globalListener.y) / 5;
-      $_audiosprite.pos(x, y, 0, soundId);
+      const volume = distance(source.position, global.player.position)
+      // const x = (source.position.x - global.player.position.x) / 5;
+      // const y = (source.position.z - global.player.position.z) / 5;
+      $_audiosprite.pos(0, 0, volume, soundId);
     }
     $_audiosprite.volume(sfxVolume, soundId);
   })

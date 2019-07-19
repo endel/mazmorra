@@ -47,9 +47,10 @@ export default class CharacterController extends Behaviour {
       // this.lookAtTarget.x = this.target.position.x;
       // this.lookAtTarget.y = this.target.position.y;
       // this.lookAtTarget.z = this.target.position.z;
+      const zoom = this.zoom / window.devicePixelRatio;
 
-      if (Math.abs(this.camera.zoom - this.zoom) > 0.1) {
-        this.camera.zoom = lerp(this.camera.zoom, this.zoom, 0.03);
+      if (Math.abs(this.camera.zoom - zoom) > 0.1) {
+        this.camera.zoom = lerp(this.camera.zoom, zoom, 0.03);
         this.camera.updateProjectionMatrix();
       }
 
@@ -63,7 +64,7 @@ export default class CharacterController extends Behaviour {
       this.camera.position.z = z * Math.cos(rotSpeed) - x * Math.sin(rotSpeed);
       this.camera.position.y = lerp(this.camera.position.y, this.originalY + 25, 0.05)
 
-      this.camera.zoom = lerp(this.camera.zoom, config.ZOOM + 30, 0.05);
+      this.camera.zoom = lerp(this.camera.zoom, (config.ZOOM + 30) / window.devicePixelRatio, 0.05);
       this.camera.updateProjectionMatrix();
     }
 

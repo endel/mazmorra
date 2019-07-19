@@ -22,10 +22,11 @@ ResourceManager.load(() => {
   body.classList.remove("loading");
   body.classList.add("loaded");
 
+  const game = new Game(document.getElementById('game'))
+
   applySettings();
   switchSoundtrack("higure-forest");
 
-  const game = new Game(document.getElementById('game'))
   game.render();
 
   login.on('register', (data) => {

@@ -21,7 +21,7 @@ export class PlayerPrefs  {
   }
 
   static getNumber (key, fallback = "0") {
-    return parseInt(localStorage.getItem(key) || fallback);
+    return parseFloat(localStorage.getItem(key) || fallback);
   }
 
   static remove (key) {
