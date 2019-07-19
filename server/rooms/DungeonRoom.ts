@@ -202,6 +202,7 @@ export class DungeonRoom extends Room<DungeonState> {
       }
 
     } else if (key == 'msg') {
+      player.isTyping = false;
       this.state.addMessage(player, value);
     }
   }

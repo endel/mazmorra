@@ -411,7 +411,7 @@ export class DungeonState extends Schema {
   }
 
   addMessage (player, message) {
-    return this.createTextEvent(message, player.position, false, undefined, false);
+    return this.createTextEvent(message, player.position, undefined, 1500, false);
   }
 
   createTextEvent (text, position, kind, ttl, small?) {
@@ -421,7 +421,7 @@ export class DungeonState extends Schema {
     var textEvent = new TextEvent(text, position, kind, ttl, small);
     textEvent.state = this;
     this.addEntity(textEvent);
-    setTimeout(() => this.removeEntity(textEvent), 3000);
+
     return textEvent;
   }
 

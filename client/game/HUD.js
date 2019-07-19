@@ -108,7 +108,10 @@ export default class HUD extends THREE.Scene {
     this.selectionText = new MeshText2D("Welcome", {
       font: config.DEFAULT_FONT,
       fillStyle: '#fff',
-      antialias: false
+      antialias: false,
+      shadowColor: "#000000",
+      shadowOffsetY: 3,
+      shadowBlur: 0
     })
 
     // Resources

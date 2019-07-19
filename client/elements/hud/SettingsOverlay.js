@@ -10,7 +10,7 @@ const SETTINGS_RESOLUTION = "settings-resolution";
 export function applySettings () {
   setMusicVolume(PlayerPrefs.getNumber(SETTINGS_MUSIC, 1));
   setSFXVolume(PlayerPrefs.getNumber(SETTINGS_SOUND_EFFECTS, 1));
-  global.renderer.setPixelRatio(PlayerPrefs.getNumber(SETTINGS_RESOLUTION, 1));
+  global.renderer.setPixelRatio(window.devicePixelRatio * PlayerPrefs.getNumber(SETTINGS_RESOLUTION, 1));
 }
 
 export default class SettingsOverlay extends THREE.Object3D {

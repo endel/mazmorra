@@ -106,7 +106,7 @@ export default class BattleBehaviour extends Behaviour {
 
     if (actionData.missed) {
       kind = 'warn'
-      text = 'miss'
+      text = 'Evaded'
 
     } else if (this.defender) {
       this.defender.getEntity().emit('damage', this.damageAttribute);

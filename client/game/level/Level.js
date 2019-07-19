@@ -365,6 +365,9 @@ export default class Level extends THREE.Object3D {
           } else if (change.field === "direction") {
             object.direction = change.value;
 
+          } else if (change.field === "isTyping") {
+            object.typing = change.value;
+
           } else if (change.field === "action") {
             const actionType = change.value && change.value.active && change.value.type;
             object.getEntity().emit(actionType, change.value);
@@ -743,7 +746,9 @@ export default class Level extends THREE.Object3D {
 
   async checkAdPreRoll(roomName) {
     return new Promise((resolve, reject) => {
-      if (!window.isAdsAllowed()) { resolve(); }
+      if (!window.isAdsAllowed()) {
+        return resolve();
+      }
 
       if (!this.totalSessions) {
         this.totalSessions = Number(window.localStorage.getItem("totalSessions") || 0);

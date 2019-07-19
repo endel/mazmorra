@@ -47,7 +47,7 @@
     "random-seed": "^0.3.0",
     "regenerator-runtime": "^0.13.2",
     "three": "^0.106.2",
-    "three-text2d": "^0.5.2",
+    "three-text2d": "^0.5.3",
     "throttle.js": "^1.0.0",
     "tiny-emitter": "^1.0.2",
     "tweener": "0.1.28"

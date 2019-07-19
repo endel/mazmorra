@@ -46,8 +46,11 @@ export default class Character extends THREE.Object3D {
     this.stairsText = new MeshText2D(" ", {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
+      antialias: false,
       fillStyle: '#dce1e2',
-      antialias: false
+      shadowColor: "#000000",
+      shadowOffsetY: 3,
+      shadowBlur: 0
     });
     this.stairsText.position.x = margin * config.HUD_SCALE;
     this.stairsText.position.y = this.stairsText.height - margin;
@@ -60,7 +63,10 @@ export default class Character extends THREE.Object3D {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: '#d0c01c',
-      antialias: false
+      antialias: false,
+      shadowColor: "#000000",
+      shadowOffsetY: 3,
+      shadowBlur: 0
     })
     this.levelText.position.x = margin * config.HUD_SCALE;
     this.levelText.position.y = this.levelIcon.position.y + this.levelText.height - config.HUD_MARGIN;
@@ -74,7 +80,10 @@ export default class Character extends THREE.Object3D {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: '#dce1e2',
-      antialias: false
+      antialias: false,
+      shadowColor: "#000000",
+      shadowOffsetY: 3,
+      shadowBlur: 0
     });
     this.damageText.position.x = margin * config.HUD_SCALE;
     this.damageText.position.y = this.damageIcon.position.y + this.damageIcon.height / 2;
@@ -88,7 +97,10 @@ export default class Character extends THREE.Object3D {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: '#dce1e2',
-      antialias: false
+      antialias: false,
+      shadowColor: "#000000",
+      shadowOffsetY: 3,
+      shadowBlur: 0
     });
     this.armorText.position.x = margin * config.HUD_SCALE;
     this.armorText.position.y = this.armorIcon.position.y + this.armorIcon.height / 2;
@@ -102,7 +114,10 @@ export default class Character extends THREE.Object3D {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: '#dce1e2',
-      antialias: false
+      antialias: false,
+      shadowColor: "#000000",
+      shadowOffsetY: 3,
+      shadowBlur: 0
     });
     this.attackSpeedText.position.x = margin * config.HUD_SCALE;
     this.attackSpeedText.position.y = this.attackSpeedIcon.position.y + this.attackSpeedIcon.height / 2;
@@ -116,7 +131,10 @@ export default class Character extends THREE.Object3D {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: '#dce1e2',
-      antialias: false
+      antialias: false,
+      shadowColor: "#000000",
+      shadowOffsetY: 3,
+      shadowBlur: 0
     });
     this.movementSpeedText.position.x = margin * config.HUD_SCALE;
     this.movementSpeedText.position.y = this.movementSpeedIcon.position.y + this.movementSpeedIcon.height / 2;
@@ -130,7 +148,10 @@ export default class Character extends THREE.Object3D {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: '#dce1e2',
-      antialias: false
+      antialias: false,
+      shadowColor: "#000000",
+      shadowOffsetY: 3,
+      shadowBlur: 0
     });
     this.attackDistanceText.position.x = margin * config.HUD_SCALE;
     this.attackDistanceText.position.y = this.attackDistanceIcon.position.y + this.attackDistanceIcon.height / 2;
@@ -150,7 +171,10 @@ export default class Character extends THREE.Object3D {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: '#d00000',
-      antialias: false
+      antialias: false,
+      shadowColor: "#000000",
+      shadowOffsetY: 3,
+      shadowBlur: 0
     });
     this.strText.position.x = margin * config.HUD_SCALE;
     this.strText.position.y = this.strIcon.position.y + this.strIcon.height / 2;
@@ -164,7 +188,10 @@ export default class Character extends THREE.Object3D {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: '#7cac20',
-      antialias: false
+      antialias: false,
+      shadowColor: "#000000",
+      shadowOffsetY: 3,
+      shadowBlur: 0
     });
     this.agiText.position.x = margin * config.HUD_SCALE;
     this.agiText.position.y = this.agiIcon.position.y + this.agiIcon.height / 2;
@@ -178,7 +205,10 @@ export default class Character extends THREE.Object3D {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: '#1c80e4',
-      antialias: false
+      antialias: false,
+      shadowColor: "#000000",
+      shadowOffsetY: 3,
+      shadowBlur: 0
     });
     this.intText.position.x = margin * config.HUD_SCALE;
     this.intText.position.y = this.intIcon.position.y + this.intIcon.height / 2;
@@ -186,13 +216,16 @@ export default class Character extends THREE.Object3D {
     // Available points
     this.pointsToDistributeIcon = ResourceManager.getHUDElement("icons-points-to-distribute");
     this.pointsToDistributeIcon.position.y = this.intIcon.position.y - this.intIcon.height - margin;
-    this.pointsToDistributeIcon.userData.label = "Points to distribute";
+    this.pointsToDistributeIcon.userData.label = `Points to distribute`;
 
     this.pointsToDistributeText = new MeshText2D("0", {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: '#d0c01c',
-      antialias: false
+      antialias: false,
+      shadowColor: "#000000",
+      shadowOffsetY: 3,
+      shadowBlur: 0
     });
     this.pointsToDistributeText.position.x = margin * config.HUD_SCALE;
     this.pointsToDistributeText.position.y = this.pointsToDistributeIcon.position.y + this.pointsToDistributeIcon.height / 2;

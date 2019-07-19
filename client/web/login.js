@@ -1,4 +1,4 @@
-import { client } from '../core/network';
+import { client, setHeroId } from '../core/network';
 import Composition from '../elements/character/Composition';
 import { PlayerPrefs } from '../core/PlayerPrefs';
 
@@ -136,7 +136,7 @@ class Login extends EventEmitter {
 
           const dataset = e.currentTarget.dataset;
           if (dataset.index !== undefined) {
-            PlayerPrefs.set("heroId", heroes[dataset.index]._id);
+            setHeroId(heroes[dataset.index]._id);
             this.emit('login');
 
           } else if (dataset.remove) {

@@ -17,7 +17,6 @@ export default class Chat extends Behaviour {
     });
 
     this.room.onError.add((e) => {
-      console.log("CHAT ROOM ERROR", e)
       this.room.removeAllListeners();
     });
 
@@ -33,6 +32,7 @@ export default class Chat extends Behaviour {
     });
 
     this.isActive = false;
+    this.isTyping = false;
 
     this.chat = document.querySelector('section#chat')
     this.messagesContainer = this.chat.querySelector('.messages');
@@ -63,6 +63,9 @@ export default class Chat extends Behaviour {
   onKeyUp (e) {
     if (e.which === Keycode.ENTER) {
       this.input.focus();
+
+    } else if (this.input.value.length > 0) {
+      this.startTyping();
     }
   }
 
@@ -79,12 +82,28 @@ export default class Chat extends Behaviour {
     this.isActive = true;
     this.chat.classList.add('active')
     this.updateScroll();
+
   }
 
   deactivate () {
     this.isActive = true;
     this.chat.classList.remove('active')
     this.updateScroll();
+    this.stopTyping();
+  }
+
+  startTyping () {
+    if (!this.isTyping) {
+      this.level.room.send(['type', true]);
+      this.isTyping = true;
+    }
+  }
+
+  stopTyping () {
+    if (this.isTyping) {
+      this.level.room.send(['type', false]);
+      this.isTyping = false;
+    }
   }
 
   addMessage (message) {
@@ -122,6 +141,10 @@ export default class Chat extends Behaviour {
         progress: this.level.progress,
         text: message,
       }]);
+
+      this.level.room.send(['msg', message]);
+
+      this.stopTyping();
     }
 
     this.input.value = "";

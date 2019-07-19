@@ -8,6 +8,7 @@ import login from '../web/login'
 import config from '../config'
 import { getLightPoolCount, getLightFromPool, removeLight } from '../utils';
 import { PlayerPrefs } from '../core/PlayerPrefs';
+import { setHeroId } from '../core/network';
 
 export default class Game {
 
@@ -99,7 +100,7 @@ export default class Game {
   async createHero(data) {
     const hero = await login.createHero({ ...this.characterBuilder.getHero(), ...data });
 
-    PlayerPrefs.set("heroId", hero._id);
+    setHeroId(hero._id);
 
     // this.container.classList.remove("wardrobe");
     this.init();

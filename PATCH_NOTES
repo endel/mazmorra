@@ -1,4 +1,10 @@
 **19/07/2019 - Surprising chests.**
+- Settings menu, you can now:
+    - Toggle high/low resolution
+    - Toggle music/sound effects
+- Improved text readability on the interface and during battle
+- In-game chat: a balloon is displayed when player is typing, and text appears on top of him as well as in global chat.
+    - Max 20 characters appear in-game.
 - Fix bug: infinite loot key bug
 - Fix bug: occasional "already logged in" when selecting checkpoint
 - Fix bug: NPCs do not block the checkpoint anymore

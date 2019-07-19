@@ -13,13 +13,17 @@ export let room = null;
 // export const client = new Client(`ws://${ window.location.hostname }`);
 global.client = client;
 
+let heroId;
+export function setHeroId(_heroId) {
+  heroId = _heroId;
+}
+
 export function enterRoom (name, options = {}) {
   App.cursor.dispatchEvent({ type: "cursor", kind: "loading" });
 
   options.token = credentials.token
 
   // Assign current hero id
-  const heroId = PlayerPrefs.get('heroId');
   if (heroId) { options.heroId = heroId; }
 
   // Troll adblock users
