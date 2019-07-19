@@ -1,5 +1,6 @@
 **19/07/2019 - Surprising chests.**
 - Fixes infinite loot key bug
+- Fixes occasional "already logged in" when selecting checkpoint
 - UI: highlight in the tooltips which shortcut key to use on the keyboard (1/2/3/Q/W/I/B)
 - Skills:
     - Attack speed skill duration has been reduced from 3s to 2s

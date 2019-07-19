@@ -75,7 +75,7 @@ export class BattleAction extends Action {
         damage *= this.attacker.criticalBonus;
       }
 
-      if (damage <= 0) { damage = 1; }
+      if (damage <= 1) { damage = 1; }
 
       // prevent negative damage, 1 is the minimum amount of damage!
       this.damage = Math.floor(damage);
