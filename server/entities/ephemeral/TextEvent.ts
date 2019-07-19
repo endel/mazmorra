@@ -30,7 +30,6 @@ export class TextEvent extends Entity {
 
   update (currentTime) {
     if (currentTime > this.creationTime + 3000) {
-      console.log("REMOVE TEXT EVENT!");
       this.state.removeEntity(this)
     }
   }
