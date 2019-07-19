@@ -28,6 +28,8 @@ export default class CheckPointSelector extends THREE.Object3D {
   }
 
   openWithCheckPoints (numbers, currentProgress) {
+    this.isNavigating = false;
+
     // remove previous children
     let row, column
       , i = this.options.children.length
@@ -71,12 +73,22 @@ export default class CheckPointSelector extends THREE.Object3D {
     this.toggleOpen();
   }
 
-  onCheckPointClick(progress) {
+  onCheckPointClick(checkpointButton, progress) {
+    // skip if already navigating.
+    if (!this.isNavigating) {
+      this.isNavigating = true;
+    } else {
+      return;
+    }
+
     this.dispatchEvent({
       type: "checkpoint",
       bubbles: true,
       progress
     });
+
+    checkpointButton.children[0].material.opacity = 0.5;
+    checkpointButton.userData.hud = false;
 
     // force close hud overlay
     this.parent.forceCloseOverlay();
@@ -85,7 +97,7 @@ export default class CheckPointSelector extends THREE.Object3D {
   createCheckPointEntry(num) {
     const checkpoint = new THREE.Object3D();
     checkpoint.userData.hud = true;
-    checkpoint.addEventListener("click", this.onCheckPointClick.bind(this, num));
+    checkpoint.addEventListener("click", () => this.onCheckPointClick(checkpoint, num));
 
     const background = ResourceManager.getHUDElement("hud-checkpoint");
     checkpoint.add(background);
