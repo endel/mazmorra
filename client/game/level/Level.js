@@ -595,13 +595,17 @@ export default class Level extends THREE.Object3D {
           .then(() => {
             if (object.destroy) { object.destroy() }
             object.getEntity().destroy();
-            object.parent.remove(object);
+            if (object.parent) {
+              object.parent.remove(object);
+            }
           });
 
       } else {
         if (object.destroy) { object.destroy() }
         object.getEntity().destroy();
-        object.parent.remove(object);
+        if (object.parent) {
+          object.parent.remove(object);
+        }
       }
     }
 

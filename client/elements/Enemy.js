@@ -4,6 +4,8 @@ import DangerousThing from '../behaviors/DangerousThing'
 import Shadow from '../behaviors/Shadow';
 import HasLifebar from '../behaviors/HasLifebar';
 import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
+import { playSound3D, mimicSound } from '../core/sound';
+import { humanize } from '../utils';
 
 export default class Enemy extends THREE.Object3D {
 
@@ -27,9 +29,9 @@ export default class Enemy extends THREE.Object3D {
     this.originalColor = this.sprite.material.color.getHex()
 
     this.sprite.scale.normalizeWithTexture(this.sprite.material.map)
-
     this.sprite.center.set(0.5, 0);
     this.sprite.position.y = -0.5;
+
     this.add(this.sprite);
 
     // only attach lifebar if enemy is alive
@@ -38,8 +40,22 @@ export default class Enemy extends THREE.Object3D {
       // this.addBehaviour(new Shadow);
       this.addBehaviour(new HasLifebar);
 
-      App.tweens.add(this.sprite.position).from({ y: -1.5 }, 300, Tweener.ease.quadOut);
-      App.tweens.add(this.sprite.material).from({ opacity: 0 }, 300, Tweener.ease.quadOut);
+      // mimic has different animation to enter
+      if (data.kind === "mimic") {
+        playSound3D(mimicSound, this);
+
+        this.scale.set(0.65, 0.65, 0.65);
+        App.tweens.add(this.scale).
+          to({
+            x: 1,
+            y: 1,
+            z: 1
+          }, 500, Tweener.ease.elasticOut);
+
+      } else {
+        App.tweens.add(this.sprite.position).from({ y: -1.5 }, 300, Tweener.ease.quadOut);
+        App.tweens.add(this.sprite.material).from({ opacity: 0 }, 300, Tweener.ease.quadOut);
+      }
     }
 
     if (!this.userData.isBoss) {
@@ -48,7 +64,7 @@ export default class Enemy extends THREE.Object3D {
   }
 
   get label () {
-    var text = this.userData.kind + ` - lvl ${ this.userData.lvl }`
+    var text = humanize(this.userData.kind) + ` - lvl ${ this.userData.lvl }`
 
     if (this.userData.hp.current <= 0) {
       text = `Dead ${ text }`

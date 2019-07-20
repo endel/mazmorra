@@ -415,6 +415,15 @@ export class RoomUtils {
       this.state.addEntity(secretDoor);
     }
 
+    // mimic chest at every 2 rooms
+    if (this.state.progress % 2 === 1) {
+      this.addEntity(this.getRandomRoom(), (position) => {
+        const chest = new Chest(position, 'chest-mimic');
+        chest.itemDropOptions = { progress: this.state.progress + this.realRand.intBetween(1, 2) };
+        return chest;
+      }, true);
+    }
+
     // // 2 levels behind a checkpoint there's a lever to reach the latest room.
     // if (isCheckPointMap(this.state.progress + 2)) {
     //   const branch = this.endRoom.branches[0];
@@ -538,10 +547,10 @@ export class RoomUtils {
     const chestKind = 'bucket';
 
     // add up to 3 chests per room.
-    const numChests = this.rand.intBetween(1, 3);
+    const numChests = this.rand.intBetween(0, 2);
     // const numChests = this.rand.intBetween(3, 5);
     for (let i = 0; i < numChests; i++) {
-      this.addEntity(room, (position) => new Chest(position, chestKind))
+      this.addEntity(room, (position) => new Chest(position, chestKind), true)
     }
 
     // add a light pole!
@@ -645,7 +654,7 @@ export class RoomUtils {
         this.bosses[0].thingsToUnlockWhenDead.push(chest);
 
         return chest;
-      });
+      }, true);
     }
   }
 

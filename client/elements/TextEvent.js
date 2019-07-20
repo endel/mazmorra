@@ -78,8 +78,9 @@ export default class TextEvent extends THREE.Object3D {
   }
 
   removeFromParent () {
-    if (this.parent)
+    if (this.parent) {
       this.parent.remove(this)
+    }
   }
 
 }

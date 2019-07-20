@@ -14,7 +14,7 @@ export class Enemy extends Unit {
   @type("boolean") isBoss?: boolean;
 
   aiUpdateTime = 500;
-  lastUpdateTime = Date.now();
+  lastUpdateTime = 0;
 
   constructor (kind, data: Partial<DBHero>, modifiers: Partial<StatsModifiers> = {}) {
     super(undefined, data);

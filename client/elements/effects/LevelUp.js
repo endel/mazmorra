@@ -25,7 +25,10 @@ export default class LevelUp extends Highlight {
 
   removeFromParent () {
     this.getEntity().destroy()
-    this.parent.remove(this)
+
+    if (this.parent) {
+      this.parent.remove(this)
+    }
   }
 
 }

@@ -126,6 +126,13 @@ export class DungeonRoom extends Room<DungeonState> {
       }
 
       Hero.updateOne({ _id: hero._id }, { $set }).then(() => {});
+
+      if (
+        this.state.roomUtils.checkPoint &&
+        hero.checkPoints.indexOf(this.state.progress) === -1
+      ) {
+        this.broadcastSound('checkpointStinger', player);
+      }
     }
   }
 

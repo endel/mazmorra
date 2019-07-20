@@ -30,7 +30,10 @@ export default class SkillUse extends Highlight {
 
   removeFromParent () {
     this.getEntity().destroy();
-    this.parent.remove(this);
+
+    if (this.parent) {
+      this.parent.remove(this);
+    }
   }
 
 }

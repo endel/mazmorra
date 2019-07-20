@@ -51,7 +51,9 @@ export default class HasLifebar extends Behaviour {
   }
 
   onDetach () {
-    this.lifebar.parent.remove(this.lifebar)
+    if (this.lifebar.parent) {
+      this.lifebar.parent.remove(this.lifebar)
+    }
   }
 
 }

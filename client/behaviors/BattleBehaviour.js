@@ -2,7 +2,7 @@ import { Behaviour } from 'behaviour.js'
 import helpers from '../../shared/helpers'
 
 import { getClientId } from '../core/network';
-import { battleStartSound, wooshSound, hitSound, playRandom, deathSound, deathStingerSound, bowSound, staffSound, fadeOut, playRandom3D, playSound3D } from '../core/sound';
+import { battleStartSound, wooshSound, hitSound, deathSound, deathStingerSound, bowSound, staffSound, fadeOut, playRandom3D, playSound3D } from '../core/sound';
 
 export const DEAD_ENTITY_OPACITY = 0.45;
 
@@ -70,7 +70,7 @@ export default class BattleBehaviour extends Behaviour {
 
       // play battle start sound
       if (this.object.userData.type !== helpers.ENTITIES.PLAYER) {
-        let enemyKindSound = battleStartSound[this.object.userData.kind] || battleStartSound.default;
+        const enemyKindSound = battleStartSound[this.object.userData.kind] || battleStartSound.default;
         playSound3D(enemyKindSound, this.object);
       }
     }
@@ -126,7 +126,7 @@ export default class BattleBehaviour extends Behaviour {
   onTakeDamage (damageAttribute) {
     if (this.object.sprite && (!this.lastTimeout || !this.lastTimeout.active)) {
       // play damage taken sound!
-      playRandom(hitSound)
+      playRandom3D(hitSound, this.object)
 
       // red blink on enemies
       this.object.sprite.material.color.setHex(config.COLOR_RED.getHex())
@@ -140,7 +140,7 @@ export default class BattleBehaviour extends Behaviour {
 
   onDied () {
     if (this.object.userData.type === helpers.ENTITIES.PLAYER) {
-      playRandom(deathSound);
+      playRandom3D(deathSound, this.object);
     }
 
     if (this.object.userData.id === getClientId()) {

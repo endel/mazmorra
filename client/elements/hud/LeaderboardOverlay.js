@@ -124,7 +124,9 @@ export default class LeaderboardOverlay extends THREE.Object3D {
       App.tweens.remove(this.titleText.material);
       App.tweens.add(this.titleText.material).to({ opacity: 0 }, 500, Tweener.ease.quintOut).then(() => {
         // remove from parent!
-        this.heroes.parent.remove(this.heroes);
+        if (this.heroes.parent) {
+          this.heroes.parent.remove(this.heroes);
+        }
         if (cb) cb();
       });
 

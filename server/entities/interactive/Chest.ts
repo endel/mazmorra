@@ -13,6 +13,8 @@ export class Chest extends Interactive {
 
   isLocked: boolean = false;
 
+  actionTimeout: NodeJS.Timeout;
+
   constructor (position, kind: string, isOpen = false) {
     super(helpers.ENTITIES.CHEST, position)
 
@@ -27,6 +29,17 @@ export class Chest extends Interactive {
     this.isLocked = false;
   }
 
+  open(state) {
+    this.action = new Action("open", true);
+
+    if (this.itemDropOptions) {
+      state.dropItemFrom(this, undefined, this.itemDropOptions);
+
+    } else {
+      state.dropItemFrom(this);
+    }
+  }
+
   interact (moveEvent, player, state) {
     if (this.isLocked) {
       state.createTextEvent(`Chest is locked!`, this.position, "white", 100);
@@ -34,17 +47,41 @@ export class Chest extends Interactive {
     }
 
     if (!this.action) {
-      this.action = new Action("open", true);
+      moveEvent.cancel();
 
-      if (this.itemDropOptions) {
-        state.dropItemFrom(this, undefined, this.itemDropOptions);
+      if (
+        state.progress > 9 && Math.random() > 0.5 &&
+        this.kind === "chest-mimic"
+      ) {
+        this.action = new Action("preopen", true);
+        this.actionTimeout = setTimeout(() => {
+          if (Math.random() > 0.5) {
+            const mimic = state.roomUtils.createEnemy("mimic");
+            mimic.position.set(this.position);
+            mimic.direction = "bottom";
+
+            mimic.dropOptions = this.itemDropOptions;
+            mimic.dropOptions.progress++;
+
+            state.removeEntity(this);
+            state.addEntity(mimic);
+
+          } else {
+            this.open(state);
+          }
+        }, 500);
+        return;
 
       } else {
-        state.dropItemFrom(this);
+        this.open(state);
       }
 
-      moveEvent.cancel();
     }
+  }
+
+  dispose() {
+    super.dispose();
+    clearTimeout(this.actionTimeout);
   }
 
 }

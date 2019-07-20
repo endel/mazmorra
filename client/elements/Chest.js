@@ -9,10 +9,12 @@ export default class Chest extends THREE.Object3D {
     super()
     this.userData = data
 
-    this.body = ResourceManager.getSprite( `interactive-${ data.kind }-body` )
+    console.log("CHEST", data.kind);
+
+    this.body = ResourceManager.getSprite(`interactive-${data.kind}-body`);
     this.add(this.body)
 
-    this.head = ResourceManager.getSprite( `interactive-${ data.kind }-head` )
+    this.head = ResourceManager.getSprite(`interactive-${data.kind}-head`);
     this.add(this.head)
 
     this.openableBehaviour = new Openable

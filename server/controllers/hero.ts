@@ -51,7 +51,7 @@ router.post('/', jwtMiddleware, async (req, res) => {
         modifier: 0
       }, {
         attr: "attackDistance",
-        modifier: 0
+        modifier: 1
       }],
       manaCost: 1
     },
@@ -61,7 +61,7 @@ router.post('/', jwtMiddleware, async (req, res) => {
         modifier: 0
       }, {
         attr: "attackDistance",
-        modifier: 0
+        modifier: 1
       }]
     },
   }

@@ -643,4 +643,20 @@ export const ENEMY_CONFIGS: {
 
   //////////////
 
+  /////////// SPECIAL ENEMIES
+  'mimic': {
+    ratio: 0,
+    base: {
+      primaryAttribute: "strength",
+      strength: 8,
+      agility: 5,
+      intelligence: 0
+    },
+    modifiers: {
+      attackSpeed: 10,
+      movementSpeed: 10,
+      aiDistance: 10
+    }
+  },
+
 };

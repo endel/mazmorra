@@ -29,6 +29,7 @@ export default class LightOscillator extends Behaviour {
   }
 
   onDetach () {
+    console.log("DETACH LIGHT OSCILLATOR");
     clearInterval(this.oscillateInterval)
   }
 

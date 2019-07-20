@@ -61,11 +61,15 @@ class ProjectileBehaviour extends Behaviour {
         .to({ intensity: 1, distance: 6 }, 150, Tweener.ease.quartOut)
         .then(() => {
           removeLight(this.object.light)
-          this.object.parent.remove(this.object);
+          if (this.object.parent) {
+            this.object.parent.remove(this.object);
+          }
         });
 
     } else {
-      this.object.parent.remove(this.object);
+      if (this.object.parent) {
+        this.object.parent.remove(this.object);
+      }
 
     }
   }

@@ -19,6 +19,7 @@ export function trackEvent(name, options) {
   }
 }
 
+// 15 rotating lights to reuse
 const lightPool = [
   new THREE.PointLight(0x1c80e4, 0, 0),
   new THREE.PointLight(0x1c80e4, 0, 0),
@@ -29,12 +30,23 @@ const lightPool = [
   new THREE.PointLight(0x1c80e4, 0, 0),
   new THREE.PointLight(0x1c80e4, 0, 0),
   new THREE.PointLight(0x1c80e4, 0, 0),
-  // new THREE.PointLight(0x1c80e4, 0, 0),
+  new THREE.PointLight(0x1c80e4, 0, 0),
+  new THREE.PointLight(0x1c80e4, 0, 0),
+  new THREE.PointLight(0x1c80e4, 0, 0),
+  new THREE.PointLight(0x1c80e4, 0, 0),
+  new THREE.PointLight(0x1c80e4, 0, 0),
+  new THREE.PointLight(0x1c80e4, 0, 0),
 ];
-let currentLight = 0;
 
+let currentLight = 0;
 export function getLightFromPool() {
-  currentLight = (currentLight + 1) % lightPool.length;
+  let retries = 0;
+
+  do {
+    currentLight = (currentLight + 1) % lightPool.length;
+    retries++;
+  } while (lightPool[currentLight].intensity !== 0 && retries < lightPool.length);
+
   return lightPool[currentLight];
 }
 
