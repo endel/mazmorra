@@ -1,5 +1,3 @@
-import helpers from "../../shared/helpers";
-
 import { Room, Client, generateId } from "colyseus";
 import { DungeonState } from "./states/DungeonState";
 import { verifyToken } from "@colyseus/social";
@@ -10,7 +8,6 @@ import { Season } from "../db/Season";
 import { Movement } from "../core/Movement";
 import { Portal } from "../entities/interactive/Portal";
 import { debugLog } from "../utils/Debug";
-import { CheckPoint } from "../entities/interactive/CheckPoint";
 
 const TICK_RATE = 20 // 20 ticks per second
 

@@ -48,19 +48,28 @@ export default class HUD extends THREE.Scene {
     this.lifeText = new MeshText2D("0/0", {
       font: config.SMALL_FONT,
       fillStyle: '#fff',
-      antialias: false
+      antialias: false,
+      shadowColor: "#000000",
+      shadowOffsetY: 2,
+      shadowBlur: 0
     })
 
     this.manaText = new MeshText2D("0/0", {
       font: config.SMALL_FONT,
       fillStyle: '#fff',
-      antialias: false
+      antialias: false,
+      shadowColor: "#000000",
+      shadowOffsetY: 2,
+      shadowBlur: 0
     })
 
     this.expText = new MeshText2D("0/0", {
       font: config.SMALL_FONT,
       fillStyle: '#fff',
-      antialias: false
+      antialias: false,
+      shadowColor: "#000000",
+      shadowOffsetY: 2,
+      shadowBlur: 0
     })
 
     // Inventory

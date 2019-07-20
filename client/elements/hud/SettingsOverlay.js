@@ -8,8 +8,12 @@ const SETTINGS_MUSIC = "settings-music";
 const SETTINGS_RESOLUTION = "settings-resolution";
 
 export function applySettings () {
-  setMusicVolume(PlayerPrefs.getNumber(SETTINGS_MUSIC, 1));
-  setSFXVolume(PlayerPrefs.getNumber(SETTINGS_SOUND_EFFECTS, 1));
+  const noMusic = PlayerPrefs.getNumber(SETTINGS_MUSIC, 0) === 1;
+  setMusicVolume(noMusic ? 0 : 1);
+
+  const noSFX = PlayerPrefs.getNumber(SETTINGS_SOUND_EFFECTS, 0) === 1;
+  setSFXVolume(noSFX ? 0 : 1);
+
   global.renderer.setPixelRatio(window.devicePixelRatio * PlayerPrefs.getNumber(SETTINGS_RESOLUTION, 1));
 }
 
@@ -36,14 +40,14 @@ export default class SettingsOverlay extends THREE.Object3D {
     this.add(this.options);
 
     // Sound effects
-    const soundToggle = new ToggleButton(PlayerPrefs.getNumber(SETTINGS_SOUND_EFFECTS, 1));
+    const soundToggle = new ToggleButton(PlayerPrefs.getNumber(SETTINGS_SOUND_EFFECTS, 0) === 1);
     soundToggle.addEventListener("change", (e) => {
       PlayerPrefs.set(SETTINGS_SOUND_EFFECTS, Number(e.value));
       applySettings();
     });
     soundToggle.position.x -= (config.HUD_MARGIN * config.HUD_SCALE * 5);
 
-    const soundTxt = new MeshText2D("Sound effects", {
+    const soundTxt = new MeshText2D("No sound effects", {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: "#ffffff"
@@ -55,7 +59,7 @@ export default class SettingsOverlay extends THREE.Object3D {
     this.options.add(soundTxt);
 
     // Music
-    const musicToggle = new ToggleButton(PlayerPrefs.getNumber(SETTINGS_MUSIC, 1));
+    const musicToggle = new ToggleButton(PlayerPrefs.getNumber(SETTINGS_MUSIC, 0) === 1);
     musicToggle.addEventListener("change", (e) => {
       PlayerPrefs.set(SETTINGS_MUSIC, Number(e.value));
       applySettings();
@@ -63,7 +67,7 @@ export default class SettingsOverlay extends THREE.Object3D {
     musicToggle.position.x -= (config.HUD_MARGIN * config.HUD_SCALE * 5);
     musicToggle.position.y = soundToggle.position.y + soundToggle.height + (config.HUD_MARGIN * config.HUD_SCALE * 2)
 
-    const musicTxt = new MeshText2D("Music", {
+    const musicTxt = new MeshText2D("No music", {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: "#ffffff"
@@ -76,15 +80,15 @@ export default class SettingsOverlay extends THREE.Object3D {
 
 
     // High resolution
-    const highresToggle = new ToggleButton(PlayerPrefs.getNumber(SETTINGS_RESOLUTION, 1) === 1);
+    const highresToggle = new ToggleButton(PlayerPrefs.getNumber(SETTINGS_RESOLUTION, 1) !== 1);
     highresToggle.addEventListener("change", (e) => {
-      PlayerPrefs.set(SETTINGS_RESOLUTION, (e.value) ? 1 : 0.5);
+      PlayerPrefs.set(SETTINGS_RESOLUTION, (e.value) ? 0.5 : 1);
       applySettings();
     });
     highresToggle.position.x -= (config.HUD_MARGIN * config.HUD_SCALE * 5);
     highresToggle.position.y = musicToggle.position.y + highresToggle.height + (config.HUD_MARGIN * config.HUD_SCALE * 2)
 
-    const highresTxt = new MeshText2D("High resolution", {
+    const highresTxt = new MeshText2D("Low resolution", {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: "#ffffff"

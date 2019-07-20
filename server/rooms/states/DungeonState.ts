@@ -73,6 +73,13 @@ export class DungeonState extends Schema {
     this.isPVPAllowed = (roomType === "pvp");
 
     this.config = getMapConfig(this.progress, roomType);
+
+    // prevent hack attempt to load non-existing level
+    if (!this.config) {
+      this.progress = 2;
+      this.config = getMapConfig(this.progress, roomType);
+    }
+
     this.daylight = this.config.daylight;
     this.mapkind = this.config.mapkind;
     this.mapvariation = (this.progress % 2 === 0) ? 2 : 1;
@@ -345,7 +352,11 @@ export class DungeonState extends Schema {
           unit instanceof Enemy &&
           entity instanceof Enemy &&
           entity !== unit &&
-          (entity.action && entity.action.isEligible)
+          (
+            entity.action &&
+            entity.action.isEligible &&
+            !entity.position.equals(targetEntity.position) // allow movement when enemies are battling in the same tile
+          )
         )
       ) {
         allowedPath.setWalkableAt(entity.position.x, entity.position.y, false);

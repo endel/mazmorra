@@ -1065,7 +1065,7 @@ export class RoomUtils {
       this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], goodness);
     }
 
-    this.setItemProgressRequired(item);
+    this.setItemProgressRequired(item, dropOptions);
 
     return item;
   }
@@ -1094,7 +1094,7 @@ export class RoomUtils {
       this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], goodness);
     }
 
-    this.setItemProgressRequired(item);
+    this.setItemProgressRequired(item, dropOptions);
 
     return item;
   }
@@ -1128,7 +1128,7 @@ export class RoomUtils {
       this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], goodness);
     }
 
-    this.setItemProgressRequired(item);
+    this.setItemProgressRequired(item, dropOptions);
 
     return item;
   }
@@ -1157,7 +1157,7 @@ export class RoomUtils {
       this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], goodness);
     }
 
-    this.setItemProgressRequired(item);
+    this.setItemProgressRequired(item, dropOptions);
 
     return item;
   }
@@ -1188,7 +1188,7 @@ export class RoomUtils {
       this.assignBetterItemModifiers(item, ['strength', 'intelligence', 'agility'], goodness);
     }
 
-    this.setItemProgressRequired(item);
+    this.setItemProgressRequired(item, dropOptions);
 
     return item;
   }
@@ -1218,8 +1218,8 @@ export class RoomUtils {
     return { ratio, tier, type: allTiers[tier] };
   }
 
-  setItemProgressRequired(item: EquipableItem) {
-    item.progressRequired = Math.max(1, this.state.progress - NUM_LEVELS_PER_CHECKPOINT);
+  setItemProgressRequired(item: EquipableItem, dropOptions?: ItemDropOptions) {
+    item.progressRequired = Math.max(1, dropOptions.progress - NUM_LEVELS_PER_CHECKPOINT);
   }
 
   // assignItemModifier(item: Item, options)
