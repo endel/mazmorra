@@ -20,12 +20,12 @@ export default class GameObject extends Behaviour {
       // play "step" sound for current player
       if (this.object === global.player) {
         setAudioPosition(this.object);
-        // playRandom3D(stepSounds, this.object);
-      }
-
-      if (!this.object.userData.kind) { // not an enemy!
         playRandom3D(stepSounds, this.object);
       }
+
+      // if (!this.object.userData.kind) { // not an enemy!
+      //   playRandom3D(stepSounds, this.object);
+      // }
     });
   }
 

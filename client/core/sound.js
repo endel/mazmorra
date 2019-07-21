@@ -38,7 +38,7 @@ export function playSound3D(sound, source) {
   // const volume3d = distanceFromPlayer(source);
   const soundId = sound.play();
 
-  // /*
+  /*
   $_audiosprite.once('play', () => {
     if (source === global.player) {
       $_audiosprite.pos(0, 0, 0, soundId);
@@ -46,14 +46,13 @@ export function playSound3D(sound, source) {
     } else {
       // const z = Math.max(distance(source.position, global.player.position) / 15, 4);
       const z = distance(source.position, global.player.position) / 15;
-      const x = Math.max(-5, Math.min(5, (source.position.x - global.player.position.x) / 5));
-      const y = Math.max(-5, Math.min(5, (source.position.z - global.player.position.z) / 5));
-      console.log({x, y, z})
-      $_audiosprite.pos(x, y, z, soundId);
+      const x = Math.max(-5, Math.min(5, (source.position.x - global.player.position.x) / 6));
+      const y = Math.max(-5, Math.min(5, (source.position.z - global.player.position.z) / 6));
+      $_audiosprite.pos(x, y, 0, soundId);
     }
     $_audiosprite.volume(sfxVolume, soundId);
   })
-  // */
+  */
 }
 
 export function playRandom3D(soundOptions, source) {

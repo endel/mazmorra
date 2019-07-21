@@ -416,7 +416,7 @@ export class RoomUtils {
     }
 
     // mimic chest at every 2 rooms
-    if (this.state.progress % 2 === 1) {
+    if (this.state.progress % 3 === 1) {
       this.addEntity(this.getRandomRoom(), (position) => {
         const chest = new Chest(position, 'chest-mimic');
         chest.itemDropOptions = { progress: this.state.progress + this.realRand.intBetween(1, 2) };
