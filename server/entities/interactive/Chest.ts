@@ -49,10 +49,7 @@ export class Chest extends Interactive {
     if (!this.action) {
       moveEvent.cancel();
 
-      if (
-        state.progress > 9 && Math.random() > 0.5 &&
-        this.kind === "chest-mimic"
-      ) {
+      if (state.progress > 9 && this.kind === "chest-mimic") {
         this.action = new Action("preopen", true);
         this.actionTimeout = setTimeout(() => {
           if (Math.random() > 0.5) {

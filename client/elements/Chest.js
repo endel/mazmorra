@@ -9,8 +9,6 @@ export default class Chest extends THREE.Object3D {
     super()
     this.userData = data
 
-    console.log("CHEST", data.kind);
-
     this.body = ResourceManager.getSprite(`interactive-${data.kind}-body`);
     this.add(this.body)
 
