@@ -256,6 +256,12 @@ export default class Level extends THREE.Object3D {
       } else if (evt === "sound") {
         this.playSound(data);
 
+      } else if (evt === "announcement") {
+        var [title, sound] = data;
+
+        this.hud.announcement(title);
+        this.playSound(sound);
+
       } else if (evt === "leaderboard") {
         this.hud.openLeaderboard(data);
 

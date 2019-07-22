@@ -15,7 +15,7 @@ import SlotStrip from '../elements/inventory/SlotStrip'
 import CheckPointSelector from "../elements/hud/CheckPointSelector";
 
 import { MeshText2D, textAlign } from 'three-text2d'
-import { inventorySound } from '../core/sound';
+import { inventorySound, checkpointStingerSound } from '../core/sound';
 import NewQuestOverlay from "../elements/hud/NewQuestOverlay";
 import LeaderboardOverlay from "../elements/hud/LeaderboardOverlay";
 import SkillButton from "../elements/hud/SkillButton";
@@ -144,6 +144,48 @@ export default class HUD extends THREE.Scene {
     window.addEventListener("keydown", this.onKeyPress.bind(this));
 
     this.resize()
+  }
+
+  announcement(title) {
+    var announcement = new THREE.Object3D();
+
+    var background = ResourceManager.getHUDElement('hud-big-title-red');
+    background.position.y = 0;
+    announcement.add(background);
+
+    var titleText = new MeshText2D(title, {
+      align: textAlign.center ,
+      font: config.FONT_TITLE,
+      fillStyle: "#ffffff"
+    });
+    titleText.position.y = background.position.y + background.height - titleText.height - 6;
+    announcement.add(titleText);
+
+    const initY = window.innerHeight / 2;
+    announcement.position.y = initY;
+
+    App.tweens.
+      add(announcement.position).
+      to({ y: initY - background.height * 1.5 }, 500, Tweener.ease.quartOut);
+
+    // Fade out
+    App.tweens.
+      add(background.material).
+      wait(2500).
+      to({ opacity: 0 }, 700, Tweener.ease.quartOut);
+
+    App.tweens.
+      add(titleText.material).
+      wait(2500).
+      to({ opacity: 0 }, 700, Tweener.ease.quartOut).
+      then(() => {
+        if (announcement.parent) {
+          console.log("remove announcement from parent!");
+          announcement.parent.remove(announcement);
+        }
+      });
+
+    this.add(announcement);
   }
 
   init () {

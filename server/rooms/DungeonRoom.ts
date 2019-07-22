@@ -131,7 +131,7 @@ export class DungeonRoom extends Room<DungeonState> {
         this.state.roomUtils.checkPoint &&
         hero.checkPoints.indexOf(this.state.progress) === -1
       ) {
-        this.broadcastSound('checkpointStinger', player);
+        this.broadcastAnnouncement(['Checkpoint Area', 'checkpointStinger'], player);
       }
     }
   }
@@ -277,6 +277,22 @@ export class DungeonRoom extends Room<DungeonState> {
 
     } else {
       this.broadcast(["sound", soundName]);
+    }
+  }
+
+  broadcastAnnouncement (data, player) {
+    if (player) {
+      const client = this.clientMap.get(player);
+
+      if (client) {
+        this.send(this.clientMap.get(player), ["announcement", data]);
+
+      } else {
+        console.log("trying to broadcast sound to NPC. skip.");
+      }
+
+    // } else {
+    //   this.broadcast(["sound", soundName]);
     }
   }
 
