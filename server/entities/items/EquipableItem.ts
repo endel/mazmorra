@@ -18,7 +18,7 @@ export abstract class EquipableItem extends Item {
     // is player allowed to equip?
     if (
       this.progressRequired &&
-      this.progressRequired >= Math.max((player as any).latestProgress, state.progress)
+      this.progressRequired > Math.max((player as any).latestProgress, state.progress)
     ) {
       return false;
     }
