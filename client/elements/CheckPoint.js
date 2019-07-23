@@ -3,13 +3,25 @@
 import { Behaviour } from 'behaviour.js'
 import LightOscillator from '../behaviors/LightOscillator'
 import { getLightFromPool, removeLight } from '../utils';
+import QuestIndicator from '../behaviors/QuestIndicator';
 
 class CheckPointBehaviour extends Behaviour {
-  onAttach() {
+  onAttach(level) {
+
+    // TUTORIAL: show quest indicator for first check point
+    if (level.progress !== 1 && level.progress < 10) {
+      if (!global.player || global.player.userData.latestProgress < level.progress) {
+        this.questIndicator = new QuestIndicator();
+        this.object.addBehaviour(this.questIndicator);
+      }
+    }
+
     this.on("activate", (data) => {
       if (!this.light) {
         this.light = getLightFromPool();
       }
+
+      if (this.questIndicator) { this.questIndicator.detach(); }
 
       this.light.intensity = 0.5;
       this.light.distance = 7;
@@ -39,7 +51,7 @@ class CheckPointBehaviour extends Behaviour {
 
 export default class CheckPoint extends THREE.Object3D {
 
-  constructor () {
+  constructor (data, level) {
     super()
 
     this.material = new THREE.MeshPhongMaterial({
@@ -56,7 +68,18 @@ export default class CheckPoint extends THREE.Object3D {
     mesh.position.y -= 0.49;
 
     this.add(mesh);
-    this.addBehaviour(new CheckPointBehaviour());
+    this.addBehaviour(new CheckPointBehaviour(), level);
+
+    // Announcement
+    this.addEventListener("added", () => {
+      this.dispatchEvent({
+        bubbles: true,
+        type: "announcement",
+        id: "checkpoint",
+        title: "Checkpoint Area",
+        sound: "checkpointStinger"
+      });
+    })
   }
 
   get label () {

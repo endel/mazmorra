@@ -14,6 +14,7 @@ export class NPC extends Player {
   @type("string") kind: string;
 
   wanderer: boolean = true;
+  rotatingMessages?: IterableIterator<string>;
 
   constructor (kind, npcHero = {}, state?) {
     super(undefined, npcHero as any, state);
@@ -29,12 +30,55 @@ export class NPC extends Player {
     this.statsModifiers.movementSpeed = -this.state.rand.intBetween(200, 300);
   }
 
+  generateRotatingMessages(messages) {
+    if (this.rotatingMessages) { return; }
+    this.rotatingMessages = (function*() {
+      let i = 0;
+      while (true) {
+        yield messages[(i++) % messages.length];
+      }
+    })();
+  }
+
   interact (moveEvent, player: Player, state) {
     moveEvent.cancel();
 
     this.updateDirection(player.position.x, player.position.y);
 
     const isLastLevel = (state.progress === MAX_LEVELS);
+
+    /**
+     * Tutorial
+     */
+    if (
+      state.progress !== 1
+    ) {
+      if (this.kind === "warrior-woman") {
+        if (state.progress < NUM_LEVELS_PER_CHECKPOINT - 1) {
+          this.generateRotatingMessages([
+            `First ${NUM_LEVELS_PER_CHECKPOINT - 1} stages are alone`,
+            `Gain XP by killing mobs`,
+            `Open chests for loot`,
+            `Kill enemies for loot`,
+          ]);
+          state.createTextEvent(this.rotatingMessages.next().value, this.position, 'white', 1000);
+
+        } else if (state.progress == NUM_LEVELS_PER_CHECKPOINT - 1) {
+          state.createTextEvent(`You did it! Good luck!`, this.position, 'white', 1000);
+        }
+      }
+
+      if (this.kind === "merchant") {
+        this.generateRotatingMessages([
+          `Go back to the Castle`,
+          `...sell your stuff!`,
+        ]);
+
+        state.createTextEvent(this.rotatingMessages.next().value, this.position, 'white', 1000);
+      }
+      return;
+    }
+    // end of tutorial!
 
     if (this.kind === "elder") {
       const items = [];
@@ -66,7 +110,7 @@ export class NPC extends Player {
       ]);
 
     } else if (this.kind === "majesty") {
-      const genericMessages = (!isLastLevel) ? [
+      this.generateRotatingMessages((!isLastLevel) ? [
         `I don't reveal the source of my weapons.`,
         `The prophecy is true.`,
         `You've got the diamonds?`,
@@ -74,9 +118,9 @@ export class NPC extends Player {
       ] : [
         `What happened?`,
         `I wish things could be different.`,
-      ];
+      ]);
 
-      state.createTextEvent(genericMessages[Math.floor(Math.random() * genericMessages.length)], this.position, 'white', 1000);
+      state.createTextEvent(this.rotatingMessages.next().value, this.position, 'white', 1000);
 
       setTimeout(() => {
         if (player.removed) { return; }
@@ -125,13 +169,13 @@ export class NPC extends Player {
       player.setTradingItems(items);
 
     } else {
-      const messages = (!isLastLevel) ? [
+      this.generateRotatingMessages((!isLastLevel) ? [
         `PvP is experimental.`,
         `Join the Discord Server for feedback!`,
       ] : [
         `You're awesome!`,
         `Majesty has the best items you can find.`
-      ];
+      ]);
 
       if (
         !player.equipedItems.slots['left'] ||
@@ -142,10 +186,11 @@ export class NPC extends Player {
           intelligence: 'staff',
           strength: 'melee weapon',
         };
-        messages.push(`You need a ${weapons[player.primaryAttribute]}!`);
-      }
+        state.createTextEvent(`You need a ${weapons[player.primaryAttribute]}!`, this.position, 'white', 1000);
 
-      state.createTextEvent(messages[Math.floor(Math.random() * messages.length)], this.position, 'white', 1000);
+      } else {
+        state.createTextEvent(this.rotatingMessages.next().value, this.position, 'white', 1000);
+      }
     }
 
     // prevent NPC from moving right after talking.

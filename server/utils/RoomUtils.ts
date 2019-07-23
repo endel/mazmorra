@@ -38,6 +38,7 @@ import { Key } from "../entities/items/consumable/Key";
 import { Leaderboard } from "../entities/interactive/Leaderboard";
 import { Lever } from "../entities/interactive/Lever";
 import { Jail } from "../entities/interactive/Jail";
+import { Tower } from "../entities/Tower";
 
 const ALL_BOOTS = [
   helpers.ENTITIES.BOOTS_1,
@@ -415,15 +416,6 @@ export class RoomUtils {
       this.state.addEntity(secretDoor);
     }
 
-    // mimic chest at every 2 rooms
-    if (this.state.progress % 3 === 1) {
-      this.addEntity(this.getRandomRoom(), (position) => {
-        const chest = new Chest(position, 'chest-mimic');
-        chest.itemDropOptions = { progress: this.state.progress + this.realRand.intBetween(1, 2) };
-        return chest;
-      }, true);
-    }
-
     // // 2 levels behind a checkpoint there's a lever to reach the latest room.
     // if (isCheckPointMap(this.state.progress + 2)) {
     //   const branch = this.endRoom.branches[0];
@@ -486,8 +478,10 @@ export class RoomUtils {
     }
 
     // create checkpoint after "JAIL TIME", so we prevent placing checking after a locked room.
+    let checkPointRoom: DungeonRoom;
+
     if (isCheckPointMap(this.state.progress)) {
-      const checkPointRoom = this.getRandomRoom(
+      checkPointRoom = this.getRandomRoom(
         (lockedRoom)
           ? [lockedRoom, this.endRoom]
           : [this.endRoom]
@@ -501,6 +495,47 @@ export class RoomUtils {
       this.state.addEntity(this.checkPoint);
     }
 
+    // // TESTING TOWER
+    // this.addEntity(this.startRoom, (position) => {
+    //   const tower = this.state.roomUtils.createEnemy("tower", Tower);
+    //   tower.position.set(position);
+    //   tower.direction = "bottom";
+    //   tower.state = this.state;
+    //   return tower;
+    // })
+
+    // mimic chest at every 3 rooms
+    if (this.state.progress % 3 === 1) {
+      this.addEntity(this.getRandomRoom(), (position) => {
+        const chest = new Chest(position, 'chest-mimic');
+        chest.itemDropOptions = { progress: this.state.progress + this.realRand.intBetween(1, 2) };
+        return chest;
+      }, true);
+    }
+
+    //
+    // TUTORIAL
+    //
+    if (this.state.progress <= NUM_LEVELS_PER_CHECKPOINT - 1) {
+      this.addEntity(this.endRoom, (position) => {
+        const npc = new NPC('warrior-woman');
+        npc.wanderer = false;
+        npc.walkable = true;
+        npc.position.set(position);
+        npc.state = this.state;
+        return npc;
+      }, true);
+
+      if (checkPointRoom) {
+        this.addEntity(checkPointRoom, (position) => {
+          const npc = new NPC('merchant');
+          npc.wanderer = false;
+          npc.position.set(position);
+          npc.state = this.state;
+          return npc;
+        }, true);
+      }
+    }
 
     this.rooms.forEach(room => {
       if (this.isBossDungeon && room === this.endRoom) {
@@ -550,7 +585,7 @@ export class RoomUtils {
     const numChests = this.rand.intBetween(0, 2);
     // const numChests = this.rand.intBetween(3, 5);
     for (let i = 0; i < numChests; i++) {
-      this.addEntity(room, (position) => new Chest(position, chestKind), true)
+      this.addEntity(room, (position) => new Chest(position, chestKind), true);
     }
 
     // add a light pole!
@@ -714,7 +749,7 @@ export class RoomUtils {
     /**
      * Lady
      */
-    const lady = new NPC('woman', {}, this.state);
+    const lady = new NPC('warrior-woman', {}, this.state);
     lady.wanderer = false;
     lady.walkable = false;
     lady.position.set(this.endRoom.position.y + 1, this.endRoom.position.x + Math.ceil(this.endRoom.size.x / 2) - 2);
@@ -913,7 +948,7 @@ export class RoomUtils {
         }
 
       // common item
-      } else if (chance < 0.99) {
+      } else if (chance < 0.998) {
         const dropOptions: ItemDropOptions = {
           progress: this.state.progress,
           isRare: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.965),
@@ -951,7 +986,7 @@ export class RoomUtils {
         //   this.assignEquipableItemModifiers(itemToDrop);
         // }
 
-      } else if (chance >= 0.995) {
+      } else if (chance >= 0.998) {
         // drop diamond!
         const amount = this.realRand.intBetween(1, 2);
         itemToDrop = new Diamond(amount);

@@ -18,6 +18,10 @@ export function setHeroId(_heroId) {
   heroId = _heroId;
 }
 
+export function getHeroId() {
+  return heroId;
+}
+
 export function enterRoom (name, options = {}) {
   App.cursor.dispatchEvent({ type: "cursor", kind: "loading" });
 

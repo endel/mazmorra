@@ -2,7 +2,7 @@
 
 import { SpriteText2D, textAlign } from 'three-text2d'
 
-const TEXT_MAX_LENGTH = 20;
+const TEXT_MAX_LENGTH = 24;
 
 export default class TextEvent extends THREE.Object3D {
 

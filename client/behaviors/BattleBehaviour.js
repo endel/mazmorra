@@ -148,22 +148,32 @@ export default class BattleBehaviour extends Behaviour {
       deathStingerSound.play();
     }
 
-    var initY = this.object.position.y
-    App.tweens.add(this.object.position).
-      to({ y: this.object.position.y + 1 }, 300, Tweener.ease.cubicOut).
-      then(() => {
-        App.tweens.add(this.object.sprite.center).
-          to({ y: 1 }, 150, Tweener.ease.cubicOut);
+    if (this.object.userData.kind.indexOf("tower") === 0) {
+      // towers die differently
+      App.tweens.add(this.object.position).to({ y: this.object.position.y - 0.5 }, 300, Tweener.ease.quartOut);
+      App.tweens.add(this.object.sprite.material).to({ opacity: DEAD_ENTITY_OPACITY }, 300, Tweener.ease.quartOut);
 
-        App.tweens.add(this.object.sprite.material).
-          to({ rotation: Math.PI }, 150, Tweener.ease.cubicInOut).
-          add(this.object.position).
-          to({ y: initY }, 300, Tweener.ease.bounceOut).
-          add(this.object.sprite.material).
-          to({ opacity: DEAD_ENTITY_OPACITY }, 100, Tweener.ease.cubicInOut).
-          then(this.detach.bind(this));
+    } else {
+      // regular enemies / players
+      var initY = this.object.position.y
+      App.tweens.add(this.object.position).
+        to({ y: this.object.position.y + 1 }, 300, Tweener.ease.cubicOut).
+        then(() => {
+          App.tweens.add(this.object.sprite.center).
+            to({ y: 1 }, 150, Tweener.ease.cubicOut);
 
-      })
+          App.tweens.add(this.object.sprite.material).
+            to({ rotation: Math.PI }, 150, Tweener.ease.cubicInOut).
+            add(this.object.position).
+            to({ y: initY }, 300, Tweener.ease.bounceOut).
+            add(this.object.sprite.material).
+            to({ opacity: DEAD_ENTITY_OPACITY }, 100, Tweener.ease.cubicInOut).
+            then(this.detach.bind(this));
+
+        });
+
+    }
+
   }
 
   onDetach () {

@@ -1,3 +1,5 @@
+import { getHeroId } from "./network";
+
 const localStorage = window.localStorage || {
   //
   // some browser configurations may block `localStorage` usage from an iframe
@@ -12,20 +14,24 @@ const localStorage = window.localStorage || {
 
 export class PlayerPrefs  {
 
-  static set (key, value) {
-    localStorage.setItem(key, value);
+  static set (key, value, isGlobal = true) {
+    const k = (isGlobal) ? key : this.heroKey(key);
+    localStorage.setItem(k, value);
   }
 
-  static get (key) {
-    return localStorage.getItem(key);
+  static get (key, isGlobal = true) {
+    const k = (isGlobal) ? key : this.heroKey(key);
+    return localStorage.getItem(k);
   }
 
-  static getNumber (key, fallback = "0") {
-    return parseFloat(localStorage.getItem(key) || fallback);
+  static getNumber (key, fallback = "0", isGlobal = true) {
+    const k = (isGlobal) ? key : this.heroKey(key);
+    return parseFloat(localStorage.getItem(k) || fallback);
   }
 
-  static remove (key) {
-    localStorage.removeItem(key);
+  static remove (key, isGlobal = true) {
+    const k = (isGlobal) ? key : this.heroKey(key)
+    localStorage.removeItem(k);
   }
 
   static clear () {
@@ -34,20 +40,24 @@ export class PlayerPrefs  {
 
   static hasSeenBoss(entity, bool) {
     if (bool) {
-      return localStorage.setItem(`boss-${entity.kind}-seen`, bool);
+      return localStorage.setItem(this.heroKey(`boss-${entity.kind}-seen`), bool);
 
     } else {
-      return localStorage.getItem(`boss-${entity.kind}-seen`);
+      return localStorage.getItem(this.heroKey(`boss-${entity.kind}-seen`));
     }
   }
 
   static hasKilledBoss(entity, bool) {
     if (bool) {
-      return localStorage.setItem(`boss-${entity.kind}-killed`, bool);
+      return localStorage.setItem(this.heroKey(`boss-${entity.kind}-killed`), bool);
 
     } else {
-      return localStorage.getItem(`boss-${entity.kind}-killed`);
+      return localStorage.getItem(this.heroKey(`boss-${entity.kind}-killed`));
     }
+  }
+
+  static heroKey(id) {
+    return `${getHeroId()}${id}`;
   }
 
 }

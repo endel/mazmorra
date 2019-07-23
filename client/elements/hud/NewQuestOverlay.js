@@ -12,10 +12,13 @@ export default class NewQuestOverlay extends THREE.Object3D {
     this.title.position.y = this.title.height * 2;
     this.add(this.title);
 
-    this.titleText = new MeshText2D("New Quest!", {
+    this.titleText = new MeshText2D("Quests", {
       align: textAlign.center ,
       font: config.FONT_TITLE,
-      fillStyle: "#ffffff"
+      fillStyle: "#ffffff",
+      shadowColor: "#000000",
+      shadowOffsetY: 3,
+      shadowBlur: 0
     });
     this.titleText.position.y = this.title.position.y + this.title.height - this.titleText.height - 6;
     this.add(this.titleText);
@@ -27,9 +30,11 @@ export default class NewQuestOverlay extends THREE.Object3D {
     this.height = this.title.height;
   }
 
-  toggleOpen () {
+  toggleOpen (cb) {
     this.isOpen = !this.isOpen
     this.visible = true;
+
+    this.options.visible = this.isOpen;
 
     const scaleFrom = ((this.isOpen) ? 0.5 : 1);
     const scaleTo = ((this.isOpen) ? 1 : 0.85);
@@ -56,6 +61,7 @@ export default class NewQuestOverlay extends THREE.Object3D {
     App.tweens.remove(this.scale)
     App.tweens.add(this.scale).to({ x: scaleTo, y: scaleTo, z: scaleTo }, 500, Tweener.ease.quintOut).then(() => {
       if (!this.isOpen) this.visible = false;
+      if (cb) cb();
     });
   }
 

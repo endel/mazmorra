@@ -31,7 +31,10 @@ export default class SettingsOverlay extends THREE.Object3D {
     this.titleText = new MeshText2D("Settings", {
       align: textAlign.center ,
       font: config.FONT_TITLE,
-      fillStyle: "#ffffff"
+      fillStyle: "#ffffff",
+      shadowColor: "#000000",
+      shadowOffsetY: 3,
+      shadowBlur: 0
     });
     this.titleText.position.y = this.title.position.y + this.title.height - this.titleText.height - 6;
     this.add(this.titleText);

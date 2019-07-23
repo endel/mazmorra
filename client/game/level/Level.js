@@ -11,7 +11,7 @@ import helpers from "../../../shared/helpers"
 
 import * as sounds from '../../core/sound';
 import { doorSound, playRandom } from '../../core/sound';
-import { trackEvent } from '../../utils';
+import { trackEvent, humanize } from '../../utils';
 import Chat from '../../behaviors/Chat';
 import { isTutorialComplete, showTutorial } from '../../web/tutorial';
 import { PlayerPrefs } from '../../core/PlayerPrefs';
@@ -42,6 +42,7 @@ export default class Level extends THREE.Object3D {
       showTutorial();
     }
 
+    this.lastMapKind = "castle";
     this.lastRoomName = 'dungeon';
 
     // this.room = this.enterRoom('grass')
@@ -58,6 +59,12 @@ export default class Level extends THREE.Object3D {
 
     App.cursor.addEventListener("mouseup", this.playerActionDrop.bind(this));
     App.cursor.addEventListener("distribute-point", this.distributePoint.bind(this));
+
+    // announcement!
+    this.addEventListener("announcement", (e) => {
+      e.stopPropagation = true;
+      this.onAnnouncement(e);
+    });
 
     // auto-attack!
     this.hud.addEventListener("atk", (e) => {
@@ -413,29 +420,6 @@ export default class Level extends THREE.Object3D {
       }
 
       entity.position.triggerAll();
-
-
-      // boss camera effect
-      if (
-        entity.isBoss &&
-        !PlayerPrefs.hasSeenBoss(entity) &&
-        entity.hp.current > 0
-      ) {
-        setTimeout(() => {
-          PlayerPrefs.hasSeenBoss(entity, true);
-
-          this.playSound("boss");
-
-          player.getEntity().emit('target', object);
-          player.getEntity().emit('rotate', true);
-
-          setTimeout(() => {
-            player.getEntity().emit('target', player);
-            player.getEntity().emit('rotate', false);
-          }, 2000);
-        }, 1000);
-      }
-
       // entity.triggerAll() ??
     };
     state.entities.triggerAll();
@@ -460,12 +444,44 @@ export default class Level extends THREE.Object3D {
     this.dispatchEvent({ type: 'setup', state: state })
 
     global.IS_DAY = state.daylight
+
     this.mapkind = state.mapkind;
     this.mapvariation = state.mapvariation;
     this.mapwidth = state.width;
     this.progress = state.progress;
 
     this.isPVPAllowed = state.isPVPAllowed;
+
+    if (this.isPVPAllowed) {
+      this.dispatchEvent({
+        type: "announcement",
+        id: "mapkind",
+        sound: "mapkindStinger",
+        title: `Beware: PVP Area`
+      });
+
+    } else if (
+      this.mapkind !== this.lastMapKind &&
+      this.progress !== 1
+    ) {
+      // show map change announcement
+      this.dispatchEvent({
+        type: "announcement",
+        id: "mapkind",
+        sound: "mapkindStinger",
+        title: `Chapter: ${humanize(this.mapkind)}`
+      })
+
+    } else if (this.progress === 1) {
+      this.dispatchEvent({
+        type: "announcement",
+        id: "mapkind",
+        style: "red",
+        title: `Welcome to The Castle`
+      })
+
+    }
+    this.lastMapKind = this.mapkind;
 
     HeroSkinBuilder.init();
 
@@ -727,7 +743,44 @@ export default class Level extends THREE.Object3D {
 
   }
 
+  onAnnouncement (e) {
+    if (
+      this.hasAnnouncement ||
+      (e.id === "checkpoint" && this.progress === 1)
+    ) {
+      return;
+    }
+
+    if (e.id === "boss") {
+      const boss = e.entity;
+
+      // boss camera effect
+      if (!PlayerPrefs.hasSeenBoss(boss.userData)) {
+        PlayerPrefs.hasSeenBoss(boss.userData, true);
+
+        setTimeout(() => {
+          player.getEntity().emit('target', boss);
+          player.getEntity().emit('rotate', true);
+
+          setTimeout(() => {
+            player.getEntity().emit('target', player);
+            player.getEntity().emit('rotate', false);
+          }, 2000);
+        }, 100);
+      }
+    }
+
+    this.hud.announcement(e.title, e.style || "black");
+    this.hasAnnouncement = true;
+
+    if (e.sound) {
+      this.playSound(e.sound);
+    }
+  }
+
   cleanup () {
+    this.hasAnnouncement = false;
+
     // clean up renderer memory leaks!
     global.renderer.renderLists.dispose();
 

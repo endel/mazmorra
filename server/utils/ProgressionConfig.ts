@@ -659,4 +659,21 @@ export const ENEMY_CONFIGS: {
     }
   },
 
+  /////////// TOWER
+  'tower': {
+    ratio: 0,
+    base: {
+      primaryAttribute: "strength",
+      strength: 3,
+      agility: 1,
+      intelligence: 0
+    },
+    modifiers: {
+      hp: 200,
+      attackSpeed: -10,
+      attackDistance: 3,
+      aiDistance: 3
+    }
+  },
+
 };

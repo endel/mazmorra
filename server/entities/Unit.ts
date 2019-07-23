@@ -381,7 +381,7 @@ export class Unit extends Entity {
     }
   }
 
-  get isAlive() { return this.hp.current > 0 }
+  get isAlive() { return this.hp && this.hp.current > 0 }
 
   update(currentTime) {
     // a dead unit can't do much, I guess
@@ -477,21 +477,20 @@ export class Unit extends Entity {
       return this.drop();
     }
 
-    // distribute XP among players.
-    const xpWorth = this.getXPWorth() / this.damageTakenFrom.size;
-
-    const damageTakenFrom = this.damageTakenFrom.values();
+    let unitsToIncreaseXP: Unit[] = [];
     let unit: Unit;
 
+    const damageTakenFrom = this.damageTakenFrom.values();
     while (unit = damageTakenFrom.next().value) {
-      // compute experience this unit received by killing another one
-      // var xp =  unit.lvl / (this.lvl / 2)
-
-      // some players might've left the room and are invalid here
-      if (unit && unit.xp) {
-        unit.xp.increment(xpWorth / unit.lvl);
+      if (unit && unit.isAlive && unit.xp) {
+        // some players might've left the room or are dead / invalid
+        unitsToIncreaseXP.push(unit);
       }
     }
+
+    // distribute XP among units.
+    const xpPerUnit = this.getXPWorth() / unitsToIncreaseXP.length;
+    unitsToIncreaseXP.forEach(unit => unit.xp.increment(xpPerUnit / unit.lvl));
 
     this.drop();
   }

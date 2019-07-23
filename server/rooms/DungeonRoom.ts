@@ -8,6 +8,7 @@ import { Season } from "../db/Season";
 import { Movement } from "../core/Movement";
 import { Portal } from "../entities/interactive/Portal";
 import { debugLog } from "../utils/Debug";
+import { NUM_LEVELS_PER_CHECKPOINT, MAX_LEVELS } from "../utils/ProgressionConfig";
 
 const TICK_RATE = 20 // 20 ticks per second
 
@@ -19,12 +20,20 @@ export class DungeonRoom extends Room<DungeonState> {
   clientMap = new WeakMap<Player, Client>();
 
   disposeTimeout = 5; // 5 seconds default
+  creatorHeroId: string;
 
   async onInit (options) {
     this.progress = options.progress || 1;
 
+    // maximum of 5 players allowed on each room.
+    if (this.progress !== 1 && this.progress !== MAX_LEVELS) {
+      this.maxClients = 5;
+    }
+
     this.players = new WeakMap();
     this.clientMap = new WeakMap();
+
+    this.creatorHeroId = options.heroId;
 
     // Get season/random seed for this room.
     let seed: string;
@@ -67,6 +76,11 @@ export class DungeonRoom extends Room<DungeonState> {
 
   requestJoin (options, isNew) {
     var success = true;
+
+    // force single-player until first check-point.
+    if (options.progress !== 1 && options.progress < NUM_LEVELS_PER_CHECKPOINT) {
+      return this.creatorHeroId === options.heroId && this.progress === options.progress;
+    }
 
     if (options.progress) {
       success = (success && options.progress === this.progress);
@@ -126,13 +140,6 @@ export class DungeonRoom extends Room<DungeonState> {
       }
 
       Hero.updateOne({ _id: hero._id }, { $set }).then(() => {});
-
-      if (
-        this.state.roomUtils.checkPoint &&
-        hero.checkPoints.indexOf(this.state.progress) === -1
-      ) {
-        this.broadcastAnnouncement(['Checkpoint Area', 'checkpointStinger'], player);
-      }
     }
   }
 
@@ -277,22 +284,6 @@ export class DungeonRoom extends Room<DungeonState> {
 
     } else {
       this.broadcast(["sound", soundName]);
-    }
-  }
-
-  broadcastAnnouncement (data, player) {
-    if (player) {
-      const client = this.clientMap.get(player);
-
-      if (client) {
-        this.send(this.clientMap.get(player), ["announcement", data]);
-
-      } else {
-        console.log("trying to broadcast sound to NPC. skip.");
-      }
-
-    // } else {
-    //   this.broadcast(["sound", soundName]);
     }
   }
 

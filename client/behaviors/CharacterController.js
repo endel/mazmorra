@@ -30,7 +30,10 @@ export default class CharacterController extends Behaviour {
       this.object.add(this.light);
     }
 
-    this.on('target', (newTarget) => this.target = newTarget);
+    this.on('target', (newTarget) => {
+      console.log("TARGET CHANGED TO:", newTarget);
+      this.target = newTarget;
+    });
     this.on('rotate', (isRotating) => {
       this.isRotating = isRotating;
       this.lookAtTargetSpeed = (isRotating) ? 0.05 : DEFAULT_LOOK_AT_TARGET_SPEED;

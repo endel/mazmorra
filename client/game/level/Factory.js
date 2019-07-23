@@ -125,7 +125,7 @@ export default class Factory {
         break;
 
       case helpers.ENTITIES.CHECK_POINT:
-        element = new CheckPoint(data);
+        element = new CheckPoint(data, this.level);
         break;
 
       case helpers.ENTITIES.LEADERBOARD:

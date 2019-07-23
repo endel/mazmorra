@@ -340,15 +340,12 @@ export default class ItemSlot extends THREE.Object3D {
   onTouchStart (e) {
     this._showHint();
 
-    console.log("TOUCH START");
-
     clearTimeout(global.startDragTimeout);
     global.startDragTimeout = setTimeout(() => this.onDragStart(e), 300);
   }
 
   onTouchEnd (e) {
     clearTimeout(global.startDragTimeout);
-    console.log("TOUCH END");
 
     if (draggingItem) {
       this.onDragEnd(e);

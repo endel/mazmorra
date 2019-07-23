@@ -20,8 +20,8 @@ export default class OpenInventoryButton extends THREE.Object3D {
 
     this.openYOffset = openMaterial.frame.h - closedMaterial.frame.h - 2
 
-    this.width = openMaterial.frame.w *  config.HUD_SCALE
-    this.height = openMaterial.frame.h *  config.HUD_SCALE
+    this.width = closedMaterial.frame.w * config.HUD_SCALE
+    this.height = closedMaterial.frame.h * config.HUD_SCALE
 
     this.addEventListener('mouseover', this.onMouseOver.bind(this))
     this.addEventListener('mouseout', this.onMouseOut.bind(this))

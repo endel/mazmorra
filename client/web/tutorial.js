@@ -2,7 +2,7 @@ import { isMobile } from "../utils/device";
 import { PlayerPrefs } from "../core/PlayerPrefs";
 
 export function isTutorialComplete() {
-  return isMobile || PlayerPrefs.get("tutorial") || false;
+  return isMobile || PlayerPrefs.get("tutorial", false) || false;
 }
 
 export function showTutorial() {
@@ -26,7 +26,7 @@ export function showTutorial() {
 
     if (e.target.classList.contains("last")) {
       document.body.removeChild(div);
-      PlayerPrefs.set("tutorial", true);
+      PlayerPrefs.set("tutorial", true, false);
 
     } else if (e.target.classList.contains("right")) {
       contents.classList.remove(`step-${currentStep}`);

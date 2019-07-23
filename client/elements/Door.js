@@ -1,6 +1,7 @@
 'use strict';
 import helpers from '../../shared/helpers'
 import QuestIndicator from '../behaviors/QuestIndicator';
+import { PlayerPrefs } from '../core/PlayerPrefs';
 
 export default class Door extends THREE.Object3D {
 
@@ -48,7 +49,7 @@ export default class Door extends THREE.Object3D {
     // Tutorial: show indicator for first door
     if (
       this.userData.destiny.progress === 2 &&
-      !localStorage.getItem("tutorial")
+      !PlayerPrefs.get("tutorial", false)
     ) {
       this.addBehaviour(new QuestIndicator());
     }

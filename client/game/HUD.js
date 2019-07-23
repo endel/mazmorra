@@ -6,12 +6,10 @@ import HorizontalBar from '../elements/hud/HorizontalBar'
 import Cursor from '../elements/hud/Cursor'
 
 import HUDController from '../behaviors/HUDController'
-import InventoryBehaviour from '../behaviors/InventoryBehaviour'
 
 // Inventory
 import OpenInventoryButton from '../elements/inventory/OpenButton'
 import Inventory from '../elements/inventory/Inventory'
-import SlotStrip from '../elements/inventory/SlotStrip'
 import CheckPointSelector from "../elements/hud/CheckPointSelector";
 
 import { MeshText2D, textAlign } from 'three-text2d'
@@ -20,10 +18,10 @@ import NewQuestOverlay from "../elements/hud/NewQuestOverlay";
 import LeaderboardOverlay from "../elements/hud/LeaderboardOverlay";
 import SkillButton from "../elements/hud/SkillButton";
 import ConsumableShortcut from "../elements/inventory/ConsumableShortcut";
-import { isMobile } from "../utils/device";
 import ResourceManager from "../resource/manager";
 import Hint from "../elements/hud/Hint";
 import SettingsOverlay from "../elements/hud/SettingsOverlay";
+import QuestsButton from "../elements/hud/QuestsButton";
 
 export default class HUD extends THREE.Scene {
 
@@ -86,6 +84,9 @@ export default class HUD extends THREE.Scene {
     this.openInventoryButton = new OpenInventoryButton()
     this.openInventoryButton.addEventListener('click', this.onToggleInventory)
 
+    // Quests button
+    // this.openQuestsButton = new QuestsButton();
+
     // Settings button
     const openSettingsButton = ResourceManager.getHUDElement("icons-settings");
     this.openSettingsButton = new THREE.Object3D();
@@ -114,7 +115,7 @@ export default class HUD extends THREE.Scene {
     this.skill2Button = new SkillButton("movement-speed", "W");
 
     // Label
-    this.selectionText = new MeshText2D("Welcome", {
+    this.selectionText = new MeshText2D(" ", {
       font: config.DEFAULT_FONT,
       fillStyle: '#fff',
       antialias: false,
@@ -146,17 +147,21 @@ export default class HUD extends THREE.Scene {
     this.resize()
   }
 
-  announcement(title) {
+  announcement(title, style = 'black') {
+    // available styles: 'black', 'red', 'green'
     var announcement = new THREE.Object3D();
 
-    var background = ResourceManager.getHUDElement('hud-big-title-red');
+    var background = ResourceManager.getHUDElement(`hud-big-title-${style}`);
     background.position.y = 0;
     announcement.add(background);
 
     var titleText = new MeshText2D(title, {
       align: textAlign.center ,
       font: config.FONT_TITLE,
-      fillStyle: "#ffffff"
+      fillStyle: "#ffffff",
+      shadowColor: "#000000",
+      shadowOffsetY: 3,
+      shadowBlur: 0
     });
     titleText.position.y = background.position.y + background.height - titleText.height - 6;
     announcement.add(titleText);
@@ -180,7 +185,6 @@ export default class HUD extends THREE.Scene {
       to({ opacity: 0 }, 700, Tweener.ease.quartOut).
       then(() => {
         if (announcement.parent) {
-          console.log("remove announcement from parent!");
           announcement.parent.remove(announcement);
         }
       });
@@ -211,6 +215,7 @@ export default class HUD extends THREE.Scene {
     this.add(this.skill2Button);
 
     this.add(this.openInventoryButton);
+    // this.add(this.openQuestsButton);
     this.add(this.openSettingsButton);
   }
 
@@ -277,7 +282,19 @@ export default class HUD extends THREE.Scene {
   }
 
   openQuests() {
+    // skip opening multiple leaderboards
+    if (this.currentOverlay instanceof NewQuestOverlay) {
+      this.forceCloseOverlay();
+      return;
+    }
+
+    if (this.currentOverlay && this.currentOverlay.isOpen) {
+      this.forceCloseOverlay();
+    }
+
     const newQuestOverlay = new NewQuestOverlay();
+    newQuestOverlay.toggleOpen();
+
     this.add(newQuestOverlay);
     this.showOverlay();
 
@@ -425,26 +442,36 @@ export default class HUD extends THREE.Scene {
       halfH - this.resources.height * config.HUD_MARGIN,
       0
     );
+
     this.openInventoryButton.position.set(
       this.resources.position.x,
-      this.resources.position.y - this.resources.height - this.openInventoryButton.height - (config.HUD_MARGIN * config.HUD_SCALE),
+      this.resources.position.y - this.resources.height - this.openInventoryButton.height - ((config.HUD_MARGIN * 2) * config.HUD_SCALE),
       0
     );
+
+    // this.openQuestsButton.position.set(
+    //   this.resources.position.x,
+    //   this.openInventoryButton.position.y - this.openQuestsButton.height - (config.HUD_MARGIN * config.HUD_SCALE),
+    //   0
+    // )
 
     this.openSettingsButton.position.set(
       this.resources.position.x,
-      this.openInventoryButton.position.y - this.openInventoryButton.height - (config.HUD_MARGIN),
+      // this.openQuestsButton.position.y - this.openInventoryButton.height - (config.HUD_MARGIN * config.HUD_SCALE),
+      this.openInventoryButton.position.y - this.openInventoryButton.height - (config.HUD_MARGIN * config.HUD_SCALE),
       0
     );
 
+
     this.shortcutHpPotion.position.x = this.resources.position.x - (margin/2);
-    this.shortcutHpPotion.position.y = this.shortcutHpPotion.height + config.HUD_SCALE;
+    // this.shortcutHpPotion.position.y = this.openSettingsButton.position.y - this.shortcutHpPotion.height - (config.HUD_SCALE * 2);
+    this.shortcutHpPotion.position.y = this.openSettingsButton.position.y - this.shortcutHpPotion.height - (config.HUD_SCALE * 3);
 
     this.shortcutMpPotion.position.x = this.shortcutHpPotion.position.x;
-    this.shortcutMpPotion.position.y = 0;
+    this.shortcutMpPotion.position.y = this.shortcutHpPotion.position.y - this.shortcutMpPotion.height - (config.HUD_SCALE);
 
     this.shortcutScroll.position.x = this.shortcutHpPotion.position.x;
-    this.shortcutScroll.position.y = -this.shortcutScroll.height - config.HUD_SCALE;
+    this.shortcutScroll.position.y = this.shortcutMpPotion.position.y - this.shortcutScroll.height - (config.HUD_SCALE);
 
     //
     // BOTTOM

@@ -354,8 +354,11 @@ export class DungeonState extends Schema {
           entity !== unit &&
           (
             entity.action &&
-            entity.action.isEligible &&
-            !entity.position.equals(targetEntity.position) // allow movement when enemies are battling in the same tile
+            entity.action.isEligible
+            && (
+              targetEntity && // allow movement when enemies are battling in the same tile
+              !entity.position.equals(targetEntity.position)
+            )
           )
         )
       ) {

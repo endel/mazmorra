@@ -152,6 +152,7 @@ export const spellSound = require('../resource/sounds/spells/generic.mp3');
 
 export const portal = require('../resource/sounds/effects/portal.mp3');
 export const checkpoint = require('../resource/sounds/effects/checkpoint.mp3');
+export const portalInferno = require('../resource/sounds/effects/portal-inferno.mp3');
 
 export const pendingSound = require('../resource/sounds/effects/pending.mp3');
 
@@ -211,3 +212,4 @@ export const pickItemSound = inventorySound.open;
  */
 export const deathStingerSound = require('../resource/sounds/stingers/death.mp3');
 export const checkpointStingerSound = require('../resource/sounds/stingers/checkpointStinger.mp3');
+export const mapkindStingerSound = require('../resource/sounds/stingers/mapkind.mp3');

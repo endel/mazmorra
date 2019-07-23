@@ -1,4 +1,5 @@
-**22/07/2019 - !**
+**23/07/2019 - !**
+- Announce when entering dungeons with special "announcer" on checkpoint and boss dungeons
 - Enchanted boots skill zooms out the camera a bit
 - New mimic chest!
     - Appears at every 3 dungeons.
@@ -6,6 +7,12 @@
     - After dungeon 9, it has 50% chance of being a mimic!
     - Loot is slightly better
 - Improved "settings" usability
+- Early user improvements:
+    - First 7 levels are played single-player
+    - First 15 levels display hints when
+        - HP is low
+        - Level'd up to distribute points
+        - Inventory is full (use scroll to sell items!)
 
 **19/07/2019 - Settings menu, and bug fixes!**
 - Settings menu, you can now:

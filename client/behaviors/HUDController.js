@@ -1,19 +1,34 @@
 import { Behaviour } from 'behaviour.js'
 import lerp from 'lerp'
+import { createHint } from '../elements/hud/Hint';
 
 export default class HUDController extends Behaviour {
 
   onAttach (playerObject) {
     this.playerObject = playerObject
 
+    const LEVELS_WITH_TUTORIAL = 15;
+
     // events
     this.on("update-inventory", this.onUpdateInventory.bind(this));
     this.on("update-attributes", this.onUpdateAttributes.bind(this));
     this.on("update-bars", this.onUpdateBars.bind(this));
 
+    if (playerObject.userData.latestProgress <= LEVELS_WITH_TUTORIAL) {
+      this.on("update-bars", this.onUpdateBarsTutorial.bind(this));
+      this.on("update-attributes", this.onUpdateAttributesTutorial.bind(this));
+      this.on("update-inventory", this.onUpdateInventoryTutorial.bind(this));
+    }
+
     this.on("update-all", (data) => {
       this.onUpdateAttributes(data);
       this.onUpdateBars(data);
+
+      if (playerObject.userData.latestProgress <= LEVELS_WITH_TUTORIAL) {
+        this.onUpdateBarsTutorial(data);
+        this.onUpdateAttributesTutorial(data)
+        this.onUpdateInventoryTutorial(data)
+      }
     });
   }
 
@@ -50,6 +65,77 @@ export default class HUDController extends Behaviour {
     this.object.lifeText.text = Math.ceil(data.hp.current) + "/" + data.hp.max;
     this.object.manaText.text = Math.ceil(data.mp.current) + "/" + data.mp.max;
     this.object.expText.text = Math.ceil(data.xp.current) + "/" + data.xp.max;
+  }
+
+  onUpdateBarsTutorial (data) {
+    if (data.hp.current < data.hp.max / 2) {
+      if (!this.hpHint) {
+        this.hpHint = createHint();
+        this.hpHint.show("Use Potions to restore your health", this.object.shortcutHpPotion);
+      }
+
+    } else if (this.hpHint) {
+      this.hpHint.destroy();
+      this.hpHint = null;
+    }
+  }
+
+  onUpdateAttributesTutorial (data) {
+    if (data.pointsToDistribute > 0 && this.lastLevelHint !== data.lvl) {
+      this.lastLevelHint = data.lvl;
+
+      if (!this.lvlUpHint) {
+
+        this.lvlUpHint = createHint();
+        this.lvlUpHint.show("Upgrade your attributes!", this.object.character.lvlUpButton);
+
+        this.lvlUpHintDestroy = () => {
+          if (this.lvlUpHint) {
+            this.lvlUpHint.destroy();
+            this.lvlUpHint = null;
+            this.lvlUpHintDestroy = null;
+            this.object.character.lvlUpButton.removeEventListener("click", this.lvlUpHintDestroy);
+          }
+        }
+        this.object.character.lvlUpButton.addEventListener("click", this.lvlUpHintDestroy);
+      }
+
+    } else if (this.lvlUpHint) {
+      this.lvlUpHintDestroy();
+    }
+
+  }
+
+  onUpdateInventoryTutorial (inventoryType) {
+    /**
+     * Displays hint to go to portal
+     */
+    if (inventoryType === "inventory") {
+      const occupiedSlots = Object.keys(this.playerObject.userData.inventory.slots).length;
+
+      if (occupiedSlots === this.object.inventory.slots.numSlots) {
+        if (!this.hasSeenPortalTutorial) {
+          this.hasSeenPortalTutorial = true;
+
+          this.usePortalHint = createHint();
+          this.usePortalHint.show("Go back to Castle to sell your items", this.object.shortcutScroll);
+
+          this.usePortalHintDestroy = () => {
+            if (this.usePortalHint) {
+              this.usePortalHint.destroy();
+              this.usePortalHint = null;
+              this.usePortalHintDestroy = null;
+              this.object.shortcutScroll.removeEventListener("click", this.usePortalHintDestroy);
+            }
+          }
+          this.object.shortcutScroll.addEventListener("click", this.usePortalHintDestroy);
+
+        }
+      } else {
+        if (this.usePortalHintDestroy) { this.usePortalHintDestroy(); }
+        this.hasSeenPortalTutorial = false;
+      }
+    }
   }
 
   update() {

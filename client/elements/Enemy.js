@@ -5,7 +5,7 @@ import Shadow from '../behaviors/Shadow';
 import HasLifebar from '../behaviors/HasLifebar';
 import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
 import { playSound3D, mimicSound } from '../core/sound';
-import { humanize } from '../utils';
+import { humanize, removeLight } from '../utils';
 
 export default class Enemy extends THREE.Object3D {
 
@@ -36,7 +36,22 @@ export default class Enemy extends THREE.Object3D {
 
     // only attach lifebar if enemy is alive
     if (data.hp.current > 0) {
-      this.addBehaviour(new DangerousThing);
+
+      // towers do not move as "dangerous thing"
+      if (data.kind.indexOf("tower") === -1) {
+        this.addBehaviour(new DangerousThing);
+
+      } else {
+        // Light on tower
+        // debugger;
+        // this.light = getLightFromPool();
+        // this.light.intensity = 2;
+        // this.light.distance = 15;
+        // this.light.color = new THREE.Color(0xfcf458);
+        // this.light.position.set(0, 1.5, 0);
+        // this.add(this.light);
+      }
+
       // this.addBehaviour(new Shadow);
       this.addBehaviour(new HasLifebar);
 
@@ -56,6 +71,21 @@ export default class Enemy extends THREE.Object3D {
         App.tweens.add(this.sprite.position).from({ y: -1.5 }, 300, Tweener.ease.quadOut);
         App.tweens.add(this.sprite.material).from({ opacity: 0 }, 300, Tweener.ease.quadOut);
       }
+
+      if (this.userData.isBoss) {
+        // Boss Announcement
+        this.addEventListener("added", () => {
+          this.dispatchEvent({
+            bubbles: true,
+            type: "announcement",
+            id: "boss",
+            title: "Boss Area",
+            sound: "boss",
+            entity: this
+          });
+        });
+      }
+
     }
 
     if (!this.userData.isBoss) {
@@ -80,6 +110,12 @@ export default class Enemy extends THREE.Object3D {
     this.sprite.material.map = texture
 
     this.sprite.scale.normalizeWithTexture(texture)
+  }
+
+  destroy () {
+    if (this.light) {
+      removeLight(this.light);
+    }
   }
 
 }

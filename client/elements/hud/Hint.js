@@ -5,7 +5,11 @@ const ITEM_SLOT_SIZE = 9;
 
 class Hint  {
   constructor() {
-    this.el = document.querySelector("#hint");
+    var el = document.createElement("div");
+    el.classList.add('hint');
+
+    this.el = el;
+    document.body.appendChild(this.el);
 
     this.isActive = false;
 
@@ -139,7 +143,15 @@ ${(
     this.el.classList.remove("active");
   }
 
+  destroy () {
+    if (this.el) {
+      document.body.removeChild(this.el);
+      this.el = null;
+    }
+  }
 
 }
 
-export default new Hint();
+export function createHint() { return new Hint(); }
+
+export default createHint();
