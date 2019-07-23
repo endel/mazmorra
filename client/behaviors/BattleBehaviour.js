@@ -148,7 +148,7 @@ export default class BattleBehaviour extends Behaviour {
       deathStingerSound.play();
     }
 
-    if (this.object.userData.kind.indexOf("tower") === 0) {
+    if (this.object.userData.kind && this.object.userData.kind.indexOf("tower") === 0) {
       // towers die differently
       App.tweens.add(this.object.position).to({ y: this.object.position.y - 0.5 }, 300, Tweener.ease.quartOut);
       App.tweens.add(this.object.sprite.material).to({ opacity: DEAD_ENTITY_OPACITY }, 300, Tweener.ease.quartOut);

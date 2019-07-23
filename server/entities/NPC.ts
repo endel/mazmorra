@@ -50,9 +50,7 @@ export class NPC extends Player {
     /**
      * Tutorial
      */
-    if (
-      state.progress !== 1
-    ) {
+    if (state.progress !== 1 && !isLastLevel) {
       if (this.kind === "warrior-woman") {
         if (state.progress < NUM_LEVELS_PER_CHECKPOINT - 1) {
           this.generateRotatingMessages([
