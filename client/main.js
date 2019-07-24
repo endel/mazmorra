@@ -13,7 +13,7 @@ import Game from './game/Game'
 import login from './web/login'
 import { switchSoundtrack } from './core/sound';
 import { applySettings } from "./elements/hud/SettingsOverlay";
-import { client, getHeroId } from "./core/network";
+import { client, getHeroId, getRoomId } from "./core/network";
 
 window.app = App;
 
@@ -39,7 +39,8 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
       message: `${msg} (${lineNo}:${columnNo})`,
       stack: error.stack,
       userId: client.auth._id,
-      heroId: getHeroId()
+      heroId: getHeroId(),
+      roomId: getRoomId()
     });
   }
 }

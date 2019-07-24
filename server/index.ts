@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import expressBasicAuth from 'express-basic-auth';
 
-import { Server } from 'colyseus';
+import { Server, Room } from 'colyseus';
 import socialRoutes from "@colyseus/social/express";
 import { monitor } from "@colyseus/monitor";
 
@@ -65,12 +65,27 @@ app.use(bodyParser.json());
 
 app.use(express.static( __dirname + '/../public' ));
 
+// Debugging colyseus Room
+(Room.prototype as any).getSerializerDebugData = function() {
+  return {
+    handshake: Array.from(Uint8Array.from(Buffer.from(this._serializer.handshake && this._serializer.handshake()))),
+    fullState: Array.from(Uint8Array.from(Buffer.from(this._serializer.getFullState()))),
+  }
+}
+
 /**
  * Temporary: error reports from the client!
  */
 app.post("/report", async (req, res) => {
   const report = req.body;
   report.timestamp = Date.now();
+
+  if (report.message.indexOf("_schema") >= 0) {
+    const remoteCall = await gameServer.matchMaker.remoteRoomCall(report.roomId, 'getSerializerDebugData');
+    if (remoteCall && remoteCall[1]) {
+      report.debug = remoteCall[1];
+    }
+  }
 
   debugLog(`client-side error: ${report.stack}`);
 

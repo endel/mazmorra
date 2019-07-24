@@ -22,6 +22,10 @@ export function getHeroId() {
   return heroId;
 }
 
+export function getRoomId() {
+  return room.id;
+}
+
 export function enterRoom (name, options = {}) {
   App.cursor.dispatchEvent({ type: "cursor", kind: "loading" });
 

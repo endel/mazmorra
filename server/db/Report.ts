@@ -8,6 +8,7 @@ export interface DBReport extends mongoose.Document {
   heroId: string,
   message: number,
   stack: number,
+  debug: any,
   timestamp: number
 };
 
@@ -16,7 +17,8 @@ export const Report = mongoose.model<DBReport>('Report', new mongoose.Schema<DBR
   heroId: String,
   message: String,
   stack: String,
-  timestamp: Number
+  debug: mongoose.Schema.Types.Mixed,
+  timestamp: Number,
 }, {
   versionKey: false
 }));
