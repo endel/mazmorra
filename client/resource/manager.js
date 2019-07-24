@@ -5,6 +5,7 @@
 import data from './data.json';
 import spritesheet from '../../public/images/spritesheet.json';
 import config from '../config';
+import { isMobile } from '../utils/device.js';
 
 // allow to clone textures without duplicating it in memory
 THREE.Texture.prototype.createInstance = function() {
@@ -142,7 +143,12 @@ class ResourceManager {
 
           // this.materials[ name ] = new THREE.MeshLambertMaterial({
           // this.materials[ name ] = new THREE.MeshBasicMaterial({
-          this.materials[ name ] = new THREE.MeshPhongMaterial({
+
+          const MeshMaterial = (isMobile)
+            ? THREE.MeshLambertMaterial
+            : THREE.MeshPhongMaterial;
+
+          this.materials[ name ] = new MeshMaterial({
             // color: 0xa0adaf,
             // specular: 0x111111,
             shininess: 60,
