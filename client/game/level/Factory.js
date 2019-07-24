@@ -291,10 +291,18 @@ export default class Factory {
 
   cleanup () {
     let l = this.ground.length;
-    while (l--) this.ground[l].parent.remove(this.ground[l])
+    while (l--) {
+      const ground = this.ground[l];
+      ground.parent.remove(ground)
+      ground.destroy();
+    }
 
     l = this.wall.length;
-    while (l--) this.wall[l].parent.remove(this.wall[l])
+    while (l--) {
+      const wall = this.wall[l];
+      wall.parent.remove(wall);
+      wall.destroy();
+    }
 
     this.ground = []
     this.wall = []

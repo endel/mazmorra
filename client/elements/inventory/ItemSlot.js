@@ -111,7 +111,8 @@ export default class ItemSlot extends THREE.Object3D {
     } else {
       if (this._item) {
         this.remove(this._item)
-        // this._item.destroy();
+        this._item.destroy();
+        delete this._item;
       }
 
       this.remove(this.use)

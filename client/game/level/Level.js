@@ -499,7 +499,6 @@ export default class Level extends THREE.Object3D {
     // Global ambient light
     var light = new THREE.AmbientLight(0xffffff); // soft white light
     this.add(light);
-    global.light = light
 
     /**
      * Custom aestetics per mapkind
@@ -781,9 +780,6 @@ export default class Level extends THREE.Object3D {
   cleanup () {
     this.hasAnnouncement = false;
 
-    // clean up renderer memory leaks!
-    global.renderer.renderLists.dispose();
-
     this.setTileSelection(null);
 
     this.factory.cleanup();
@@ -801,10 +797,13 @@ export default class Level extends THREE.Object3D {
     var i = this.children.length;
     while (i--) {
       let object = this.children[i];
-      if (object.__ENTITY__) object.getEntity().destroy()
+      if (object.__ENTITY__) { object.getEntity().destroy() }
       this.remove(object);
+      if (object.destroy) { object.destroy(); }
     }
 
+    // clean up renderer memory leaks!
+    global.renderer.renderLists.dispose();
   }
 
   async checkAdPreRoll(roomName) {

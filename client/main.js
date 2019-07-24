@@ -86,16 +86,14 @@ THREE.EventDispatcher.prototype.removeAllListeners = function() {
 }
 
 THREE.Object3D.prototype.destroy = function () {
-  // if (this.geometry) {
-  //   this.geometry.dispose();
-  // }
+  if (this.geometry) { this.geometry.dispose(); }
 
-  // if (this.material) {
-  //   if (this.material.map) {
-  //     if (this.material.map) { this.material.map.dispose(); }
-  //   }
-  //   this.material.dispose();
-  // }
+  if (this.material) {
+    if (this.material.map) {
+      if (this.material.map) { this.material.map.dispose(); }
+    }
+    this.material.dispose();
+  }
 
   for (let i = this.children.length - 1; i >= 0; i--) {
     if (this.children[i].destroy) { this.children[i].destroy(); }
