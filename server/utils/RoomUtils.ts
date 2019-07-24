@@ -217,6 +217,7 @@ export class RoomUtils {
 
     this.startPosition = this.getRandomDoorPosition(this.startRoom);
     this.endPosition = this.getRandomDoorPosition(this.endRoom);
+
     if (!this.startPosition) {
       this.startPosition = {x: 0, y: 0};
       console.warn("There was a problem while parsing the room information");
@@ -524,7 +525,7 @@ export class RoomUtils {
       this.addEntity(this.endRoom, (position) => {
         const npc = new NPC('warrior-woman');
         npc.wanderer = false;
-        npc.walkable = true;
+        npc.walkable = false;
         npc.position.set(position);
         npc.state = this.state;
         return npc;
@@ -773,7 +774,7 @@ export class RoomUtils {
       room: "pvp"
     }));
     this.state.addEntity(pvpDoor);
-    
+
     // Door for TrueHell
     // const hellDoor = new Door({
     //   x: merchant.position.x - 3,
