@@ -28,8 +28,6 @@ export class Boss extends Enemy {
   }
 
   onDie () {
-    const playersWhoKilled = super.onDie();
-
     // unlock chests and doors!
     this.thingsToUnlockWhenDead.forEach((thing) => {
       thing.isLocked = false;
@@ -38,12 +36,19 @@ export class Boss extends Enemy {
       // thing.unlock();
     });
 
-    // broadcast killed event for global chat.
-    this.state.events.emit('event', {
-      name: playersWhoKilled.map(p => (p as any).name).join(", "),
-      progress: this.state.progress,
-      killed: this.kind
-    });
+    // Announce boss killed only if user haven't progressed to next dungeons yet
+    const playersWhoKilled = super.onDie().filter(player => (
+      (player as any).latestProgress <= player.state.progress
+    ));
+
+    if (playersWhoKilled.length > 0) {
+      // broadcast killed event for global chat.
+      this.state.events.emit('event', {
+        name: playersWhoKilled.map(p => (p as any).name).join(", "),
+        progress: this.state.progress,
+        killed: this.kind
+      });
+    }
 
     return playersWhoKilled;
   }

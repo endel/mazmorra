@@ -373,8 +373,6 @@ export class Player extends Unit {
     const unitsInvolved = super.onDie();
 
     if (unitsInvolved.length > 0) {
-      console.log({ unitsInvolved });
-
       const unit = unitsInvolved[unitsInvolved.length - 1];
 
       // broadcast died event for global chat.
