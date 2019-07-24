@@ -25,4 +25,8 @@ export default class Chest extends THREE.Object3D {
     return `${(this.openableBehaviour.isOpen) ?  "Opened " : ""}Chest`
   }
 
+  destroy () {
+    delete this.openableBehaviour;
+  }
+
 }

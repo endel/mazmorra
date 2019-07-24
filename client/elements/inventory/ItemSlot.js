@@ -111,6 +111,7 @@ export default class ItemSlot extends THREE.Object3D {
     } else {
       if (this._item) {
         this.remove(this._item)
+        // this._item.destroy();
       }
 
       this.remove(this.use)
@@ -227,16 +228,14 @@ export default class ItemSlot extends THREE.Object3D {
     //
     // EquipedItems: check if target slot accepts this type of item.
     //
-    if (this.parent instanceof EquipedItems) {
+    if (this.parent instanceof EquipedItems && draggingItem && global.player) {
       if (
         ( // is incorrect slot?
-          draggingItem &&
           draggingItem.userData.item.slotName &&
           this.accepts &&
           draggingItem.userData.item.slotName !== this.accepts
         ) ||
         ( // doesn't have a
-          draggingItem &&
           !draggingItem.userData.item.slotName
         ) ||
         ( // doesn't meet requiredProgress

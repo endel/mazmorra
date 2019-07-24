@@ -1,7 +1,6 @@
 // Enemy and and NPC share a lot
 
 import DangerousThing from '../behaviors/DangerousThing'
-import Shadow from '../behaviors/Shadow';
 import HasLifebar from '../behaviors/HasLifebar';
 import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
 import { playSound3D, mimicSound } from '../core/sound';

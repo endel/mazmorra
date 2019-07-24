@@ -1,5 +1,4 @@
 import { Behaviour } from 'behaviour.js'
-import Chat from './Chat'
 import lerp from 'lerp'
 
 const DEFAULT_LOOK_AT_TARGET_SPEED = 0.04;
@@ -30,10 +29,7 @@ export default class CharacterController extends Behaviour {
       this.object.add(this.light);
     }
 
-    this.on('target', (newTarget) => {
-      console.log("TARGET CHANGED TO:", newTarget);
-      this.target = newTarget;
-    });
+    this.on('target', (newTarget) => this.target = newTarget);
     this.on('rotate', (isRotating) => {
       this.isRotating = isRotating;
       this.lookAtTargetSpeed = (isRotating) ? 0.05 : DEFAULT_LOOK_AT_TARGET_SPEED;
@@ -86,6 +82,9 @@ export default class CharacterController extends Behaviour {
     }
   }
 
-  onDetach () { }
+  onDetach () {
+    delete this.room;
+    delete this.target;
+  }
 
 }

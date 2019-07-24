@@ -415,7 +415,9 @@ export default class Character extends THREE.Object3D {
   }
 
   updateLevelUpButtons (){
-    if (!player) return;
+    if (!global.player) {
+      return;
+    }
 
     const hud = this.parent;
 

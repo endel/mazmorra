@@ -91,7 +91,9 @@ export default class CheckPointSelector extends THREE.Object3D {
     checkpointButton.userData.hud = false;
 
     // force close hud overlay
-    this.parent.forceCloseOverlay();
+    if (this.parent) {
+      this.parent.forceCloseOverlay();
+    }
   }
 
   createCheckPointEntry(num) {

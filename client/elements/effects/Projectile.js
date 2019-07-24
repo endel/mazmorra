@@ -16,19 +16,23 @@ class ProjectileBehaviour extends Behaviour {
   }
 
   update() {
-    this.object.position.x = lerp(this.object.position.x, this.target.position.x, 0.3);
-    this.object.position.z = lerp(this.object.position.z, this.target.position.z, 0.3);
+    if (this.target) {
+      this.object.position.x = lerp(this.object.position.x, this.target.position.x, 0.3);
+      this.object.position.z = lerp(this.object.position.z, this.target.position.z, 0.3);
 
-    // remove itself when reached target.
-    if (
-      Math.abs(this.object.position.x - this.target.position.x) <= 0.1 &&
-      Math.abs(this.object.position.z - this.target.position.z) <= 0.1
-    ) {
-      this.detach();
+      // remove itself when reached target.
+      if (
+        Math.abs(this.object.position.x - this.target.position.x) <= 0.1 &&
+        Math.abs(this.object.position.z - this.target.position.z) <= 0.1
+      ) {
+        this.detach();
+      }
     }
   }
 
   onDetach() {
+    delete this.target;
+
     if (this.object.light) {
       const explosionSprites = [
         ResourceManager.get("effects-explode-1-1"),
@@ -46,7 +50,7 @@ class ProjectileBehaviour extends Behaviour {
       }
       nextSprite();
 
-      let interval = setInterval(() => {
+      const interval = setInterval(() => {
         if (spriteProgress === explosionSprites.length) {
           this.object.remove(this.object.sprite);
           clearInterval(interval);
@@ -63,6 +67,7 @@ class ProjectileBehaviour extends Behaviour {
           removeLight(this.object.light)
           if (this.object.parent) {
             this.object.parent.remove(this.object);
+            this.object.destroy();
           }
         });
 
@@ -70,7 +75,6 @@ class ProjectileBehaviour extends Behaviour {
       if (this.object.parent) {
         this.object.parent.remove(this.object);
       }
-
     }
   }
 
@@ -96,6 +100,13 @@ export default class Projectile extends THREE.Object3D {
     }
 
     this.addBehaviour(new ProjectileBehaviour(), data);
+  }
+
+  destroy () {
+    console.log("destroy projectile!");
+    super.destroy();
+    this.getEntity().destroy();
+    this.userData = null;
   }
 
 }

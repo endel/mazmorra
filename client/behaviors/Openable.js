@@ -14,8 +14,6 @@ export default class Openable extends Behaviour {
     this.entity.on('mouseover', this.onMouseOver);
     this.entity.on('mouseout', this.onMouseOut);
 
-    window.chest = this;
-
     if (!this.isOpen) {
       this.on('open', this.open.bind(this))
       this.on('preopen', this.preopen.bind(this))

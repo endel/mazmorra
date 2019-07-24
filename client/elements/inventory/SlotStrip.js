@@ -41,7 +41,7 @@ export default class SlotStrip extends THREE.Object3D {
     this.clearItems();
 
     const itemIds = Object.keys(items);
-    for (let i=0; i<this.numSlots;i++) {
+    for (let i = 0; i < this.numSlots; i++) {
       this.slots[i].item = null;
 
       const itemId = itemIds[i];
