@@ -182,12 +182,30 @@ export default class Factory {
 
     if (type & helpers.TILE_TYPE.FLOOR) {
       resource = 'tile-' + mapkind + '-ground-' + this.level.mapvariation;
-
     } else if (type & helpers.TILE_TYPE.WALL) {
-      resource = (type & helpers.CORNER) ? null : 'tile-'+mapkind+'-wall'
+      // If it's a corner and it has directions, add walls to those directions
+      if (type & helpers.CORNER) {
+        if (type & helpers.DIRECTION.NORTH) {
+          this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.NORTH, x, y);
+        }
+        if (type & helpers.DIRECTION.SOUTH) {
+          this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.SOUTH, x, y);
+        }
+        if (type & helpers.DIRECTION.EAST) {
+          this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.EAST, x, y);
+        } 
+        if (type & helpers.DIRECTION.WEST) {
+          this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.WEST, x, y);
+        }
+        
+      } else {
+        // If the wall is not a corner, render it (Corners are virtual tiles if it has no direction)
+        resource = 'tile-'+mapkind+'-wall';
+      }
+      
     }
 
-    // ignore corners for a while
+    // Ignore tiles that doesn't have a resource
     if (resource === null) return
 
     var tile = ResourceManager.createTileMesh(resource)
