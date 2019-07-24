@@ -16,6 +16,7 @@ import Chat from '../../behaviors/Chat';
 import { isTutorialComplete, showTutorial } from '../../web/tutorial';
 import { PlayerPrefs } from '../../core/PlayerPrefs';
 import SkillUse from '../../elements/effects/SkillUse';
+import { isMobile } from '../../utils/device';
 
 export default class Level extends THREE.Object3D {
 
@@ -162,7 +163,9 @@ export default class Level extends THREE.Object3D {
   }
 
   onMouseOut(e) {
-    this.setTileSelection(null)
+    if (!isMobile) {
+      this.setTileSelection(null)
+    }
   }
 
   async enterRoom (name, options = {}) {
