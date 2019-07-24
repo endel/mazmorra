@@ -69,7 +69,16 @@ export function getMapConfig(progress: number, roomType?: RoomType) {
       maxRoomSize: { x: 6, y: 6 },
       enemies: {}
     }
-
+  } else if (roomType === "truehell") {
+    return {
+      daylight: false,
+      mapkind: getMapKind(progress, 2),
+      getMapWidth: (progress: number) => 9,
+      getMapHeight: (progress: number) => 9,
+      minRoomSize: { x: 6, y: 6 },
+      maxRoomSize: { x: 6, y: 6 },
+      enemies: {}
+    }
   } else if (progress === 1 || progress === MAX_LEVELS) {
     // castle / lobby!
     const size = 24;

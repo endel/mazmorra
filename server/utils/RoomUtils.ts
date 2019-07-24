@@ -217,6 +217,10 @@ export class RoomUtils {
 
     this.startPosition = this.getRandomDoorPosition(this.startRoom);
     this.endPosition = this.getRandomDoorPosition(this.endRoom);
+    if (!this.startPosition) {
+      this.startPosition = {x: 0, y: 0};
+      console.warn("There was a problem while parsing the room information");
+    }
   }
 
   isValidTile(position: Point) {
@@ -226,7 +230,7 @@ export class RoomUtils {
 
   getRandomDoorPosition (room: DungeonRoom) {
     var possiblePositions = []
-      , positions = this.cache.get(room)
+      , positions = this.cache.get(room) || []
 
     for (var i=0; i<positions.length; i++) {
       const position = positions[i];
