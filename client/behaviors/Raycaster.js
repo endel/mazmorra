@@ -113,7 +113,7 @@ export default class Raycaster extends Behaviour {
       let touch = e.touches[0]
 
       // allow to double click
-      if (this.lastTapTarget == this.targetObject && Date.now() - this.lastTapTime < 200) {
+      if (this.targetObject && this.lastTapTarget == this.targetObject && Date.now() - this.lastTapTime < 200) {
         this.onDoubleClick(e);
 
         this.targetObject.dispatchEvent({
