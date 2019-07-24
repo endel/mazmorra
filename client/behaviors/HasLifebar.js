@@ -18,10 +18,14 @@ export default class HasLifebar extends Behaviour {
     this.lifebar.visible = false
     this.object.add(this.lifebar)
 
-    this.on('mouseover', this.onMouseOver.bind(this))
-    this.on('mouseout', this.onMouseOut.bind(this))
+    this.onMouseOver = this.onMouseOver.bind(this);
+    this.onMouseOut = this.onMouseOut.bind(this)
+    this.detach = this.detach.bind(this);
 
-    this.on('died', this.detach.bind(this))
+    this.on('mouseover', this.onMouseOver);
+    this.on('mouseout', this.onMouseOut);
+
+    this.on('died', this.detach);
   }
 
   update () {
@@ -54,6 +58,13 @@ export default class HasLifebar extends Behaviour {
     if (this.lifebar.parent) {
       this.lifebar.parent.remove(this.lifebar)
     }
+
+    // remove listeners
+    this.off('mouseover', this.onMouseOver);
+    this.off('mouseout', this.onMouseOut);
+    this.off('died', this.detach);
+
+    this.lifebar.destroy();
   }
 
 }
