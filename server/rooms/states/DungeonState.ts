@@ -129,7 +129,7 @@ export class DungeonState extends Schema {
       grid = generatedDungeon[0] as any;
       rooms = generatedDungeon[1] as any;
     }
-    
+
     this.rooms = rooms;
 
     // assign flattened grid to array schema
@@ -137,7 +137,7 @@ export class DungeonState extends Schema {
     for (let i = 0; i < flatgrid.length; i++) {
       this.grid[i] = flatgrid[i];
     }
-    
+
     // 0 = walkable, 1 = blocked
     this.pathgrid = new PF.Grid(grid.map((line, x) => {
       return line.map((type, y) => {
@@ -160,7 +160,7 @@ export class DungeonState extends Schema {
 
     this.gridUtils = new GridUtils(this.entities);
     this.roomUtils = new RoomUtils(this.rand, this, this.rooms);
-    
+
     if (roomType === "loot") {
       // regular room
       this.roomUtils.populateRoomsWithLoot();
@@ -232,7 +232,6 @@ export class DungeonState extends Schema {
 
       } else {
         // back from a portal!
-        const portal = this.getAllEntitiesOfType(Portal).find(portal => portal.ownerId === hero._id.toString());
         if (portal) {
           player.position.set(portal.position);
           this.removeEntity(portal);
@@ -262,7 +261,7 @@ export class DungeonState extends Schema {
     } else {
       player.position.set(this.roomUtils.endPosition);
     }
-    
+
     this.addEntity(player)
     this.players[ player.id ] = player
 
@@ -471,7 +470,7 @@ export class DungeonState extends Schema {
 
     return textEvent;
   }
-  
+
   getAllEntitiesOfType<T extends Entity>(klass: EntityConstructor<T>) {
     const entities: T[] = [];
 
