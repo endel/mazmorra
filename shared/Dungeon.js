@@ -126,15 +126,6 @@ var dungeon = {
                     //add corners
                     else {
                         corner = true;
-                        if(x === 0 && y === 0) {
-                            dir = helpers.DIRECTION.NORTH;
-                        } else if(x === 0 && y === sy - 1) {
-                            dir = helpers.DIRECTION.WEST;
-                        } else if(x === sx - 1 && y === 0) {
-                            dir = helpers.DIRECTION.EAST;
-                        } else if(x === sx - 1 && y === sy - 1) {
-                            dir = helpers.DIRECTION.SOUTH;
-                        }
                     }
 
                     walls.push({ x: x, y: y, dir: dir, corner: corner });

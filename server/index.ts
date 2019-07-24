@@ -44,6 +44,7 @@ gameServer.register('dungeon', DungeonRoom);
 gameServer.register('pvp', DungeonRoom);
 gameServer.register('loot', DungeonRoom);
 gameServer.register('infinite', DungeonRoom);
+gameServer.register('truehell', DungeonRoom);
 
 if (process.env.ENVIRONMENT !== "production") {
   gameServer.register('test-items', DungeonRoom);

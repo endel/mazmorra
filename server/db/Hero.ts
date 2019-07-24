@@ -2,6 +2,7 @@ import helpers from "../../shared/helpers";
 import { ObjectId, mongoose } from "@colyseus/social";
 import { Attribute, StatsModifiers } from "../entities/Unit";
 import { POTION_1_MODIFIER } from "../entities/items/consumable/Potion";
+import { RoomType } from "../rooms/states/DungeonState";
 
 const Schema = mongoose.Schema
 
@@ -81,7 +82,7 @@ export interface DBHero extends mongoose.Document {
   eye: number;
   body: number;
 
-  currentRoom: string;
+  currentRoom: RoomType;
   currentProgress: number;
 
   latestProgress: number;

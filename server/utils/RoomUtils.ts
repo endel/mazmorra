@@ -217,6 +217,10 @@ export class RoomUtils {
 
     this.startPosition = this.getRandomDoorPosition(this.startRoom);
     this.endPosition = this.getRandomDoorPosition(this.endRoom);
+    if (!this.startPosition) {
+      this.startPosition = {x: 0, y: 0};
+      console.warn("There was a problem while parsing the room information");
+    }
   }
 
   isValidTile(position: Point) {
@@ -226,7 +230,7 @@ export class RoomUtils {
 
   getRandomDoorPosition (room: DungeonRoom) {
     var possiblePositions = []
-      , positions = this.cache.get(room)
+      , positions = this.cache.get(room) || []
 
     for (var i=0; i<positions.length; i++) {
       const position = positions[i];
@@ -565,6 +569,11 @@ export class RoomUtils {
     });
   }
 
+  populateTrueHell () {
+    this.state.mapkind = MapKind.INFERNO;
+    this.state.daylight = true;
+  }
+
   populateRoomsWithLoot () {
     // entrance
     this.state.addEntity(new Door(this.startPosition, new DoorDestiny({
@@ -764,6 +773,16 @@ export class RoomUtils {
       room: "pvp"
     }));
     this.state.addEntity(pvpDoor);
+    
+    // Door for TrueHell
+    // const hellDoor = new Door({
+    //   x: merchant.position.x - 3,
+    //   y: merchant.position.y + 1
+    // }, new DoorDestiny({
+    //   progress: 2,
+    //   room: "truehell"
+    // }));
+    // this.state.addEntity(hellDoor);
 
     // Leaderboard
     const leaderboard = new Leaderboard({
