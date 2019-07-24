@@ -32,7 +32,7 @@ export class DungeonRoom extends Room<DungeonState> {
     }
 
     if (roomTypes.indexOf(this.roomName) === -1) {
-      console.log(`ERROR: The roomType "" is not valid`, `Expected values are (${roomTypes.join(', ')}) `);
+      console.warn(`WARN: The roomType "" is not valid`, `Expected values are (${roomTypes.join(', ')}) `);
     }
       
     this.players = new WeakMap();

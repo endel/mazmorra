@@ -8,7 +8,7 @@ import { EventEmitter } from "events";
 import PF from "pathfinding";
 
 import { GridUtils } from "../../utils/GridUtils";
-import { RoomUtils, ItemDropOptions } from "../../utils/RoomUtils";
+import { RoomUtils, ItemDropOptions, DungeonRoom } from "../../utils/RoomUtils";
 
 // entities
 import { Player } from "../../entities/Player";
@@ -28,6 +28,8 @@ import { DoorDestiny, DoorProgress, Door } from "../../entities/interactive/Door
 import { Portal } from "../../entities/interactive/Portal";
 import { debugLog } from "../../utils/Debug";
 import { Jail } from "../../entities/interactive/Jail";
+import * as TrueHell from "../../maps/truehell";
+import { parseMapTemplate } from "../../utils/MapTemplateParser";
 
 export interface Point {
   x: number;
@@ -53,7 +55,7 @@ export class DungeonState extends Schema {
 
   @type("boolean") isPVPAllowed: boolean;
 
-  rooms: any;
+  rooms: DungeonRoom[];
   players: {[id: string]: Player} = {};
   enemies: {[id: string]: Enemy} = {};
 
@@ -94,19 +96,40 @@ export class DungeonState extends Schema {
     const minRoomSize = this.config.minRoomSize;
     const maxRoomSize = this.config.maxRoomSize;
 
-    const numRooms: number = (roomType === "loot")
-      ? 1
-      : Math.max(2, // generate at least 2 rooms!
+    let numRooms: number;
+    switch (roomType) {
+      case "loot":
+        numRooms = 1;
+        break;
+      case "truehell":
+        numRooms = 1;
+        break;
+      default:
+        numRooms = Math.max(2, // generate at least 2 rooms!
           Math.min(
             Math.floor((this.width * this.height) / (maxRoomSize.x * maxRoomSize.y)),
             Math.floor(progress / 2)
           )
         );
+    }
 
     debugLog(`Dungeon config, size: { x: ${this.width}, y: ${this.height} }, { minRoomSize: ${minRoomSize}, maxRoomSize: ${maxRoomSize}, numRooms: ${numRooms} }`);
 
-    const [grid, rooms] = dungeon.generate(this.rand, { x: this.width, y: this.height }, minRoomSize, maxRoomSize, numRooms);
+    let grid: any[][];
+    let rooms: DungeonRoom[];
+    if (roomType === "truehell") {
+      const mapDungeon = parseMapTemplate(TrueHell.mapTemplate, TrueHell.symbols, TrueHell.keys);
+      grid = mapDungeon.grid;
+      rooms = mapDungeon.rooms;
+      this.height = grid.length;
+      this.width = grid[0].length;
 
+    } else {
+      const generatedDungeon = dungeon.generate(this.rand, { x: this.width, y: this.height }, minRoomSize, maxRoomSize, numRooms);
+      grid = generatedDungeon[0] as any;
+      rooms = generatedDungeon[1] as any;
+    }
+    
     this.rooms = rooms;
 
     // assign flattened grid to array schema
@@ -114,7 +137,7 @@ export class DungeonState extends Schema {
     for (let i = 0; i < flatgrid.length; i++) {
       this.grid[i] = flatgrid[i];
     }
-
+    
     // 0 = walkable, 1 = blocked
     this.pathgrid = new PF.Grid(grid.map((line, x) => {
       return line.map((type, y) => {
@@ -137,7 +160,7 @@ export class DungeonState extends Schema {
 
     this.gridUtils = new GridUtils(this.entities);
     this.roomUtils = new RoomUtils(this.rand, this, this.rooms);
-
+    
     if (roomType === "loot") {
       // regular room
       this.roomUtils.populateRoomsWithLoot();
@@ -186,7 +209,6 @@ export class DungeonState extends Schema {
     // find and remove portals from this player!
     const portal = this.getAllEntitiesOfType<Portal>(Portal).find(portal => portal.ownerId === hero._id.toString());
     if (portal) { this.removeEntity(portal); }
-
     if (options.isPortal) {
       if (this.progress === 1) {
 
@@ -240,7 +262,7 @@ export class DungeonState extends Schema {
     } else {
       player.position.set(this.roomUtils.endPosition);
     }
-
+    
     this.addEntity(player)
     this.players[ player.id ] = player
 
