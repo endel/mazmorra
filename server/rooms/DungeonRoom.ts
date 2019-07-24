@@ -166,6 +166,12 @@ export class DungeonRoom extends Room<DungeonState> {
       return;
     }
 
+    if (player.isSwitchingDungeons || player.removed) {
+      // @colyseus/schema issue!
+      console.log("player send actions while switching dungeons or removed.");
+      return;
+    }
+
     if (key == 'move') {
       (player.position as Movement).target = null;
       this.state.move(player, value, true)

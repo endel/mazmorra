@@ -150,7 +150,7 @@ export class DungeonState extends Schema {
     }
   }
 
-  addEntity (entity) {
+  addEntity (entity: Entity) {
     this.entities[entity.id] = entity
 
     if (entity instanceof Enemy) {
@@ -161,7 +161,9 @@ export class DungeonState extends Schema {
     }
   }
 
-  removeEntity (entity) {
+  removeEntity (entity: Entity) {
+    // entity.removed = true;
+
     // cleanup memory!
     this.entitiesToRemove.push(entity);
 
