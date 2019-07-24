@@ -3,6 +3,7 @@ import helpers from '../../shared/helpers'
 
 import { getClientId } from '../core/network';
 import { battleStartSound, wooshSound, hitSound, deathSound, deathStingerSound, bowSound, staffSound, fadeOut, playRandom3D, playSound3D } from '../core/sound';
+import { removeLight } from '../utils';
 
 export const DEAD_ENTITY_OPACITY = 0.45;
 
@@ -146,6 +147,10 @@ export default class BattleBehaviour extends Behaviour {
     if (this.object.userData.id === getClientId()) {
       fadeOut(); // fade soundtrack out
       deathStingerSound.play();
+    }
+
+    if (this.object.light) {
+      removeLight(this.object.light);
     }
 
     if (this.object.userData.kind && this.object.userData.kind.indexOf("tower") === 0) {

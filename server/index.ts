@@ -15,6 +15,8 @@ import { DungeonRoom } from './rooms/DungeonRoom';
 import { ChatRoom } from './rooms/ChatRoom';
 import { Hero } from './db/Hero';
 import { connectDatabase } from '@colyseus/social';
+import { Report } from './db/Report';
+import { debugLog } from './utils/Debug';
 
 const port = process.env.PORT || 3553;
 const app = express();
@@ -62,6 +64,19 @@ if (process.env.ENVIRONMENT !== "production") {
 app.use(bodyParser.json());
 
 app.use(express.static( __dirname + '/../public' ));
+
+/**
+ * Temporary: error reports from the client!
+ */
+app.post("/report", async (req, res) => {
+  const report = req.body;
+  report.timestamp = Date.now();
+
+  debugLog(`client-side error: ${report.stack}`);
+
+  const data = await Report.create(report);
+  res.json(data);
+});
 
 app.use('/', socialRoutes);
 app.use('/hero', hero);

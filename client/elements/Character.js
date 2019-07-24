@@ -52,6 +52,7 @@ export default class Character extends THREE.Object3D {
 
   destroy () {
      this.composition.destroy()
+     super.destroy();
   }
 
 }

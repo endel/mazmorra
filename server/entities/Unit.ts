@@ -468,31 +468,32 @@ export class Unit extends Entity {
     return damageTaken;
   }
 
-  onDie () {
+  onDie (): Unit[] {
+    let unitsToIncreaseXP: Unit[] = [];
+
     // remove battle action when dead!
     this.action = null;
 
     // skip xp if spawned units.
-    if (this.doNotGiveXP) {
-      return this.drop();
-    }
+    if (!this.doNotGiveXP) {
+      let unit: Unit;
 
-    let unitsToIncreaseXP: Unit[] = [];
-    let unit: Unit;
-
-    const damageTakenFrom = this.damageTakenFrom.values();
-    while (unit = damageTakenFrom.next().value) {
-      if (unit && unit.isAlive && unit.xp) {
-        // some players might've left the room or are dead / invalid
-        unitsToIncreaseXP.push(unit);
+      const damageTakenFrom = this.damageTakenFrom.values();
+      while (unit = damageTakenFrom.next().value) {
+        if (unit && unit.isAlive && unit.xp) {
+          // some players might've left the room or are dead / invalid
+          unitsToIncreaseXP.push(unit);
+        }
       }
-    }
 
-    // distribute XP among units.
-    const xpPerUnit = this.getXPWorth() / unitsToIncreaseXP.length;
-    unitsToIncreaseXP.forEach(unit => unit.xp.increment(xpPerUnit / unit.lvl));
+      // distribute XP among units.
+      const xpPerUnit = this.getXPWorth() / unitsToIncreaseXP.length;
+      unitsToIncreaseXP.forEach(unit => unit.xp.increment(xpPerUnit / unit.lvl));
+    }
 
     this.drop();
+
+    return unitsToIncreaseXP;
   }
 
   clearPendingMovement () {

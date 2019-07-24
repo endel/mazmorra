@@ -16,7 +16,6 @@ export default class Game {
     this.container = container
     this.container.innerHTML = "";
 
-
     this.renderer = new THREE.WebGLRenderer(); // {alpha: true}
     global.renderer = this.renderer;
 
@@ -63,8 +62,11 @@ export default class Game {
       removeLight(getLightFromPool());
     }
 
-    // this.level = new Level(this.scene, this.hud, this.camera)
-    // this.level.on('setup', this.onSetupLevel.bind(this))
+    // bind callbacks to this
+    this.onSetupLevel = this.onSetupLevel.bind(this);
+    this.update = this.update.bind(this);
+    this.render = this.render.bind(this);
+    this.onWindowResize = this.onWindowResize.bind(this);
 
     // set background for character builder
     this.onSetupLevel({
@@ -74,10 +76,10 @@ export default class Game {
       }
     })
 
-    this.updateInterval = setInterval(this.update.bind(this), 1000 / 60)
+    this.updateInterval = setInterval(this.update, 1000 / 60)
     this.container.appendChild(this.renderer.domElement);
 
-    window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
+    window.addEventListener('resize', this.onWindowResize, false);
 
     // // stats
     // this.stats = new Stats();
@@ -102,13 +104,17 @@ export default class Game {
 
     setHeroId(hero._id);
 
+    // clean-up character builder
+    this.scene.remove(this.characterBuilder);
+    this.characterBuilder.destroy();
+
     // this.container.classList.remove("wardrobe");
     this.init();
   }
 
   init () {
     this.level = new Level(this.hud, this.camera);
-    this.level.addEventListener("setup", this.onSetupLevel.bind(this));
+    this.level.addEventListener("setup", this.onSetupLevel);
     this.level.addEventListener("died", () => this.hud.showOverlay(2000));
     this.scene.add(this.level);
     this.hud.init();
@@ -145,25 +151,19 @@ export default class Game {
   }
 
   update () {
-
-    App.update()
-
+    App.update();
   }
 
   render () {
-
-    requestAnimationFrame( this.render.bind(this) );
+    requestAnimationFrame(this.render);
 
     this.renderer.clear()
     this.renderer.render( this.scene, this.camera );
     this.renderer.clearDepth();
 
     if (this.hud) {
-
       this.renderer.render( this.hud, this.hud.camera )
-
     }
-
   }
 
 }

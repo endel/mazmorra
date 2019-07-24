@@ -24,7 +24,8 @@ export default class LightPole extends THREE.Object3D {
   }
 
   destroy () {
-     removeLight(this.light);
+    removeLight(this.light);
+    super.destroy();
   }
 
 }

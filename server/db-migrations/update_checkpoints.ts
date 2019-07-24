@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 import { Hero } from "../db/Hero";
-import { isCheckPointMap } from "../utils/ProgressionConfig";
+import { isCheckPointMap, MAX_LEVELS } from "../utils/ProgressionConfig";
 import { connectDatabase } from "@colyseus/social";
 
 async function perform() {
@@ -19,6 +19,7 @@ async function perform() {
       }
     }
 
+    checkPoints.push(MAX_LEVELS);
     heroes[i].checkPoints = checkPoints;
 
     await heroes[i].save();

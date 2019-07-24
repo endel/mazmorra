@@ -7,7 +7,7 @@ import Button from '../../elements/controls/Button'
 import SelectBox from '../../elements/controls/SelectBox'
 import ColorPicker from '../../elements/controls/ColorPicker'
 
-export default class Builder extends THREE.Object3D {
+export default class CharacterBuilder extends THREE.Object3D {
 
   constructor (hud, camera) {
     super()
@@ -87,7 +87,6 @@ export default class Builder extends THREE.Object3D {
   onComplete () {
     // loading!
     credentials.update(this.getHero()).then(() => {
-      this.destroy()
       this.dispatchEvent( { type: "complete" } )
     })
   }
@@ -139,17 +138,33 @@ export default class Builder extends THREE.Object3D {
   }
 
   destroy () {
+    this.tween.then(null);
+    this.tween = null;
+
     this.remove(this.character)
     this.character.destroy()
 
     this.hud.remove(this.hairColorPicker)
+    this.hairColorPicker.destroy();
+
     this.hud.remove(this.hairSelection)
+    debugger;
+    this.hairSelection.destroy();
+
     this.hud.remove(this.eyeColorPicker)
+    this.eyeColorPicker.destroy();
+
     this.hud.remove(this.bodyColorPicker)
+    this.bodyColorPicker.destroy();
+
     this.hud.remove(this.classSelection)
+    this.classSelection.destroy();
+
     this.hud.remove(this.completeButton)
+    this.completeButton.destroy();
 
     this.turnInterval.clear()
+    super.destroy();
   }
 
 }

@@ -5,7 +5,7 @@ import Shadow from '../behaviors/Shadow';
 import HasLifebar from '../behaviors/HasLifebar';
 import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
 import { playSound3D, mimicSound } from '../core/sound';
-import { humanize, removeLight } from '../utils';
+import { humanize, removeLight, getLightFromPool } from '../utils';
 
 export default class Enemy extends THREE.Object3D {
 
@@ -43,13 +43,12 @@ export default class Enemy extends THREE.Object3D {
 
       } else {
         // Light on tower
-        // debugger;
-        // this.light = getLightFromPool();
-        // this.light.intensity = 2;
-        // this.light.distance = 15;
-        // this.light.color = new THREE.Color(0xfcf458);
-        // this.light.position.set(0, 1.5, 0);
-        // this.add(this.light);
+        this.light = getLightFromPool();
+        this.light.intensity = 1;
+        this.light.distance = 15;
+        this.light.color = new THREE.Color(0xfcf458);
+        this.light.position.set(0, 2, 0);
+        this.add(this.light);
       }
 
       // this.addBehaviour(new Shadow);
@@ -113,9 +112,10 @@ export default class Enemy extends THREE.Object3D {
   }
 
   destroy () {
-    if (this.light) {
+    if (this.light && this.light.parent) {
       removeLight(this.light);
     }
+    super.destroy();
   }
 
 }

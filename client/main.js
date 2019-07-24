@@ -13,8 +13,36 @@ import Game from './game/Game'
 import login from './web/login'
 import { switchSoundtrack } from './core/sound';
 import { applySettings } from "./elements/hud/SettingsOverlay";
+import { client, getHeroId } from "./core/network";
 
 window.app = App;
+
+/**
+ * Report errors remotely!
+ */
+global.report = async function(data) {
+  return fetch(`${client.auth.endpoint}/report`, {
+    method: 'post',
+    body: JSON.stringify(data),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  }).then(r => r.json());
+}
+
+let errorCount = 0;
+const MAX_ERROR_COUNT = 10;
+window.onerror = function(msg, url, lineNo, columnNo, error) {
+  if (errorCount++ < MAX_ERROR_COUNT) {
+    global.report({
+      message: `${msg} (${lineNo}:${columnNo})`,
+      stack: error.stack,
+      userId: client.auth._id,
+      heroId: getHeroId()
+    });
+  }
+}
 
 ResourceManager.load(() => {
   // remove "loading" class
@@ -41,6 +69,30 @@ ResourceManager.load(() => {
 })
 
 // window.THREE = THREE;
+
+/**
+ * Augment Object3D / EventDispatcher
+ * object.destroy() must be called to prevent memory leaks.
+ */
+THREE.EventDispatcher.prototype.removeAllListeners = function() {
+  if (this._listeners) {
+    for (let type in this._listeners) {
+      for (let i = 0; i < this._listeners[type].length; i++) {
+        const listener = this._listeners[type][i];
+        this.removeEventListener(type, listener);
+      }
+    }
+  }
+}
+
+THREE.Object3D.prototype.destroy = function () {
+  for (let i = this.children.length - 1; i >= 0; i--) {
+    if (this.children[i].destroy) { this.children[i].destroy(); }
+    this.remove(this.children[i]);
+  }
+  this.removeAllListeners();
+}
+
 
 //
 // TODO patch three.js

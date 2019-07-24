@@ -369,6 +369,26 @@ export class Player extends Unit {
     }
   }
 
+  onDie () {
+    const unitsInvolved = super.onDie();
+
+    if (unitsInvolved.length > 0) {
+      console.log({ unitsInvolved });
+
+      const unit = unitsInvolved[unitsInvolved.length - 1];
+
+      // broadcast died event for global chat.
+      this.state.events.emit('event', {
+        name: this.name,
+        progress: this.state.progress,
+        slain: ((unit as Player).name) || ((unit as any).kind)
+      });
+
+    }
+
+    return unitsInvolved;
+  }
+
   dispose() {
     super.dispose();
 

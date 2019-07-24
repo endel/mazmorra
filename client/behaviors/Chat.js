@@ -2,7 +2,7 @@ import { Behaviour } from 'behaviour.js'
 import Keycode from 'keycode.js'
 
 import { enterChat } from '../core/network';
-import { trackEvent } from '../utils';
+import { trackEvent, humanize } from '../utils';
 
 export default class Chat extends Behaviour {
 
@@ -113,8 +113,26 @@ export default class Chat extends Behaviour {
     }
 
     const date = new Date(message.timestamp);
+
     const child = document.createElement("p");
-    child.innerText = `[${date.toLocaleTimeString()}] (${message.progress}) ${message.name} says: ${message.text}`;
+
+    let text = `[${date.toLocaleTimeString()}] (${message.progress}) ${message.name}`;
+
+    // TODO: Remove .text after beta
+    if (message.say || message.text) {
+      child.classList.add("say");
+      text = `${text} says: ${message.say || message.text}`;
+
+    } else if (message.slain) {
+      child.classList.add("slain");
+      text = `${text} was slain by ${humanize(message.slain)}`;
+
+    } else if (message.killed) {
+      child.classList.add("killed");
+      text = `${text} killed the mighty ${humanize(message.killed)}`;
+    }
+
+    child.innerText = text;
 
     this.messages.appendChild(child);
     this.updateScroll();

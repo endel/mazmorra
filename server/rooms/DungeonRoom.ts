@@ -66,6 +66,7 @@ export class DungeonRoom extends Room<DungeonState> {
     this.state.events.on('sound', this.broadcastSound.bind(this));
     this.state.events.on('send', this.sendToPlayer.bind(this));
     this.state.events.on('broadcast', this.broadcastToAll.bind(this));
+    this.state.events.on('event', this.broadcastEvent.bind(this));
 
     this.setSimulationInterval(() => this.tick(), 1000 / TICK_RATE);
   }
@@ -269,6 +270,10 @@ export class DungeonRoom extends Room<DungeonState> {
 
   broadcastToAll (data) {
     this.broadcast(data);
+  }
+
+  broadcastEvent (data) {
+    this.presence.publish("events", data);
   }
 
   broadcastSound (soundName, player) {

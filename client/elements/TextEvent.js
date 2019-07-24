@@ -57,8 +57,6 @@ export default class TextEvent extends THREE.Object3D {
       this.text.scale.set(0.02, 0.02, 0.02)
     }
 
-    window.text = this.text;
-
     App.tweens.
       add(this.text.material).
       to({ opacity: 1 }, this.fadeTime).
@@ -79,7 +77,9 @@ export default class TextEvent extends THREE.Object3D {
 
   removeFromParent () {
     if (this.parent) {
-      this.parent.remove(this)
+      this.remove(this.text);
+      this.text = null;
+      this.parent.remove(this);
     }
   }
 

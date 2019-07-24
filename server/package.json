@@ -17,7 +17,7 @@
     "@colyseus/social": "^0.10.8",
     "body-parser": "^1.14.2",
     "clock-timer.js": "^1.1.4",
-    "colyseus": "^0.10.8",
+    "colyseus": "^0.10.9-alpha.0",
     "cors": "^2.7.1",
     "dotenv": "^2.0.0",
     "express": "^4.17.1",

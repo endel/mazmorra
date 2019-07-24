@@ -28,7 +28,7 @@ export class Boss extends Enemy {
   }
 
   onDie () {
-    super.onDie();
+    const playersWhoKilled = super.onDie();
 
     // unlock chests and doors!
     this.thingsToUnlockWhenDead.forEach((thing) => {
@@ -37,6 +37,15 @@ export class Boss extends Enemy {
       // FIXME: use .unlock instead.
       // thing.unlock();
     });
+
+    // broadcast killed event for global chat.
+    this.state.events.emit('event', {
+      name: playersWhoKilled.map(p => (p as any).name).join(", "),
+      progress: this.state.progress,
+      killed: this.kind
+    });
+
+    return playersWhoKilled;
   }
 
   update (currentTime) {
