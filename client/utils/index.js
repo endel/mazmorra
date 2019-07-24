@@ -28,15 +28,17 @@ const lightPool = [
   new THREE.PointLight(0x1c80e4, 0, 0),
   new THREE.PointLight(0x1c80e4, 0, 0),
   new THREE.PointLight(0x1c80e4, 0, 0),
-  new THREE.PointLight(0x1c80e4, 0, 0),
-  new THREE.PointLight(0x1c80e4, 0, 0),
-  new THREE.PointLight(0x1c80e4, 0, 0),
-  new THREE.PointLight(0x1c80e4, 0, 0),
-  new THREE.PointLight(0x1c80e4, 0, 0),
-  new THREE.PointLight(0x1c80e4, 0, 0),
-  new THREE.PointLight(0x1c80e4, 0, 0),
-  new THREE.PointLight(0x1c80e4, 0, 0),
+  // new THREE.PointLight(0x1c80e4, 0, 0),
+  // new THREE.PointLight(0x1c80e4, 0, 0),
+  // new THREE.PointLight(0x1c80e4, 0, 0),
+  // new THREE.PointLight(0x1c80e4, 0, 0),
+  // new THREE.PointLight(0x1c80e4, 0, 0),
+  // new THREE.PointLight(0x1c80e4, 0, 0),
+  // new THREE.PointLight(0x1c80e4, 0, 0),
+  // new THREE.PointLight(0x1c80e4, 0, 0),
 ];
+
+window.lightPool = lightPool;
 
 let currentLight = 0;
 export function getLightFromPool() {
