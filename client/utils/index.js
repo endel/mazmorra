@@ -28,6 +28,8 @@ const lightPool = [
   new THREE.PointLight(0x1c80e4, 0, 0),
   new THREE.PointLight(0x1c80e4, 0, 0),
   new THREE.PointLight(0x1c80e4, 0, 0),
+  // More lights than 8 are causing WebGL issues on low end devices.
+
   // new THREE.PointLight(0x1c80e4, 0, 0),
   // new THREE.PointLight(0x1c80e4, 0, 0),
   // new THREE.PointLight(0x1c80e4, 0, 0),
@@ -37,8 +39,6 @@ const lightPool = [
   // new THREE.PointLight(0x1c80e4, 0, 0),
   // new THREE.PointLight(0x1c80e4, 0, 0),
 ];
-
-window.lightPool = lightPool;
 
 let currentLight = 0;
 export function getLightFromPool() {

@@ -103,7 +103,6 @@ export default class Projectile extends THREE.Object3D {
   }
 
   destroy () {
-    console.log("destroy projectile!");
     super.destroy();
     this.getEntity().destroy();
     this.userData = null;
