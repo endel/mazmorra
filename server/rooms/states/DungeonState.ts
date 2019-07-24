@@ -117,6 +117,7 @@ export class DungeonState extends Schema {
 
     let grid: any[][];
     let rooms: DungeonRoom[];
+
     if (roomType === "truehell") {
       const mapDungeon = parseMapTemplate(TrueHell.mapTemplate, TrueHell.symbols, TrueHell.keys);
       grid = mapDungeon.grid;
