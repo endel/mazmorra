@@ -64,6 +64,9 @@ class Hint  {
   }
 
   getItemHTML(item, sprite) {
+    const player = global.player;
+    if (!player) { return; }
+
     const equipedItems = player.userData.equipedItems.slots;
 
     // <img src="images/sprites/items-${item.type}.png" width="${sprite.item.scale.x}" height="${sprite.item.scale.y}" />
