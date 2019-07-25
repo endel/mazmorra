@@ -3,6 +3,8 @@ import { Position } from "../core/Position";
 import { DungeonRoom } from "./RoomUtils";
 import {CORNER, DIRECTION, TILE_TYPE} from "../../shared/helpers";
 import { parse } from "path";
+import { MapConfig } from "./ProgressionConfig";
+import { DungeonState } from "../rooms/states/DungeonState";
 
 export const defaultSymbols = {
     [`⬜`]: TILE_TYPE.EMPTY,
@@ -37,7 +39,16 @@ export type SymbolsDictonary = typeof defaultSymbols & {[s: string]: SymbolValue
 
 const isWalkable = (value: SymbolValue) => value === TILE_TYPE.FLOOR || value instanceof Entity || value instanceof Array;
 
-export const parseMapTemplate = (template: string, symbols: SymbolsDictonary, keys: string[]) => {
+export type CustomMapObject = {
+    template: string, 
+    symbols: SymbolsDictonary,
+    config: Partial<MapConfig>,
+    populate: (state: DungeonState) => void
+}
+
+
+export function parseMapTemplate ({template, symbols}: CustomMapObject) {
+    const keys = Object.keys(symbols);
     const newLine = /\n/g;
     const keyLookup = new RegExp(`[${keys.join('')}]`, 'gu');
 

@@ -111,7 +111,7 @@ var dungeon = {
         // 12) Add the up and down staircases inside random rooms of the dungeon.
         // 13) Finally, add some monsters, items, and gold in random areas of the dungeon.
 
-        return [grid, rooms];
+        return {grid, rooms};
     },
 
     generateRoom: function(rand, minSize, maxSize, obstaclesChance) {

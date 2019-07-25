@@ -2,7 +2,8 @@ import { Schema, type } from "@colyseus/schema";
 import { Interactive } from "../Interactive";
 import helpers from "../../../shared/helpers";
 
-import { Point, RoomType } from "../../rooms/states/DungeonState";
+import { Point, RoomSeedType } from "../../rooms/states/DungeonState";
+import { CustomMapName } from "../../maps";
 
 export enum DoorProgress {
   BACK = -1,
@@ -13,7 +14,8 @@ export enum DoorProgress {
 
 interface DoorDestinyOptions {
   progress: number;
-  room?: RoomType;
+  room?: RoomSeedType;
+  customName?: CustomMapName; 
 }
 
 export class DoorDestiny extends Schema implements DoorDestinyOptions {
@@ -21,7 +23,8 @@ export class DoorDestiny extends Schema implements DoorDestinyOptions {
   // @type("string") mapkind: string;
   // @type("number") difficulty: number;
   @type("number") progress: DoorProgress;
-  @type("string") room: RoomType;
+  @type("string") room: RoomSeedType;
+  @type("string") customName?: CustomMapName;
 
   constructor(data: DoorDestinyOptions) {
     super();
@@ -32,6 +35,9 @@ export class DoorDestiny extends Schema implements DoorDestinyOptions {
 
     if (data.room) {
       this.room = data.room;
+    }
+    if (data.customName) {
+      this.customName = data.customName;
     }
   }
 }
