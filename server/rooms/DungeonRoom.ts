@@ -1,21 +1,23 @@
 import { Room, Client, generateId } from "colyseus";
-import { DungeonState, RoomType, roomTypes } from "./states/DungeonState";
+import { DungeonState, RoomSeedType, roomTypes } from "./states/DungeonState";
 import { verifyToken } from "@colyseus/social";
 import { Hero, DBHero } from "../db/Hero";
 import { Player } from "../entities/Player";
-import { DoorProgress } from "../entities/interactive/Door";
+import { DoorProgress, DoorDestiny } from "../entities/interactive/Door";
 import { Season } from "../db/Season";
 import { Movement } from "../core/Movement";
 import { Portal } from "../entities/interactive/Portal";
 import { debugLog } from "../utils/Debug";
 import { NUM_LEVELS_PER_CHECKPOINT, MAX_LEVELS } from "../utils/ProgressionConfig";
+import customMapsList, { CustomMapName } from "../maps";
 
 const TICK_RATE = 20 // 20 ticks per second
 
 export class DungeonRoom extends Room<DungeonState> {
   maxClients = 50;
   progress: number;
-  roomName: RoomType;
+  roomName: RoomSeedType;
+  customName?: CustomMapName;
   players = new WeakMap<Client, Player>();
   clientMap = new WeakMap<Player, Client>();
 
@@ -24,6 +26,7 @@ export class DungeonRoom extends Room<DungeonState> {
 
   async onInit (options) {
     this.progress = options.progress || 1;
+    this.customName = options.customName;
 
 
     // maximum of 5 players allowed on each room.
@@ -31,16 +34,16 @@ export class DungeonRoom extends Room<DungeonState> {
       this.maxClients = 5;
     }
 
-    if (roomTypes.indexOf(this.roomName) === -1) {
-      console.warn(`WARN: The roomType "" is not valid`, `Expected values are (${roomTypes.join(', ')}) `);
+    if (this.roomName === "custom" && Object.keys(customMapsList).indexOf(this.customName) === -1) {
+      throw new Error(`ERROR: The customMap "${this.customName}" is not valid`);
     }
-      
+
     this.players = new WeakMap();
     this.clientMap = new WeakMap();
 
     this.creatorHeroId = options.heroId;
 
-    // Get season/random seed for this room.
+    // Get season/random seed for this room.s
     let seed: string;
     if (this.progress === 1) {
       seed = "castleseed1";
@@ -57,7 +60,7 @@ export class DungeonRoom extends Room<DungeonState> {
       seed = season.seed;
     }
 
-    this.setState(new DungeonState(this.progress, seed, this.roomName));
+    this.setState(new DungeonState(this.progress, seed, this.roomName, this.customName));
 
     debugLog(`'${this.roomName}' created (with "${seed}" seed) => progress: ${this.progress}`);
 
@@ -230,10 +233,10 @@ export class DungeonRoom extends Room<DungeonState> {
     }
   }
 
-  onGoTo (player, destiny, params: any = {}) {
+  onGoTo (player, destiny: Partial<DoorDestiny>, params: any = {}) {
     const client = this.clientMap.get(player);
     const hero = player.hero;
-
+    console.log("GOING TO >>>>", destiny)
     // validate checkpoint usage
     if (
       params.isCheckPoint &&
@@ -251,6 +254,9 @@ export class DungeonRoom extends Room<DungeonState> {
 
     if (destiny.room) {
       destinyParams.room = destiny.room;
+    }
+    if (destiny.customName) {
+      destinyParams.customName = destiny.customName;
     }
 
     if (destiny.progress === DoorProgress.FORWARD) {

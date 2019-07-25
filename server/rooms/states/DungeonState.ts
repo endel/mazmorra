@@ -22,14 +22,15 @@ import { Interactive } from "../../entities/Interactive";
 import { Entity } from "../../entities/Entity";
 import { MoveEvent } from "../../core/Movement";
 import { DBHero } from "../../db/Hero";
-import { MapKind, MapConfig, getMapConfig, isBossMap, MAX_LEVELS } from "../../utils/ProgressionConfig";
+import { MapKind, MapConfig, getMapConfig, isBossMap, MAX_LEVELS, defaultGetNumRooms } from "../../utils/ProgressionConfig";
 import { NPC } from "../../entities/NPC";
 import { DoorDestiny, DoorProgress, Door } from "../../entities/interactive/Door";
 import { Portal } from "../../entities/interactive/Portal";
 import { debugLog } from "../../utils/Debug";
 import { Jail } from "../../entities/interactive/Jail";
-import * as TrueHell from "../../maps/truehell";
+
 import { parseMapTemplate } from "../../utils/MapTemplateParser";
+import customMapsList, { CustomMapName } from "../../maps";
 
 export interface Point {
   x: number;
@@ -38,8 +39,8 @@ export interface Point {
 
 type EntityConstructor<U extends Entity> = {new(...args: any[]): U; };
 
-export type RoomType = 'dungeon' | 'pvp' | 'loot' | 'infinite' | 'truehell';
-export const roomTypes: RoomType[] = ['dungeon', 'pvp', 'loot', 'infinite', 'truehell'];
+export type RoomSeedType = 'dungeon' | 'pvp' | 'loot' | 'infinite' | 'custom';
+export const roomTypes: RoomSeedType[] = ['dungeon', 'pvp', 'loot', 'infinite', 'custom'];
 
 export class DungeonState extends Schema {
   @type("number") progress: number;
@@ -72,82 +73,79 @@ export class DungeonState extends Schema {
 
   events = new EventEmitter();
 
-  constructor (progress, seed: string, roomType: RoomType) {
+  constructor (progress, seed: string, roomType: RoomSeedType, customName: CustomMapName) {
     super()
+
 
     this.rand = gen.create(seed + progress);
     this.progress = progress;
     this.isPVPAllowed = (roomType === "pvp");
-
-    this.config = getMapConfig(this.progress, roomType);
-
-    // prevent hack attempt to load non-existing level
-    if (!this.config) {
-      this.progress = 2;
-      this.config = getMapConfig(this.progress, roomType);
-    }
-
-    this.daylight = this.config.daylight;
-    this.mapkind = this.config.mapkind;
     this.mapvariation = (this.progress % 2 === 0) ? 2 : 1;
 
-    this.width = this.config.getMapWidth(this.progress);
-    this.height = this.config.getMapHeight(this.progress);
-    const minRoomSize = this.config.minRoomSize;
-    const maxRoomSize = this.config.maxRoomSize;
-
-    let numRooms: number;
-    switch (roomType) {
-      case "loot":
-        numRooms = 1;
-        break;
-      case "truehell":
-        numRooms = 1;
-        break;
-      default:
-        numRooms = Math.max(2, // generate at least 2 rooms!
-          Math.min(
-            Math.floor((this.width * this.height) / (maxRoomSize.x * maxRoomSize.y)),
-            Math.floor(progress / 2)
-          )
-        );
-    }
-
-    debugLog(`Dungeon config, size: { x: ${this.width}, y: ${this.height} }, { minRoomSize: ${minRoomSize}, maxRoomSize: ${maxRoomSize}, numRooms: ${numRooms} }`);
-
-    let grid: any[][];
+    let grid2d: number[][];
     let rooms: DungeonRoom[];
 
-    if (roomType === "truehell") {
-      const mapDungeon = parseMapTemplate(TrueHell.mapTemplate, TrueHell.symbols, TrueHell.keys);
-      grid = mapDungeon.grid;
+    if (roomType === "custom") {
+      const customMap = customMapsList[customName]
+      const mapDungeon = parseMapTemplate(customMap);
+
+      grid2d = mapDungeon.grid;
       rooms = mapDungeon.rooms;
-      this.height = grid.length;
-      this.width = grid[0].length;
+      
+      this.height = grid2d.length;
+      this.width = grid2d[0].length;
 
+      this.daylight = customMap.config.daylight;
+      this.mapkind = customMap.config.mapkind;
     } else {
-      const generatedDungeon = dungeon.generate(this.rand, { x: this.width, y: this.height }, minRoomSize, maxRoomSize, numRooms);
-      grid = generatedDungeon[0] as any;
-      rooms = generatedDungeon[1] as any;
-    }
 
+      this.config = getMapConfig(this.progress, roomType);
+
+      // prevent hack attempt to load non-existing level
+      if (!this.config) {
+        this.progress = 2;
+        this.config = getMapConfig(this.progress, roomType);
+      }
+  
+      this.daylight = this.config.daylight;
+      this.mapkind = this.config.mapkind;
+
+      this.width = this.config.getMapWidth(this.progress);
+      this.height = this.config.getMapHeight(this.progress);
+      const minRoomSize = this.config.minRoomSize;
+      const maxRoomSize = this.config.maxRoomSize;
+      
+      if (!this.config.getNumRooms) {
+        this.config.getNumRooms = (progress) => defaultGetNumRooms(this.width, this.height, progress, maxRoomSize)
+      }
+  
+      const numRooms: number = this.config.getNumRooms(this.progress);
+      debugLog(`Dungeon config, size: { x: ${this.width}, y: ${this.height} }, { minRoomSize: ${minRoomSize}, maxRoomSize: ${maxRoomSize}, numRooms: ${numRooms} }`);
+
+      const generatedDungeon = dungeon.generate(this.rand, { x: this.width, y: this.height }, minRoomSize, maxRoomSize, numRooms);
+      grid2d = generatedDungeon.grid;
+      rooms = generatedDungeon.rooms;
+    }
+    
     this.rooms = rooms;
 
+    
+
     // assign flattened grid to array schema
-    const flatgrid = this.flattenGrid(grid, this.width, this.height);
+    const flatgrid = this.flattenGrid(grid2d, this.width, this.height);
     for (let i = 0; i < flatgrid.length; i++) {
       this.grid[i] = flatgrid[i];
     }
 
     // 0 = walkable, 1 = blocked
-    this.pathgrid = new PF.Grid(grid.map((line, x) => {
+    this.pathgrid = new PF.Grid(grid2d.map((line, x) => {
       return line.map((type, y) => {
         // const hasInteractive = this.gridUtils.getEntityAt(x, y, Interactive, 'actAsObstacle');
         // console.log("has interactive?", x, y, hasInteractive);
         return (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1;
       });
-    }))
-
+    }));
+    
     /**
     ////////////////
     let i = 0;
@@ -173,7 +171,7 @@ export class DungeonState extends Schema {
     } else if (roomType === "pvp") {
       this.roomUtils.populatePVP();
 
-    } else if (roomType === "truehell") {
+    } else if (roomType === "custom") {
       this.roomUtils.populateTrueHell();
 
     } else {
@@ -293,7 +291,7 @@ export class DungeonState extends Schema {
   checkOverlapingEntities (targetEntity: Entity, moveEvent: MoveEvent, x, y) {
     const unit = moveEvent.target;
 
-    let doorEntity: Door;
+    let doorEntity: Door; 
     let hasPickedItems: boolean;
 
     const entities = this.gridUtils.getAllEntitiesAt(y, x);

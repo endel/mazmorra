@@ -781,7 +781,8 @@ export class RoomUtils {
     //   y: merchant.position.y + 1
     // }, new DoorDestiny({
     //   progress: 2,
-    //   room: "truehell"
+    //   room: "custom",
+    //   customName: "truehell"
     // }));
     // this.state.addEntity(hellDoor);
 

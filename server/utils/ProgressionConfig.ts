@@ -1,7 +1,7 @@
 import { DBHero } from "../db/Hero";
 import { StatsModifiers } from "../entities/Unit";
 import { UnitSpawner } from "../entities/Boss";
-import { RoomType } from "../rooms/states/DungeonState";
+import { RoomSeedType } from "../rooms/states/DungeonState";
 
 export enum MapKind {
   ROCK = 'rock',
@@ -18,6 +18,7 @@ export type MapConfig = {
 
   getMapWidth: (progress: number) => number,
   getMapHeight: (progress: number) => number,
+  getNumRooms?: (progress: number) => number;
   minRoomSize: {x: number, y: number},
   maxRoomSize: {x: number, y: number},
 
@@ -58,26 +59,30 @@ export function getMapKind(progress: number, multiplier: number = 0) {
   return (config && config.mapkind) || MapKind.INFERNO;
 }
 
-export function getMapConfig(progress: number, roomType?: RoomType) {
-  if (roomType === "loot") {
+
+export const defaultGetNumRooms = (width: number, height: number, progress: number, maxRoomSize: {x: number, y: number}) => 
+  Math.max(2, // generate at least 2 rooms!
+    Math.min(
+      Math.floor((width * height) / (maxRoomSize.x * maxRoomSize.y)),
+      Math.floor(progress / 2)
+    )
+  );
+
+export function getMapConfig(progress: number, roomType?: RoomSeedType): MapConfig {
+  if (roomType === "custom") {
+    console.warn(`CustomMaps should provide a config object somewhere else`);
+    return null;
+  } else if (roomType === "loot") {
     return {
       daylight: Math.random() > 0.5,
       mapkind: getMapKind(progress, 2),
       getMapWidth: (progress: number) => 20,
       getMapHeight: (progress: number) => 20,
+      getNumRooms: () => 1,
       minRoomSize: { x: 6, y: 6 },
       maxRoomSize: { x: 6, y: 6 },
-      enemies: {}
-    }
-  } else if (roomType === "truehell") {
-    return {
-      daylight: false,
-      mapkind: getMapKind(progress, 2),
-      getMapWidth: (progress: number) => 9,
-      getMapHeight: (progress: number) => 9,
-      minRoomSize: { x: 6, y: 6 },
-      maxRoomSize: { x: 6, y: 6 },
-      enemies: {}
+      enemies: [],
+      strongerEnemies: []
     }
   } else if (progress === 1 || progress === MAX_LEVELS) {
     // castle / lobby!
@@ -91,7 +96,8 @@ export function getMapConfig(progress: number, roomType?: RoomType) {
       getMapHeight: (progress: number) => size,
       minRoomSize: { x: 8, y: 8 },
       maxRoomSize: { x: 8, y: 8 },
-      enemies: {}
+      enemies: [],
+      strongerEnemies: []
     }
   } else {
     const index = Math.floor(progress / NUM_LEVELS_PER_MAP);
