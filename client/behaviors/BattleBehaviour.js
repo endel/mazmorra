@@ -140,6 +140,7 @@ export default class BattleBehaviour extends Behaviour {
   }
 
   onDied () {
+
     if (this.object.userData.type === helpers.ENTITIES.PLAYER) {
       playRandom3D(deathSound, this.object);
     }
@@ -154,29 +155,28 @@ export default class BattleBehaviour extends Behaviour {
     }
 
     if (this.object.userData.kind && this.object.userData.kind.indexOf("tower") === 0) {
+      console.log("it's a tower!");
       // towers die differently
       App.tweens.add(this.object.position).to({ y: this.object.position.y - 0.5 }, 300, Tweener.ease.quartOut);
       App.tweens.add(this.object.sprite.material).to({ opacity: DEAD_ENTITY_OPACITY }, 300, Tweener.ease.quartOut);
 
     } else {
-      // regular enemies / players
-      var initY = this.object.position.y
-      App.tweens.add(this.object.position).
-        to({ y: this.object.position.y + 1 }, 300, Tweener.ease.cubicOut).
+      var initY = this.object.sprite.position.y
+      App.tweens.add(this.object.sprite.position).
+        to({ y: initY + 1 }, 300, Tweener.ease.cubicOut).
         then(() => {
           App.tweens.add(this.object.sprite.center).
             to({ y: 1 }, 150, Tweener.ease.cubicOut);
 
           App.tweens.add(this.object.sprite.material).
             to({ rotation: Math.PI }, 150, Tweener.ease.cubicInOut).
-            add(this.object.position).
+            add(this.object.sprite.position).
             to({ y: initY }, 300, Tweener.ease.bounceOut).
             add(this.object.sprite.material).
             to({ opacity: DEAD_ENTITY_OPACITY }, 100, Tweener.ease.cubicInOut).
             then(this.detach.bind(this));
 
         });
-
     }
 
   }
