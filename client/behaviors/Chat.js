@@ -154,8 +154,8 @@ export default class Chat extends Behaviour {
       this.lastMessage = message
 
       this.room.send(['msg', {
-        name: player.userData.name,
-        lvl: player.userData.lvl,
+        name: (player && player.userData.name) || "{not connected}",
+        lvl: player && player.userData.lvl,
         progress: this.level.progress,
         text: message,
       }]);

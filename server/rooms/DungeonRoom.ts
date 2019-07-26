@@ -34,7 +34,7 @@ export class DungeonRoom extends Room<DungeonState> {
     if (roomTypes.indexOf(this.roomName) === -1) {
       console.warn(`WARN: The roomType "" is not valid`, `Expected values are (${roomTypes.join(', ')}) `);
     }
-      
+
     this.players = new WeakMap();
     this.clientMap = new WeakMap();
 
@@ -168,12 +168,6 @@ export class DungeonRoom extends Room<DungeonState> {
 
     if (!player.isAlive) {
       console.log("a dead player cannot perform actions!");
-      return;
-    }
-
-    if (player.isSwitchingDungeons || player.removed) {
-      // @colyseus/schema issue!
-      console.log("player send actions while switching dungeons or removed.");
       return;
     }
 
