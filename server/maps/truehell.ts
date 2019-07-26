@@ -1,6 +1,8 @@
 import { Entity } from "../entities/Entity";
 import { defaultSymbols, SymbolsDictonary, CustomMapObject } from "../utils/MapTemplateParser";
 import { MapKind } from "../utils/ProgressionConfig";
+import { Door, DoorDestiny } from "../entities/interactive/Door";
+import { Enemy } from "../entities/Enemy";
 
 // Fake entities just to mock the map
 class Fence extends Entity {}
@@ -13,13 +15,18 @@ class Lever extends Entity {constructor(a: any) {super()}}
 
 const symbols: SymbolsDictonary = {
     ...defaultSymbols,
-    [`🔷`]: new Lever({ unlock: [] }),
-    [`⛔`]: new Fence(),
-    [`🍔`]: new Fountain(),
-    [`🎁`]: new Chest(),
-    [`💀`]: new Boss(),
-    [`👹`]: [new Monster1(), new Monster1()],
-    [`👺`]: new Monster2(),
+    [`🔷`]: ({x, y}, state) => new Lever({ unlock: [] }),
+    [`⛔`]: ({x, y}, state) => new Fence(),
+    [`🍔`]: ({x, y}, state) => new Fountain(),
+    [`🎁`]: ({x, y}, state) => new Chest(),
+    [`💀`]: ({x, y}, state) => new Boss(),
+    [`👹`]: ({x, y}, state) => [new Monster1(), new Monster1()],
+    [`👺`]: ({x, y}, state) => {
+        const e = new Enemy('golem', {});
+        e.position.set(x, y);
+        return e;
+    },
+    [`🚪`]: ({x, y}, state) => new Door({x, y}, new DoorDestiny({room: "dungeon", progress: 1}))
 };
 
 /*
@@ -35,7 +42,7 @@ const template = `
 ⬜🧱🧱🧱🧱🧱🧱⬜⬜🧱⬛🧱⬜⬜⬜⬜🧱🧱⬛⬛⬛🧱⬛⬛🧱🧱🧱⬛⬛⬛🧱🧱⬜⬜
 ⬜🧱⬛⬛⬛⬛🧱🧱🧱🧱⬛🧱🧱🧱🧱🧱🧱⬛⬛⬛🧱⬛⬛⬛⬛⬛🧱⬛⬛⬛⬛🧱🧱⬜
 ⬜🧱⬛👺⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛🧱⬛⬛⬛🧱⬛🧱⬛⬛⬛⬛⬛🧱⬜
-⬜🧱⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛🧱⬛⬛🧱⬛⬛🧱⬛🧱⬛⬛⬛⬛⬛🧱⬜
+⬜🧱🚪⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛🧱⬛⬛🧱⬛⬛🧱⬛🧱⬛⬛⬛⬛⬛🧱⬜
 ⬜🧱⬛👹⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛🧱⬛⬛🧱⬛🧱⬛⬛⬛⬛⬛⬛⬛🧱⬜
 ⬜🧱⬛⬛⬛⬛🧱🧱🧱🧱🧱⬛🧱🧱🧱🧱🧱⬛⬛🧱⬛⬛⬛⬛🧱⬛⬛⬛⬛⬛⬛🧱🧱⬜
 ⬜🧱🧱🧱🧱🧱🧱⬜⬜⬜⬜⬛⬜⬜⬜⬜🧱🧱⬛⬛🧱⬛⬛⬛🧱⬛⬛⬛⬛⬛🧱🧱⬜⬜
@@ -58,8 +65,8 @@ const mapObject: CustomMapObject = {
         y: 7
     },
     config: {
-        mapkind: MapKind.ICE,
-        daylight: false
+        mapkind: MapKind.INFERNO,
+        daylight: true
     },
     populate: (state) => {}
 }

@@ -84,22 +84,22 @@ export class DungeonState extends Schema {
   constructor (progress, seed: string, roomType: RoomSeedType) {
     super()
 
-
     this.rand = gen.create(seed + progress);
     this.progress = progress;
     this.isPVPAllowed = (roomType === "pvp");
     this.mapvariation = (this.progress % 2 === 0) ? 2 : 1;
 
     let customMap: CustomMapObject;
+    let mapDungeon: ReturnType<typeof parseMapTemplate>;
     let grid2d: number[][];
     let rooms: DungeonRoom[];
 
     let now = Date.now();
     if (isCustomMap(roomType)) {
       customMap = customMapsList[roomType];
-      const mapDungeon = parseMapTemplate(customMap);
+      mapDungeon = parseMapTemplate(customMap);
       grid2d = mapDungeon.grid;
-      rooms = mapDungeon.rooms;
+      rooms = [];
       
       this.height = grid2d.length;
       this.width = grid2d[0].length;
@@ -194,9 +194,26 @@ export class DungeonState extends Schema {
     } else if (roomType === "pvp") {
       this.roomUtils.populatePVP();
 
-    } else if (customMap) {
+    } else if (customMap && mapDungeon) {
       this.roomUtils.startPosition = customMap.startPosition;
       customMap.populate(this);
+      mapDungeon.factories.forEach(({position, func}) => {
+        try {
+          let result = func(position, this);
+          if (result instanceof Entity) {
+            result.state = this;
+            this.addEntity(result);
+          } else if (result instanceof Array) {
+            result.forEach(entity => {
+              entity.state = this;
+              this.addEntity(entity)
+            })
+          }
+        } catch (err) {
+          console.error(`ERROR: It was not possible to create a Entity from a CustomMap`, err);
+        }
+
+      });
     } else {
       // regular room
       this.roomUtils.populateRooms();

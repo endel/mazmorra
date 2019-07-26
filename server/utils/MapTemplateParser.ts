@@ -1,8 +1,5 @@
 import { Entity } from "../entities/Entity";
-import { Position } from "../core/Position";
-import { DungeonRoom } from "./RoomUtils";
 import {CORNER, DIRECTION, TILE_TYPE} from "../../shared/helpers";
-import { parse } from "path";
 import { MapConfig } from "./ProgressionConfig";
 import { DungeonState } from "../rooms/states/DungeonState";
 
@@ -34,16 +31,18 @@ export const defaultSymbols = {
     [`🈵`]: TILE_TYPE.WALL + CORNER + DIRECTION.NORTH + DIRECTION.SOUTH + DIRECTION.WEST  + DIRECTION.EAST,
 };
 
-type SymbolValue = number | Entity | Entity[];
+type Position = {x: number, y: number};
+type EntityFactory = (position: Position, state: DungeonState) => Entity | Entity[];
+type SymbolValue = number | EntityFactory;
 export type SymbolsDictonary = typeof defaultSymbols & {[s: string]: SymbolValue};
 
-const isWalkable = (value: SymbolValue) => value === TILE_TYPE.FLOOR || value instanceof Entity || value instanceof Array;
+const isWalkable = (value: SymbolValue) => value === TILE_TYPE.FLOOR || value instanceof Function;
 
 export type CustomMapObject = {
     template: string, 
     symbols: SymbolsDictonary,
     config: Partial<MapConfig>,
-    startPosition: {x: number, y: number},
+    startPosition: Position,
     populate: (state: DungeonState) => void
 }
 
@@ -52,7 +51,7 @@ export function parseMapTemplate ({template, symbols}: CustomMapObject) {
     const keys = Object.keys(symbols);
     const newLine = /\n/g;
     const keyLookup = new RegExp(`[${keys.join('')}]`, 'gu');
-
+    const factories: {position: Position, func: EntityFactory}[] = [];
     template = template.trim();
     try {
         
@@ -78,19 +77,12 @@ export function parseMapTemplate ({template, symbols}: CustomMapObject) {
                 return [...matchingCells];
             })
             .map((row, y, grid) => {
-                const symbolToValue = (cellSymbol: keyof typeof defaultSymbols, x: number) => {
-                    const position = new Position();
-                    position.x = x;
-                    position.y = y;
-
-                    const appendPosition = (entity: Entity) => {
-                        entity.position = position;
-                        return entity;                        
-                    };
-
+                const symbolToValue = (cellSymbol: string, x: number) => {
+                    const position = {x,y};
                     const value = symbols[cellSymbol];
+
                     if (value === TILE_TYPE.WALL) {
-                        let wallValue = value;
+                        let wallValue = TILE_TYPE.WALL;
                         const nextRow = grid[y + 1];
                         const prevRow = grid[y - 1];
 
@@ -116,9 +108,14 @@ export function parseMapTemplate ({template, symbols}: CustomMapObject) {
                         return wallValue;
                     } else if (typeof value === "number") {
                         return value;
-                    }
-                    if (isWalkable(value))
+                    } else if (value instanceof Function) {
+                        factories.push({
+                            position,
+                            func: value
+                        });
+
                         return TILE_TYPE.FLOOR
+                    }
                     
                     
                     console.warn(`Unexpected symbol on ${cellSymbol}`, value)
@@ -126,14 +123,13 @@ export function parseMapTemplate ({template, symbols}: CustomMapObject) {
                     // if (value instanceof Array) return value.map(v => appendPosition(v));
                     return TILE_TYPE.EMPTY;
                 }
+
                 return row.map(symbolToValue)
             });
 
-            const rooms: DungeonRoom[] = [];
-            
             return {
                 grid,
-                rooms
+                factories
             }
 
     } catch (err) {
