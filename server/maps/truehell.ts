@@ -53,6 +53,10 @@ const template = `
 const mapObject: CustomMapObject = {
     symbols,
     template,
+    startPosition: {
+        x: 3,
+        y: 7
+    },
     config: {
         mapkind: MapKind.ICE,
         daylight: false

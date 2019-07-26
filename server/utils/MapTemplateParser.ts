@@ -43,6 +43,7 @@ export type CustomMapObject = {
     template: string, 
     symbols: SymbolsDictonary,
     config: Partial<MapConfig>,
+    startPosition: {x: number, y: number},
     populate: (state: DungeonState) => void
 }
 

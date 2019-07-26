@@ -154,8 +154,6 @@ export class DungeonState extends Schema {
     
     this.rooms = rooms;
 
-    
-
     // assign flattened grid to array schema
     const flatgrid = this.flattenGrid(grid2d, this.width, this.height);
     for (let i = 0; i < flatgrid.length; i++) {
@@ -197,6 +195,7 @@ export class DungeonState extends Schema {
       this.roomUtils.populatePVP();
 
     } else if (customMap) {
+      this.roomUtils.startPosition = customMap.startPosition;
       customMap.populate(this);
     } else {
       // regular room
