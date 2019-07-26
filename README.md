@@ -15,8 +15,10 @@ Work in progress!
 # Steps to run the project
 
 - `ruby export_layers.rb`
+- `npm run favicons` 
 - `npm start` (start cliet-side)
 - `npm start --prefix server` (start server-side)
+
 
 ## LICENSE
 

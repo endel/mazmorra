@@ -5,7 +5,8 @@
     "build": "NODE_ENV=production ./node_modules/.bin/webpack --mode=production",
     "dev": "npm start --prefix server & npm start",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "soundtracks": "audiosprite client/resource/sounds/music/*.mp3 --format howler --output soundtracks && sed 's/urls/src/g' soundtracks.json > public/soundtracks.json"
+    "soundtracks": "audiosprite client/resource/sounds/music/*.mp3 --format howler --output soundtracks && sed 's/urls/src/g' soundtracks.json > public/soundtracks.json",
+    "favicons": "real-favicon generate faviconDescription.json faviconData.json public/images/icons/"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
@@ -31,7 +32,8 @@
     "webpack": "^4.8.3",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.4",
-    "typescript": "^3.4.3"
+    "typescript": "^3.4.3",
+    "cli-real-favicon": "0.0.8"
   },
   "dependencies": {
     "audiosprite-loader": "^0.1.5",
