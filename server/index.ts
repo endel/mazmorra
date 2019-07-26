@@ -64,7 +64,12 @@ if (process.env.ENVIRONMENT !== "production") {
 // to support URL-encoded bodies
 app.use(bodyParser.json());
 
-app.use(express.static( __dirname + '/../public' ));
+if (process.env.ENVIRONMENT !== "production") {
+  app.use(express.static( __dirname + '/../public' ));
+
+} else {
+  app.use(express.static( __dirname + '/../../public' ));
+}
 
 // Debugging colyseus Room
 (Room.prototype as any).getSerializerDebugData = function() {

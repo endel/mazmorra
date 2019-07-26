@@ -8,7 +8,7 @@
     "start-production": "pm2 start index.js --node-args='--harmony --use-strict'",
     "start": "DEBUG=colyseus:*,mazmorra:* ts-node ./index.ts localhost 3553",
     "dev": "DEBUG=colyseus:* nodemon --watch '**/*.ts'  --exec 'ts-node' ./index.ts localhost 3553",
-    "compile": "tsc && cp .env ../server-compiled/"
+    "compile": "tsc && cp .env ../server-compiled/server/"
   },
   "author": "",
   "license": "ISC",
