@@ -1,6 +1,6 @@
 import { DBHero } from "../db/Hero";
 import { StatsModifiers } from "../entities/Unit";
-import { RoomSeedType } from "../rooms/states/DungeonState";
+
 import { UnitSpawnerConfig } from "../entities/behaviours/UnitSpawner";
 import { RandomSeed } from "random-seed";
 
@@ -65,6 +65,8 @@ export function getMapKind(progress: number, multiplier: number = 0) {
   return (config && config.mapkind) || MapKind.INFERNO;
 }
 
+export type ProceduralRoomType = 'dungeon' | 'pvp' | 'loot' | 'infinite';
+export const proceduralRoomTypes: ProceduralRoomType[] = ['dungeon', 'pvp', 'loot', 'infinite'];
 
 export const defaultGetNumRooms = (width: number, height: number, progress: number, maxRoomSize: {x: number, y: number}) => 
   Math.max(2, // generate at least 2 rooms!
@@ -74,11 +76,8 @@ export const defaultGetNumRooms = (width: number, height: number, progress: numb
     )
   );
 
-export function getMapConfig(progress: number, roomType?: RoomSeedType): MapConfig {
-  if (roomType === "custom") {
-    console.warn(`CustomMaps should provide a config object somewhere else`);
-    return null;
-  } else if (roomType === "loot") {
+export function getMapConfig(progress: number, roomType?: ProceduralRoomType): MapConfig {
+  if (roomType === "loot") {
     return {
       daylight: Math.random() > 0.5,
       mapkind: getMapKind(progress, 2),

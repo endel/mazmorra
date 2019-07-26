@@ -15,7 +15,6 @@ export enum DoorProgress {
 interface DoorDestinyOptions {
   progress: number;
   room?: RoomSeedType;
-  customName?: CustomMapName; 
 }
 
 export class DoorDestiny extends Schema implements DoorDestinyOptions {
@@ -24,7 +23,6 @@ export class DoorDestiny extends Schema implements DoorDestinyOptions {
   // @type("number") difficulty: number;
   @type("number") progress: DoorProgress;
   @type("string") room: RoomSeedType;
-  @type("string") customName?: CustomMapName;
 
   constructor(data: DoorDestinyOptions) {
     super();
@@ -35,9 +33,6 @@ export class DoorDestiny extends Schema implements DoorDestinyOptions {
 
     if (data.room) {
       this.room = data.room;
-    }
-    if (data.customName) {
-      this.customName = data.customName;
     }
   }
 }

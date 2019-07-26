@@ -22,18 +22,17 @@ import { Interactive } from "../../entities/Interactive";
 import { Entity } from "../../entities/Entity";
 import { MoveEvent } from "../../core/Movement";
 import { DBHero } from "../../db/Hero";
-import { MapKind, MapConfig, getMapConfig, isBossMap, MAX_LEVELS, defaultGetNumRooms } from "../../utils/ProgressionConfig";
+import { MapKind, MapConfig, getMapConfig, isBossMap, MAX_LEVELS, defaultGetNumRooms, ProceduralRoomType, proceduralRoomTypes } from "../../utils/ProgressionConfig";
 import { NPC } from "../../entities/NPC";
 import { DoorDestiny, DoorProgress, Door } from "../../entities/interactive/Door";
 import { Portal } from "../../entities/interactive/Portal";
 import { debugLog } from "../../utils/Debug";
 import { Jail } from "../../entities/interactive/Jail";
 
-import { parseMapTemplate } from "../../utils/MapTemplateParser";
-
 import { distance } from "../../helpers/Math";
-import customMapsList, { CustomMapName } from "../../maps";
 
+import { parseMapTemplate, CustomMapObject } from "../../utils/MapTemplateParser";
+import customMapsList, { CustomMapName, customMapsKeys } from "../../maps";
 
 export interface Point {
   x: number;
@@ -42,8 +41,10 @@ export interface Point {
 
 type EntityConstructor<U extends Entity> = {new(...args: any[]): U; };
 
-export type RoomSeedType = 'dungeon' | 'pvp' | 'loot' | 'infinite' | 'custom';
-export const roomTypes: RoomSeedType[] = ['dungeon', 'pvp', 'loot', 'infinite', 'custom'];
+export type RoomSeedType = ProceduralRoomType | CustomMapName;
+export const roomTypes: RoomSeedType[] = [...proceduralRoomTypes, ...customMapsKeys];
+
+const isCustomMap = (name: any) : name is CustomMapName => customMapsKeys.includes(name)
 
 export class DungeonState extends Schema {
   @type("number") progress: number;
@@ -80,7 +81,7 @@ export class DungeonState extends Schema {
 
   events = new EventEmitter();
 
-  constructor (progress, seed: string, roomType: RoomSeedType, customName: CustomMapName) {
+  constructor (progress, seed: string, roomType: RoomSeedType) {
     super()
 
 
@@ -89,15 +90,14 @@ export class DungeonState extends Schema {
     this.isPVPAllowed = (roomType === "pvp");
     this.mapvariation = (this.progress % 2 === 0) ? 2 : 1;
 
+    let customMap: CustomMapObject;
     let grid2d: number[][];
     let rooms: DungeonRoom[];
 
     let now = Date.now();
-  
-    if (roomType === "custom") {
-      const customMap = customMapsList[customName]
+    if (isCustomMap(roomType)) {
+      customMap = customMapsList[roomType];
       const mapDungeon = parseMapTemplate(customMap);
-
       grid2d = mapDungeon.grid;
       rooms = mapDungeon.rooms;
       
@@ -108,7 +108,6 @@ export class DungeonState extends Schema {
       this.mapkind = customMap.config.mapkind;
     } else {
       this.config = getMapConfig(this.progress, roomType);
-
       // prevent hack attempt to load non-existing level
       if (!this.config) {
         this.progress = 2;
@@ -197,9 +196,8 @@ export class DungeonState extends Schema {
     } else if (roomType === "pvp") {
       this.roomUtils.populatePVP();
 
-    } else if (roomType === "custom") {
-      this.roomUtils.populateTrueHell();
-
+    } else if (customMap) {
+      customMap.populate(this);
     } else {
       // regular room
       this.roomUtils.populateRooms();

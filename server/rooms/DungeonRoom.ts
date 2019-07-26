@@ -17,7 +17,6 @@ export class DungeonRoom extends Room<DungeonState> {
   maxClients = 50;
   progress: number;
   roomName: RoomSeedType;
-  customName?: CustomMapName;
   players = new WeakMap<Client, Player>();
   clientMap = new WeakMap<Player, Client>();
 
@@ -26,16 +25,11 @@ export class DungeonRoom extends Room<DungeonState> {
 
   async onInit (options) {
     this.progress = options.progress || 1;
-    this.customName = options.customName;
 
 
     // maximum of 5 players allowed on each room.
     if (this.progress !== 1 && this.progress !== MAX_LEVELS) {
       this.maxClients = 5;
-    }
-
-    if (this.roomName === "custom" && Object.keys(customMapsList).indexOf(this.customName) === -1) {
-      throw new Error(`ERROR: The customMap "${this.customName}" is not valid`);
     }
 
     this.players = new WeakMap();
@@ -60,7 +54,7 @@ export class DungeonRoom extends Room<DungeonState> {
       seed = season.seed;
     }
 
-    this.setState(new DungeonState(this.progress, seed, this.roomName, this.customName));
+    this.setState(new DungeonState(this.progress, seed, this.roomName));
 
     debugLog(`'${this.roomName}' created (with "${seed}" seed) => progress: ${this.progress}`);
 
@@ -252,9 +246,6 @@ export class DungeonRoom extends Room<DungeonState> {
 
     if (destiny.room) {
       destinyParams.room = destiny.room;
-    }
-    if (destiny.customName) {
-      destinyParams.customName = destiny.customName;
     }
 
     if (destiny.progress === DoorProgress.FORWARD) {

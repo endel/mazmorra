@@ -17,6 +17,7 @@ import { Hero } from './db/Hero';
 import { connectDatabase } from '@colyseus/social';
 import { Report } from './db/Report';
 import { debugLog } from './utils/Debug';
+import { customMapsKeys } from './maps';
 
 const port = process.env.PORT || 3553;
 const app = express();
@@ -44,7 +45,11 @@ gameServer.register('dungeon', DungeonRoom);
 gameServer.register('pvp', DungeonRoom);
 gameServer.register('loot', DungeonRoom);
 gameServer.register('infinite', DungeonRoom);
-gameServer.register('custom', DungeonRoom);
+
+// Register custom maps rooms
+customMapsKeys.forEach(key => 
+  gameServer.register(key, DungeonRoom)
+)
 
 if (process.env.ENVIRONMENT !== "production") {
   gameServer.register('test-items', DungeonRoom);
