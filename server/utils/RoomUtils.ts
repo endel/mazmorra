@@ -30,15 +30,14 @@ import { ArmorItem } from "../entities/items/equipable/ArmorItem";
 import { Diamond } from "../entities/items/Diamond";
 import { Scroll } from "../entities/items/consumable/Scroll";
 import { ENEMY_CONFIGS, isBossMap, MapKind, isCheckPointMap, getMapKind, NUM_LEVELS_PER_LOOT_ROOM, NUM_LEVELS_PER_CHECKPOINT, MAX_LEVELS, MAX_WEAPON_DAMAGE, MAX_BOW_DAMAGE, MAX_STAFF_DAMAGE, MAX_BOW_ATTACK_DISTANCE, MAX_STAFF_ATTACK_DISTANCE, MAX_BOOTS_ARMOR, MAX_BOOTS_MOVEMENT_SPEED, MAX_HELMET_ARMOR, MAX_ARMOR_ARMOR, MAX_SHIELD_ARMOR, NUM_LEVELS_PER_MAP } from "./ProgressionConfig";
-import { ConsumableItem } from "../entities/items/ConsumableItem";
 import { EquipableItem } from "../entities/items/EquipableItem";
 import { DBAttributeModifier } from "../db/Hero";
 import { CheckPoint } from "../entities/interactive/CheckPoint";
-import { Key } from "../entities/items/consumable/Key";
 import { Leaderboard } from "../entities/interactive/Leaderboard";
 import { Lever } from "../entities/interactive/Lever";
 import { Jail } from "../entities/interactive/Jail";
-import { Tower } from "../entities/Tower";
+import { UnitSpawner } from "../entities/behaviours/UnitSpawner";
+import { InfernoPortal } from "../entities/interactive/InfernoPortal";
 
 const ALL_BOOTS = [
   helpers.ENTITIES.BOOTS_1,
@@ -353,7 +352,7 @@ export class RoomUtils {
         const bossType = this.state.config.boss[0];
         const boss = this.createEnemy(bossType, Boss) as Boss;
         boss.position.set(this.endPosition);
-        boss.unitSpawner = ENEMY_CONFIGS[bossType].spawner;
+        boss.addBehaviour(new UnitSpawner(ENEMY_CONFIGS[bossType].spawner))
 
         this.bosses = [boss];
 
@@ -376,7 +375,7 @@ export class RoomUtils {
             boss.position.set(position);
 
             if (isFirstBoss) {
-              boss.unitSpawner = ENEMY_CONFIGS[bossType].spawner;
+              boss.addBehaviour(new UnitSpawner(ENEMY_CONFIGS[bossType].spawner))
               boss.dropOptions = { isRare: true, isMagical: true };
               this.bosses = [boss];
 
@@ -499,6 +498,21 @@ export class RoomUtils {
       })
       this.state.addEntity(this.checkPoint);
     }
+
+    // // TESTING INFERNO PORTAL
+    // setTimeout(() => {
+    //   this.addEntity(this.startRoom, (position) => {
+    //     const portal = new InfernoPortal(position);
+    //     portal.state = this.state;
+    //     portal.addBehaviour(new UnitSpawner({
+    //       type: ['demon'],
+    //       lvl: 1,
+    //       interval: 1000 ,
+    //       surrounding: false
+    //     }));
+    //     return portal;
+    //   }, true)
+    // }, 2000);
 
     // // TESTING TOWER
     // this.addEntity(this.startRoom, (position) => {

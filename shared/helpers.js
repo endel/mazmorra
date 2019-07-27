@@ -98,6 +98,7 @@ var helpers = {
 
       // skills
       PORTAL: 'portal',
+      PORTAL_INFERNO: 'portal-inferno',
 
       // BOOTS
       BOOTS_1: 'boots-1',

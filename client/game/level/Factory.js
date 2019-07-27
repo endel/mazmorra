@@ -91,6 +91,7 @@ export default class Factory {
         break;
 
       case helpers.ENTITIES.PORTAL:
+      case helpers.ENTITIES.PORTAL_INFERNO:
         element = new Portal(data);
         element.userData.interactive = true;
         break;
@@ -193,16 +194,16 @@ export default class Factory {
         }
         if (type & helpers.DIRECTION.EAST) {
           this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.EAST, x, y);
-        } 
+        }
         if (type & helpers.DIRECTION.WEST) {
           this.addTile(mapkind, helpers.TILE_TYPE.WALL | helpers.DIRECTION.WEST, x, y);
         }
-        
+
       } else {
         // If the wall is not a corner, render it (Corners are virtual tiles if it has no direction)
         resource = 'tile-'+mapkind+'-wall';
       }
-      
+
     }
 
     // Ignore tiles that doesn't have a resource

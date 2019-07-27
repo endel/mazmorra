@@ -10,10 +10,14 @@ class PortalBehaviour extends Behaviour {
     // play "portal" sound.
     playSound3D(spellSound, this.object);
 
+    const lightColor = (this.object.userData.type === "portal-inferno")
+      ? 0xd00000
+      : 0x1c80e4;
+
     this.light = getLightFromPool();
     this.light.intensity = 2;
     this.light.distance = 15;
-    this.light.color = new THREE.Color(0x1c80e4);
+    this.light.color = new THREE.Color(lightColor);
     this.light.position.set(0, 1.5, 0);
 
     App.tweens.
@@ -41,13 +45,25 @@ class PortalBehaviour extends Behaviour {
 
 export default class Portal extends THREE.Object3D {
 
-  constructor () {
+  constructor (data) {
     super()
-    this.frames = [
-      ResourceManager.get("billboards-portal-frame0"),
-      ResourceManager.get("billboards-portal-frame1"),
-      ResourceManager.get("billboards-portal-frame2"),
-    ];
+
+    this.userData = data;
+
+    if (data.type === 'portal-inferno') {
+      this.frames = [
+        ResourceManager.get("billboards-portal-2-frame0"),
+        ResourceManager.get("billboards-portal-2-frame1"),
+        ResourceManager.get("billboards-portal-2-frame2"),
+      ];
+
+    } else {
+      this.frames = [
+        ResourceManager.get("billboards-portal-frame0"),
+        ResourceManager.get("billboards-portal-frame1"),
+        ResourceManager.get("billboards-portal-frame2"),
+      ];
+    }
 
     this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: this.frames[0],
@@ -73,7 +89,11 @@ export default class Portal extends THREE.Object3D {
   }
 
   get label () {
-    return `Portal to ${this.userData.destiny && this.userData.destiny.progress}`;
+    const destiny = (this.userData.destiny && this.userData.destiny.progress);
+    // may be a inferno portal!
+    if (destiny) {
+      return `Portal to ${destiny}`;
+    }
   }
 
 }

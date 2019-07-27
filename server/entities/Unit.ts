@@ -385,9 +385,9 @@ export class Unit extends Entity {
 
   update(currentTime) {
     // a dead unit can't do much, I guess
-    if (!this.isAlive) {
-      return;
-    }
+    if (!this.isAlive) { return; }
+
+    super.update(currentTime);
 
     if (currentTime > this.lastHpRegenerationTime + this.hpRegenerationInterval) {
       this.hp.set(this.hp.current + this.hpRegeneration);

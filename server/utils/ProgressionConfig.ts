@@ -1,7 +1,7 @@
 import { DBHero } from "../db/Hero";
 import { StatsModifiers } from "../entities/Unit";
-import { UnitSpawner } from "../entities/Boss";
 import { RoomType } from "../rooms/states/DungeonState";
+import { UnitSpawnerConfig } from "../entities/behaviours/UnitSpawner";
 
 export enum MapKind {
   ROCK = 'rock',
@@ -191,7 +191,7 @@ export const ENEMY_CONFIGS: {
     ratio: number, // LVL ratio, 0 = current progress
     base: Partial<DBHero>,
     modifiers: Partial<StatsModifiers>,
-    spawner?: UnitSpawner
+    spawner?: UnitSpawnerConfig
   }
 } = {
   // MapType.ROCK
@@ -584,6 +584,7 @@ export const ENEMY_CONFIGS: {
     modifiers: {
       damage: 10,
       hp: 50,
+      aiDistance: 10
     }
   },
 

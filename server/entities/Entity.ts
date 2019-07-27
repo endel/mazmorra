@@ -2,6 +2,7 @@ import shortid from "shortid";
 import { Schema, type } from "@colyseus/schema";
 import { DungeonState } from "../rooms/states/DungeonState";
 import { Position } from "../core/Position";
+import { Behaviour } from "./behaviours/Behaviour";
 
 export class Entity extends Schema {
   @type("string") id: string;
@@ -10,6 +11,8 @@ export class Entity extends Schema {
 
   walkable: boolean;
   state: DungeonState;
+
+  behaviours?: Behaviour[]
 
   removed?: boolean;
 
@@ -21,10 +24,21 @@ export class Entity extends Schema {
   }
 
   update(currentTime?: number) {
-    /* does nothing */
+    if (this.behaviours) {
+      let i: number = this.behaviours.length;
+      while (i--) {
+        this.behaviours[i].update(this, this.state, currentTime);
+      }
+    }
+  }
+
+  addBehaviour(behaviour: Behaviour) {
+    if (!this.behaviours) { this.behaviours = []; }
+    this.behaviours.push(behaviour);
   }
 
   dispose() {
+    this.behaviours = null;
     this.removed = true;
     delete this.position;
   }
