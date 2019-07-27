@@ -14,7 +14,7 @@ export function applySettings () {
   const noSFX = PlayerPrefs.getNumber(SETTINGS_SOUND_EFFECTS, 0) === 1;
   setSFXVolume(noSFX ? 0 : 1);
 
-  global.renderer.setPixelRatio(window.devicePixelRatio * PlayerPrefs.getNumber(SETTINGS_RESOLUTION, 1));
+  global.renderer.setPixelRatio(config.devicePixelRatio * PlayerPrefs.getNumber(SETTINGS_RESOLUTION, 1));
 }
 
 export default class SettingsOverlay extends THREE.Object3D {

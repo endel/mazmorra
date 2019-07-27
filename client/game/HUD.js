@@ -504,7 +504,7 @@ export default class HUD extends THREE.Scene {
     //
     this.skill1Button.position.x = this.manabar.position.x + this.lifebar.width / 2 + (this.skill1Button.width * 2);
     this.skill1Button.position.y = this.manabar.position.y;
-    this.skill2Button.position.x = this.skill1Button.position.x + (this.skill2Button.width * 2) + config.HUD_SCALE;
+    this.skill2Button.position.x = this.skill1Button.position.x + (this.skill2Button.width * 2) + config.HUD_SCALE * 2;
     this.skill2Button.position.y = this.skill1Button.position.y;
 
     // update orthogonal camera aspect ratio / projection matrix

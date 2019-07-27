@@ -1,4 +1,5 @@
 const isMobile = require('./utils/device').isMobile;
+const devicePixelRatio = Math.min(2, window.devicePixelRatio);
 
 module.exports = {
   TILE_SIZE: 3,
@@ -26,14 +27,16 @@ module.exports = {
   // ZOOM: 45 / window.devicePixelRatio,
   IS_DAY: true,
 
+  devicePixelRatio,
+
   HUD_MARGIN: 2.5,
   HUD_SCALE: (isMobile)
-    ? (7 / window.devicePixelRatio)
-    : (6 / window.devicePixelRatio),
+    ? (7 / devicePixelRatio)
+    : (6 / devicePixelRatio),
 
-  DEFAULT_FONT: (Math.floor((7.5 / window.devicePixelRatio) * 5)) + "px primary",
-  FONT_TITLE: (Math.floor((9 / window.devicePixelRatio) * 5)) + "px primary",
-  SMALL_FONT: (Math.floor((5.5 / window.devicePixelRatio) * 5)) + "px primary",
+  DEFAULT_FONT: (Math.floor((7.5 / devicePixelRatio) * 5)) + "px primary",
+  FONT_TITLE: (Math.floor((9 / devicePixelRatio) * 5)) + "px primary",
+  SMALL_FONT: (Math.floor((5.5 / devicePixelRatio) * 5)) + "px primary",
 
   // player preferences
   classes: [
