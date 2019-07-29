@@ -4,6 +4,7 @@ import { HeroSkinBuilder } from "../character/HeroSkinBuilder";
 import LevelUpButton from './LevelUpButton';
 import { humanize } from '../../utils';
 import hint from './Hint';
+import { i18n } from '../../lang';
 
 /**
  * Maximum Attack Speed
@@ -74,7 +75,7 @@ export default class Character extends THREE.Object3D {
     // Damage
     this.damageIcon = ResourceManager.getHUDElement("icons-damage");
     this.damageIcon.position.y = this.levelIcon.position.y - this.levelIcon.height - margin;
-    this.damageIcon.userData.label = "Damage";
+    this.damageIcon.userData.label = i18n('damage');
 
     this.damageText = new MeshText2D("0", {
       align: textAlign.left,
@@ -91,7 +92,7 @@ export default class Character extends THREE.Object3D {
     // Armor
     this.armorIcon = ResourceManager.getHUDElement("icons-armor");
     this.armorIcon.position.y = this.damageIcon.position.y - this.damageIcon.height - margin;
-    this.armorIcon.userData.label = "Armor";
+    this.armorIcon.userData.label = i18n('armor');
 
     this.armorText = new MeshText2D("0", {
       align: textAlign.left,
@@ -108,7 +109,7 @@ export default class Character extends THREE.Object3D {
     // Attack speed
     this.attackSpeedIcon = ResourceManager.getHUDElement("icons-attack-speed");
     this.attackSpeedIcon.position.y = this.armorIcon.position.y - this.armorIcon.height - margin;
-    this.attackSpeedIcon.userData.label = `Attack speed (${MAX_ATTACK_SPEED} max)`;
+    this.attackSpeedIcon.userData.label = `${i18n('attackSpeed')} (${MAX_ATTACK_SPEED} ${i18n('max')})`;
 
     this.attackSpeedText = new MeshText2D("0", {
       align: textAlign.left,
@@ -125,7 +126,7 @@ export default class Character extends THREE.Object3D {
     // Movement speed
     this.movementSpeedIcon = ResourceManager.getHUDElement("icons-movement-speed");
     this.movementSpeedIcon.position.y = this.attackSpeedIcon.position.y - this.attackSpeedIcon.height - margin;
-    this.movementSpeedIcon.userData.label = `Movement speed (${MAX_MOVEMENT_SPEED} max)`;
+    this.movementSpeedIcon.userData.label = `${i18n('movementSpeed')} (${MAX_MOVEMENT_SPEED} ${i18n('max')})`;
 
     this.movementSpeedText = new MeshText2D("0", {
       align: textAlign.left,
@@ -142,7 +143,7 @@ export default class Character extends THREE.Object3D {
     // Attack distance
     this.attackDistanceIcon = ResourceManager.getHUDElement("icons-attack-distance");
     this.attackDistanceIcon.position.y = this.movementSpeedIcon.position.y - this.movementSpeedIcon.height - margin;
-    this.attackDistanceIcon.userData.label = "Attack distance";
+    this.attackDistanceIcon.userData.label = i18n('attackDistance');
 
     this.attackDistanceText = new MeshText2D("0", {
       align: textAlign.left,
@@ -160,12 +161,12 @@ export default class Character extends THREE.Object3D {
     this.lvlUpButton = new LevelUpButton();
     this.lvlUpButton.position.y = this.attackDistanceIcon.position.y - this.attackDistanceIcon.height - (margin * 2);
     this.lvlUpButton.addEventListener("click", () => this.onLevelUpClick());
-    this.lvlUpButton.userData.hint = "Level up!"
+    this.lvlUpButton.userData.hint = i18n("levelUp");
 
     // Strength
     this.strIcon = ResourceManager.getHUDElement("icons-red");
     this.strIcon.position.y = this.attackDistanceIcon.position.y - this.attackDistanceIcon.height - (margin * 2);
-    this.strIcon.userData.label = "Strength";
+    this.strIcon.userData.label = i18n("strength");
 
     this.strText = new MeshText2D("0", {
       align: textAlign.left,
@@ -182,7 +183,7 @@ export default class Character extends THREE.Object3D {
     // Agility
     this.agiIcon = ResourceManager.getHUDElement("icons-green");
     this.agiIcon.position.y = this.strIcon.position.y - this.strIcon.height - margin;
-    this.agiIcon.userData.label = "Agility";
+    this.agiIcon.userData.label = i18n("agility");
 
     this.agiText = new MeshText2D("0", {
       align: textAlign.left,
@@ -199,7 +200,7 @@ export default class Character extends THREE.Object3D {
     // Intelligence
     this.intIcon = ResourceManager.getHUDElement("icons-blue");
     this.intIcon.position.y = this.agiIcon.position.y - this.agiIcon.height - margin;
-    this.intIcon.userData.label = "Intelligence";
+    this.intIcon.userData.label = i18n("intelligence");
 
     this.intText = new MeshText2D("0", {
       align: textAlign.left,
@@ -216,7 +217,7 @@ export default class Character extends THREE.Object3D {
     // Available points
     this.pointsToDistributeIcon = ResourceManager.getHUDElement("icons-points-to-distribute");
     this.pointsToDistributeIcon.position.y = this.intIcon.position.y - this.intIcon.height - margin;
-    this.pointsToDistributeIcon.userData.label = `Points to distribute`;
+    this.pointsToDistributeIcon.userData.label = i18n("pointsToDistribute");
 
     this.pointsToDistributeText = new MeshText2D("0", {
       align: textAlign.left,
@@ -335,20 +336,20 @@ export default class Character extends THREE.Object3D {
 
     // var hpMax = (data.attributes.strength + statsModifiers['strength']) * 5;
     // var mpMax = (data.attributes.intelligence + statsModifiers['intelligence']) * 3;
-    this.stairsText.text = `${player.parent.progress.toString()} - ${humanize(player.parent.mapkind)}`;
+    this.stairsText.text = `${player.parent.progress.toString()} - ${i18n(player.parent.mapkind)}`;
 
-    this.levelText.text = `${data.name} (Level ${data.lvl})`;
+    this.levelText.text = `${data.name} (${i18n('level')} ${data.lvl})`;
 
     // const movementSpeed = BASE_MOVEMENT_SPEED - (statsModifiers.movementSpeed * MOVEMENT_SPEED_RATIO);
     // this.movementSpeedText.text = `${statsModifiers.movementSpeed} (${(1000 / movementSpeed).toFixed(1)}/s)`;
 
     this.movementSpeedText.text = (statsModifiers.movementSpeed >= MAX_MOVEMENT_SPEED)
-      ? `${MAX_MOVEMENT_SPEED} (max)`
+      ? `${MAX_MOVEMENT_SPEED} (${i18n('max')})`
       : `${statsModifiers.movementSpeed}`;
 
     const attackSpeed = (data.attributes.agility * 0.5 + statsModifiers.attackSpeed);
     this.attackSpeedText.text = (attackSpeed >= MAX_ATTACK_SPEED)
-      ? `${MAX_ATTACK_SPEED} (max)`
+      ? `${MAX_ATTACK_SPEED} (${i18n('max')})`
       : `${attackSpeed.toFixed(1)}`;
 
     this.attackDistanceText.text = statsModifiers.attackDistance.toString();

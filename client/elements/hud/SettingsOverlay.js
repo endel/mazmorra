@@ -2,6 +2,7 @@ import { SpriteText2D, textAlign, MeshText2D } from 'three-text2d'
 import ToggleButton from '../controls/ToggleButton';
 import { PlayerPrefs } from '../../core/PlayerPrefs';
 import { setMusicVolume, setSFXVolume } from '../../core/sound';
+import { i18n } from '../../lang';
 
 const SETTINGS_SOUND_EFFECTS = "settings-sound-effects";
 const SETTINGS_MUSIC = "settings-music";
@@ -28,7 +29,7 @@ export default class SettingsOverlay extends THREE.Object3D {
     this.title.position.y = this.title.height * 2;
     this.add(this.title);
 
-    this.titleText = new MeshText2D("Settings", {
+    this.titleText = new MeshText2D(i18n('settings'), {
       align: textAlign.center ,
       font: config.FONT_TITLE,
       fillStyle: "#ffffff",
@@ -50,7 +51,7 @@ export default class SettingsOverlay extends THREE.Object3D {
     });
     soundToggle.position.x -= (config.HUD_MARGIN * config.HUD_SCALE * 5);
 
-    const soundTxt = new MeshText2D("No sound effects", {
+    const soundTxt = new MeshText2D(i18n('settings_sfx'), {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: "#ffffff"
@@ -70,7 +71,7 @@ export default class SettingsOverlay extends THREE.Object3D {
     musicToggle.position.x -= (config.HUD_MARGIN * config.HUD_SCALE * 5);
     musicToggle.position.y = soundToggle.position.y + soundToggle.height + (config.HUD_MARGIN * config.HUD_SCALE * 2)
 
-    const musicTxt = new MeshText2D("No music", {
+    const musicTxt = new MeshText2D(i18n('settings_music'), {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: "#ffffff"
@@ -91,7 +92,7 @@ export default class SettingsOverlay extends THREE.Object3D {
     highresToggle.position.x -= (config.HUD_MARGIN * config.HUD_SCALE * 5);
     highresToggle.position.y = musicToggle.position.y + highresToggle.height + (config.HUD_MARGIN * config.HUD_SCALE * 2)
 
-    const highresTxt = new MeshText2D("Low resolution", {
+    const highresTxt = new MeshText2D(i18n('settings_resolution'), {
       align: textAlign.left,
       font: config.DEFAULT_FONT,
       fillStyle: "#ffffff"

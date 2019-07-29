@@ -2,6 +2,7 @@
 
 import Openable from '../behaviors/Openable'
 import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
+import { i18n } from '../lang';
 
 export default class Chest extends THREE.Object3D {
 
@@ -22,7 +23,9 @@ export default class Chest extends THREE.Object3D {
   }
 
   get label () {
-    return `${(this.openableBehaviour.isOpen) ?  "Opened " : ""}Chest`
+    return (this.openableBehaviour.isOpen)
+      ? i18n('openedChest')
+      : i18n('chest')
   }
 
   destroy () {

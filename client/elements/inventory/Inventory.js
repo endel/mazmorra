@@ -3,6 +3,7 @@ import SlotStrip from './SlotStrip'
 import ItemSlot from './ItemSlot'
 import { SpriteText2D, textAlign } from 'three-text2d'
 import { trackEvent } from '../../utils';
+import { i18n } from '../../lang';
 
 export default class Inventory extends THREE.Object3D {
 
@@ -16,7 +17,7 @@ export default class Inventory extends THREE.Object3D {
     this.title.position.y = this.title.height * 2.1;
     this.add(this.title);
 
-    this.titleText = new SpriteText2D("Inventory", {
+    this.titleText = new SpriteText2D(i18n('inventory'), {
       align: textAlign.center ,
       font: config.FONT_TITLE,
       fillStyle: "#282828"
@@ -58,7 +59,7 @@ export default class Inventory extends THREE.Object3D {
   setTradingItems (items) {
     trackEvent('trade-open', { event_category: 'Trade', event_label: 'Open' });
 
-    this.titleText.text = "Trade";
+    this.titleText.text = i18n('trade');
 
     this.purchaseSlots.userData.slots = items;
     this.purchaseSlots.updateItems();
@@ -89,7 +90,7 @@ export default class Inventory extends THREE.Object3D {
       this.parent.openInventoryButton.onOpen();
       this.parent.character.onOpenInventory();
 
-      this.titleText.text = "Inventory";
+      this.titleText.text = i18n('inventory');
       this.visible = true
 
     } else {

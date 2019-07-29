@@ -1,6 +1,7 @@
 'use strict';
 
 import Activatable from '../behaviors/Activatable'
+import { i18n } from '../lang';
 
 export default class Lever extends THREE.Object3D {
 
@@ -21,7 +22,7 @@ export default class Lever extends THREE.Object3D {
   }
 
   get label () {
-    return (this.activateable.isActive) ? "Activated Lever" : "Lever";
+    return (this.activateable.isActive) ? i18n("activatedLever") : i18n('lever');
   }
 
 }

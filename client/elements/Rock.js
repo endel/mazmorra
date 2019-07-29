@@ -1,7 +1,5 @@
 'use strict';
 
-import { Behaviour } from 'behaviour.js'
-
 export default class Chest extends THREE.Object3D {
 
   constructor () {
@@ -13,10 +11,6 @@ export default class Chest extends THREE.Object3D {
     this.sprite = ResourceManager.getSprite( 'aesthetics-grass-rock' + i )
     this.sprite.position.y = 0.099
     this.add(this.sprite)
-  }
-
-  get label () {
-    return 'Rock'
   }
 
 }

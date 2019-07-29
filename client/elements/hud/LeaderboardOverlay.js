@@ -1,6 +1,7 @@
 import { SpriteText2D, textAlign, MeshText2D } from 'three-text2d'
 import Composition from '../character/Composition';
 import { MAX_CHAR_WIDTH, MAX_CHAR_HEIGHT } from '../character/HeroSkinBuilder';
+import { i18n } from '../../lang';
 
 export default class LeaderboardOverlay extends THREE.Object3D {
 
@@ -13,7 +14,7 @@ export default class LeaderboardOverlay extends THREE.Object3D {
     this.title.position.y = this.title.height * 3;
     this.add(this.title);
 
-    this.titleText = new MeshText2D("Hall of Fame", {
+    this.titleText = new MeshText2D(i18n('hallOfFame'), {
       align: textAlign.center,
       font: config.FONT_TITLE,
       fillStyle: "#ffffff"
@@ -51,7 +52,7 @@ export default class LeaderboardOverlay extends THREE.Object3D {
         fillStyle
       });
 
-      const level = new MeshText2D(`Level ${hero.lvl}` , {
+      const level = new MeshText2D(`${i18n('level')} ${hero.lvl}` , {
         align: textAlign.left,
         font: config.SMALL_FONT,
         fillStyle

@@ -3,6 +3,7 @@
 import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
 import DangerousThing from '../behaviors/DangerousThing';
 import { humanize } from '../utils';
+import { i18n } from '../lang';
 
 export default class NPC extends THREE.Object3D {
 
@@ -35,10 +36,10 @@ export default class NPC extends THREE.Object3D {
   }
 
   get label () {
-    var text = humanize(this.userData.kind);
+    var text = humanize(i18n(this.userData.kind));
 
     if (this.userData.hp.current <= 0) {
-      text = `Dead ${ text }`;
+      text = `(${i18n('dead')}) ${ text }`;
     }
 
     return text

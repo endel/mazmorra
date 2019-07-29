@@ -1,5 +1,6 @@
 'use strict';
 import helpers from '../../shared/helpers'
+import { i18n } from '../lang';
 
 export default class Jail extends THREE.Object3D {
 
@@ -65,7 +66,7 @@ export default class Jail extends THREE.Object3D {
   }
 
   get label () {
-    return (this.isLocked) ? "Locked Jail" : "Opened Jail";
+    return (this.isLocked) ? i18n('lockedJail') : i18n('openedJail');
   }
 
   onMouseOver (tileSelection) {

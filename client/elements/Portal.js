@@ -3,14 +3,24 @@
 import { Behaviour } from 'behaviour.js'
 import LightOscillator from '../behaviors/LightOscillator'
 import { getLightFromPool, removeLight } from '../utils';
-import { spellSound, playSound3D } from '../core/sound';
+import { portalSound, playSound3D, infernoPortalSound } from '../core/sound';
+import { i18n } from '../lang';
 
 class PortalBehaviour extends Behaviour {
   onAttach() {
-    // play "portal" sound.
-    playSound3D(spellSound, this.object);
 
-    const lightColor = (this.object.userData.type === "portal-inferno")
+    const isInfernoPortal = (this.object.userData.type === "portal-inferno");
+
+    // play "portal" sound.
+    if (isInfernoPortal) {
+      playSound3D(infernoPortalSound, this.object);
+
+    } else {
+      playSound3D(portalSound, this.object);
+
+    }
+
+    const lightColor = (isInfernoPortal)
       ? 0xd00000
       : 0x1c80e4;
 
@@ -92,7 +102,7 @@ export default class Portal extends THREE.Object3D {
     const destiny = (this.userData.destiny && this.userData.destiny.progress);
     // may be a inferno portal!
     if (destiny) {
-      return `Portal to ${destiny}`;
+      return `${i18n('portalTo')} ${destiny}`;
     }
   }
 

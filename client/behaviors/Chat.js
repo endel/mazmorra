@@ -3,6 +3,7 @@ import Keycode from 'keycode.js'
 
 import { enterChat } from '../core/network';
 import { trackEvent, humanize } from '../utils';
+import { i18n } from '../lang';
 
 export default class Chat extends Behaviour {
 
@@ -121,15 +122,15 @@ export default class Chat extends Behaviour {
     // TODO: Remove .text after beta
     if (message.say || message.text) {
       child.classList.add("say");
-      text = `${text} says: ${message.say || message.text}`;
+      text = `${text} ${i18n('says')}: ${message.say || message.text}`;
 
     } else if (message.slain) {
       child.classList.add("slain");
-      text = `${text} was slain by ${humanize(message.slain)}`;
+      text = `${text} ${i18n('slain_by')} ${humanize(message.slain)}`;
 
     } else if (message.killed) {
       child.classList.add("killed");
-      text = `${text} killed the mighty ${humanize(message.killed)}`;
+      text = `${text} ${i18n('killed_the')} ${humanize(message.killed)}`;
     }
 
     child.innerText = text;

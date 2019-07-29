@@ -22,6 +22,7 @@ import ResourceManager from "../resource/manager";
 import Hint from "../elements/hud/Hint";
 import SettingsOverlay from "../elements/hud/SettingsOverlay";
 import QuestsButton from "../elements/hud/QuestsButton";
+import { i18n } from "../lang";
 
 export default class HUD extends THREE.Scene {
 
@@ -92,7 +93,7 @@ export default class HUD extends THREE.Scene {
     this.openSettingsButton = new THREE.Object3D();
     this.openSettingsButton.add(openSettingsButton);
     this.openSettingsButton.addEventListener("mouseover", () => {
-      Hint.show("Settings", this.openSettingsButton);
+      Hint.show(i18n('settings'), this.openSettingsButton);
       App.tweens.remove(this.openSettingsButton.scale)
       App.tweens.add(this.openSettingsButton.scale).to({ x: 1.1, y: 1.1 }, 200, Tweener.ease.quadOut);
     });
@@ -109,7 +110,7 @@ export default class HUD extends THREE.Scene {
     // "Quick inventory" buttons
     this.shortcutHpPotion = new ConsumableShortcut({ type: "hp-potion-", shortcutKey: "1" });
     this.shortcutMpPotion = new ConsumableShortcut({ type: "mp-potion-", shortcutKey: "2" });
-    this.shortcutScroll = new ConsumableShortcut({ type: "scroll-", shortcutKey: "3" });
+    this.shortcutScroll = new ConsumableShortcut({ type: "scroll-regular", shortcutKey: "3" });
 
     this.skill1Button = new SkillButton("attack-speed", "Q");
     this.skill2Button = new SkillButton("movement-speed", "W");

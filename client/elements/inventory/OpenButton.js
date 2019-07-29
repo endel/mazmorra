@@ -1,4 +1,5 @@
 import Hint from "../hud/Hint";
+import { i18n } from "../../lang";
 
 export default class OpenInventoryButton extends THREE.Object3D {
 
@@ -53,7 +54,7 @@ export default class OpenInventoryButton extends THREE.Object3D {
   }
 
   onMouseOver () {
-    Hint.show(`<span class="shortcut">I</span> <span class="shortcut">B</span> Inventory`, this);
+    Hint.show(`<span class="shortcut">I</span> <span class="shortcut">B</span> ${i18n('inventory')}`, this);
 
     App.tweens.remove(this.scale)
     App.tweens.add(this.scale).to({ x: 1.1, y: 1.1 }, 200, Tweener.ease.quadOut)

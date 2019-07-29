@@ -4,6 +4,7 @@ import { Behaviour } from 'behaviour.js'
 import LightOscillator from '../behaviors/LightOscillator'
 import { getLightFromPool, removeLight } from '../utils';
 import QuestIndicator from '../behaviors/QuestIndicator';
+import { i18n } from '../lang';
 
 class CheckPointBehaviour extends Behaviour {
   onAttach(level) {
@@ -76,14 +77,14 @@ export default class CheckPoint extends THREE.Object3D {
         bubbles: true,
         type: "announcement",
         id: "checkpoint",
-        title: "Checkpoint Area",
+        title: i18n('checkpointArea'),
         sound: "checkpointStinger"
       });
     })
   }
 
   get label () {
-    return `Checkpoint`;
+    return i18n('checkpoint');
   }
 
   getTexture() {

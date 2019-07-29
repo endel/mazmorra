@@ -5,6 +5,7 @@ import HasLifebar from '../behaviors/HasLifebar';
 import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
 import { playSound3D, mimicSound } from '../core/sound';
 import { humanize, removeLight, getLightFromPool } from '../utils';
+import { i18n } from '../lang';
 
 export default class Enemy extends THREE.Object3D {
 
@@ -66,8 +67,10 @@ export default class Enemy extends THREE.Object3D {
           }, 500, Tweener.ease.elasticOut);
 
       } else {
-        App.tweens.add(this.sprite.position).from({ y: -1.5 }, 300, Tweener.ease.quadOut);
-        App.tweens.add(this.sprite.material).from({ opacity: 0 }, 300, Tweener.ease.quadOut);
+        this.sprite.material.opacity = 0;
+        this.sprite.position.y = -1.5;
+        App.tweens.add(this.sprite.position).to({ y: 0 }, 300, Tweener.ease.quadOut);
+        App.tweens.add(this.sprite.material).to({ opacity: 1 }, 300, Tweener.ease.quadOut);
       }
 
       if (this.userData.isBoss) {
@@ -77,7 +80,7 @@ export default class Enemy extends THREE.Object3D {
             bubbles: true,
             type: "announcement",
             id: "boss",
-            title: "Boss Area",
+            title: i18n('bossArea'),
             sound: "boss",
             entity: this
           });
@@ -92,10 +95,10 @@ export default class Enemy extends THREE.Object3D {
   }
 
   get label () {
-    var text = humanize(this.userData.kind) + ` - lvl ${ this.userData.lvl }`
+    var text = humanize(i18n(this.userData.kind)) + ` - lvl ${ this.userData.lvl }`
 
     if (this.userData.hp.current <= 0) {
-      text = `Dead ${ text }`
+      text = `(${i18n('dead')}) ${ text }`
     }
 
     return text

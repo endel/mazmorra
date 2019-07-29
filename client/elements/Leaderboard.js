@@ -1,5 +1,7 @@
 'use strict';
 
+import { i18n } from "../lang";
+
 export default class Leaderboard extends THREE.Object3D {
 
   constructor (data) {
@@ -11,7 +13,7 @@ export default class Leaderboard extends THREE.Object3D {
   }
 
   get label () {
-    return "Hall of Fame";
+    return i18n('hallOfFame');
   }
 
 }

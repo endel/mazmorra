@@ -1,5 +1,6 @@
 import config from "../../config";
 import { humanize, toScreenPosition } from "../../utils";
+import { i18n } from "../../lang";
 
 const ITEM_SLOT_SIZE = 9;
 
@@ -75,28 +76,28 @@ class Hint  {
 
     return `
 <h2>
-${humanize(item.type)}
+${humanize(i18n(item.type))}
 
-${(item.isRare) ? `<small class="rare">+ Rare</small>` : ""}
-${(item.isMagical) ? `<small class="magical">+ Magical</small> ` : ""}
+${(item.isRare) ? `<small class="rare">+ ${i18n('rare')}</small>` : ""}
+${(item.isMagical) ? `<small class="magical">+ ${i18n('magical')}</small> ` : ""}
 
 ${(item.price !== undefined)
   ? (item.premium)
-    ? `<small class="diamond">(${item.price} diamond)</small>`
-    : `<small class="gold">(${item.price} gold)</small>`
+    ? `<small class="diamond">(${item.price} ${i18n('diamond')})</small>`
+    : `<small class="gold">(${item.price} ${i18n('gold')})</small>`
   : ""}
 </h2>
 
 ${(item.progressRequired && item.progressRequired > player.userData.latestProgress)
-  ? `<p class="strength">Equipable after dungeon ${item.progressRequired}</p>`
+  ? `<p class="strength">${i18n('progressRequired')} ${item.progressRequired}</p>`
   : "" }
 
 ${(item.damageAttribute)
-  ? `<p>Damage attribute: <span class="${item.damageAttribute}">${humanize(item.damageAttribute)}</span></p>`
+  ? `<p>${i18n('damageAttribute')}: <span class="${item.damageAttribute}">${humanize(item.damageAttribute)}</span></p>`
   : "" }
 
 ${(item.manaCost > 0)
-  ? `<p>Mana cost: ${item.manaCost.toFixed(1)}</p>`
+  ? `<p>${i18n('mana_cost')}: ${item.manaCost.toFixed(1)}</p>`
   : "" }
 
 ${(

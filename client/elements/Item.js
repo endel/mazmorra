@@ -5,6 +5,7 @@ import Pickable from '../behaviors/Pickable'
 import Stretchable from '../behaviors/Stretchable'
 import NearPlayerOpacity from '../behaviors/NearPlayerOpacity'
 import { humanize } from '../utils';
+import { i18n } from '../lang';
 
 export default class Item extends THREE.Object3D {
 
@@ -52,7 +53,7 @@ export default class Item extends THREE.Object3D {
   }
 
   get label () {
-    return humanize(this.userData.type);
+    return humanize(i18n(this.userData.type));
   }
 
   onMouseOver (tileSelection) {

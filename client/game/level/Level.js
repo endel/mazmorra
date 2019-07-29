@@ -11,12 +11,14 @@ import helpers from "../../../shared/helpers"
 
 import * as sounds from '../../core/sound';
 import { doorSound, playRandom } from '../../core/sound';
-import { trackEvent, humanize } from '../../utils';
+import { trackEvent } from '../../utils';
 import Chat from '../../behaviors/Chat';
 import { isTutorialComplete, showTutorial } from '../../web/tutorial';
 import { PlayerPrefs } from '../../core/PlayerPrefs';
 import SkillUse from '../../elements/effects/SkillUse';
 import { isMobile } from '../../utils/device';
+
+import { i18n } from "../../lang";
 
 export default class Level extends THREE.Object3D {
 
@@ -460,7 +462,7 @@ export default class Level extends THREE.Object3D {
         type: "announcement",
         id: "mapkind",
         sound: "mapkindStinger",
-        title: `Beware: PVP Area`
+        title: i18n('pvpAnnouncer')
       });
 
     } else if (
@@ -472,7 +474,7 @@ export default class Level extends THREE.Object3D {
         type: "announcement",
         id: "mapkind",
         sound: "mapkindStinger",
-        title: `Chapter: ${humanize(this.mapkind)}`
+        title: `${i18n('chapter')} ${i18n(this.mapkind)}`
       })
 
     } else if (this.progress === 1) {
@@ -480,7 +482,7 @@ export default class Level extends THREE.Object3D {
         type: "announcement",
         id: "mapkind",
         style: "red",
-        title: `Welcome to The Castle`
+        title: i18n('welcome')
       })
 
     }

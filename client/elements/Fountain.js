@@ -1,6 +1,7 @@
 'use strict';
 
 import Activatable from '../behaviors/Activatable'
+import { i18n } from '../lang';
 
 export default class Fountain extends THREE.Object3D {
 
@@ -22,7 +23,7 @@ export default class Fountain extends THREE.Object3D {
   }
 
   get label () {
-    return ((this.activateable.isActive) ? "Fountain" : "Dry Fountain")
+    return ((this.activateable.isActive) ? i18n('fountain') : i18n('dryFountain'))
   }
 
 }

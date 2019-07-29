@@ -1,4 +1,5 @@
 import Hint from "./Hint";
+import { i18n } from "../../lang";
 
 export default class SkillButton extends THREE.Object3D {
 
@@ -10,16 +11,16 @@ export default class SkillButton extends THREE.Object3D {
     this.userData.hint = `<span class="shortcut">${hotkey}</span> `;
 
     if (skillName === "attack-speed") {
-      this.userData.hint += `Enchanted weapon<br/>
-        Increase attack speed by 2x<br/>
-        <strong>Duration:</strong> 2s<br/>
-        <strong class="intelligence">Mana cost:</strong> 15`;
+      this.userData.hint += `${i18n('skillAttackSpeed')}<br/>
+        ${i18n('skillAttackSpeedDescription')}<br/>
+        <strong>${i18n('duration')}:</strong> 2s<br/>
+        <strong class="intelligence">${i18n('mana_cost')}:</strong> 15`;
 
     } else if (skillName === "movement-speed") {
-      this.userData.hint += `Enchanted boots<br />
-        Increase movement speed by 2x<br/>
-        <strong>Duration:</strong> 2.5s<br/>
-        <strong class="intelligence">Mana cost:</strong> 10`;
+      this.userData.hint += `${i18n('skillMovementSpeed')}<br/>
+        ${i18n('skillMovementSpeedDescription')}<br/>
+        <strong>${i18n('duration')}:</strong> 2.5s<br/>
+        <strong class="intelligence">${i18n('mana_cost')}:</strong> 10`;
     }
 
     this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: ResourceManager.get(`skills-${skillName}`) }))

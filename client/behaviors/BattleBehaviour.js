@@ -4,6 +4,7 @@ import helpers from '../../shared/helpers'
 import { getClientId } from '../core/network';
 import { battleStartSound, wooshSound, hitSound, deathSound, deathStingerSound, bowSound, staffSound, fadeOut, playRandom3D, playSound3D } from '../core/sound';
 import { removeLight } from '../utils';
+import { i18n } from '../lang';
 
 export const DEAD_ENTITY_OPACITY = 0.45;
 
@@ -107,7 +108,7 @@ export default class BattleBehaviour extends Behaviour {
 
     if (actionData.missed) {
       kind = 'warn'
-      text = 'Evaded'
+      text = i18n('evaded')
 
     } else if (this.defender) {
       this.defender.getEntity().emit('damage', this.damageAttribute);
@@ -155,7 +156,6 @@ export default class BattleBehaviour extends Behaviour {
     }
 
     if (this.object.userData.kind && this.object.userData.kind.indexOf("tower") === 0) {
-      console.log("it's a tower!");
       // towers die differently
       App.tweens.add(this.object.position).to({ y: this.object.position.y - 0.5 }, 300, Tweener.ease.quartOut);
       App.tweens.add(this.object.sprite.material).to({ opacity: DEAD_ENTITY_OPACITY }, 300, Tweener.ease.quartOut);

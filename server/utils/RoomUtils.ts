@@ -784,7 +784,7 @@ export class RoomUtils {
       x: lady.position.x + 4,
       y: lady.position.y - 1,
     }, new DoorDestiny({
-      progress: this.realRand.intBetween(4, 6),
+      progress: 5,
       room: "pvp"
     }));
     this.state.addEntity(pvpDoor);

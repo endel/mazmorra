@@ -1,6 +1,7 @@
 import hint from "../hud/Hint";
 import { humanize } from "../../utils";
 import { MeshText2D, textAlign } from "three-text2d";
+import { i18n } from "../../lang";
 
 export default class ConsumableShortcut extends THREE.Object3D {
 
@@ -60,7 +61,7 @@ export default class ConsumableShortcut extends THREE.Object3D {
       return;
     }
 
-    hint.show(`<span class="shortcut">${this.shortcutKey}</span> Use ${humanize(this.type)}`, this);
+    hint.show(`<span class="shortcut">${this.shortcutKey}</span> ${i18n('use')} ${humanize(i18n(this.type))}`, this);
 
     if (this._item) {
       App.tweens.remove(this.scale)

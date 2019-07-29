@@ -2,6 +2,7 @@
 import helpers from '../../shared/helpers'
 import QuestIndicator from '../behaviors/QuestIndicator';
 import { PlayerPrefs } from '../core/PlayerPrefs';
+import { i18n } from '../lang';
 
 export default class Door extends THREE.Object3D {
 
@@ -90,23 +91,23 @@ export default class Door extends THREE.Object3D {
       label = this.userData.destiny.room;
 
     } else if (progress === -2) {
-      label = `Forward to ${this.currentProgress + 1}`;
+      label = `${i18n('forwardTo')} ${this.currentProgress + 1}`;
 
     } else if (progress === -1) {
-      label = `Back to ${this.currentProgress - 1}`;
+      label = `${i18n('backTo')} ${this.currentProgress - 1}`;
 
     } else if (progress === 1) {
-      label = `Back to Castle`
+      label = i18n('backToCastle');
 
     } else if (progress === -3) {
-      label = `Continue from ${player.userData.latestProgress}`;
+      label = `${i18n('continueFrom')} ${player.userData.latestProgress}`;
 
     } else {
-      label = `Down to ${progress}`;
+      label = `${i18n('downTo')} ${progress}`;
     }
 
     if (this.userData.mapkind) {
-      label += ` (${this.userData.mapkind})`;
+      label += ` (${i18n(this.userData.mapkind)})`;
     }
 
     return label;
