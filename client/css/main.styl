@@ -17,6 +17,8 @@
 html, body
   overflow hidden
   position fixed
+  width 100vw
+  height 100vh
 
 body
   font 38px primary
@@ -59,6 +61,9 @@ section#chat
   font-size 13px
   font-family Arial, Helvetica, sans-serif
   padding 12px
+
+  @media only screen and (max-width: 768px)
+    display none
 
   &:not(.active)
     input

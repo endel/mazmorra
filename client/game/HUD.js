@@ -23,6 +23,7 @@ import Hint from "../elements/hud/Hint";
 import SettingsOverlay from "../elements/hud/SettingsOverlay";
 import QuestsButton from "../elements/hud/QuestsButton";
 import { i18n } from "../lang";
+import { isMobile } from "../utils/device";
 
 export default class HUD extends THREE.Scene {
 
@@ -114,6 +115,27 @@ export default class HUD extends THREE.Scene {
 
     this.skill1Button = new SkillButton("attack-speed", "Q");
     this.skill2Button = new SkillButton("movement-speed", "W");
+
+    // Mobile buttons
+    if (isMobile) {
+      const attackButton = ResourceManager.getHUDElement("hud-btn-attack");
+      this.attackButton = new THREE.Object3D();
+      this.attackButton.add(attackButton);
+      this.attackButton.addEventListener("mouseover", () => {
+        Hint.show(i18n('attack'), this.attackButton);
+        App.tweens.remove(this.attackButton.scale)
+        App.tweens.add(this.attackButton.scale).to({ x: 1.1, y: 1.1 }, 200, Tweener.ease.quadOut);
+      });
+      this.attackButton.addEventListener("mouseout", () => {
+        Hint.hide();
+        App.tweens.remove(this.attackButton.scale);
+        App.tweens.add(this.attackButton.scale).to({ x: 1, y: 1 }, 200, Tweener.ease.quadOut);
+      });
+      this.attackButton.addEventListener("click", () => this.onKeyPress({ which: Keycode.A }));
+      this.attackButton.userData.hud = true;
+      this.attackButton.width = attackButton.width;
+      this.attackButton.height = attackButton.height;
+    }
 
     // Label
     this.selectionText = new MeshText2D(" ", {
@@ -214,6 +236,10 @@ export default class HUD extends THREE.Scene {
 
     this.add(this.skill1Button);
     this.add(this.skill2Button);
+
+    if (this.attackButton) {
+      this.add(this.attackButton);
+    }
 
     this.add(this.openInventoryButton);
     // this.add(this.openQuestsButton);
@@ -507,6 +533,12 @@ export default class HUD extends THREE.Scene {
     this.skill1Button.position.y = this.manabar.position.y;
     this.skill2Button.position.x = this.skill1Button.position.x + (this.skill2Button.width * 2) + config.HUD_SCALE * 2;
     this.skill2Button.position.y = this.skill1Button.position.y;
+
+    // Mobile buttons
+    if (this.attackButton) {
+      this.attackButton.position.x = this.character.position.x + this.attackButton.width / 2;
+      this.attackButton.position.y = this.skill1Button.position.y;
+    }
 
     // update orthogonal camera aspect ratio / projection matrix
     this.camera.aspect = window.innerWidth / window.innerHeight;
