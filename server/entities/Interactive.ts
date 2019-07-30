@@ -7,6 +7,7 @@ import { Unit } from "./Unit";
 
 export abstract class Interactive extends Entity {
   @type(Action) action: Action;
+  activateOnWalkThrough = false;
 
   constructor (type, position: Point) {
     super()

@@ -240,6 +240,7 @@ export default class Level extends THREE.Object3D {
 
 
       } else if (evt === "trading-items") {
+        this.hud.inventory.setTradingItems(data);
 
         // FIXME: this piece of code is repeated in many places!
         // force to open inventory if it's closed
@@ -248,8 +249,6 @@ export default class Level extends THREE.Object3D {
         }
 
         this.playSound("approve");
-
-        this.hud.inventory.setTradingItems(data);
 
       } else if (evt === "skill") {
         // this.playSound(data);
@@ -382,6 +381,11 @@ export default class Level extends THREE.Object3D {
 
           } else if (change.field === "direction") {
             object.direction = change.value;
+
+          } else if (change.field === "stunned") {
+            if (change.value) {
+              this.playSound('stun');
+            }
 
           } else if (change.field === "isTyping") {
             object.typing = change.value;

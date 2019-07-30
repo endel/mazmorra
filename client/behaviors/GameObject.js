@@ -2,7 +2,8 @@ import { Behaviour } from 'behaviour.js'
 
 import BattleBehaviour, { DEAD_ENTITY_OPACITY } from './BattleBehaviour'
 import lerp from 'lerp'
-import { stepSounds, playRandom, setAudioPosition, playRandom3D } from '../core/sound';
+import { stepSounds, playRandom, setAudioPosition, playRandom3D, playSound3D, teleportSound } from '../core/sound';
+import { distance } from '../core/utils';
 
 export default class GameObject extends Behaviour {
 
@@ -15,6 +16,23 @@ export default class GameObject extends Behaviour {
     }
 
     this.on('nextPoint', (point) => {
+      // teleport!
+      if (this.nextPoint && distance(point, this.nextPoint) > 10) {
+        playSound3D(teleportSound, this.object);
+        App.tweens.
+          add(this.object.scale).
+          to({ x: 0, y: 0, z: 0 }, 100, Tweener.ease.quartOut).
+          then(() => {
+            this.object.position.x = point.x;
+            this.object.position.z = point.z;
+            this.nextPoint = point;
+            App.tweens.
+              add(this.object.scale).
+              to({ x: 1, y: 1, z: 1 }, 100, Tweener.ease.quartOut);
+          });
+        return;
+      }
+
       this.nextPoint = point;
 
       // play "step" sound for current player

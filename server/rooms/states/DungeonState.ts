@@ -291,7 +291,7 @@ export class DungeonState extends Schema {
   }
 
   checkOverlapingEntities (targetEntity: Entity, moveEvent: MoveEvent, x, y) {
-    const unit = moveEvent.target;
+    const unit = moveEvent.target as Unit;
 
     let doorEntity: Door;
     let hasPickedItems: boolean;
@@ -315,9 +315,20 @@ export class DungeonState extends Schema {
         // }
 
       } else if (unit instanceof Player) {
+
+        // StunTile / TeleportTile
+        if (
+          entity instanceof Interactive &&
+          entity.activateOnWalkThrough
+        ) {
+          entity.interact(moveEvent, unit, this);
+          continue;
+        }
+
         // if unit has reached target point,
         // try to pick/interact with other entity.
         if (
+          targetEntity &&
           targetEntity.position.x === entity.position.x &&
           targetEntity.position.y === entity.position.y
         ) {

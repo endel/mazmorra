@@ -23,6 +23,8 @@ import CheckPoint from '../../elements/CheckPoint';
 import Leaderboard from '../../elements/Leaderboard';
 import Lever from '../../elements/Lever';
 import Jail from '../../elements/Jail';
+import StunTile from '../../elements/StunTile';
+import TeleportTile from '../../elements/TeleportTile';
 
 export default class Factory {
 
@@ -127,6 +129,14 @@ export default class Factory {
 
       case helpers.ENTITIES.CHECK_POINT:
         element = new CheckPoint(data, this.level);
+        break;
+
+      case helpers.ENTITIES.STUN_TILE:
+        element = new StunTile(data);
+        break;
+
+      case helpers.ENTITIES.TELEPORT_TILE:
+        element = new TeleportTile(data);
         break;
 
       case helpers.ENTITIES.LEADERBOARD:

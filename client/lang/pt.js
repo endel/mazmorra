@@ -97,6 +97,9 @@ module.exports = {
   activatedLever: "(virada) Alavanca",
   lever: "Alavanca",
 
+  trap: "Armadilha",
+  teleport: "Teleporte",
+
   // ITEMS
   'scroll-regular': "portal",
   'points-1': "redistribuir-pontos-1",

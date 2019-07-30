@@ -94,6 +94,9 @@ module.exports = {
   activatedLever: "Activated Lever",
   lever: "Lever",
 
+  trap: "Trap",
+  teleport: "Teleport",
+
   // ITEMS
   'scroll-regular': "portal-scroll",
   'points-1': "points-redistribute-1",

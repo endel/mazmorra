@@ -96,9 +96,13 @@ var helpers = {
       KEY_ICE: 'key-ice',
       KEY_INFERNO: 'key-inferno',
 
-      // skills
+      // SKILLS
       PORTAL: 'portal',
       PORTAL_INFERNO: 'portal-inferno',
+
+      // TRAPS
+      STUN_TILE: 'stun-tile',
+      TELEPORT_TILE: 'teleport-tile',
 
       // BOOTS
       BOOTS_1: 'boots-1',

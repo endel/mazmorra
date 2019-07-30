@@ -32,14 +32,16 @@ export class Movement extends Position {
     );
   }
 
-  set (x: any, y?: number) {
+  set (x: any, y?: number, doNotEmitMove?: boolean) {
     if (!y && typeof(x) === "object") {
       y = x.y
       x = x.x
     }
 
     var event = new MoveEvent(this.unit, { x, y });
-    this.events.emit('move', event, this.x, this.y, x, y);
+    if (doNotEmitMove === undefined) {
+      this.events.emit('move', event, this.x, this.y, x, y);
+    }
 
     if (event.valid()) {
       this.x = x;

@@ -76,6 +76,8 @@ export class Unit extends Entity {
 
   @type("number") criticalBonus = 1.5; // damage * criticalBonus (on critical)
 
+  @type("boolean") stunned?: boolean;
+
   // 0~1
   evasion: number = 1;
   criticalStrikeChance: number = 1;
@@ -377,6 +379,10 @@ export class Unit extends Entity {
         // this.state.move(this, this.position.target.position, false);
       }
 
+      // this.state.checkOverlapingEntities(this.position.target, moveEvent, currentX, currentY)
+    }
+
+    if (this.state) {
       this.state.checkOverlapingEntities(this.position.target, moveEvent, currentX, currentY)
     }
   }
@@ -418,6 +424,19 @@ export class Unit extends Entity {
     } else {
       this.position.update(currentTime);
     }
+  }
+
+  stun(milliseconds: number) {
+    this.stunned = true;
+
+    this.statsBoostModifiers['movementSpeed'] -= milliseconds;
+    this.statsBoostModifiers['attackSpeed'] -= milliseconds;
+
+    setTimeout(() => {
+      this.stunned = false;
+      this.statsBoostModifiers['movementSpeed'] += milliseconds;
+      this.statsBoostModifiers['attackSpeed'] += milliseconds;
+    }, milliseconds);
   }
 
   drop () {

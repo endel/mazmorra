@@ -38,6 +38,8 @@ import { Lever } from "../entities/interactive/Lever";
 import { Jail } from "../entities/interactive/Jail";
 import { UnitSpawner } from "../entities/behaviours/UnitSpawner";
 import { InfernoPortal } from "../entities/interactive/InfernoPortal";
+import { StunTile } from "../entities/interactive/StunTile";
+import { TeleportTile } from "../entities/interactive/TeleportTile";
 
 const ALL_BOOTS = [
   helpers.ENTITIES.BOOTS_1,
@@ -165,6 +167,7 @@ export interface ItemDropOptions {
   isRare?: boolean,
   isMagical?: boolean,
   goodness?: number,
+  allowDiamonds?: boolean
 }
 
 export interface ItemGoodness {
@@ -357,7 +360,7 @@ export class RoomUtils {
         this.bosses = [boss];
 
         // drop key for next level!
-        boss.dropOptions = { isRare: true, isMagical: true };
+        boss.dropOptions = { isRare: true, isMagical: true, allowDiamonds: true };
 
         this.state.addEntity(boss);
 
@@ -376,7 +379,7 @@ export class RoomUtils {
 
             if (isFirstBoss) {
               boss.addBehaviour(new UnitSpawner(ENEMY_CONFIGS[bossType].spawner))
-              boss.dropOptions = { isRare: true, isMagical: true };
+              boss.dropOptions = { isRare: true, isMagical: true, allowDiamonds: true };
               this.bosses = [boss];
 
             } else {
@@ -473,9 +476,7 @@ export class RoomUtils {
             { aiDistance: 20 }
           );
           enemy.position.set(position);
-          enemy.dropOptions = {
-            progress: this.state.progress + 10
-          }
+          enemy.dropOptions = { progress: this.state.progress + 10 }
           return enemy;
         });
       }
@@ -498,6 +499,29 @@ export class RoomUtils {
       })
       this.state.addEntity(this.checkPoint);
     }
+
+    // // TESTING STUN TILE
+    // this.addEntity(this.startRoom, (position) => {
+    //   const stunTile = new StunTile(position);
+    //   stunTile.state = this.state;
+    //   return stunTile;
+    // }, true);
+
+    // // TESTING TELEPORT TILE
+    // let startTelerport: TeleportTile;
+    // this.addEntity(this.startRoom, (position) => {
+    //   startTelerport = new TeleportTile(position);
+    //   startTelerport.state = this.state;
+    //   return startTelerport;
+    // }, true);
+
+    // this.addEntity(this.endRoom, (position) => {
+    //   const endTeleportTile = new TeleportTile(position);
+    //   endTeleportTile.destiny = startTelerport;
+    //   startTelerport.destiny = endTeleportTile;
+    //   endTeleportTile.state = this.state;
+    //   return endTeleportTile;
+    // }, true);
 
     // // TESTING INFERNO PORTAL
     // setTimeout(() => {
@@ -982,11 +1006,11 @@ export class RoomUtils {
         }
 
       // common item
-      } else if (chance < 0.998) {
+      } else {
         const dropOptions: ItemDropOptions = {
           progress: this.state.progress,
-          isRare: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.965),
-          isMagical: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.990)
+          isRare: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.980),
+          isMagical: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.999)
         };
 
         const itemType = this.realRand.intBetween(0, 5);
@@ -1019,12 +1043,6 @@ export class RoomUtils {
         // if (itemToDrop instanceof EquipableItem) {
         //   this.assignEquipableItemModifiers(itemToDrop);
         // }
-
-      } else if (chance >= 0.998) {
-        // drop diamond!
-        const amount = this.realRand.intBetween(1, 2);
-        itemToDrop = new Diamond(amount);
-
       }
     } else {
       // empty drop
@@ -1036,7 +1054,8 @@ export class RoomUtils {
   createItemByDropOptions (dropOptions: ItemDropOptions) {
     let itemToDrop: Item;
 
-    const itemType = this.realRand.intBetween(0, 5);
+    const minRandValue = (dropOptions.allowDiamonds) ? 0 : 1;
+    const itemType = this.realRand.intBetween(minRandValue, 5);
 
     switch (itemType) {
       case 0:
@@ -1297,7 +1316,7 @@ export class RoomUtils {
   }
 
   setItemProgressRequired(item: EquipableItem, dropOptions?: ItemDropOptions) {
-    item.progressRequired = Math.max(1, dropOptions.progress - NUM_LEVELS_PER_CHECKPOINT);
+    item.progressRequired = Math.min(Math.max(1, dropOptions.progress - NUM_LEVELS_PER_CHECKPOINT), MAX_LEVELS);
   }
 
   // assignItemModifier(item: Item, options)

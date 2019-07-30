@@ -148,13 +148,16 @@ export const levelUpSound = require('../resource/sounds/levelup.aif');
 export const bossSound = require('../resource/sounds/boss/boss.mp3');
 export const killBossSound = require('../resource/sounds/boss/kill-boss.mp3');
 
+/**
+ * Effects
+ */
 export const portalSound = require('../resource/sounds/effects/open-portal.mp3');
-
 export const portal = require('../resource/sounds/effects/portal.mp3');
 export const checkpoint = require('../resource/sounds/effects/checkpoint.mp3');
 export const infernoPortalSound = require('../resource/sounds/effects/open-portal-inferno.mp3');
-
 export const pendingSound = require('../resource/sounds/effects/pending.mp3');
+export const stunSound = require('../resource/sounds/effects/stun.mp3');
+export const teleportSound = require('../resource/sounds/effects/teleport.mp3');
 
 /**
  * Weapons

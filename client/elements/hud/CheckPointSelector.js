@@ -9,7 +9,7 @@ export default class CheckPointSelector extends THREE.Object3D {
     this.isOpen = false
 
     this.title = ResourceManager.getHUDElement('hud-big-title-red');
-    this.title.position.y = this.title.height * 2;
+    this.title.position.y = this.title.height * 3;
     this.add(this.title);
 
     this.titleText = new MeshText2D("Checkpoints", {
@@ -40,7 +40,7 @@ export default class CheckPointSelector extends THREE.Object3D {
     }
 
     const numSlots = 6;
-    const columns = 5;
+    const columns = 6;
     const maxRows = Math.floor(numSlots / columns) - 1;
 
     this.slots = []
@@ -58,7 +58,7 @@ export default class CheckPointSelector extends THREE.Object3D {
       }
 
       checkpoint.position.x = (checkpoint.width + config.HUD_SCALE) * (column);
-      checkpoint.position.y = (checkpoint.height + config.HUD_SCALE) * (maxRows - row);
+      checkpoint.position.y = (this.title.position.y - this.title.height * 1.5) + (checkpoint.height + config.HUD_SCALE) * (maxRows - row);
 
       App.tweens.
         add(checkpoint.scale).

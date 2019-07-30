@@ -23,7 +23,7 @@ export default class EquipedItems extends THREE.Object3D {
     this.right.position.x = this.right.width - config.HUD_SCALE;
 
     this.width = (this.head.width) * 3;
-    this.height = (this.head.height) * 3;
+    this.height = ((this.head.height) * 3) + 7 * config.HUD_SCALE;
   }
 
   set enabled (bool) {

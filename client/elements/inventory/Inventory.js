@@ -14,39 +14,29 @@ export default class Inventory extends THREE.Object3D {
     this.isTrading = false;
 
     this.title = ResourceManager.getHUDElement('hud-big-title-regular');
-    this.title.position.y = this.title.height * 2.1;
     this.add(this.title);
 
-    this.titleText = new SpriteText2D(i18n('inventory'), {
+    this.titleText = new SpriteText2D("", {
       align: textAlign.center ,
       font: config.FONT_TITLE,
       fillStyle: "#282828"
     });
-    this.titleText.position.y = this.title.position.y - 8;
     this.add(this.titleText);
 
     this.equipedItems = new EquipedItems()
     this.slots = new SlotStrip({ slots: 15, columns: 5, inventoryType: "inventory" })
     // this.exchangeSlots = new SlotStrip({ slots: 1, allowRemove: true, inventoryType: "exchange" })
 
-    this.equipedItems.position.x -= this.equipedItems.width / 2 + this.slots.slotSize - config.HUD_SCALE;
-    this.slots.position.x = this.equipedItems.position.x + (this.equipedItems.width / 2 + this.slots.slotSize / 2 + config.HUD_SCALE)
-    this.slots.position.y = -this.slots.height/3
-
     // this.exchangeSlots.position.x = this.equipedItems.position.x + (this.equipedItems.width/2 + this.slots.slotSize / 2 +  config.HUD_SCALE * 2) + (this.exchangeSlots.width / 2)
     // this.exchangeSlots.position.y = -this.exchangeSlots.height
 
     this.exchangeSymbol = ResourceManager.getHUDElement('hud-exchange-icon')
-    this.exchangeSymbol.position.y = - this.slots.height / 2 - this.exchangeSymbol.height;
-
     this.purchaseSlots = new SlotStrip({
       slots: 6,
       columns: 6,
       inventoryType: "purchase",
       accepts: "sell"
     });
-    this.purchaseSlots.position.x = this.equipedItems.position.x + (config.HUD_SCALE * 1.5);
-    this.purchaseSlots.position.y = this.exchangeSymbol.position.y - this.purchaseSlots.height;
 
     this.add(this.equipedItems)
     this.add(this.slots)
@@ -59,8 +49,6 @@ export default class Inventory extends THREE.Object3D {
   setTradingItems (items) {
     trackEvent('trade-open', { event_category: 'Trade', event_label: 'Open' });
 
-    this.titleText.text = i18n('trade');
-
     this.purchaseSlots.userData.slots = items;
     this.purchaseSlots.updateItems();
 
@@ -72,6 +60,24 @@ export default class Inventory extends THREE.Object3D {
 
   updateItems () {
     this.slots.updateItems();
+  }
+
+  updatePositions() {
+    this.titleText.text = (this.isTrading) ? i18n('trade') : i18n('inventory');
+
+    this.title.position.y = (this.isTrading) ? this.title.height * 2.8 : this.title.height * 2.1;
+    this.titleText.position.y = this.title.position.y - 8;
+
+    this.equipedItems.position.x = - (this.equipedItems.width / 2 + this.slots.slotSize - config.HUD_SCALE);
+    this.equipedItems.position.y = this.titleText.position.y - (this.equipedItems.height / 2) - ((config.HUD_MARGIN * 2) * config.HUD_SCALE);
+
+    this.slots.position.x = this.equipedItems.position.x + (this.equipedItems.width / 2 + this.slots.slotSize / 2 + config.HUD_SCALE)
+    this.slots.position.y = this.titleText.position.y - this.slots.height - ((config.HUD_MARGIN * 2) * config.HUD_SCALE)
+
+    this.exchangeSymbol.position.y = this.slots.position.y - this.exchangeSymbol.height - (config.HUD_MARGIN * 2 * config.HUD_SCALE);
+
+    this.purchaseSlots.position.x = this.equipedItems.position.x + (config.HUD_SCALE * 1.5);
+    this.purchaseSlots.position.y = this.exchangeSymbol.position.y - this.purchaseSlots.height - config.HUD_MARGIN;
   }
 
   toggleOpen () {
@@ -87,10 +93,11 @@ export default class Inventory extends THREE.Object3D {
     this.scale.set(scaleFrom, scaleFrom, scaleFrom)
 
     if (this.isOpen) {
+      this.updatePositions();
+
       this.parent.openInventoryButton.onOpen();
       this.parent.character.onOpenInventory();
 
-      this.titleText.text = i18n('inventory');
       this.visible = true
 
     } else {
