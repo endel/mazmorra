@@ -6,7 +6,7 @@ import { Enemy } from "../Enemy";
 export interface UnitSpawnerConfig {
   type: string[],
   lvl: number,
-  doNotGiveXP?: boolean,
+  giveXP?: boolean,
   interval?: number,
   surrounding?: boolean
 }
@@ -18,6 +18,10 @@ export class UnitSpawner implements Behaviour {
   constructor (unitSpawner: UnitSpawnerConfig) {
     if (!unitSpawner.interval) {
       unitSpawner.interval = 8000;
+    }
+
+    if (unitSpawner.giveXP === undefined) {
+      unitSpawner.giveXP = true;
     }
 
     if (unitSpawner.surrounding === undefined) {
@@ -63,7 +67,10 @@ export class UnitSpawner implements Behaviour {
           });
 
           enemy.walkable = true;
-          enemy.doNotGiveXP = true;
+
+          if (!this.unitSpawner.giveXP) {
+            enemy.doNotGiveXP = true;
+          }
 
           // disable drop for this unit.
           enemy.dropOptions = null;

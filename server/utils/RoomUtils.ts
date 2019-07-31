@@ -355,7 +355,10 @@ export class RoomUtils {
         const bossType = this.state.config.boss[0];
         const boss = this.createEnemy(bossType, Boss) as Boss;
         boss.position.set(this.endPosition);
-        boss.addBehaviour(new UnitSpawner(ENEMY_CONFIGS[bossType].spawner))
+
+        if (ENEMY_CONFIGS[bossType].spawner) {
+          boss.addBehaviour(new UnitSpawner(ENEMY_CONFIGS[bossType].spawner))
+        }
 
         this.bosses = [boss];
 

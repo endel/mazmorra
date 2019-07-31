@@ -53,17 +53,19 @@ export default class CheckPointSelector extends THREE.Object3D {
 
       if (numbers[i] === currentProgress) {
         checkpoint.userData.hud = false;
-        checkpoint.children[0].material.opacity = 0.2;
-        // checkpoint.children[1].material.opacity = 0.5;
+        checkpoint.children[0].material.opacity = 0.5;
+        checkpoint.children[1].fillStyle = "#a00000";
       }
 
       checkpoint.position.x = (checkpoint.width + config.HUD_SCALE) * (column);
       checkpoint.position.y = (this.title.position.y - this.title.height * 1.5) + (checkpoint.height + config.HUD_SCALE) * (maxRows - row);
 
+      checkpoint.scale.set(0.6, 0.6, 1);
+
       App.tweens.
         add(checkpoint.scale).
-        wait(50 * i).
-        from({ x: 0.6, y: 0.6 }, 300, Tweener.ease.quintOut);
+        wait(25 * i).
+        to({ x: 1, y: 1 }, 200, Tweener.ease.quintOut);
 
       this.options.add(checkpoint);
     }

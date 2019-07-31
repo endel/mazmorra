@@ -280,6 +280,7 @@ export const ENEMY_CONFIGS: {
     },
     spawner: {
       type: ['spider'],
+      giveXP: false,
       lvl: 2
     }
   },
@@ -408,6 +409,7 @@ export const ENEMY_CONFIGS: {
     },
     spawner: {
       type: ['skeleton-1', 'skeleton-2'],
+      giveXP: false,
       lvl: 5
     }
   },
@@ -552,6 +554,7 @@ export const ENEMY_CONFIGS: {
     },
     spawner: {
       type: ['scorpion'],
+      giveXP: false,
       lvl: 2
     }
   },
@@ -618,6 +621,7 @@ export const ENEMY_CONFIGS: {
     },
     spawner: {
       type: ['monkey'],
+      giveXP: false,
       lvl: 20,
     }
   },

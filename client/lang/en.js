@@ -82,7 +82,7 @@ module.exports = {
   'warrior-woman': "warrior-woman",
 
   // GAME ELEMENTS
-  openChest: "Opened Chest",
+  openedChest: "Opened Chest",
   chest: "Chest",
 
   fountain: "Fountain",

@@ -85,7 +85,7 @@ module.exports = {
   locksmith: "chaveiro",
 
   // GAME ELEMENTS
-  openChest: "Baú aberto",
+  openedChest: "Baú aberto",
   chest: "Baú",
 
   fountain: "Fonte",
