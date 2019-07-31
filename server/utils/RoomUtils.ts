@@ -527,19 +527,16 @@ export class RoomUtils {
     // }, true);
 
     // // TESTING INFERNO PORTAL
-    // setTimeout(() => {
-    //   this.addEntity(this.startRoom, (position) => {
-    //     const portal = new InfernoPortal(position);
-    //     portal.state = this.state;
-    //     portal.addBehaviour(new UnitSpawner({
-    //       type: ['demon'],
-    //       lvl: 1,
-    //       interval: 1000 ,
-    //       surrounding: false
-    //     }));
-    //     return portal;
-    //   }, true)
-    // }, 2000);
+    // this.addEntity(this.endRoom, (position) => {
+    //   const portal = new InfernoPortal(position, {
+    //     type: ['demon'],
+    //     lvl: 1,
+    //     interval: 1000 ,
+    //     surrounding: false
+    //   });
+    //   portal.state = this.state;
+    //   return portal;
+    // }, true)
 
     // // TESTING TOWER
     // this.addEntity(this.startRoom, (position) => {

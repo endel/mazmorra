@@ -30,6 +30,7 @@ import { debugLog } from "../../utils/Debug";
 import { Jail } from "../../entities/interactive/Jail";
 import * as TrueHell from "../../maps/truehell";
 import { parseMapTemplate } from "../../utils/MapTemplateParser";
+import { distance } from "../../helpers/Math";
 
 export interface Point {
   x: number;
@@ -493,6 +494,21 @@ export class DungeonState extends Schema {
     }
 
     return entities;
+  }
+
+  findClosestPlayer(unit: Entity, dist: number) {
+    for (let sessionId in this.players) {
+      const player: Player = this.players[sessionId];
+
+      if (
+        !player.isSwitchingDungeons &&
+        !player.removed &&
+        player.isAlive &&
+        distance(unit.position, player.position) <= dist
+      ) {
+        return player;
+      }
+    }
   }
 
   update (currentTime) {

@@ -13,23 +13,7 @@ export class AttackNearestPlayer implements Behaviour {
     const aiAllowed = timeDiff > this.aiUpdateTime;
 
     if (aiAllowed && (!unit.action || !unit.action.isEligible)) {
-      const aiDistance = unit.getAIDistance();
-
-      let closePlayer: Player;
-
-      for (let sessionId in unit.state.players) {
-        const player: Player = unit.state.players[sessionId];
-
-        if (
-          !player.isSwitchingDungeons &&
-          !player.removed &&
-          player.isAlive &&
-          distance(unit.position, player.position) <= aiDistance
-        ) {
-          closePlayer = player;
-          break;
-        }
-      }
+      const closePlayer: Player = state.findClosestPlayer(unit, unit.getAIDistance());
 
       if (closePlayer) {
         unit.state.move(unit, { x: closePlayer.position.y, y: closePlayer.position.x }, true)

@@ -8,19 +8,31 @@ import { i18n } from '../lang';
 
 class PortalBehaviour extends Behaviour {
   onAttach() {
+    this.isInfernoPortal = (this.object.userData.type === "portal-inferno");
 
-    const isInfernoPortal = (this.object.userData.type === "portal-inferno");
+    if (!this.isInfernoPortal) {
+      this.activate();
+    }
 
-    // play "portal" sound.
-    if (isInfernoPortal) {
+    this.onActiveChange = this.onActiveChange.bind(this);
+    this.on('active', this.onActiveChange);
+  }
+
+  onActiveChange (value) {
+    if (value) {
+      this.activate();
+    }
+  }
+
+  activate () {
+    if (this.isInfernoPortal) {
       playSound3D(infernoPortalSound, this.object);
 
     } else {
       playSound3D(portalSound, this.object);
-
     }
 
-    const lightColor = (isInfernoPortal)
+    const lightColor = (this.isInfernoPortal)
       ? 0xd00000
       : 0x1c80e4;
 
@@ -42,15 +54,18 @@ class PortalBehaviour extends Behaviour {
       currentTexture = (currentTexture+1)%3
       this.object.sprite.material.map = this.object.frames[currentTexture];
     }, 80);
+
+    this.object.add(this.object.sprite);
   }
 
   onDetach() {
-    App.tweens.remove(this.light);
-    removeLight(this.light);
+    if (this.light) {
+      App.tweens.remove(this.light);
+      removeLight(this.light);
+    }
 
     clearInterval(this.interval);
   }
-
 }
 
 export default class Portal extends THREE.Object3D {
@@ -81,7 +96,6 @@ export default class Portal extends THREE.Object3D {
     }))
     this.sprite.scale.normalizeWithTexture(this.frames[0])
     this.sprite.position.y = 0.55;
-    this.add(this.sprite);
 
     this.initialScale = this.sprite.scale.clone();
     this.sprite.scale.set(0, 0, 0);
