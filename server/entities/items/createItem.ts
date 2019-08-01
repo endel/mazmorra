@@ -14,6 +14,7 @@ import { Key } from "./consumable/Key";
 import { PotionPoints } from "./consumable/PotionPoints";
 import { EquipableItem } from "./EquipableItem";
 import { ConsumableItem } from "./ConsumableItem";
+import { ScrollTeleport } from "./consumable/ScrollTeleport";
 
 export function createItem(data: Item | DBItem, position?: Point): Item {
   let item: Item;
@@ -161,6 +162,10 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
 
     case helpers.ENTITIES.SCROLL:
       item = new Scroll();
+    break;
+
+    case helpers.ENTITIES.SCROLL_MAGIC:
+      item = new ScrollTeleport();
     break;
 
     // // Default

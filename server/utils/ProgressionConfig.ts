@@ -2,6 +2,7 @@ import { DBHero } from "../db/Hero";
 import { StatsModifiers } from "../entities/Unit";
 import { RoomType } from "../rooms/states/DungeonState";
 import { UnitSpawnerConfig } from "../entities/behaviours/UnitSpawner";
+import { RandomSeed } from "random-seed";
 
 export enum MapKind {
   ROCK = 'rock',
@@ -20,6 +21,10 @@ export type MapConfig = {
   getMapHeight: (progress: number) => number,
   minRoomSize: {x: number, y: number},
   maxRoomSize: {x: number, y: number},
+
+  oneDirection?: (rand: RandomSeed, progress) => boolean;
+  hasConnections?: (rand: RandomSeed, progress) => boolean;
+  obstaclesChance?: (rand: RandomSeed, progress) => number;
 
   enemies: string[],
   strongerEnemies: string[],
@@ -89,6 +94,7 @@ export function getMapConfig(progress: number, roomType?: RoomType) {
         : MapKind.CASTLE,
       getMapWidth: (progress: number) => size,
       getMapHeight: (progress: number) => size,
+      oneDirection: (rand, progress) => true,
       minRoomSize: { x: 8, y: 8 },
       maxRoomSize: { x: 8, y: 8 },
       enemies: {}
@@ -114,6 +120,7 @@ export const MAP_CONFIGS: MapConfig[] = [
     mapkind: MapKind.ROCK,
     getMapWidth: (progress: number) => Math.floor(18 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     getMapHeight: (progress: number) => Math.floor(18 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    oneDirection: (rand, progress) => false,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 7, y: 7 },
     enemies: ['rat', 'spider', 'bat'],
@@ -126,8 +133,11 @@ export const MAP_CONFIGS: MapConfig[] = [
     mapkind: MapKind.CAVE,
     getMapWidth: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     getMapHeight: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    oneDirection: (rand, progress: number) => (progress % 2 === 1),
+    obstaclesChance: (rand, progress) => rand.intBetween(4, 6),
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 8, y: 8 },
+    // maxRoomSize: { x: 12, y: 12 },
     enemies: ['slime', 'slime-2', 'skeleton-1', 'slime-cube'],
     strongerEnemies: ['slime-cube'],
     boss: ['slime-big']
@@ -138,6 +148,7 @@ export const MAP_CONFIGS: MapConfig[] = [
     mapkind: MapKind.GRASS,
     getMapWidth: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     getMapHeight: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    oneDirection: (rand, progress: number) => rand.intBetween(0, 2) === 0,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 8, y: 8 },
     enemies: ['skeleton-1', 'skeleton-2', 'skeleton-3'],
@@ -150,6 +161,7 @@ export const MAP_CONFIGS: MapConfig[] = [
     mapkind: MapKind.GRASS,
     getMapWidth: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     getMapHeight: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    oneDirection: (rand, progress: number) => rand.intBetween(0, 3) === 0,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 8, y: 8 },
     enemies: ['goblin', 'goblin-2', 'goblin-3'],

@@ -45,18 +45,18 @@ module.exports = {
     'agility',
   ],
   hairs: [
-    "Boy",
-    "Young",
-    "Ancient",
-    "Lumberman",
-    "Viking",
-    "Girl",
-    "Woman",
-    "Lady",
-    "Queen",
-    "Cowlick",
-    "Punk",
-    "Bald"
+    "boy",
+    "young",
+    "ancient",
+    "lumberman",
+    "viking",
+    "girl",
+    "woman",
+    "lady",
+    "queen",
+    "cowlick",
+    "punk",
+    "bald"
   ]
 
 }

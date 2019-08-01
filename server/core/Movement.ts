@@ -43,16 +43,21 @@ export class Movement extends Position {
       this.events.emit('move', event, this.x, this.y, x, y);
     }
 
-    if (event.valid()) {
-      this.x = x;
-      this.y = y;
-    }
-
     if (!this.initialPosition) {
       this.initialPosition = { x, y };
     }
 
-    // console.log(event.valid(), this.position)
+    const isValid = event.valid();
+    if (isValid) {
+      this.x = x;
+      this.y = y;
+
+    } else if (event.isCancelled) {
+      // clear pending movements.
+      this.pending = [];
+    }
+
+    return isValid;
   }
 
   moveTo (pending) {
@@ -73,7 +78,6 @@ export class Movement extends Position {
   update (currentTime) {
     var timeDiff = currentTime - this.lastMove
       , moves = 0
-      , pos = null
 
     if (timeDiff > this.unit.getMovementSpeed()) {
       moves = Math.floor(timeDiff / this.unit.getMovementSpeed())
@@ -81,8 +85,12 @@ export class Movement extends Position {
       if (this.pending.length > 0) {
         this.touch(currentTime)
 
-        pos = this.pending.shift()
-        this.set(pos[0], pos[1])
+        const pos = this.pending[0];
+
+        if (this.set(pos[0], pos[1])) {
+          this.pending.shift();
+        }
+
         // for (var i=0; i<moves; i++) {
         //   pos = this.pending.shift()
         //   this.set(pos[0], pos[1])

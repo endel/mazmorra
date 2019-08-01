@@ -8,10 +8,10 @@ var helpers = require('./helpers')
 
 var dungeon = {
 
-    generate: function(rand, gridSize, minRoomSize, maxRoomSize, maxRooms, oneDirection, hasConnections, hasObstacles) {
+    generate: function(rand, gridSize, minRoomSize, maxRoomSize, maxRooms, oneDirection, hasConnections, obstaclesChance) {
         if (oneDirection === undefined) { oneDirection = false; }
         if (hasConnections === undefined) { hasConnections = true; }
-        if (hasObstacles === undefined) { hasObstacles = false; }
+        if (obstaclesChance === undefined) { obstaclesChance = false; }
 
         // 1) Create the grid
         var grid = [];
@@ -24,7 +24,7 @@ var dungeon = {
 
         // 2) Create a random sized room in the middle of the grid
         // 3) Add the new room to a list of all created rooms.
-        var rooms = [this.generateRoom(rand, minRoomSize, maxRoomSize, hasObstacles)];
+        var rooms = [this.generateRoom(rand, minRoomSize, maxRoomSize, obstaclesChance)];
 
         if (oneDirection) {
             this.placeRoom(
@@ -60,7 +60,7 @@ var dungeon = {
                 direction = branchPos.dir;
 
             // 6) Generate a new random sized room.
-            var room = this.generateRoom(rand, minRoomSize, maxRoomSize, hasObstacles);
+            var room = this.generateRoom(rand, minRoomSize, maxRoomSize, obstaclesChance);
 
             roomPos.x = 0;
             roomPos.y = 0;
@@ -114,7 +114,7 @@ var dungeon = {
         return [grid, rooms];
     },
 
-    generateRoom: function(rand, minSize, maxSize, hasObstacles) {
+    generateRoom: function(rand, minSize, maxSize, obstaclesChance) {
         var room = new helpers.Room(),
             sx = room.size.x = rand.intBetween(minSize.x, maxSize.x),
             sy = room.size.y = rand.intBetween(minSize.y, maxSize.y),
@@ -158,7 +158,7 @@ var dungeon = {
             }
         }
 
-        if (hasObstacles) {
+        if (obstaclesChance && rand.intBetween(1, obstaclesChance) === 1) {
           const halfX = Math.floor(tiles.length / 2) - 1;
           const initMidX = rand.intBetween(2, halfX);
           const endMidX = initMidX + rand.intBetween(2, halfX);

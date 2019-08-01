@@ -128,6 +128,10 @@ export class DungeonRoom extends Room<DungeonState> {
       await hero.save();
     }
 
+    // clear $inc hero values (for `onLeave`)
+    hero.kills = 0;
+    hero.deaths = 0;
+
     const player = this.state.createPlayer(client, hero, options);
     this.players.set(client, player)
     this.clientMap.set(player, client)
@@ -326,6 +330,10 @@ export class DungeonRoom extends Room<DungeonState> {
     additionalData.currentRoom = hero.currentRoom;
 
     const $update: any = {
+      $inc: {
+        kills: hero.kills,
+        deaths: hero.deaths,
+      },
       $set: {
         online: false,
 
@@ -343,7 +351,7 @@ export class DungeonRoom extends Room<DungeonState> {
         xp: player.xp.current,
 
         ...additionalData
-      }
+      },
     };
 
     if (player.checkPoint) {

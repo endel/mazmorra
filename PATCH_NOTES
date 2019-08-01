@@ -1,5 +1,14 @@
-**24/07/2019 - !**
--
+**01/08/2019 - !**
+- Merchant and Majesty offers all weapon types (str, int, agi)
+- The game is now internally tracking kills and deaths, to be used on later updates!
+- Item drops from enemies and chests have a chance to be of worse quality:
+    - a `0~3` random number is rolled at each drop
+    - `3` = yay, quality compatible with current dungeon level. Rare and magical items always have this quality.
+    - `2` = current dungeon level -7
+    - `1` = current dungeon level -14
+    - `0` = current dungeon level -21
+- Small interface improvements on Inventory and Checkpoints
+
 
 **23/07/2019 - Early game experience, mimic chest, and dungeon announcer!**
 - Announce when entering dungeons with special "announcer" on checkpoint and boss dungeons

@@ -102,9 +102,27 @@ module.exports = {
 
   // ITEMS
   'scroll-regular': "portal",
+  'scroll-magic': "teleporte",
   'points-1': "redistribuir-pontos-1",
   'points-2': "redistribuir-pontos-2",
   'points-3': "redistribuir-pontos-3",
   'points-4': "redistribuir-pontos-4",
+
+  // Character building
+  eyes: "Olhos",
+  body: "Pele",
+
+  boy: "Menino",
+  young: "Jovem",
+  ancient: "Ancião",
+  lumberman: "Lenhador",
+  viking: "Viking",
+  girl: "Menina",
+  woman: "Mulher",
+  lady: "Dama",
+  queen: "Raínha",
+  cowlick: "Topete",
+  punk: "Punk",
+  bald: "Careca",
 
 }

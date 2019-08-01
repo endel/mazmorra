@@ -167,6 +167,7 @@ export interface ItemDropOptions {
   isRare?: boolean,
   isMagical?: boolean,
   goodness?: number,
+  fixedProgression?: boolean,
   allowDiamonds?: boolean
 }
 
@@ -185,6 +186,7 @@ export class RoomUtils {
   state: DungeonState;
   rooms: DungeonRoom[];
   cache = new WeakMap<DungeonRoom, Point[]>();
+  reverseRooms?: boolean;
 
   startRoom: DungeonRoom;
   startPosition: any;
@@ -214,8 +216,29 @@ export class RoomUtils {
 
     this.cacheRoomData();
 
-    this.startRoom = this.rooms[0];
-    this.endRoom = this.rooms[ this.rooms.length-1 ];
+    if (state.oneDirection) {
+      // reverse one direction rooms
+      if (rand.intBetween(0, 1) === 1) {
+        // console.log("ROOMS REVERSED!");
+        this.reverseRooms = true;
+        this.rooms.reverse();
+      }
+
+      this.startRoom = this.rooms[0];
+      this.endRoom = this.rooms[this.rooms.length - 1];
+
+      // this.startRoom = (this.reverseRooms)
+      //   ? this.rooms[this.rooms.length - 1]
+      //   : this.rooms[0];
+
+      // this.endRoom = (this.reverseRooms)
+      //   ? this.rooms[0]
+      //   : this.rooms[this.rooms.length - 1];
+
+    } else {
+      this.startRoom = (rand.intBetween(0, 1) === 0) ? this.rooms[0] : this.getRandomRoom();
+      this.endRoom = this.getRandomRoom([this.startRoom]);
+    }
 
     this.startPosition = this.getRandomDoorPosition(this.startRoom);
     this.endPosition = this.getRandomDoorPosition(this.endRoom);
@@ -370,8 +393,8 @@ export class RoomUtils {
 
         this.bosses = [boss];
 
-        // drop key for next level!
-        boss.dropOptions = { isRare: true, isMagical: true, allowDiamonds: true };
+        // drop rare + magical item, or diamonds!
+        boss.dropOptions = { isRare: true, isMagical: true, allowDiamonds: true, fixedProgression: true };
 
         this.state.addEntity(boss);
 
@@ -390,7 +413,7 @@ export class RoomUtils {
 
             if (isFirstBoss) {
               boss.addBehaviour(new UnitSpawner(ENEMY_CONFIGS[bossType].spawner))
-              boss.dropOptions = { isRare: true, isMagical: true, allowDiamonds: true };
+              boss.dropOptions = { isRare: true, isMagical: true, allowDiamonds: true, fixedProgression: true };
               this.bosses = [boss];
 
             } else {
@@ -422,14 +445,14 @@ export class RoomUtils {
       // During every 10 starting minutes of the hour, there's a lever
       // with 3 people required to open the loot room.
       var now = new Date();
-      if (now.getMinutes() <= 10) {
+      // if (now.getMinutes() <= 10) {
         this.addEntity(secredDoorRoom, (position) => {
           const lever = new Lever(position);
           lever.unlock = [secretDoor];
           lever.numPlayersToUnlock = 3;
           return lever;
         });
-      }
+      // }
 
       this.state.addEntity(secretDoor);
     }
@@ -460,14 +483,17 @@ export class RoomUtils {
     ) {
       // -2 because the last room may have a boss
       const lockedRoomIndex = this.rand.intBetween(1, this.rooms.length - 2);
+      const jailRoomIndex = (this.reverseRooms) ? lockedRoomIndex - 1 : lockedRoomIndex;
+
       lockedRoom = this.rooms[lockedRoomIndex];
 
-      const branch = lockedRoom.branches[0];
+      // get a branch that blocks player's (forward) direction
+      const branch = this.rooms[jailRoomIndex].branches[0];
       if (branch) {
         const jail = new Jail({ x: branch.y, y: branch.x }, branch.dir);
         this.state.addEntity(jail);
 
-        const leverRoomIndex = this.rand.intBetween(0, lockedRoomIndex-1);
+        const leverRoomIndex = this.rand.intBetween(0, jailRoomIndex-1);
 
         this.addEntity(this.rooms[leverRoomIndex], (position) => {
           const lever = new Lever(position);
@@ -476,7 +502,7 @@ export class RoomUtils {
         }, true);
 
         // create a higher level enemy inside jails
-        this.addEntity(this.rooms[lockedRoomIndex], (position) => {
+        this.addEntity(lockedRoom, (position) => {
           const enemyList = this.state.config.strongerEnemies;
           const rand = this.realRand.intBetween(0, enemyList.length - 1);
 
@@ -487,7 +513,7 @@ export class RoomUtils {
             { aiDistance: 20 }
           );
           enemy.position.set(position);
-          enemy.dropOptions = { progress: this.state.progress + 10 }
+          enemy.dropOptions = { progress: this.state.progress + 10, fixedProgression: true }
           return enemy;
         });
       }
@@ -504,10 +530,15 @@ export class RoomUtils {
       );
       this.rooms = this.rooms.filter(r => r !== checkPointRoom);
 
-      this.checkPoint = new CheckPoint({
+      let checkpointPosition = {
         x: checkPointRoom.position.y + Math.ceil(checkPointRoom.size.y / 2) - 1,
         y: checkPointRoom.position.x + Math.ceil(checkPointRoom.size.x / 2) - 1,
-      })
+      };
+      if (!this.isValidTile(checkpointPosition)) {
+        checkpointPosition = this.getNextAvailablePosition(checkPointRoom);
+      }
+
+      this.checkPoint = new CheckPoint(checkpointPosition);
       this.state.addEntity(this.checkPoint);
     }
 
@@ -569,20 +600,31 @@ export class RoomUtils {
     //
     if (this.state.progress <= NUM_LEVELS_PER_CHECKPOINT - 1) {
       this.addEntity(this.endRoom, (position) => {
-        const npc = new NPC('warrior-woman');
+        const npc = new NPC('warrior-woman', {}, this.state);
         npc.wanderer = false;
         npc.walkable = false;
         npc.position.set(position);
-        npc.state = this.state;
+
+        let messages: string[] = [];
+        switch (this.state.progress) {
+          case 2: messages = [`First ${NUM_LEVELS_PER_CHECKPOINT - 1} stages are alone`]; break;
+          case 3: messages = [`When you die, you...`, `drop an equipped item.`]; break;
+          case 4: messages = [`Kill enemies to level up`]; break;
+          case 5: messages = [`Open chests for loot`]; break;
+          case 6: messages = [`Kill enemies for loot`]; break;
+          case 7: messages = [`You did it! Good luck!`]; break;
+        }
+
+        npc.generateRotatingMessages(messages);
         return npc;
       }, true);
 
       if (checkPointRoom) {
         this.addEntity(checkPointRoom, (position) => {
-          const npc = new NPC('merchant');
+          const npc = new NPC('merchant', {}, this.state);
           npc.wanderer = false;
           npc.position.set(position);
-          npc.state = this.state;
+          npc.generateRotatingMessages([`Go back to the Castle...`, `and sell your stuff!`,]);;
           return npc;
         }, true);
       }
@@ -1304,10 +1346,21 @@ export class RoomUtils {
       dropOptions.progress = this.state.progress;
     }
 
-    const totalTiers = allTiers.length;
+    const ONE_LEVEL_RATIO = 1 / MAX_LEVELS;
+
     let ratio = dropOptions.progress / MAX_LEVELS;
 
-    const ONE_LEVEL_RATIO = 1 / MAX_LEVELS;
+    // drop item quality!
+    // rand between 0~4
+    // 0 = default `progress` quality.
+    // 1~3 = `progress` minus dropQuality * NUM_LEVELS_PER_CHECKPOINT
+    if (!dropOptions.fixedProgression) {
+      const dropQuality = this.realRand.intBetween(0, 3);
+      if (dropQuality > 0) {
+        ratio = Math.max(ONE_LEVEL_RATIO, ratio - ONE_LEVEL_RATIO * (dropQuality * NUM_LEVELS_PER_CHECKPOINT));
+      }
+    }
+
     if (dropOptions.isRare) {
       ratio += this.realRand.floatBetween(ONE_LEVEL_RATIO, ONE_LEVEL_RATIO * 2);
     }
@@ -1317,6 +1370,7 @@ export class RoomUtils {
     }
 
     // cap max tier
+    const totalTiers = allTiers.length;
     let tier = Math.floor(ratio * totalTiers);
     if (tier > totalTiers - 1) { tier = totalTiers - 1; }
 

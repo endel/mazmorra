@@ -61,7 +61,11 @@ export class DungeonState extends Schema {
   enemies: {[id: string]: Enemy} = {};
 
   rand: RandomSeed; // predicatble random generator
+
   config: MapConfig;
+  oneDirection: boolean;
+  hasConnections: boolean;
+  hasObstacles: boolean;
 
   gridUtils: GridUtils;
   roomUtils: RoomUtils;
@@ -130,15 +134,21 @@ export class DungeonState extends Schema {
 
     } else {
 
+      this.oneDirection = this.config.oneDirection && this.config.oneDirection(this.rand, this.progress);
+      this.hasConnections = this.config.hasConnections && this.config.hasConnections(this.rand, this.progress);
+
+      const obstaclesChance = this.config.obstaclesChance && this.config.obstaclesChance(this.rand, this.progress);
+      this.hasObstacles = obstaclesChance && obstaclesChance > 0;
+
       const generatedDungeon = dungeon.generate(
         this.rand,
         { x: this.width, y: this.height },
         minRoomSize,
         maxRoomSize,
         numRooms,
-        false,  // oneDirection?
-        true,   // hasConnections?
-        false   // hasObstacles?
+        this.oneDirection,   // oneDirection?
+        this.hasConnections, // hasConnections?
+        obstaclesChance      // hasObstacles?
       );
       grid = generatedDungeon[0] as any;
       rooms = generatedDungeon[1] as any;
@@ -432,13 +442,7 @@ export class DungeonState extends Schema {
       allowedPath, // FIXME: we shouldn't create leaks that way!
     );
 
-    // first block is always the starting point.
-    // remove starting point if user have not clicked on it.
-    if (moves.length > 1) {
-      moves.shift();
-    }
-
-    if (allowChangeTarget) {
+    if (allowChangeTarget && moves.length > 0) {
       unit.position.target = targetEntity || this.gridUtils.getEntityAt(destiny.x, destiny.y, Unit, 'isAlive');
 
       let isValidBattleAction = (
@@ -474,6 +478,12 @@ export class DungeonState extends Schema {
       } else {
         unit.attack(null);
       }
+    }
+
+    // first block is always the starting point.
+    // remove starting point if user have not clicked on it.
+    if (moves.length > 1) {
+      moves.shift();
     }
 
     unit.position.moveTo(moves);

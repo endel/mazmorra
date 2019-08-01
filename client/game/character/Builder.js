@@ -7,6 +7,8 @@ import Button from '../../elements/controls/Button'
 import SelectBox from '../../elements/controls/SelectBox'
 import ColorPicker from '../../elements/controls/ColorPicker'
 
+import { i18n } from "../../lang";
+
 export default class CharacterBuilder extends THREE.Object3D {
 
   constructor (hud, camera) {
@@ -16,8 +18,8 @@ export default class CharacterBuilder extends THREE.Object3D {
     this.camera = camera
 
     this.options = {
-      classes: config.classes,
-      hairs: config.hairs
+      classes: config.classes.map(id => i18n(id)),
+      hairs: config.hairs.map(id => i18n(id))
     }
 
     this.character = new Composition()
@@ -62,12 +64,12 @@ export default class CharacterBuilder extends THREE.Object3D {
     this.hairSelection.addEventListener('change', this.onChangeProperty.bind(this, 'hair'))
     this.hud.add(this.hairSelection)
 
-    this.eyeColorPicker = new ColorPicker(HeroSkinBuilder.colors.eye, "Eyes")
+    this.eyeColorPicker = new ColorPicker(HeroSkinBuilder.colors.eye, i18n('eyes'))
     this.eyeColorPicker.position.set(-this.eyeColorPicker.width, this.hairSelection.position.y + this.eyeColorPicker.height +  config.HUD_MARGIN, 0)
     this.eyeColorPicker.addEventListener('change', this.onChangeColor.bind(this, 'eye'))
     this.hud.add(this.eyeColorPicker)
 
-    this.bodyColorPicker = new ColorPicker(HeroSkinBuilder.colors.body, "Body")
+    this.bodyColorPicker = new ColorPicker(HeroSkinBuilder.colors.body, i18n('body'))
     this.bodyColorPicker.position.set(this.eyeColorPicker.width, this.hairSelection.position.y + this.bodyColorPicker.height +  config.HUD_MARGIN, 0)
     this.bodyColorPicker.addEventListener('change', this.onChangeColor.bind(this, 'body'))
     this.hud.add(this.bodyColorPicker)

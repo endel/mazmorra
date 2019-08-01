@@ -32,7 +32,7 @@ export default class Inventory extends THREE.Object3D {
 
     this.exchangeSymbol = ResourceManager.getHUDElement('hud-exchange-icon')
     this.purchaseSlots = new SlotStrip({
-      slots: 6,
+      slots: 12,
       columns: 6,
       inventoryType: "purchase",
       accepts: "sell"

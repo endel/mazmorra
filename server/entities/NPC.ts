@@ -9,6 +9,7 @@ import { Scroll } from "./items/consumable/Scroll";
 import { Key } from "./items/consumable/Key";
 import { NUM_LEVELS_PER_CHECKPOINT, MAX_LEVELS } from "../utils/ProgressionConfig";
 import { PotionPoints } from "./items/consumable/PotionPoints";
+import { ScrollTeleport } from "./items/consumable/ScrollTeleport";
 
 export class NPC extends Player {
   @type("string") kind: string;
@@ -50,30 +51,8 @@ export class NPC extends Player {
     /**
      * Tutorial
      */
-    if (state.progress !== 1 && !isLastLevel) {
-      if (this.kind === "warrior-woman") {
-        if (state.progress < NUM_LEVELS_PER_CHECKPOINT - 1) {
-          this.generateRotatingMessages([
-            `First ${NUM_LEVELS_PER_CHECKPOINT - 1} stages are alone`,
-            `Gain XP by killing mobs`,
-            `Open chests for loot`,
-            `Kill enemies for loot`,
-          ]);
-          state.createTextEvent(this.rotatingMessages.next().value, this.position, 'white', 1000);
-
-        } else if (state.progress == NUM_LEVELS_PER_CHECKPOINT - 1) {
-          state.createTextEvent(`You did it! Good luck!`, this.position, 'white', 1000);
-        }
-      }
-
-      if (this.kind === "merchant") {
-        this.generateRotatingMessages([
-          `Go back to the Castle`,
-          `...sell your stuff!`,
-        ]);
-
-        state.createTextEvent(this.rotatingMessages.next().value, this.position, 'white', 1000);
-      }
+    if (state.progress !== 1 && !isLastLevel && this.rotatingMessages) {
+      state.createTextEvent(this.rotatingMessages.next().value, this.position, 'white', 1000);
       return;
     }
     // end of tutorial!
@@ -92,19 +71,27 @@ export class NPC extends Player {
       const scroll = new Scroll();
       items.push(scroll);
 
+      const scrollTeleport = new ScrollTeleport();
+      items.push(scrollTeleport);
+
       const pointsPotion = new PotionPoints();
       items.push(pointsPotion);
 
       player.setTradingItems(items);
 
     } else if (this.kind === "merchant") {
-      const progress = this.state.roomUtils.realRand.intBetween(Math.max(1, player.latestProgress - 1), player.latestProgress + 1)
+      const itemDropOptions = {
+        progress: this.state.roomUtils.realRand.intBetween(Math.max(1, player.latestProgress - 1), player.latestProgress + 1)
+      };
+
       player.setTradingItems([
-        this.state.roomUtils.createArmor({ progress }),
-        this.state.roomUtils.createBoot({ progress }),
-        this.state.roomUtils.createHelmet({ progress }),
-        this.state.roomUtils.createShield({ progress }),
-        this.state.roomUtils.createWeapon(player.primaryAttribute, { progress }),
+        this.state.roomUtils.createArmor(itemDropOptions),
+        this.state.roomUtils.createBoot(itemDropOptions),
+        this.state.roomUtils.createHelmet(itemDropOptions),
+        this.state.roomUtils.createShield(itemDropOptions),
+        this.state.roomUtils.createWeapon('strength', itemDropOptions),
+        this.state.roomUtils.createWeapon('intelligence', itemDropOptions),
+        this.state.roomUtils.createWeapon('agility', itemDropOptions),
       ]);
 
     } else if (this.kind === "majesty") {
@@ -141,7 +128,9 @@ export class NPC extends Player {
           this.state.roomUtils.createBoot(itemDropOptions),
           this.state.roomUtils.createHelmet(itemDropOptions),
           this.state.roomUtils.createShield(itemDropOptions),
-          this.state.roomUtils.createWeapon(player.primaryAttribute, itemDropOptions),
+          this.state.roomUtils.createWeapon('strength', itemDropOptions),
+          this.state.roomUtils.createWeapon('intelligence', itemDropOptions),
+          this.state.roomUtils.createWeapon('agility', itemDropOptions),
         ].forEach(item => {
           item.premium = true;
           items.push(item);

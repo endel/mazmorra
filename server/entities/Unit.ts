@@ -490,6 +490,11 @@ export class Unit extends Entity {
   onDie (): Unit[] {
     let unitsToIncreaseXP: Unit[] = [];
 
+    // increase hero deaths
+    if ((this as any).hero) {
+      (this as any).hero.deaths++;
+    }
+
     // remove battle action when dead!
     this.action = null;
 
@@ -507,7 +512,14 @@ export class Unit extends Entity {
 
       // distribute XP among units.
       const xpPerUnit = this.getXPWorth() / unitsToIncreaseXP.length;
-      unitsToIncreaseXP.forEach(unit => unit.xp.increment(xpPerUnit / unit.lvl));
+      unitsToIncreaseXP.forEach(unit => {
+        unit.xp.increment(xpPerUnit / unit.lvl);
+
+        // increase hero kills
+        if ((unit as any).hero) {
+          (unit as any).hero.kills++;
+        }
+      });
     }
 
     this.drop();

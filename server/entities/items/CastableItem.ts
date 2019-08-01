@@ -6,5 +6,8 @@ import { ConsumableItem } from "./ConsumableItem";
 export abstract class CastableItem extends ConsumableItem {
   @type("boolean") isCastable = true;
 
-  abstract cast (unit: Unit, state: DungeonState, position?: Point);
+  cast (unit: Unit, state: DungeonState, position?: Point): boolean {
+    this.qty--;
+    return this.qty === 0;
+  }
 }

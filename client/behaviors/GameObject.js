@@ -17,7 +17,7 @@ export default class GameObject extends Behaviour {
 
     this.on('nextPoint', (point) => {
       // teleport!
-      if (this.nextPoint && distance(point, this.nextPoint) > 10) {
+      if (this.nextPoint && distance(point, this.nextPoint) > 6) {
         playSound3D(teleportSound, this.object);
         App.tweens.
           add(this.object.scale).
