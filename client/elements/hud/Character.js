@@ -318,20 +318,22 @@ export default class Character extends THREE.Object3D {
       }
     }
 
+    const damageAttribute = this.getDamageAttribute();
+
     // Level up hints!
-    this.strUpButton.userData.hint = `<strong class="strength">Strength${(data.primaryAttribute === "strength") ? " (primary)" : ""}:</strong><br />
-      ${(data.primaryAttribute === "strength") ? "Increase damage (+1)<br/>" : ""}
-      Increase max hp (+4)<br />
+    this.strUpButton.userData.hint = `<strong class="strength">Strength${(data.primaryAttribute === "strength") ? ` (${i18n('primary')})` : ""}:</strong><br />
+      ${(damageAttribute === "strength") ? `${i18n('increaseDamage')} (+1)<br/>` : ""}
+      ${i18n('increaseMaxHp')} (+4)<br />
     `;
-    this.agiUpButton.userData.hint = `<strong class="agility">Agility${(data.primaryAttribute === "agility") ? " (primary)" : ""}:</strong><br/>
-      ${(data.primaryAttribute === "agility") ? "Increase damage (+1)<br/>" : ""}
-      Increase attack speed (+0.5)<br />
+    this.agiUpButton.userData.hint = `<strong class="agility">Agility${(data.primaryAttribute === "agility") ? ` (${i18n('primary')})` : ""}:</strong><br/>
+      ${(damageAttribute === "agility") ? `${i18n('increaseDamage')} (+1)<br/>` : ""}
+      ${i18n('increaseAttackSpeed')} (+0.5)<br />
     `;
       // Increase attack speed (+0.5)<br/>
-    this.intUpButton.userData.hint = `<strong class="intelligence">Intelligence${(data.primaryAttribute === "intelligence") ? " (primary)" : ""}:</strong><br/>
-      ${(data.primaryAttribute === "intelligence") ? "Increase damage (+1)<br/>" : ""}
-      Increase max mp (+3)<br/>
-      Increase magical damage (+0.1)<br/>
+    this.intUpButton.userData.hint = `<strong class="intelligence">Intelligence${(data.primaryAttribute === "intelligence") ? ` (${i18n('primary')})` : ""}:</strong><br/>
+      ${(damageAttribute === "intelligence") ? `${i18n('increaseDamage')} (+1.1)<br/>` : ""}
+      ${i18n('increaseMaxMp')} (+3)<br/>
+      ${i18n('increaseMagicalDamage')} (+0.1)<br/>
     `;
 
     // var hpMax = (data.attributes.strength + statsModifiers['strength']) * 5;
@@ -355,8 +357,13 @@ export default class Character extends THREE.Object3D {
     this.attackDistanceText.text = statsModifiers.attackDistance.toString();
 
     // damage
-    const damageAttribute = this.getDamageAttribute();
     let damage = data.attributes[damageAttribute] + statsModifiers[damageAttribute];
+
+    // magical damage!
+    if (damageAttribute === "intelligence") {
+      damage += Math.floor((data.attributes.intelligence + statsModifiers.intelligence) * 0.2);
+    }
+
     if (statsModifiers.damage) { damage = `${damage}-${damage + statsModifiers.damage}` }
     this.damageText.text = damage;
 

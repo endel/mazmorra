@@ -337,7 +337,7 @@ export class Unit extends Entity {
 
     // magical damage!
     if (damageAttribute === "intelligence") {
-      damage += (this.attributes.intelligence + this.statsModifiers.intelligence) / 10;
+      damage += (this.attributes.intelligence + this.statsModifiers.intelligence) * 0.2;
     }
 
     return damage

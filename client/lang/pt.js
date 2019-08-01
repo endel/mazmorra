@@ -46,6 +46,13 @@ module.exports = {
   pointsToDistribute: "Pontos para distribuir",
   max: "max",
 
+  primary: "principal",
+  increaseMaxHp: 'Aumenta max. de vida',
+  increaseDamage: 'Aumenta dano',
+  increaseAttackSpeed: 'Aumenta velocidade de ataque',
+  increaseMaxMp: 'Aumenta max. de mana',
+  increaseMagicalDamage: 'Aumenta dano mágico',
+
   // HINTS
   gold: "ouro",
   diamond: "diamantes",
