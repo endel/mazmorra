@@ -85,6 +85,22 @@ export function getMapConfig(progress: number, roomType?: RoomType) {
       maxRoomSize: { x: 6, y: 6 },
       enemies: {}
     }
+  } else if (roomType === "pvp") {
+    // castle / lobby!
+    return {
+      daylight: false,
+      mapkind: (progress === MAX_LEVELS)
+        ? MapKind.INFERNO
+        : MapKind.CASTLE,
+      getMapWidth: (progress: number) => 20,
+      getMapHeight: (progress: number) => 20,
+      oneDirection: (rand, progress) => true,
+      obstaclesChance: (rand, progress) => 1,
+      maxStunTilesPerRoom: 10,
+      minRoomSize: { x: 8, y: 8 },
+      maxRoomSize: { x: 9, y: 9 },
+      enemies: {}
+    }
   } else if (progress === 1 || progress === MAX_LEVELS) {
     // castle / lobby!
     const size = 24;

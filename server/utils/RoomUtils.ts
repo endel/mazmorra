@@ -542,17 +542,6 @@ export class RoomUtils {
       this.state.addEntity(this.checkPoint);
     }
 
-    // Add StunTiles!
-    if (this.state.config.maxStunTilesPerRoom) {
-      for (let i=0; i<this.rand.intBetween(0, this.state.config.maxStunTilesPerRoom); i++) {
-        this.addEntity(this.startRoom, (position) => {
-          const stunTile = new StunTile(position);
-          stunTile.state = this.state;
-          return stunTile;
-        }, true);
-      }
-    }
-
     // // TESTING TELEPORT TILE
     // let startTelerport: TeleportTile;
     // this.addEntity(this.startRoom, (position) => {
@@ -654,6 +643,17 @@ export class RoomUtils {
     this.state.daylight = false;
 
     this.rooms.forEach(room => {
+      // add StunTiles!
+      if (this.state.config.maxStunTilesPerRoom) {
+        for (let i = 0; i < this.rand.intBetween(0, this.state.config.maxStunTilesPerRoom); i++) {
+          this.addEntity(room, (position) => {
+            const stunTile = new StunTile(position);
+            stunTile.state = this.state;
+            return stunTile;
+          }, true);
+        }
+      }
+
       for (let i=0; i<2; i++) {
         if (this.realRand.intBetween(0, 1) === 0) {
           this.addRandomAesthetics(room);
@@ -719,6 +719,17 @@ export class RoomUtils {
     ) {
       this.addEntity(room, (position) => new Fountain(position))
       this.hasFountain = true;
+    }
+
+    // add StunTiles!
+    if (this.state.config.maxStunTilesPerRoom) {
+      for (let i = 0; i < this.rand.intBetween(0, this.state.config.maxStunTilesPerRoom); i++) {
+        this.addEntity(room, (position) => {
+          const stunTile = new StunTile(position);
+          stunTile.state = this.state;
+          return stunTile;
+        }, true);
+      }
     }
 
     // if (this.hasPositionsRemaining(room)) {
