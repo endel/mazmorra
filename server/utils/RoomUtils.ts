@@ -445,14 +445,14 @@ export class RoomUtils {
       // During every 10 starting minutes of the hour, there's a lever
       // with 3 people required to open the loot room.
       var now = new Date();
-      // if (now.getMinutes() <= 10) {
+      if (now.getMinutes() <= 10) {
         this.addEntity(secredDoorRoom, (position) => {
           const lever = new Lever(position);
           lever.unlock = [secretDoor];
           lever.numPlayersToUnlock = 3;
           return lever;
         });
-      // }
+      }
 
       this.state.addEntity(secretDoor);
     }
@@ -542,12 +542,16 @@ export class RoomUtils {
       this.state.addEntity(this.checkPoint);
     }
 
-    // // TESTING STUN TILE
-    // this.addEntity(this.startRoom, (position) => {
-    //   const stunTile = new StunTile(position);
-    //   stunTile.state = this.state;
-    //   return stunTile;
-    // }, true);
+    // Add StunTiles!
+    if (this.state.config.maxStunTilesPerRoom) {
+      for (let i=0; i<this.rand.intBetween(0, this.state.config.maxStunTilesPerRoom); i++) {
+        this.addEntity(this.startRoom, (position) => {
+          const stunTile = new StunTile(position);
+          stunTile.state = this.state;
+          return stunTile;
+        }, true);
+      }
+    }
 
     // // TESTING TELEPORT TILE
     // let startTelerport: TeleportTile;

@@ -22,9 +22,10 @@ export type MapConfig = {
   minRoomSize: {x: number, y: number},
   maxRoomSize: {x: number, y: number},
 
-  oneDirection?: (rand: RandomSeed, progress) => boolean;
-  hasConnections?: (rand: RandomSeed, progress) => boolean;
-  obstaclesChance?: (rand: RandomSeed, progress) => number;
+  oneDirection?: (rand: RandomSeed, progress) => boolean,
+  hasConnections?: (rand: RandomSeed, progress) => boolean,
+  obstaclesChance?: (rand: RandomSeed, progress) => number,
+  maxStunTilesPerRoom?: number,
 
   enemies: string[],
   strongerEnemies: string[],
@@ -135,6 +136,7 @@ export const MAP_CONFIGS: MapConfig[] = [
     getMapHeight: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     oneDirection: (rand, progress: number) => (progress % 2 === 1),
     obstaclesChance: (rand, progress) => rand.intBetween(4, 6),
+    maxStunTilesPerRoom: 2,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 8, y: 8 },
     // maxRoomSize: { x: 12, y: 12 },
@@ -149,6 +151,7 @@ export const MAP_CONFIGS: MapConfig[] = [
     getMapWidth: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     getMapHeight: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     oneDirection: (rand, progress: number) => rand.intBetween(0, 2) === 0,
+    maxStunTilesPerRoom: 2,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 8, y: 8 },
     enemies: ['skeleton-1', 'skeleton-2', 'skeleton-3'],
@@ -162,6 +165,7 @@ export const MAP_CONFIGS: MapConfig[] = [
     getMapWidth: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     getMapHeight: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     oneDirection: (rand, progress: number) => rand.intBetween(0, 3) === 0,
+    maxStunTilesPerRoom: 3,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 8, y: 8 },
     enemies: ['goblin', 'goblin-2', 'goblin-3'],
@@ -174,6 +178,7 @@ export const MAP_CONFIGS: MapConfig[] = [
     mapkind: MapKind.INFERNO,
     getMapWidth: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     getMapHeight: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    maxStunTilesPerRoom: 3,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: ['lava-ogre', 'lava-totem', 'beholder'],
@@ -187,6 +192,7 @@ export const MAP_CONFIGS: MapConfig[] = [
     mapkind: MapKind.INFERNO,
     getMapWidth: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     getMapHeight: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    maxStunTilesPerRoom: 4,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
     enemies: ['demon', 'lava-totem', 'beholder'],
