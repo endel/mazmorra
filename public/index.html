@@ -36,6 +36,8 @@
 
     <script>
       window.isAdsAllowed = function() {
+        if (window.NODE_ENV === "development") { return false; }
+
         var adsNotAllowedFor = ['kongregate.com', 'ungrounded.net', 'localhost']
         var referrer = document.referrer;
         for (var i = 0; i < adsNotAllowedFor.length; i++) {
@@ -200,7 +202,7 @@
       <p>Here are the settings!</p>
     </section>
 
-    <script src="bundle.js?v=7"></script>
+    <script src="bundle.js?v=8"></script>
     <script>
       var myRequest = new Request('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', { method: 'HEAD', mode: 'no-cors' });
 

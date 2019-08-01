@@ -241,16 +241,22 @@ export class RoomUtils {
       const northTile = this.state.grid[(position.x - 1) + this.state.width * position.y];
       const westTile = this.state.grid[(position.x) + this.state.width * (position.y - 1)];
 
-      if ((northTile & helpers.TILE_TYPE.WALL) && (northTile & helpers.DIRECTION.NORTH)) {
+      if (
+        (northTile & helpers.TILE_TYPE.WALL) && (northTile & helpers.DIRECTION.NORTH) &&
+        !(northTile & helpers.DIRECTION.WEST) // corners not allowed
+      ) {
         possiblePositions.push(position)
 
-      } else if ((westTile & helpers.TILE_TYPE.WALL) && (westTile & helpers.DIRECTION.WEST)) {
+      } else if (
+        (westTile & helpers.TILE_TYPE.WALL) && (westTile & helpers.DIRECTION.WEST) &&
+        !(westTile & helpers.DIRECTION.NORTH) // corners not allowed
+      ) {
         possiblePositions.push(position)
       }
     }
 
-    var rand = this.rand.intBetween(0, possiblePositions.length-1)
-    positions.splice(positions.indexOf( possiblePositions[rand] ), 1)
+    var rand = this.rand.intBetween(0, possiblePositions.length - 1)
+    positions.splice(positions.indexOf(possiblePositions[rand]), 1)
 
     return possiblePositions[rand]
   }
@@ -265,16 +271,18 @@ export class RoomUtils {
 
       for (var x = 1; x < room.size.x - 1; x++) {
         for (var y = 1; y < room.size.y - 1; y++) {
-          const position = { x: room.position.y + y , y: room.position.x + x };
+          if (room.tiles[x][y] & helpers.TILE_TYPE.FLOOR) {
+            const position = { x: room.position.y + y, y: room.position.x + x };
 
-          // prevent from placing items in the branches of the rooms.
-          // because some of them can block move
-          const branchAt = branches.findIndex(branch => branch.y === position.x && branch.x === position.y);
-          if (branchAt === -1) {
-            positions.push(position);
+            // prevent from placing items in the branches of the rooms.
+            // because some of them can block move
+            const branchAt = branches.findIndex(branch => branch.y === position.x && branch.x === position.y);
+            if (branchAt === -1) {
+              positions.push(position);
 
-          } else {
-            branches.splice(branchAt, 1);
+            } else {
+              branches.splice(branchAt, 1);
+            }
           }
         }
       }

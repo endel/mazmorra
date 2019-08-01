@@ -16,6 +16,7 @@ import { applySettings } from "./elements/hud/SettingsOverlay";
 import { client, getHeroId, getRoomId } from "./core/network";
 
 window.app = App;
+window.NODE_ENV = process.env.NODE_ENV;
 
 /**
  * Report errors remotely!

@@ -7,7 +7,6 @@ import login from '../web/login'
 
 import config from '../config'
 import { getLightPoolCount, getLightFromPool, removeLight } from '../utils';
-import { PlayerPrefs } from '../core/PlayerPrefs';
 import { setHeroId } from '../core/network';
 
 export default class Game {

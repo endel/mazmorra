@@ -8,7 +8,11 @@ var helpers = require('./helpers')
 
 var dungeon = {
 
-    generate: function(rand, gridSize, minRoomSize, maxRoomSize, maxRooms) {
+    generate: function(rand, gridSize, minRoomSize, maxRoomSize, maxRooms, oneDirection, hasConnections, hasObstacles) {
+        if (oneDirection === undefined) { oneDirection = false; }
+        if (hasConnections === undefined) { hasConnections = true; }
+        if (hasObstacles === undefined) { hasObstacles = false; }
+
         // 1) Create the grid
         var grid = [];
         for(var x = 0; x < gridSize.x; ++x) {
@@ -20,28 +24,43 @@ var dungeon = {
 
         // 2) Create a random sized room in the middle of the grid
         // 3) Add the new room to a list of all created rooms.
-        var rooms = [this.generateRoom(rand, minRoomSize, maxRoomSize)];
-        this.placeRoom(
-            grid,
-            rooms[0],
-            (gridSize.x / 2) - (rooms[0].size.x / 2),
-            (gridSize.y / 2) - (rooms[0].size.y / 2)
-        );
+        var rooms = [this.generateRoom(rand, minRoomSize, maxRoomSize, hasObstacles)];
+
+        if (oneDirection) {
+            this.placeRoom(
+                grid,
+                rooms[0],
+                0,
+                0
+            );
+
+        } else {
+            this.placeRoom(
+                grid,
+                rooms[0],
+                (gridSize.x / 2) - (rooms[0].size.x / 2),
+                (gridSize.y / 2) - (rooms[0].size.y / 2)
+            );
+
+        }
 
         var area = gridSize.x * gridSize.y,
             roomPos = { x: 0, y: 0 };
 
+        var latestRoom = rooms[0];
+
         for(var i = 0; i < area; ++i) {
-            if(maxRooms && rooms.length === maxRooms)
+            if (maxRooms && rooms.length === maxRooms) {
                 break;
+            }
 
             // 4) Pick a random room from the list of all created rooms.
             // 5) Pick a random wall tile from the selected room.
-            var branchPos = this.getBranchPosition(rand, grid, rooms),
+              var branchPos = this.getBranchPosition(rand, grid, (oneDirection && rooms.length > 0) ? [latestRoom] : rooms),
                 direction = branchPos.dir;
 
             // 6) Generate a new random sized room.
-            var room = this.generateRoom(rand, minRoomSize, maxRoomSize);
+            var room = this.generateRoom(rand, minRoomSize, maxRoomSize, hasObstacles);
 
             roomPos.x = 0;
             roomPos.y = 0;
@@ -74,13 +93,16 @@ var dungeon = {
             // 7) See if there is space for the new room next to the selected wall tile of the selected room.
             // 8) If yes, continue. If no, go back to step 4.
             if(this.isSpaceForRoom(grid, gridSize, room, roomPos)) {
-
                 // 9) Dig out the new room to add it to part of the dungeon, and add it to list of completed rooms.
+                latestRoom = room;
                 rooms.push(room);
+
                 this.placeRoom(grid, room, roomPos.x, roomPos.y);
                 // 10) Turn the wall tile picked in step 5 into a door way to make our new room accessible.
 
-                room.branches = this.connectRooms(grid, branchPos);
+                if (hasConnections) {
+                    room.branches = this.connectRooms(grid, branchPos);
+                }
             }
 
             // 11) Go back to step 4 until the dungeon is complete.
@@ -92,7 +114,7 @@ var dungeon = {
         return [grid, rooms];
     },
 
-    generateRoom: function(rand, minSize, maxSize) {
+    generateRoom: function(rand, minSize, maxSize, hasObstacles) {
         var room = new helpers.Room(),
             sx = room.size.x = rand.intBetween(minSize.x, maxSize.x),
             sy = room.size.y = rand.intBetween(minSize.y, maxSize.y),
@@ -136,6 +158,56 @@ var dungeon = {
             }
         }
 
+        if (hasObstacles) {
+          const halfX = Math.floor(tiles.length / 2) - 1;
+          const initMidX = rand.intBetween(2, halfX);
+          const endMidX = initMidX + rand.intBetween(2, halfX);
+
+          const halfY = Math.floor(tiles[0].length / 2) - 1;
+          const initMidY = rand.intBetween(2, halfY);
+          const endMidY = initMidY + rand.intBetween(2, halfY);
+
+          //
+          // ADD HOLES ON ROOMS?
+          //
+          if (sx > 6 || sy > 6) {
+
+            for (let x = initMidX; x < endMidX; x++) {
+              for (let y = initMidY; y < endMidY; y++) {
+                var type = helpers.TILE_TYPE.WALL,
+                  dir = helpers.DIRECTION.NONE,
+                  corner = (x === initMidX && (y === initMidY) || y === endMidY - 1)
+                    || (x === initMidY && (x === initMidX) || x === endMidX - 1);
+
+                if (x === initMidX) {
+                  dir = dir | helpers.DIRECTION.EAST;
+                } else if (x === endMidX - 1) {
+                  dir = dir | helpers.DIRECTION.WEST;
+                }
+
+                if (y === initMidY) {
+                  dir = dir | helpers.DIRECTION.SOUTH;
+                } else if (y === endMidY - 1) {
+                  dir = dir | helpers.DIRECTION.NORTH;
+                }
+
+
+                if (dir === helpers.DIRECTION.NONE) {
+                  corner = true;
+                  type = helpers.TILE_TYPE.EMPTY;
+                }
+
+                if (type & helpers.TILE_TYPE.WALL) {
+                  walls.push({ x: x, y: y, dir: dir, corner: true });
+                }
+
+                tiles[x][y] = type | dir | (corner ? helpers.CORNER : 0);
+              }
+            }
+          }
+        }
+
+
         return room;
     },
     placeRoom: function(grid, room, px, py) {
@@ -164,6 +236,7 @@ var dungeon = {
 
         return { x: wall.x + room.position.x, y: wall.y + room.position.y, dir: wall.dir };
     },
+
     isSpaceForRoom: function(grid, gridSize, room, roomPos) {
         var mx = roomPos.x + room.size.x,
             my = roomPos.y + room.size.y;

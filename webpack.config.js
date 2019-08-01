@@ -14,11 +14,14 @@ console.log("PRODUCTION?", (mode === "production"));
 
 module.exports = {
   mode,
-  entry: './client/main.js',
+  entry: {
+    bundle: './client/main.js',
+    dungeon_viewer: './client/dungeon_viewer.js'
+  },
 
   output: {
     path: path.join(__dirname, 'public'),
-    filename: 'bundle.js'
+    // filename: 'bundle.js'
   },
 
   devtool: 'source-map',

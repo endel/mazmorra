@@ -119,6 +119,8 @@ export class DungeonState extends Schema {
     let grid: any[][];
     let rooms: DungeonRoom[];
 
+    let now = Date.now();
+
     if (roomType === "truehell") {
       const mapDungeon = parseMapTemplate(TrueHell.mapTemplate, TrueHell.symbols, TrueHell.keys);
       grid = mapDungeon.grid;
@@ -127,7 +129,17 @@ export class DungeonState extends Schema {
       this.width = grid[0].length;
 
     } else {
-      const generatedDungeon = dungeon.generate(this.rand, { x: this.width, y: this.height }, minRoomSize, maxRoomSize, numRooms);
+
+      const generatedDungeon = dungeon.generate(
+        this.rand,
+        { x: this.width, y: this.height },
+        minRoomSize,
+        maxRoomSize,
+        numRooms,
+        false,  // oneDirection?
+        true,   // hasConnections?
+        false   // hasObstacles?
+      );
       grid = generatedDungeon[0] as any;
       rooms = generatedDungeon[1] as any;
     }
@@ -181,6 +193,8 @@ export class DungeonState extends Schema {
       // regular room
       this.roomUtils.populateRooms();
     }
+
+    console.log("Time to populate:", (Date.now() - now) + "ms");
   }
 
   addEntity (entity: Entity) {

@@ -148,7 +148,6 @@ export default class CharacterBuilder extends THREE.Object3D {
     this.hairColorPicker.destroy();
 
     this.hud.remove(this.hairSelection)
-    debugger;
     this.hairSelection.destroy();
 
     this.hud.remove(this.eyeColorPicker)

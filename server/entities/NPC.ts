@@ -109,9 +109,8 @@ export class NPC extends Player {
 
     } else if (this.kind === "majesty") {
       this.generateRotatingMessages((!isLastLevel) ? [
-        `I don't reveal the source of my weapons.`,
         `The prophecy is true.`,
-        `You've got the diamonds?`,
+        `You've got the gems?`,
         `Demons are amongst us`,
       ] : [
         `What happened?`,
