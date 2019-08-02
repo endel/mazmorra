@@ -102,6 +102,7 @@ var helpers = {
 
       // TRAPS
       STUN_TILE: 'stun-tile',
+      STUN_TILE_GOO: 'stun-tile-goo',
       TELEPORT_TILE: 'teleport-tile',
 
       // BOOTS

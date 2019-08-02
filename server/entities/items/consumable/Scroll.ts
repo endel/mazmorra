@@ -19,7 +19,7 @@ export class Scroll extends ConsumableItem {
   // you cannot use this.
   use(player, state) {
     if (state.progress === 1) {
-      state.createTextEvent(`Not allowed here.`, player.position, 'white', 100);
+      state.createTextEvent('notAllowedHere', player.position, 'white', 100);
       return false;
     }
 

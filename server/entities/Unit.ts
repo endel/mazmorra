@@ -239,7 +239,7 @@ export class Unit extends Entity {
 
   useSkill (skillName: string) {
     if (this.state.progress === 1) {
-      this.state.createTextEvent(`Not allowed here.`, this.position, 'white', 100);
+      this.state.createTextEvent('notAllowedHere', this.position, 'white', 100);
       return;
     }
 

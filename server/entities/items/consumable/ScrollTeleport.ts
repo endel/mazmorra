@@ -25,7 +25,7 @@ export class ScrollTeleport extends CastableItem {
   use(player, state) { return false; }
 
   getPrice() {
-    return 200;
+    return 400;
   }
 
 }

@@ -1,6 +1,7 @@
 import { Enemy } from "./Enemy";
 import { DBHero } from "../db/Hero";
 import { StatsModifiers, Unit } from "./Unit";
+import { SlimeBoss } from "./behaviours/bosses/SlimeBoss";
 
 export class Boss extends Enemy {
   thingsToUnlockWhenDead: any[] = [];
@@ -10,7 +11,10 @@ export class Boss extends Enemy {
 
     this.isBoss = true;
 
-    // this.hp.current = 1;
+    // FIXME: improve this!
+    if (kind === 'slime-big') {
+      this.addBehaviour(new SlimeBoss());
+    }
   }
 
   get aiDistance () {

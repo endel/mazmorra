@@ -132,6 +132,7 @@ export default class Factory {
         break;
 
       case helpers.ENTITIES.STUN_TILE:
+      case helpers.ENTITIES.STUN_TILE_GOO:
         element = new StunTile(data);
         break;
 

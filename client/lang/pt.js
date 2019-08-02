@@ -11,6 +11,15 @@ module.exports = {
   dead: "Morto",
   evaded: "Escapou",
 
+  // Tutorial
+  upgradeAttributes: "Aumente os seus atributos!",
+  usePotionsToRestoreHP: "Use poções para recuperar sua vida",
+  tutorialPortalSellItems: "Volte para o Castelo para vender seus itens!",
+
+  // Server messages
+  noCheckpoints: "Sem checkpoints",
+  notAllowedHere: "Não é permitido aqui.",
+
   // NAVIGATION
   forwardTo: "Avançar para",
   backTo: "Voltar para",
@@ -60,7 +69,7 @@ module.exports = {
   magical: "Mágico",
 
   damageAttribute: "Atributo de dano",
-  progressRequired: 'Equipável à partir de',
+  progressRequired: 'Equipável à partir da masmorra',
 
   use: "Usar",
 

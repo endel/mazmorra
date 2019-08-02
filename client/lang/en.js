@@ -11,6 +11,14 @@ module.exports = {
   dead: "Dead",
   evaded: "Evaded",
 
+  // Tutorial
+  upgradeAttributes: "Upgrade your attributes!",
+  usePotionsToRestoreHP: "Use Potions to restore your health",
+
+  // Server messages
+  noCheckpoints: "No checkpoints",
+  notAllowedHere: "Not allowed here.",
+
   // NAVIGATION
   forwardTo: "Forward to",
   backTo: "Back to",

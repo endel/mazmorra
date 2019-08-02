@@ -40,6 +40,8 @@ import { UnitSpawner } from "../entities/behaviours/UnitSpawner";
 import { InfernoPortal } from "../entities/interactive/InfernoPortal";
 import { StunTile } from "../entities/interactive/StunTile";
 import { TeleportTile } from "../entities/interactive/TeleportTile";
+import { ScrollTeleport } from "../entities/items/consumable/ScrollTeleport";
+import { ConsumableItem } from "../entities/items/ConsumableItem";
 
 const ALL_BOOTS = [
   helpers.ENTITIES.BOOTS_1,
@@ -1081,7 +1083,11 @@ export class RoomUtils {
         const itemType = this.realRand.intBetween(0, 5);
         switch (itemType) {
           case 0:
-            itemToDrop = new Scroll();
+            const scrollToDrop: typeof ConsumableItem = (this.realRand.intBetween(0, 20) === 0)
+              ? ScrollTeleport
+              : Scroll;
+
+            itemToDrop = new scrollToDrop();
             break;
 
           case 1:
@@ -1372,6 +1378,7 @@ export class RoomUtils {
     if (!dropOptions.fixedProgression) {
       const dropQuality = this.realRand.intBetween(0, 3);
       if (dropQuality > 0) {
+        console.log("QUALITY DROPED BY", dropQuality);
         ratio = Math.max(ONE_LEVEL_RATIO, ratio - ONE_LEVEL_RATIO * (dropQuality * NUM_LEVELS_PER_CHECKPOINT));
       }
     }

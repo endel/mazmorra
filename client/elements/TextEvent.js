@@ -1,6 +1,7 @@
 'use strict';
 
 import { SpriteText2D, textAlign } from 'three-text2d'
+import { i18n } from '../lang';
 
 const TEXT_MAX_LENGTH = 24;
 
@@ -35,7 +36,7 @@ export default class TextEvent extends THREE.Object3D {
     this.userData = data
 
     const text = (data.text.length > TEXT_MAX_LENGTH) ? `${data.text.substr(0, TEXT_MAX_LENGTH) }...` : data.text;
-    this.text = new SpriteText2D(text, {
+    this.text = new SpriteText2D(i18n(text), {
       font: "40px primary",
       fillStyle: `#${color.getHexString()}`,
       antialias: false,

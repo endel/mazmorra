@@ -1,6 +1,7 @@
 import { Behaviour } from 'behaviour.js'
 import lerp from 'lerp'
 import { createHint } from '../elements/hud/Hint';
+import { i18n } from '../lang';
 
 export default class HUDController extends Behaviour {
 
@@ -71,7 +72,7 @@ export default class HUDController extends Behaviour {
     if (data.hp.current < data.hp.max / 2) {
       if (!this.hpHint) {
         this.hpHint = createHint();
-        this.hpHint.show("Use Potions to restore your health", this.object.shortcutHpPotion);
+        this.hpHint.show(i18n('usePotionsToRestoreHP'), this.object.shortcutHpPotion);
       }
 
     } else if (this.hpHint) {
@@ -87,7 +88,7 @@ export default class HUDController extends Behaviour {
       if (!this.lvlUpHint) {
 
         this.lvlUpHint = createHint();
-        this.lvlUpHint.show("Upgrade your attributes!", this.object.character.lvlUpButton);
+        this.lvlUpHint.show(i18n('upgradeAttributes'), this.object.character.lvlUpButton);
 
         this.lvlUpHintDestroy = () => {
           if (this.lvlUpHint) {
@@ -118,7 +119,7 @@ export default class HUDController extends Behaviour {
           this.hasSeenPortalTutorial = true;
 
           this.usePortalHint = createHint();
-          this.usePortalHint.show("Go back to Castle to sell your items", this.object.shortcutScroll);
+          this.usePortalHint.show(i18n('tutorialPortalSellItems'), this.object.shortcutScroll);
 
           this.usePortalHintDestroy = () => {
             if (this.usePortalHint) {

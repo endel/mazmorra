@@ -321,17 +321,16 @@ export default class Character extends THREE.Object3D {
     const damageAttribute = this.getDamageAttribute();
 
     // Level up hints!
-    this.strUpButton.userData.hint = `<strong class="strength">Strength${(data.primaryAttribute === "strength") ? ` (${i18n('primary')})` : ""}:</strong><br />
+    this.strUpButton.userData.hint = `<strong class="strength">${i18n('strength')}${(data.primaryAttribute === "strength") ? ` (${i18n('primary')})` : ""}</strong><br />
       ${(damageAttribute === "strength") ? `${i18n('increaseDamage')} (+1)<br/>` : ""}
       ${i18n('increaseMaxHp')} (+4)<br />
     `;
-    this.agiUpButton.userData.hint = `<strong class="agility">Agility${(data.primaryAttribute === "agility") ? ` (${i18n('primary')})` : ""}:</strong><br/>
+    this.agiUpButton.userData.hint = `<strong class="agility">${i18n('agility')}${(data.primaryAttribute === "agility") ? ` (${i18n('primary')})` : ""}</strong><br/>
       ${(damageAttribute === "agility") ? `${i18n('increaseDamage')} (+1)<br/>` : ""}
       ${i18n('increaseAttackSpeed')} (+0.5)<br />
     `;
-      // Increase attack speed (+0.5)<br/>
-    this.intUpButton.userData.hint = `<strong class="intelligence">Intelligence${(data.primaryAttribute === "intelligence") ? ` (${i18n('primary')})` : ""}:</strong><br/>
-      ${(damageAttribute === "intelligence") ? `${i18n('increaseDamage')} (+1.1)<br/>` : ""}
+    this.intUpButton.userData.hint = `<strong class="intelligence">${i18n('intelligence')}${(data.primaryAttribute === "intelligence") ? ` (${i18n('primary')})` : ""}</strong><br/>
+      ${(damageAttribute === "intelligence") ? `${i18n('increaseDamage')} (+1)<br/>` : ""}
       ${i18n('increaseMaxMp')} (+3)<br/>
       ${i18n('increaseMagicalDamage')} (+0.1)<br/>
     `;

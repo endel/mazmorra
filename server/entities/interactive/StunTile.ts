@@ -2,8 +2,8 @@ import { Interactive } from "../Interactive";
 import helpers from "../../../shared/helpers";
 
 export class StunTile extends Interactive {
-  constructor (position) {
-    super(helpers.ENTITIES.STUN_TILE, position)
+  constructor (position, type: string = helpers.ENTITIES.STUN_TILE) {
+    super(type, position)
 
     this.walkable = true;
     this.activateOnWalkThrough = true;

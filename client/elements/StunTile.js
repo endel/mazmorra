@@ -9,7 +9,7 @@ export default class StunTile extends THREE.Object3D {
 
     this.material = new THREE.MeshPhongMaterial({
       flatShading: true,
-      map: ResourceManager.get(`traps-stun-tile`),
+      map: ResourceManager.get(`traps-${data.type}`),
       side: THREE.FrontSide,
       transparent: true
     });

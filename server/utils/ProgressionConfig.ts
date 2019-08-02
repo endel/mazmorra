@@ -369,7 +369,7 @@ export const ENEMY_CONFIGS: {
     },
     modifiers: {
       damage: 8,
-      hp: 200
+      hp: 1500
     }
   },
   //////////
