@@ -1125,7 +1125,10 @@ export class RoomUtils {
   createItemByDropOptions (dropOptions: ItemDropOptions) {
     let itemToDrop: Item;
 
-    const minRandValue = (dropOptions.allowDiamonds) ? 0 : 1;
+    // TODO: after beta, reduce chance of getting diamonds!
+    // const minRandValue = (dropOptions.allowDiamonds) ? 0 : 1;
+
+    const minRandValue = 0;
     const itemType = this.realRand.intBetween(minRandValue, 5);
 
     switch (itemType) {
