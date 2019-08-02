@@ -15,7 +15,7 @@ module.exports = {
     dark: 0x000000,    // black
     grass: 0x002a0d,   // green
     rock: 0x1e2129,    // gray
-    ice: 0x000c4c,     // blue
+    ice: 0x387493,     // blue
     inferno: 0x440000, // red
     castle: 0x443434   // brown
   },

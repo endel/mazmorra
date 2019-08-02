@@ -14,7 +14,6 @@ import { Item }  from "../entities/Item";
 
 // items
 import { Gold }  from "../entities/items/Gold";
-import { Potion, POTION_1_MODIFIER, POTION_2_MODIFIER, POTION_3_MODIFIER, POTION_4_MODIFIER }  from "../entities/items/consumable/Potion";
 
 // interactive
 import { Door, DoorDestiny, DoorProgress }  from "../entities/interactive/Door";
@@ -42,6 +41,9 @@ import { StunTile } from "../entities/interactive/StunTile";
 import { TeleportTile } from "../entities/interactive/TeleportTile";
 import { ScrollTeleport } from "../entities/items/consumable/ScrollTeleport";
 import { ConsumableItem } from "../entities/items/ConsumableItem";
+import { HpPotion } from "../entities/items/consumable/HpPotion";
+import { MpPotion } from "../entities/items/consumable/MpPotion";
+import { XpPotion } from "../entities/items/consumable/XpPotion";
 
 const ALL_BOOTS = [
   helpers.ENTITIES.BOOTS_1,
@@ -149,13 +151,6 @@ const ALL_WEAPONS = [
   helpers.ENTITIES.WEAPON_10,
 ];
 
-const ALL_POTION_MODIFIERS = [
-  POTION_1_MODIFIER,
-  POTION_2_MODIFIER,
-  POTION_3_MODIFIER,
-  POTION_4_MODIFIER,
-];
-
 export interface DungeonRoom {
   position: Point;
   size: Point;
@@ -199,6 +194,7 @@ export class RoomUtils {
   endDoor: Door;
 
   hasSecretDoor: boolean = false;
+  hasJailRoom: boolean = false;
 
   isBossDungeon: boolean = false;
   bosses?: Boss[];
@@ -206,6 +202,7 @@ export class RoomUtils {
   hasFountain: boolean = false;
   checkPoint?: CheckPoint;
 
+  maxEnemyLevel = Math.ceil(MAX_LEVELS / 4);
   difficultyGap: number;
 
   constructor (rand, state, rooms: DungeonRoom[]) {
@@ -214,6 +211,8 @@ export class RoomUtils {
     this.rooms = rooms
 
     this.isBossDungeon = isBossMap(this.state.progress);
+    this.hasJailRoom = (this.rooms.length > 3 && (this.state.progress % 2 === 0));
+
     this.difficultyGap = Math.floor(state.progress / NUM_LEVELS_PER_MAP);
 
     this.cacheRoomData();
@@ -221,7 +220,6 @@ export class RoomUtils {
     if (state.oneDirection) {
       // reverse one direction rooms
       if (rand.intBetween(0, 1) === 1) {
-        // console.log("ROOMS REVERSED!");
         this.reverseRooms = true;
         this.rooms.reverse();
       }
@@ -238,7 +236,9 @@ export class RoomUtils {
       //   : this.rooms[this.rooms.length - 1];
 
     } else {
-      this.startRoom = (rand.intBetween(0, 1) === 0) ? this.rooms[0] : this.getRandomRoom();
+      this.startRoom = (!this.hasJailRoom && rand.intBetween(0, 1) === 0)
+        ? this.getRandomRoom()
+        : this.rooms[0];
       this.endRoom = this.getRandomRoom([this.startRoom]);
     }
 
@@ -479,10 +479,7 @@ export class RoomUtils {
      * JAIL TIME
      */
     let lockedRoom: DungeonRoom;
-    if (
-      this.rooms.length > 3 &&
-      (this.state.progress % 2 === 0)
-    ) {
+    if (this.hasJailRoom) {
       // -2 because the last room may have a boss
       const lockedRoomIndex = this.rand.intBetween(1, this.rooms.length - 2);
       const jailRoomIndex = (this.reverseRooms) ? lockedRoomIndex - 1 : lockedRoomIndex;
@@ -521,6 +518,9 @@ export class RoomUtils {
       }
     }
 
+    // populate teleports before checkpoint
+    this.populateTeleports();
+
     // create checkpoint after "JAIL TIME", so we prevent placing checking after a locked room.
     let checkPointRoom: DungeonRoom;
 
@@ -543,22 +543,6 @@ export class RoomUtils {
       this.checkPoint = new CheckPoint(checkpointPosition);
       this.state.addEntity(this.checkPoint);
     }
-
-    // // TESTING TELEPORT TILE
-    // let startTelerport: TeleportTile;
-    // this.addEntity(this.startRoom, (position) => {
-    //   startTelerport = new TeleportTile(position);
-    //   startTelerport.state = this.state;
-    //   return startTelerport;
-    // }, true);
-
-    // this.addEntity(this.endRoom, (position) => {
-    //   const endTeleportTile = new TeleportTile(position);
-    //   endTeleportTile.destiny = startTelerport;
-    //   startTelerport.destiny = endTeleportTile;
-    //   endTeleportTile.state = this.state;
-    //   return endTeleportTile;
-    // }, true);
 
     // // TESTING INFERNO PORTAL
     // this.addEntity(this.endRoom, (position) => {
@@ -635,6 +619,39 @@ export class RoomUtils {
     });
   }
 
+  populateTeleports () {
+    if (!this.state.hasConnections) {
+      let previousTeleport: TeleportTile;
+      let allTeleports: TeleportTile[] = [];
+      for (let i = 0; i <= this.rooms.length; i++) {
+        // last teleport!
+        if (i === this.rooms.length) {
+          const destiny = allTeleports[this.realRand.intBetween(0, allTeleports.length - 1)];
+          previousTeleport.destiny = (destiny !== previousTeleport)
+            ? destiny
+            : allTeleports[0];
+
+        } else {
+          // TESTING TELEPORT TILE
+          this.addEntity(this.rooms[i], (position) => {
+            const teleport = new TeleportTile(position);
+            teleport.state = this.state;
+
+            if (previousTeleport) {
+              previousTeleport.destiny = teleport;
+            }
+            previousTeleport = teleport;
+
+            allTeleports.push(teleport);
+
+            return teleport;
+          }, true);
+
+        }
+      }
+    }
+  }
+
   populatePVP () {
     // entrance
     this.state.addEntity(new Door(this.startPosition, new DoorDestiny({
@@ -662,6 +679,8 @@ export class RoomUtils {
         }
       }
     });
+
+    this.populateTeleports();
   }
 
   populateTrueHell () {
@@ -926,7 +945,7 @@ export class RoomUtils {
 
   populateEnemies (room: DungeonRoom) {
     if (room === this.startRoom || this.state.progress === MAX_LEVELS - 1) {
-      // when in a boss dungeon, first room doens't have enemies!
+      // start room doens't have enemies!
       return;
     }
 
@@ -954,12 +973,12 @@ export class RoomUtils {
   }
 
   getEnemyLevel() {
-    return Math.ceil(this.state.progress / 4);
+    return Math.max(1, Math.floor(this.maxEnemyLevel * this._sineInOut(this.state.progress / MAX_LEVELS)));
   }
 
   createEnemy(
     type: string,
-    enemyKlass: (new (...args: any[]) => Enemy) = Enemy,
+    enemyKlass: typeof Enemy = Enemy,
     lvl = this.getEnemyLevel(),
     statBoost?: Partial<StatsModifiers>
   ): Enemy {
@@ -1048,36 +1067,40 @@ export class RoomUtils {
       // potion
       } else if (chance < 0.75) {
 
-        itemToDrop = new Potion();
         const potionTypeChance = this.realRand.floatBetween(0, 1);
+        let potionTier = 1;
 
-        let modifierIndex = 0;
         // 30% chance to drop current level potion
         if (this.realRand.floatBetween(0, 1) > 0.6) {
           // let ratio = this._sineOut(this.state.progress / MAX_LEVELS);
           let ratio = this.state.progress / MAX_LEVELS;
-          const totalPotionModifiers = ALL_POTION_MODIFIERS.length;
-          modifierIndex = Math.floor(ratio * totalPotionModifiers);
-          // cap max tier
-          if (modifierIndex > totalPotionModifiers - 1) { modifierIndex = totalPotionModifiers - 1; }
+
+          // cap tier between 1~4
+          const totalPotionModifiers = 4;
+          potionTier = Math.max(1, Math.min(totalPotionModifiers, Math.floor(ratio * totalPotionModifiers)));
         }
 
         if (potionTypeChance < 0.8) {
-          itemToDrop.addModifier({ attr: "hp", modifier: ALL_POTION_MODIFIERS[modifierIndex] });
+          itemToDrop = new HpPotion(potionTier);
 
         } else if (potionTypeChance < 0.98) {
-          itemToDrop.addModifier({ attr: "mp", modifier: ALL_POTION_MODIFIERS[modifierIndex] });
+          itemToDrop = new MpPotion(potionTier);
 
         } else {
-          itemToDrop.addModifier({ attr: "xp", modifier: ALL_POTION_MODIFIERS[modifierIndex] });
+          itemToDrop = new XpPotion(potionTier);
         }
 
       // common item
-      } else {
+
+      // FIXME: dissallow dropping diamonds after beta!
+      // } else {
+      } else if (chance < 0.998) {
         const dropOptions: ItemDropOptions = {
           progress: this.state.progress,
-          isRare: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.980),
-          isMagical: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.999)
+          isRare: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.965),
+          isMagical: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.990)
+          // isRare: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.980),
+          // isMagical: (this.state.progress > NUM_LEVELS_PER_CHECKPOINT && chance >= 0.999)
         };
 
         const itemType = this.realRand.intBetween(0, 5);
@@ -1111,13 +1134,16 @@ export class RoomUtils {
             break;
         }
 
-        // if (itemToDrop instanceof EquipableItem) {
-        //   this.assignEquipableItemModifiers(itemToDrop);
-        // }
+      } else if (chance >= 0.998) {
+        // drop diamond!
+        const amount = this.realRand.intBetween(1, 2);
+        itemToDrop = new Diamond(amount);
       }
     } else {
       // empty drop
     }
+
+    console.log("Item to drop:", itemToDrop, itemToDrop && itemToDrop.type);
 
     return itemToDrop;
   }
@@ -1381,7 +1407,6 @@ export class RoomUtils {
     if (!dropOptions.fixedProgression) {
       const dropQuality = this.realRand.intBetween(0, 3);
       if (dropQuality > 0) {
-        console.log("QUALITY DROPED BY", dropQuality);
         ratio = Math.max(ONE_LEVEL_RATIO, ratio - ONE_LEVEL_RATIO * (dropQuality * NUM_LEVELS_PER_CHECKPOINT));
       }
     }
@@ -1459,6 +1484,17 @@ export class RoomUtils {
   _sineOut(t) {
     return Math.sin(t * Math.PI / 2)
   }
+
+  _sineIn(t) {
+    var v = Math.cos(t * Math.PI * 0.5)
+    if (Math.abs(v) < 1e-14) return 1
+    else return 1 - v
+  }
+
+  _sineInOut(t) {
+    return -0.5 * (Math.cos(Math.PI * t) - 1)
+  }
+
 
   // not used anymore
   _quadOut(t) {

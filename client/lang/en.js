@@ -14,6 +14,7 @@ module.exports = {
   // Tutorial
   upgradeAttributes: "Upgrade your attributes!",
   usePotionsToRestoreHP: "Use Potions to restore your health",
+  tutorialPortalSellItems: "Go back to Castle to sell your items",
 
   // Server messages
   noCheckpoints: "No checkpoints",
@@ -63,7 +64,7 @@ module.exports = {
 
   // HINTS
   gold: "gold",
-  diamond: "diamond",
+  diamonds: "diamonds",
   rare: "Rare",
   magical: "Magical",
 
@@ -93,7 +94,7 @@ module.exports = {
   killed_the: "killed the mighty",
 
   // CHARACTERS
-  merchant: "Merchant",
+  merchant: "merchant",
   'warrior-woman': "warrior-woman",
 
   // GAME ELEMENTS

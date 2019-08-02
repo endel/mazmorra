@@ -92,9 +92,10 @@ export function getMapConfig(progress: number, roomType?: RoomType) {
       mapkind: (progress === MAX_LEVELS)
         ? MapKind.INFERNO
         : MapKind.CASTLE,
-      getMapWidth: (progress: number) => 20,
-      getMapHeight: (progress: number) => 20,
+      getMapWidth: (progress: number) => 40,
+      getMapHeight: (progress: number) => 40,
       oneDirection: (rand, progress) => true,
+      hasConnections: (rand, progress) => false,
       obstaclesChance: (rand, progress) => 1,
       maxStunTilesPerRoom: 10,
       minRoomSize: { x: 8, y: 8 },
@@ -137,7 +138,7 @@ export const MAP_CONFIGS: MapConfig[] = [
     mapkind: MapKind.ROCK,
     getMapWidth: (progress: number) => Math.floor(18 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     getMapHeight: (progress: number) => Math.floor(18 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
-    oneDirection: (rand, progress) => false,
+    oneDirection: (rand, progress: number) => false,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 7, y: 7 },
     enemies: ['rat', 'spider', 'bat'],
@@ -145,12 +146,28 @@ export const MAP_CONFIGS: MapConfig[] = [
     boss: ['spider-giant']
   },
 
+  /*
+  {
+    daylight: true,
+    mapkind: MapKind.ICE,
+    getMapWidth: (progress: number) => Math.floor(18 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    getMapHeight: (progress: number) => Math.floor(18 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    oneDirection: (rand, progress: number) => false,
+    minRoomSize: { x: 6, y: 6 },
+    maxRoomSize: { x: 7, y: 7 },
+    enemies: ['wolf'],
+    strongerEnemies: ['wolf'],
+    boss: ['wolf']
+  },
+  */
+
   {
     daylight: false,
     mapkind: MapKind.CAVE,
     getMapWidth: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     getMapHeight: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
-    oneDirection: (rand, progress: number) => (progress % 2 === 1),
+    oneDirection: (rand, progress: number) => (progress % 2 === 1), // prevent one-direction + JAIL TIME
+    hasConnections: (rand, progress) => rand.intBetween(0, 4) !== 0,
     obstaclesChance: (rand, progress) => rand.intBetween(4, 6),
     maxStunTilesPerRoom: 2,
     minRoomSize: { x: 6, y: 6 },
@@ -194,6 +211,8 @@ export const MAP_CONFIGS: MapConfig[] = [
     mapkind: MapKind.INFERNO,
     getMapWidth: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     getMapHeight: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    hasConnections: (rand, progress) => rand.intBetween(0, 4) !== 0,
+    obstaclesChance: (rand, progress) => rand.intBetween(6, 7),
     maxStunTilesPerRoom: 3,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
@@ -208,6 +227,8 @@ export const MAP_CONFIGS: MapConfig[] = [
     mapkind: MapKind.INFERNO,
     getMapWidth: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     getMapHeight: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
+    hasConnections: (rand, progress) => rand.intBetween(0, 4) !== 0,
+    obstaclesChance: (rand, progress) => rand.intBetween(6, 7),
     maxStunTilesPerRoom: 4,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
@@ -261,13 +282,12 @@ export const ENEMY_CONFIGS: {
     ratio: 0,
     base: {
       primaryAttribute: "strength",
-      strength: 1,
-      agility: 1,
-      intelligence: 1,
+      strength: 0,
+      agility: 0,
+      intelligence: 0,
     },
     modifiers: {
-      aiDistance: 5,
-      attackSpeed: 5
+      aiDistance: 5
     }
   },
 
@@ -304,12 +324,12 @@ export const ENEMY_CONFIGS: {
     ratio: 0,
     base: {
       primaryAttribute: "strength",
-      strength: 15,
+      strength: 10,
       agility: 4,
       intelligence: 1,
     },
     modifiers: {
-      damage: 5,
+      damage: 4,
       hp: 80
     },
     spawner: {
@@ -445,6 +465,21 @@ export const ENEMY_CONFIGS: {
       type: ['skeleton-1', 'skeleton-2'],
       giveXP: false,
       lvl: 5
+    }
+  },
+  //////////
+
+  'wolf': {
+    ratio: 0,
+    base: {
+      primaryAttribute: "agility",
+      strength: 3,
+      agility: 5,
+      intelligence: 5
+    },
+    modifiers: {
+      attackSpeed: 10,
+      movementSpeed: 10
     }
   },
   //////////
@@ -589,7 +624,7 @@ export const ENEMY_CONFIGS: {
     spawner: {
       type: ['scorpion'],
       giveXP: false,
-      lvl: 2
+      lvl: 3
     }
   },
 

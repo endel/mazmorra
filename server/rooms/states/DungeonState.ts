@@ -135,7 +135,9 @@ export class DungeonState extends Schema {
     } else {
 
       this.oneDirection = this.config.oneDirection && this.config.oneDirection(this.rand, this.progress);
-      this.hasConnections = this.config.hasConnections && this.config.hasConnections(this.rand, this.progress);
+      this.hasConnections = (this.config.hasConnections === undefined)
+        ? true
+        : this.config.hasConnections(this.rand, this.progress);
 
       const obstaclesChance = this.config.obstaclesChance && this.config.obstaclesChance(this.rand, this.progress);
       this.hasObstacles = obstaclesChance && obstaclesChance > 0;

@@ -2,7 +2,7 @@ import helpers from "../../../shared/helpers";
 
 import { Point } from "../../rooms/states/DungeonState";
 import { Item } from "../Item";
-import { Potion } from "./consumable/Potion";
+import { HpPotion } from "./consumable/HpPotion";
 import { ShieldItem } from "./equipable/ShieldItem";
 import { WeaponItem } from "./equipable/WeaponItem";
 import { BootItem } from "./equipable/BootItem";
@@ -15,6 +15,8 @@ import { PotionPoints } from "./consumable/PotionPoints";
 import { EquipableItem } from "./EquipableItem";
 import { ConsumableItem } from "./ConsumableItem";
 import { ScrollTeleport } from "./consumable/ScrollTeleport";
+import { MpPotion } from "./consumable/MpPotion";
+import { XpPotion } from "./consumable/XpPotion";
 
 export function createItem(data: Item | DBItem, position?: Point): Item {
   let item: Item;
@@ -25,19 +27,29 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
     case helpers.ENTITIES.HP_POTION_2:
     case helpers.ENTITIES.HP_POTION_3:
     case helpers.ENTITIES.HP_POTION_4:
+      item = new HpPotion(parseInt(data.type[data.type.length - 1]));
+      break;
+
     case helpers.ENTITIES.MP_POTION_1:
     case helpers.ENTITIES.MP_POTION_2:
     case helpers.ENTITIES.MP_POTION_3:
     case helpers.ENTITIES.MP_POTION_4:
+      item = new MpPotion(parseInt(data.type[data.type.length - 1]));
+      break;
+
     case helpers.ENTITIES.XP_POTION_1:
     case helpers.ENTITIES.XP_POTION_2:
     case helpers.ENTITIES.XP_POTION_3:
     case helpers.ENTITIES.XP_POTION_4:
+      item = new XpPotion(parseInt(data.type[data.type.length - 1]));
+      break;
+
     case helpers.ENTITIES.ELIXIR_POTION_1:
     case helpers.ENTITIES.ELIXIR_POTION_2:
     case helpers.ENTITIES.ELIXIR_POTION_3:
     case helpers.ENTITIES.ELIXIR_POTION_4:
-      item = new Potion();
+      console.log("ELIXIR POTION NOT IMPLEMENTED!");
+      // item = new Potion();
 
       break;
 
@@ -178,7 +190,12 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
   /**
    * Assign item modifiers
    */
-  if ('modifiers' in data) {
+  if (
+    'modifiers' in data &&
+    !(item instanceof HpPotion) &&
+    !(item instanceof MpPotion) &&
+    !(item instanceof XpPotion)
+  ) {
     data.modifiers.forEach(modifier => {
       item.addModifier(modifier);
     });

@@ -23,11 +23,14 @@ export default class CharacterBuilder extends THREE.Object3D {
     }
 
     this.character = new Composition()
-    this.character.position.set(0, - config.HUD_MARGIN*3, 0)
-    this.character.scale.set(2, 2, 2)
+    this.character.position.set(0, - config.HUD_MARGIN * 1.4, 0)
+    // this.character.position.set(0, - config.HUD_MARGIN*3, 0)
+    this.character.scale.set(1.8, 1.8, 1.8)
 
     this.add(this.character)
     this.camera.lookAt(this.character.position)
+
+
 
     this.goUp(1500)
     this.turnInterval = this.infiniteTurnInterval(3100)

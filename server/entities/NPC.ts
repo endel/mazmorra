@@ -4,12 +4,14 @@ import helpers from "../../shared/helpers";
 
 // Entities
 import { Player } from "./Player";
-import { Potion, POTION_1_MODIFIER, POTION_2_MODIFIER, POTION_4_MODIFIER, POTION_3_MODIFIER } from "./items/consumable/Potion";
 import { Scroll } from "./items/consumable/Scroll";
 import { Key } from "./items/consumable/Key";
 import { NUM_LEVELS_PER_CHECKPOINT, MAX_LEVELS } from "../utils/ProgressionConfig";
 import { PotionPoints } from "./items/consumable/PotionPoints";
 import { ScrollTeleport } from "./items/consumable/ScrollTeleport";
+import { HpPotion } from "./items/consumable/HpPotion";
+import { MpPotion } from "./items/consumable/MpPotion";
+import { XpPotion } from "./items/consumable/XpPotion";
 
 export class NPC extends Player {
   @type("string") kind: string;
@@ -60,12 +62,10 @@ export class NPC extends Player {
     if (this.kind === "elder") {
       const items = [];
 
-      const hpPotion = new Potion();
-      hpPotion.addModifier({ attr: "hp", modifier: this.getPotionModifierForPlayer(player, 'hp') });
+      const hpPotion = new HpPotion(this.getPotionTierForPlayer(player, 'hp'));
       items.push(hpPotion);
 
-      const mpPotion = new Potion();
-      mpPotion.addModifier({ attr: "mp", modifier: this.getPotionModifierForPlayer(player, 'mp') });
+      const mpPotion = new MpPotion(this.getPotionTierForPlayer(player, 'hp'));
       items.push(mpPotion);
 
       const scroll = new Scroll();
@@ -119,10 +119,6 @@ export class NPC extends Player {
 
         const items = [];
 
-        const potion1 = new Potion();
-        potion1.addModifier({ attr: "xp", modifier: this.getPotionModifierForPlayer(player, 'xp') });
-        items.push(potion1);
-
         [
           this.state.roomUtils.createArmor(itemDropOptions),
           this.state.roomUtils.createBoot(itemDropOptions),
@@ -131,6 +127,10 @@ export class NPC extends Player {
           this.state.roomUtils.createWeapon('strength', itemDropOptions),
           this.state.roomUtils.createWeapon('intelligence', itemDropOptions),
           this.state.roomUtils.createWeapon('agility', itemDropOptions),
+          new XpPotion(1),
+          new XpPotion(2),
+          new XpPotion(3),
+          new XpPotion(4),
         ].forEach(item => {
           item.premium = true;
           items.push(item);
@@ -183,20 +183,20 @@ export class NPC extends Player {
     this.position.lastMove += 500;
   }
 
-  getPotionModifierForPlayer(player, attr: 'hp' | 'mp' | 'xp') {
-    let modifier = POTION_1_MODIFIER;
+  getPotionTierForPlayer(player, attr: 'hp' | 'mp') {
+    let tier = 1;
 
-    if (player[attr].max >= POTION_4_MODIFIER) {
-      modifier = POTION_4_MODIFIER;
+    if (player[attr].max >= 80) {
+      tier = 4;
 
-    } else if (player[attr].max >= POTION_3_MODIFIER) {
-      modifier = POTION_3_MODIFIER;
+    } else if (player[attr].max >= 50) {
+      tier = 3;
 
-    } else if (player[attr].max >= POTION_2_MODIFIER) {
-      modifier = POTION_2_MODIFIER;
+    } else if (player[attr].max >= 30) {
+      tier = 2;
     }
 
-    return modifier;
+    return tier;
   }
 
   update (currentTime) {

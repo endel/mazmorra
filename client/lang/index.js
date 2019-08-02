@@ -3,8 +3,8 @@ const LANGUAGES = {
   pt: require('./pt')
 }
 
-// let CURRENT_LANG = navigator.language.replace(/\-.+/i, "")
-let CURRENT_LANG = 'pt';
+let CURRENT_LANG = navigator.language.replace(/\-.+/i, "")
+// let CURRENT_LANG = 'pt';
 
 export function setLanguage(lang) {
   CURRENT_LANG = lang;

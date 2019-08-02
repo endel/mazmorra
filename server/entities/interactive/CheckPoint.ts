@@ -31,6 +31,10 @@ export class CheckPoint extends Interactive {
       player.checkPoint = state.progress;
     }
 
+    if (player.hero.checkPoints.indexOf(state.progress) === -1) {
+      player.hero.checkPoints.push(state.progress);
+    }
+
     if (state.progress === 1 && player.hero.checkPoints.length === 1) {
       setTimeout(() => {
         state.createTextEvent(`noCheckpoints`, player.position, 'white', 1000);

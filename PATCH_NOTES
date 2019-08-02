@@ -1,6 +1,7 @@
 **01/08/2019 - !**
 - Merchant and Majesty offers all weapon types (str, int, agi)
 - Introduced "stun tiles" - your character cannot move for 1.6s when you move through them.
+- Introduced "teleport scroll", which is a rare drop and can be bought for 400 gold
 - The game is now internally tracking kills and deaths, to be used on later updates!
 - Ranged attacks cannot be performed behind gates anymore (behind walls it's still possible 🙈)
 - Item drops from enemies and chests have a chance to be of worse quality:
@@ -10,8 +11,15 @@
     - `1` = current dungeon level -14
     - `0` = current dungeon level -21
 - Small interface improvements on Inventory and Checkpoints
-- Slighly improved random dungeon design.
 - Increased PVP room, and added some random stun tiles to it.
+- Enemies level progression
+    - Enemies level now have "sinusoidal" progression curve instead of linear.
+    - (They're weak at early levels, and start progressing faster on dungeons 30+)
+- XP potions now increases 75/150/300/600 of XP instead of 15/30/50/80
+- Slighly improved random dungeon design.
+    - Some dungeons may have no connections between rooms, being connected by teleports
+    - The "up door" is not always positioned on the center of the dungeon anymore
+    - The "down door" may be completely random (it used to be the farest room before)
 
 **23/07/2019 - Early game experience, mimic chest, and dungeon announcer!**
 - Announce when entering dungeons with special "announcer" on checkpoint and boss dungeons

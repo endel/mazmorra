@@ -64,7 +64,7 @@ module.exports = {
 
   // HINTS
   gold: "ouro",
-  diamond: "diamantes",
+  diamonds: "diamantes",
   rare: "Raro",
   magical: "Mágico",
 

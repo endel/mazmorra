@@ -47,7 +47,9 @@ export abstract class Item extends Entity {
   }
 
   getSellPrice() {
-    return Math.floor(this.getPrice() / 8);
+    return (this.premium)
+      ? Math.floor(this.getPrice() / 12) // premium items should be real cheap when selling
+      : Math.floor(this.getPrice() / 8);
   }
 
   getPrice(allowPremium: boolean = true) {
@@ -62,8 +64,8 @@ export abstract class Item extends Entity {
         price += this.modifiers[i].modifier * 2;
 
       } else if (this.modifiers[i].attr == "xp") {
-        const num = parseInt(this.type[this.type.length - 1]);
-        price += (this.modifiers[i].modifier * 100) - (Math.pow(num, 2) * 130);
+        const tier = parseInt(this.type[this.type.length - 1]) - 1;
+        price += (this.modifiers[i].modifier * 50) - ((tier * tier) * 200);
 
       } else if (
         this.modifiers[i].attr == "strength" ||

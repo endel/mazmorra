@@ -83,7 +83,7 @@ ${(item.isMagical) ? `<small class="magical">+ ${i18n('magical')}</small> ` : ""
 
 ${(item.price !== undefined)
   ? (item.premium)
-    ? `<small class="diamond">(${item.price} ${i18n('diamond')})</small>`
+    ? `<small class="diamond">(${item.price} ${i18n('diamonds')})</small>`
     : `<small class="gold">(${item.price} ${i18n('gold')})</small>`
   : ""}
 </h2>
