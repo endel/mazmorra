@@ -344,15 +344,15 @@ export class Unit extends Entity {
   }
 
   getArmor() {
-    return this.statsModifiers.armor + this.baseArmor[this.primaryAttribute];
+    return this.statsModifiers.armor + this.statsBoostModifiers.armor +  this.baseArmor[this.primaryAttribute];
   }
 
   getEvasion() {
-    return (this.evasion + this.statsModifiers.evasion) / 100;
+    return (this.evasion + this.statsModifiers.evasion + this.statsBoostModifiers.evasion) / 100;
   }
 
   getCriticalStrikeChance() {
-    return (this.criticalStrikeChance + this.statsModifiers.criticalStrikeChance) / 100;
+    return (this.criticalStrikeChance + this.statsModifiers.criticalStrikeChance + this.statsBoostModifiers.criticalStrikeChance) / 100;
   }
 
   onMove(moveEvent: MoveEvent, prevX, prevY, currentX, currentY) {

@@ -228,7 +228,6 @@ export class DungeonRoom extends Room<DungeonState> {
   onGoTo (player, destiny: Partial<DoorDestiny>, params: any = {}) {
     const client = this.clientMap.get(player);
     const hero = player.hero;
-    console.log("GOING TO >>>>", destiny)
     // validate checkpoint usage
     if (
       params.isCheckPoint &&

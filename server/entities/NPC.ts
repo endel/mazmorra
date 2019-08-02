@@ -9,6 +9,7 @@ import { Key } from "./items/consumable/Key";
 import { NUM_LEVELS_PER_CHECKPOINT, MAX_LEVELS } from "../utils/ProgressionConfig";
 import { PotionPoints } from "./items/consumable/PotionPoints";
 import { ScrollTeleport } from "./items/consumable/ScrollTeleport";
+import { TrueHellScroll } from "./items/consumable/TrueHellScroll";
 import { HpPotion } from "./items/consumable/HpPotion";
 import { MpPotion } from "./items/consumable/MpPotion";
 import { XpPotion } from "./items/consumable/XpPotion";
@@ -118,7 +119,7 @@ export class NPC extends Player {
         };
 
         const items = [];
-
+        
         [
           this.state.roomUtils.createArmor(itemDropOptions),
           this.state.roomUtils.createBoot(itemDropOptions),
@@ -131,11 +132,12 @@ export class NPC extends Player {
           new XpPotion(2),
           new XpPotion(3),
           new XpPotion(4),
+          new TrueHellScroll()
         ].forEach(item => {
           item.premium = true;
           items.push(item);
         });
-
+        
         player.setTradingItems(items);
       }, 1000);
 

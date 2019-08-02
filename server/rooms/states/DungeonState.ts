@@ -196,7 +196,6 @@ export class DungeonState extends Schema {
 
     } else if (customMap && mapDungeon) {
       this.roomUtils.startPosition = customMap.startPosition;
-      customMap.populate(this);
       mapDungeon.factories.forEach(({position, func}) => {
         try {
           let result = func(position, this);
@@ -214,6 +213,9 @@ export class DungeonState extends Schema {
         }
 
       });
+
+      if (customMap.afterPopulate)
+        customMap.afterPopulate(this);
     } else {
       // regular room
       this.roomUtils.populateRooms();
@@ -228,7 +230,7 @@ export class DungeonState extends Schema {
     if (entity instanceof Enemy) {
       this.enemies[entity.id] = entity;
 
-    } else if (entity instanceof Jail) {
+    } else if (entity instanceof Jail && entity.isLocked) {
       entity.lockTiles(this);
     }
   }

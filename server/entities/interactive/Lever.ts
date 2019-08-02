@@ -8,8 +8,10 @@ export class Lever extends Interactive {
 
   numPlayersToUnlock: number = 1;
   playersInteracted: Set<string>;
+  onInteract: () => void;
 
   _unlock?: any[];
+
   walkable = true;
 
   constructor (position: Point) {
@@ -24,6 +26,15 @@ export class Lever extends Interactive {
     }
     this._unlock = doors;
   }
+
+  set lock (doors) {
+    for (let i=0;i<doors.length; i++) {
+      if (doors[i].type === helpers.ENTITIES.DOOR) {
+        doors[i].lockedMessage = "Find the lever to unlock";
+      }
+    }
+    this._unlock = doors;
+  } 
 
   activate (state) {
     this.active = true
@@ -41,7 +52,7 @@ export class Lever extends Interactive {
   interact (moveEvent, player, state) {
     // skip if already active.
     if (this.active) { return; }
-
+    
     moveEvent.cancel();
 
     if (!this.playersInteracted) { this.playersInteracted = new Set<string>(); }

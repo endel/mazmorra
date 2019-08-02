@@ -15,6 +15,7 @@ import { PotionPoints } from "./consumable/PotionPoints";
 import { EquipableItem } from "./EquipableItem";
 import { ConsumableItem } from "./ConsumableItem";
 import { ScrollTeleport } from "./consumable/ScrollTeleport";
+import { TrueHellScroll } from "./consumable/TrueHellScroll";
 import { MpPotion } from "./consumable/MpPotion";
 import { XpPotion } from "./consumable/XpPotion";
 
@@ -178,6 +179,10 @@ export function createItem(data: Item | DBItem, position?: Point): Item {
 
     case helpers.ENTITIES.SCROLL_MAGIC:
       item = new ScrollTeleport();
+    break;
+
+    case helpers.ENTITIES.SCROLL_TRUEHELL:
+      item = new TrueHellScroll();
     break;
 
     // // Default
