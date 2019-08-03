@@ -323,7 +323,7 @@ export class Unit extends Entity {
   }
 
   getAIDistance() {
-    return this.statsBoostModifiers.aiDistance || Math.min(9, Math.ceil(this.state.progress / 5));
+    return this.statsBoostModifiers.aiDistance || Math.min(7, Math.ceil(this.state.progress / 5));
   }
 
   getDamage() {
