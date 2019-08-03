@@ -14,12 +14,13 @@
 - Increased PVP room, and added some random stun tiles to it.
 - Enemies level progression
     - Enemies level now have "sinusoidal" progression curve instead of linear.
-    - (They're weak at early levels, and start progressing faster on dungeons 30+)
+    - (They're weak at early levels, and start progressing faster after dungeons 30+)
 - XP potions now increases 75/150/300/600 of XP instead of 15/30/50/80
 - Slighly improved random dungeon design.
     - Some dungeons may have no connections between rooms, being connected by teleports
     - The "up door" is not always positioned on the center of the dungeon anymore
     - The "down door" may be completely random (it used to be the farest room before)
+- Fixed critical damage chance (it wasn't considering properly before!)
 
 **23/07/2019 - Early game experience, mimic chest, and dungeon announcer!**
 - Announce when entering dungeons with special "announcer" on checkpoint and boss dungeons

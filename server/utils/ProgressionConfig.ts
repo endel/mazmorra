@@ -173,9 +173,9 @@ export const MAP_CONFIGS: MapConfig[] = [
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 8, y: 8 },
     // maxRoomSize: { x: 12, y: 12 },
-    enemies: ['slime', 'slime-2', 'skeleton-1', 'slime-cube'],
+    enemies: ['slime', 'slime-2', 'skeleton-1'],
     strongerEnemies: ['slime-cube'],
-    boss: ['slime-big']
+    boss: ['slime-boss']
   },
 
   {
@@ -202,7 +202,7 @@ export const MAP_CONFIGS: MapConfig[] = [
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 8, y: 8 },
     enemies: ['goblin', 'goblin-2', 'goblin-3'],
-    strongerEnemies: ['skeleton-2'],
+    strongerEnemies: ['orc-1'],
     boss: ['goblin-boss']
   },
 
@@ -234,7 +234,7 @@ export const MAP_CONFIGS: MapConfig[] = [
     maxRoomSize: { x: 9, y: 9 },
     enemies: ['demon', 'lava-totem', 'beholder'],
     strongerEnemies: ['winged-demon'],
-    boss: ['monkey-king', 'scorpion-boss', 'goblin-boss', 'necromancer', 'slime-big', 'spider-giant']
+    boss: ['monkey-king', 'scorpion-boss', 'goblin-boss', 'necromancer', 'slime-boss', 'spider-giant']
   },
 
 ];
@@ -356,13 +356,13 @@ export const ENEMY_CONFIGS: {
     ratio: 0,
     base: {
       primaryAttribute: "strength",
-      strength: 3,
-      agility: 2,
+      strength: 4,
+      agility: 4,
       intelligence: 1,
     },
     modifiers: {
-      damage: 2,
-      movementSpeed: 5
+      damage: 4,
+      movementSpeed: 6
     }
   },
 
@@ -379,7 +379,7 @@ export const ENEMY_CONFIGS: {
     }
   },
 
-  'slime-big': {
+  'slime-boss': {
     ratio: 0,
     base: {
       primaryAttribute: "strength",
@@ -495,7 +495,6 @@ export const ENEMY_CONFIGS: {
     modifiers: {
       damage: 4,
       movementSpeed: 3,
-      attackSpeed: 3,
     }
   },
 
@@ -518,12 +517,26 @@ export const ENEMY_CONFIGS: {
     base: {
       primaryAttribute: "agility",
       strength: 4,
-      agility: 6,
+      agility: 8,
       intelligence: 2
     },
     modifiers: {
-      movementSpeed: 7,
-      attackSpeed: 7
+      movementSpeed: 25,
+      attackSpeed: 5
+    }
+  },
+
+  'orc-1': {
+    ratio: 0,
+    base: {
+      primaryAttribute: "strength",
+      strength: 8,
+      agility: 5,
+      intelligence: 1
+    },
+    modifiers: {
+      movementSpeed: 5,
+      attackSpeed: 6
     }
   },
 

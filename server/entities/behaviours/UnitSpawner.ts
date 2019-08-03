@@ -17,7 +17,7 @@ export class UnitSpawner implements Behaviour {
 
   constructor (unitSpawner: UnitSpawnerConfig) {
     if (!unitSpawner.interval) {
-      unitSpawner.interval = 8000;
+      unitSpawner.interval = 6000;
     }
 
     if (unitSpawner.giveXP === undefined) {

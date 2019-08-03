@@ -75,8 +75,6 @@ const ALL_SHIELDS = [
   helpers.ENTITIES.SHIELD_18,
   helpers.ENTITIES.SHIELD_19,
   helpers.ENTITIES.SHIELD_20,
-  helpers.ENTITIES.SHIELD_21,
-  helpers.ENTITIES.SHIELD_22,
 ];
 
 const ALL_HELMETS = [
@@ -1142,8 +1140,6 @@ export class RoomUtils {
     } else {
       // empty drop
     }
-
-    console.log("Item to drop:", itemToDrop, itemToDrop && itemToDrop.type);
 
     return itemToDrop;
   }

@@ -12,7 +12,7 @@ export class Boss extends Enemy {
     this.isBoss = true;
 
     // FIXME: improve this!
-    if (kind === 'slime-big') {
+    if (kind === 'slime-boss') {
       this.addBehaviour(new SlimeBoss());
     }
   }
