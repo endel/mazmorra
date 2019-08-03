@@ -241,7 +241,7 @@ export default class ItemSlot extends THREE.Object3D {
         ) ||
         ( // doesn't meet requiredProgress
           draggingItem.userData.item.progressRequired &&
-          draggingItem.userData.item.progressRequired >= player.userData.latestProgress
+          draggingItem.userData.item.progressRequired > player.userData.latestProgress
         )
       ) {
         // cancel drop if slotName doesn't match dropped slot.

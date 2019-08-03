@@ -355,7 +355,7 @@ export class DungeonState extends Schema {
         // if unit has reached target point,
         // try to pick/interact with other entity.
         if (
-          targetEntity &&
+          targetEntity && entity && entity.position &&
           targetEntity.position.x === entity.position.x &&
           targetEntity.position.y === entity.position.y
         ) {
