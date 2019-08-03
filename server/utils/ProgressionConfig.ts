@@ -168,7 +168,9 @@ export const MAP_CONFIGS: MapConfig[] = [
     getMapHeight: (progress: number) => Math.floor(19 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     oneDirection: (rand, progress: number) => (progress % 2 === 1), // prevent one-direction + JAIL TIME
     hasConnections: (rand, progress) => rand.intBetween(0, 4) !== 0,
-    obstaclesChance: (rand, progress) => rand.intBetween(4, 6),
+    obstaclesChance: (rand, progress) => (progress % 2 === 0) // prevent obstacles + JAIL TIME
+      ? 0
+      : rand.intBetween(4, 6),
     maxStunTilesPerRoom: 2,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 8, y: 8 },
@@ -212,7 +214,9 @@ export const MAP_CONFIGS: MapConfig[] = [
     getMapWidth: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     getMapHeight: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     hasConnections: (rand, progress) => rand.intBetween(0, 4) !== 0,
-    obstaclesChance: (rand, progress) => rand.intBetween(6, 7),
+    obstaclesChance: (rand, progress) => (progress % 2 === 0) // prevent obstacles + JAIL TIME
+      ? 0
+      : rand.intBetween(6, 7),
     maxStunTilesPerRoom: 3,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
@@ -228,7 +232,9 @@ export const MAP_CONFIGS: MapConfig[] = [
     getMapWidth: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     getMapHeight: (progress: number) => Math.floor(20 + ((progress % NUM_LEVELS_PER_MAP)) * 0.2),
     hasConnections: (rand, progress) => rand.intBetween(0, 4) !== 0,
-    obstaclesChance: (rand, progress) => rand.intBetween(6, 7),
+    obstaclesChance: (rand, progress) => (progress % 2 === 0) // prevent obstacles + JAIL TIME
+      ? 0
+      : rand.intBetween(6, 7),
     maxStunTilesPerRoom: 4,
     minRoomSize: { x: 6, y: 6 },
     maxRoomSize: { x: 9, y: 9 },
