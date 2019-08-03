@@ -46,7 +46,7 @@ gameServer.register('loot', DungeonRoom);
 gameServer.register('infinite', DungeonRoom);
 gameServer.register('truehell', DungeonRoom);
 
-if (process.env.ENVIRONMENT !== "production") {
+if (process.env.NODE_ENV !== "production") {
   gameServer.register('test-items', DungeonRoom);
   gameServer.register('test-monsters', DungeonRoom);
 
@@ -64,7 +64,7 @@ if (process.env.ENVIRONMENT !== "production") {
 // to support URL-encoded bodies
 app.use(bodyParser.json());
 
-if (process.env.ENVIRONMENT !== "production") {
+if (process.env.NODE_ENV !== "production") {
   app.use(express.static( __dirname + '/../public' ));
 
 } else {
