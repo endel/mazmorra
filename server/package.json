@@ -24,8 +24,7 @@
     "express-basic-auth": "^1.2.0",
     "express-jwt": "^5.3.1",
     "pathfinding": "^0.4.17",
-    "random-seed": "^0.3.0",
-    "shortid": "^2.2.14"
+    "random-seed": "^0.3.0"
   },
   "devDependencies": {
     "@types/express": "^4.16.1",

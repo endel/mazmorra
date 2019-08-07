@@ -1,4 +1,4 @@
-import shortid from "shortid";
+import { generateId } from "colyseus";
 import { Schema, type } from "@colyseus/schema";
 import { DungeonState } from "../rooms/states/DungeonState";
 import { Position } from "../core/Position";
@@ -19,7 +19,7 @@ export class Entity extends Schema {
   constructor (id?: string) {
     super();
 
-    this.id = id || shortid.generate()
+    this.id = id || generateId();
     this.walkable = false;
   }
 
