@@ -44,6 +44,15 @@ export class Jail extends Interactive {
     });
   }
 
+  lock (state) {
+    this.isLocked = true;
+    this.walkable = false;
+
+    this.getLockedTiles().forEach(position => {
+      state.pathgrid.setWalkableAt(position.x, position.y, false);
+    });
+  }
+
   interact (moveEvent, player, state) {
     if (this.isLocked) {
       moveEvent.cancel();

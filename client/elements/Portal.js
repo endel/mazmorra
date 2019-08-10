@@ -10,7 +10,7 @@ class PortalBehaviour extends Behaviour {
   onAttach() {
     this.isInfernoPortal = (this.object.userData.type === "portal-inferno");
 
-    if (!this.isInfernoPortal) {
+    if (this.object.userData.destiny) {
       this.activate();
     }
 
@@ -114,8 +114,14 @@ export default class Portal extends THREE.Object3D {
 
   get label () {
     const destiny = (this.userData.destiny && this.userData.destiny.progress);
-    // may be a inferno portal!
-    if (destiny) {
+    if (this.userData.destiny) {
+      // may be a inferno portal!
+      const {progress, room} = this.userData.destiny
+      let destiny = `${progress}`;
+      if (room === "truehell") {
+        destiny = "HELL"
+      }
+
       return `${i18n('portalTo')} ${destiny}`;
     }
   }

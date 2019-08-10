@@ -22,15 +22,17 @@ import { Interactive } from "../../entities/Interactive";
 import { Entity } from "../../entities/Entity";
 import { MoveEvent } from "../../core/Movement";
 import { DBHero } from "../../db/Hero";
-import { MapKind, MapConfig, getMapConfig, isBossMap, MAX_LEVELS } from "../../utils/ProgressionConfig";
+import { MapKind, MapConfig, getMapConfig, isBossMap, MAX_LEVELS, defaultGetNumRooms, ProceduralRoomType, proceduralRoomTypes } from "../../utils/ProgressionConfig";
 import { NPC } from "../../entities/NPC";
 import { DoorDestiny, DoorProgress, Door } from "../../entities/interactive/Door";
 import { Portal } from "../../entities/interactive/Portal";
 import { debugLog } from "../../utils/Debug";
 import { Jail } from "../../entities/interactive/Jail";
-import * as TrueHell from "../../maps/truehell";
-import { parseMapTemplate } from "../../utils/MapTemplateParser";
+
 import { distance } from "../../helpers/Math";
+
+import { parseMapTemplate, CustomMapObject } from "../../utils/MapTemplateParser";
+import customMapsList, { CustomMapName, customMapsKeys } from "../../maps";
 
 export interface Point {
   x: number;
@@ -39,8 +41,10 @@ export interface Point {
 
 type EntityConstructor<U extends Entity> = {new(...args: any[]): U; };
 
-export type RoomType = 'dungeon' | 'pvp' | 'loot' | 'infinite' | 'truehell';
-export const roomTypes: RoomType[] = ['dungeon', 'pvp', 'loot', 'infinite', 'truehell'];
+export type RoomSeedType = ProceduralRoomType | CustomMapName;
+export const roomTypes: RoomSeedType[] = [...proceduralRoomTypes, ...customMapsKeys];
+
+const isCustomMap = (name: any) : name is CustomMapName => customMapsKeys.includes(name)
 
 export class DungeonState extends Schema {
   @type("number") progress: number;
@@ -77,62 +81,53 @@ export class DungeonState extends Schema {
 
   events = new EventEmitter();
 
-  constructor (progress, seed: string, roomType: RoomType) {
+  constructor (progress, seed: string, roomType: RoomSeedType) {
     super()
 
     this.rand = gen.create(seed + progress);
     this.progress = progress;
     this.isPVPAllowed = (roomType === "pvp");
-
-    this.config = getMapConfig(this.progress, roomType);
-
-    // prevent hack attempt to load non-existing level
-    if (!this.config) {
-      this.progress = 2;
-      this.config = getMapConfig(this.progress, roomType);
-    }
-
-    this.daylight = this.config.daylight;
-    this.mapkind = this.config.mapkind;
     this.mapvariation = (this.progress % 2 === 0) ? 2 : 1;
 
-    this.width = this.config.getMapWidth(this.progress);
-    this.height = this.config.getMapHeight(this.progress);
-    const minRoomSize = this.config.minRoomSize;
-    const maxRoomSize = this.config.maxRoomSize;
-
-    let numRooms: number;
-    switch (roomType) {
-      case "loot":
-        numRooms = 1;
-        break;
-      case "truehell":
-        numRooms = 1;
-        break;
-      default:
-        numRooms = Math.max(2, // generate at least 2 rooms!
-          Math.min(
-            Math.floor((this.width * this.height) / (maxRoomSize.x * maxRoomSize.y)),
-            Math.floor(progress / 2)
-          )
-        );
-    }
-
-    debugLog(`Dungeon config, size: { x: ${this.width}, y: ${this.height} }, { minRoomSize: ${minRoomSize}, maxRoomSize: ${maxRoomSize}, numRooms: ${numRooms} }`);
-
-    let grid: any[][];
+    let customMap: CustomMapObject;
+    let mapDungeon: ReturnType<typeof parseMapTemplate>;
+    let grid2d: number[][];
     let rooms: DungeonRoom[];
 
     let now = Date.now();
+    if (isCustomMap(roomType)) {
+      customMap = customMapsList[roomType];
+      mapDungeon = parseMapTemplate(customMap);
+      grid2d = mapDungeon.grid;
+      rooms = [];
+      
+      this.height = grid2d.length;
+      this.width = grid2d[0].length;
 
-    if (roomType === "truehell") {
-      const mapDungeon = parseMapTemplate(TrueHell.mapTemplate, TrueHell.symbols, TrueHell.keys);
-      grid = mapDungeon.grid;
-      rooms = mapDungeon.rooms;
-      this.height = grid.length;
-      this.width = grid[0].length;
-
+      this.daylight = customMap.config.daylight;
+      this.mapkind = customMap.config.mapkind;
     } else {
+      this.config = getMapConfig(this.progress, roomType);
+      // prevent hack attempt to load non-existing level
+      if (!this.config) {
+        this.progress = 2;
+        this.config = getMapConfig(this.progress, roomType);
+      }
+  
+      this.daylight = this.config.daylight;
+      this.mapkind = this.config.mapkind;
+
+      this.width = this.config.getMapWidth(this.progress);
+      this.height = this.config.getMapHeight(this.progress);
+      const minRoomSize = this.config.minRoomSize;
+      const maxRoomSize = this.config.maxRoomSize;
+      
+      if (!this.config.getNumRooms) {
+        this.config.getNumRooms = (progress) => defaultGetNumRooms(this.width, this.height, progress, maxRoomSize)
+      }
+  
+      const numRooms: number = this.config.getNumRooms(this.progress);
+      debugLog(`Dungeon config, size: { x: ${this.width}, y: ${this.height} }, { minRoomSize: ${minRoomSize}, maxRoomSize: ${maxRoomSize}, numRooms: ${numRooms} }`);
 
       this.oneDirection = this.config.oneDirection && this.config.oneDirection(this.rand, this.progress);
       this.hasConnections = (this.config.hasConnections === undefined)
@@ -152,27 +147,28 @@ export class DungeonState extends Schema {
         this.hasConnections, // hasConnections?
         obstaclesChance      // hasObstacles?
       );
-      grid = generatedDungeon[0] as any;
-      rooms = generatedDungeon[1] as any;
+      
+      grid2d = generatedDungeon.grid;
+      rooms = generatedDungeon.rooms;
     }
-
+    
     this.rooms = rooms;
 
     // assign flattened grid to array schema
-    const flatgrid = this.flattenGrid(grid, this.width, this.height);
+    const flatgrid = this.flattenGrid(grid2d, this.width, this.height);
     for (let i = 0; i < flatgrid.length; i++) {
       this.grid[i] = flatgrid[i];
     }
 
     // 0 = walkable, 1 = blocked
-    this.pathgrid = new PF.Grid(grid.map((line, x) => {
+    this.pathgrid = new PF.Grid(grid2d.map((line, x) => {
       return line.map((type, y) => {
         // const hasInteractive = this.gridUtils.getEntityAt(x, y, Interactive, 'actAsObstacle');
         // console.log("has interactive?", x, y, hasInteractive);
         return (type & helpers.TILE_TYPE.FLOOR) ? 0 : 1;
       });
-    }))
-
+    }));
+    
     /**
     ////////////////
     let i = 0;
@@ -198,9 +194,28 @@ export class DungeonState extends Schema {
     } else if (roomType === "pvp") {
       this.roomUtils.populatePVP();
 
-    } else if (roomType === "truehell") {
-      this.roomUtils.populateTrueHell();
+    } else if (customMap && mapDungeon) {
+      this.roomUtils.startPosition = customMap.startPosition;
+      mapDungeon.factories.forEach(({position, func}) => {
+        try {
+          let result = func(position, this);
+          if (result instanceof Entity) {
+            result.state = this;
+            this.addEntity(result);
+          } else if (result instanceof Array) {
+            result.forEach(entity => {
+              entity.state = this;
+              this.addEntity(entity)
+            })
+          }
+        } catch (err) {
+          console.error(`ERROR: It was not possible to create a Entity from a CustomMap`, err);
+        }
 
+      });
+
+      if (customMap.afterPopulate)
+        customMap.afterPopulate(this);
     } else {
       // regular room
       this.roomUtils.populateRooms();
@@ -215,7 +230,7 @@ export class DungeonState extends Schema {
     if (entity instanceof Enemy) {
       this.enemies[entity.id] = entity;
 
-    } else if (entity instanceof Jail) {
+    } else if (entity instanceof Jail && entity.isLocked) {
       entity.lockTiles(this);
     }
   }
@@ -320,7 +335,7 @@ export class DungeonState extends Schema {
   checkOverlapingEntities (targetEntity: Entity, moveEvent: MoveEvent, x, y) {
     const unit = moveEvent.target as Unit;
 
-    let doorEntity: Door;
+    let doorEntity: Door; 
     let hasPickedItems: boolean;
 
     const entities = this.gridUtils.getAllEntitiesAt(y, x);

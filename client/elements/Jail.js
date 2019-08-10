@@ -62,6 +62,8 @@ export default class Jail extends THREE.Object3D {
   onUpdate () {
     if (!this.isLocked) {
       App.tweens.add(this.position).to({ y: 3.2 }, 1500, Tweener.ease.quartOut);
+    } else {
+      App.tweens.add(this.position).to({ y: 0.5 }, 1500, Tweener.ease.quartOut);
     }
   }
 
