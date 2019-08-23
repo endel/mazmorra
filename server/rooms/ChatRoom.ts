@@ -7,7 +7,7 @@ export class ChatRoom extends Room {
 
   lastMessages: any[] = [];
 
-  async onInit() {
+  async onCreate() {
     this.setPatchRate(null);
 
     this.lastMessages = (await ChatLog.find().sort({_id: -1}).limit(30)).reverse();
@@ -19,12 +19,12 @@ export class ChatRoom extends Room {
     // this.setSimulationInterval(() => this.sendBetaMessage(), 20 * 1000 * 60);
   }
 
-  onAuth (options) {
+  onAuth (client, options) {
     return typeof(verifyToken(options.token)._id) === "string";
   }
 
-  onJoin (client) {
-    this.lastMessages.forEach(msg => this.send(client, msg));
+  onJoin (client: Client) {
+    this.lastMessages.forEach(msg => this.send(client, msg))
   }
 
   appendMessage(message) {

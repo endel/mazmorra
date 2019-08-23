@@ -2,7 +2,6 @@ require('dotenv').config()
 
 import http from 'http';
 import express from 'express';
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import expressBasicAuth from 'express-basic-auth';
 
@@ -21,35 +20,7 @@ import { debugLog } from './utils/Debug';
 const port = process.env.PORT || 3553;
 const app = express();
 
-const basicAuth = expressBasicAuth({
-  users: { admin: "mazmorra" },
-  challenge: true
-});
-
-const server = http.createServer(app);
-const gameServer = new Server({
-  server: server,
-  perMessageDeflate: false
-});
-
-connectDatabase(async () => {
-  // ensure players are set as offline when booting up.
-  console.log("Let's update online users!");
-  const updated = await Hero.updateMany({ online: true }, { $set: { online: false } });
-  console.log(updated);
-});
-
-gameServer.register('chat', ChatRoom);
-gameServer.register('dungeon', DungeonRoom);
-gameServer.register('pvp', DungeonRoom);
-gameServer.register('loot', DungeonRoom);
-gameServer.register('infinite', DungeonRoom);
-gameServer.register('truehell', DungeonRoom);
-
 if (process.env.NODE_ENV !== "production") {
-  gameServer.register('test-items', DungeonRoom);
-  gameServer.register('test-monsters', DungeonRoom);
-
   app.use(cors());
 } else {
   var whitelist = ['http://talk.itch.zone'];
@@ -61,8 +32,35 @@ if (process.env.NODE_ENV !== "production") {
   }))
 }
 
-// to support URL-encoded bodies
-app.use(bodyParser.json());
+app.use(express.json());
+
+const basicAuth = expressBasicAuth({
+  users: { admin: "mazmorra" },
+  challenge: true
+});
+
+const server = http.createServer(app);
+const gameServer = new Server({
+  server: server,
+  express: app
+});
+
+connectDatabase(async () => {
+  // ensure players are set as offline when booting up.
+  console.log("Let's update online users!");
+  const updated = await Hero.updateMany({ online: true }, { $set: { online: false } });
+  console.log(updated);
+});
+
+gameServer.define('chat', ChatRoom);
+gameServer.define('dungeon', DungeonRoom).filterBy(['progress']);
+gameServer.define('pvp', DungeonRoom).filterBy(['progress']);
+gameServer.define('loot', DungeonRoom).filterBy(['progress']);
+gameServer.define('infinite', DungeonRoom).filterBy(['progress']);
+gameServer.define('truehell', DungeonRoom).filterBy(['progress']);
+
+// gameServer.define('test-items', DungeonRoom).filterBy(['progress']);
+// gameServer.define('test-monsters', DungeonRoom).filterBy(['progress']);
 
 if (process.env.NODE_ENV !== "production") {
   app.use(express.static( __dirname + '/../public' ));

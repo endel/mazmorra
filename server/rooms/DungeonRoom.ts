@@ -20,11 +20,14 @@ export class DungeonRoom extends Room<DungeonState> {
   clientMap = new WeakMap<Player, Client>();
 
   disposeTimeout = 5; // 5 seconds default
-  creatorHeroId: string;
 
-  async onInit (options) {
+  async onCreate (options) {
     this.progress = options.progress || 1;
 
+    if (this.progress !== 1 && this.progress < NUM_LEVELS_PER_CHECKPOINT) {
+      this.setPrivate();
+      this.lock();
+    }
 
     // maximum of 5 players allowed on each room.
     if (this.progress !== 1 && this.progress !== MAX_LEVELS) {
@@ -37,8 +40,6 @@ export class DungeonRoom extends Room<DungeonState> {
 
     this.players = new WeakMap();
     this.clientMap = new WeakMap();
-
-    this.creatorHeroId = options.heroId;
 
     // Get season/random seed for this room.
     let seed: string;
@@ -76,23 +77,9 @@ export class DungeonRoom extends Room<DungeonState> {
     this.setSimulationInterval(() => this.tick(), 1000 / TICK_RATE);
   }
 
-  async onAuth (options) {
+  async onAuth (client, options) {
+    console.log("onAuth, options =>", options);
     return verifyToken(options.token)._id;
-  }
-
-  requestJoin (options, isNew) {
-    var success = true;
-
-    // force single-player until first check-point.
-    if (options.progress !== 1 && options.progress < NUM_LEVELS_PER_CHECKPOINT) {
-      return this.creatorHeroId === options.heroId && this.progress === options.progress;
-    }
-
-    if (options.progress) {
-      success = (success && options.progress === this.progress);
-    }
-
-    return success;
   }
 
   async onJoin (client: Client, options: any, userId: string) {

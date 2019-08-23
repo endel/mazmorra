@@ -177,12 +177,12 @@ export default class Level extends THREE.Object3D {
       await this.checkAdPreRoll(name);
     }
 
-    this.room = enterRoom(name, options)
+    this.room = await enterRoom(name, options);
 
     // first level setup
-    this.room.onStateChange.addOnce((state) => this.setInitialState(state));
+    this.room.onStateChange.once((state) => this.setInitialState(state));
 
-    this.room.onError.add((err, e, data) => {
+    this.room.onError((err, e, data) => {
 
       // "black screen" workaround
       // this is real messy!
@@ -199,9 +199,9 @@ export default class Level extends THREE.Object3D {
 
       console.error(err);
     });
-    // this.room.onLeave.add(() => this.cleanup());
+    // this.room.onLeave(() => this.cleanup());
 
-    this.room.onMessage.add((payload) => {
+    this.room.onMessage((payload) => {
       const [ evt, data ] = payload;
 
       if (evt === "checkpoints") {
@@ -225,7 +225,7 @@ export default class Level extends THREE.Object3D {
 
         player.getEntity().emit('zoom', 1.5);
 
-        this.room.onLeave.addOnce(() => {
+        this.room.onLeave.once(() => {
           // analytics event
           trackEvent('gameplay-progress', {
             event_category: 'Gameplay',
@@ -346,7 +346,7 @@ export default class Level extends THREE.Object3D {
                 if (key === getClientId()) {
                   this.dispatchEvent({ type: 'died' });
                   setTimeout(() => {
-                    this.room.onLeave.addOnce(() => this.enterRoom('dungeon', { progress: 1 }));
+                    this.room.onLeave.once(() => this.enterRoom('dungeon', { progress: 1 }));
                     this.room.leave();
                   }, 4000);
                 }

@@ -37,11 +37,11 @@ export function enterRoom (name, options = {}) {
   // Troll adblock users
   if (window.adBlock) { options.adBlock = true; }
 
-  room = client.join(name, options);
-  room.onJoin.addOnce(() =>
-    App.cursor.dispatchEvent({ type: "cursor", kind: "pointer" }));
-
-  return room;
+  return client.joinOrCreate(name, options).then(r => {
+    room = r;
+    App.cursor.dispatchEvent({ type: "cursor", kind: "pointer" });
+    return room;
+  });
 }
 
 export function getClientId () {
@@ -49,5 +49,5 @@ export function getClientId () {
 }
 
 export function enterChat() {
-  return client.join("chat");
+  return client.joinOrCreate("chat");
 }

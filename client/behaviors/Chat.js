@@ -7,22 +7,20 @@ import { i18n } from '../lang';
 
 export default class Chat extends Behaviour {
 
-  onAttach (level) {
+  async onAttach (level) {
     this.level = level;
     this.maxMessages = 40;
 
-    this.room = enterChat();
-    this.room.onJoin.add(() => {
-      // send ping every 30 seconds
-      setInterval(() => this.room.send(['ping']), 30 * 1000);
-    });
+    this.room = await enterChat();
 
-    this.room.onError.add((e) => {
+    setInterval(() => this.room.send(['ping']), 30 * 1000);
+
+    this.room.onError((e) => {
       this.room.removeAllListeners();
     });
 
-    this.room.onMessage.add((message) => this.addMessage(message))
-    this.room.onLeave.add(() => {
+    this.room.onMessage((message) => this.addMessage(message))
+    this.room.onLeave(() => {
       if (confirm("The server has been restarted, refresh the game? Please join the Discord Server if you think this is a bug.")) {
         trackEvent('unexpected-disconnect', {
           event_category: 'Unexpected disconnect',
