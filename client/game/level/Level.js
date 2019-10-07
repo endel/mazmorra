@@ -835,13 +835,8 @@ export default class Level extends THREE.Object3D {
       }
 
       const sessionsForAd = 3;
-      this.totalSessions++;
 
-      if (roomName !== this.lastRoomName) {
-        this.totalSessions = sessionsForAd;
-      }
-
-      if (this.totalSessions % sessionsForAd === 0) {
+      if (this.totalSessions++ % sessionsForAd === 0) {
         sounds.fadeOut(); // fade soundtrack out
 
         window.adPrerollComplete = () => {

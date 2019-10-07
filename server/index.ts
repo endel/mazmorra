@@ -42,7 +42,9 @@ const basicAuth = expressBasicAuth({
 const server = http.createServer(app);
 const gameServer = new Server({
   server: server,
-  express: app
+  express: app,
+  pingTimeout: 8000,
+  pingCountMax: 3
 });
 
 connectDatabase(async () => {

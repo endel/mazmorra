@@ -39,7 +39,7 @@
     "audiosprite-loader": "^0.1.5",
     "behaviour.js": "^0.2.4",
     "clock-timer.js": "^1.1.4",
-    "colyseus.js": "^0.11.0",
+    "colyseus.js": "^0.11.2-alpha.3",
     "core-js": "^3.1.4",
     "fullscreen": "^1.0.2",
     "howler": "^2.1.1",
