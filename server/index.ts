@@ -5,7 +5,7 @@ import express from 'express';
 import cors from 'cors';
 import expressBasicAuth from 'express-basic-auth';
 
-import { Server, Room } from 'colyseus';
+import { Server, Room, matchMaker } from 'colyseus';
 import socialRoutes from "@colyseus/social/express";
 import { monitor } from "@colyseus/monitor";
 
@@ -87,7 +87,7 @@ app.post("/report", async (req, res) => {
   report.timestamp = Date.now();
 
   if (report.message.indexOf("_schema") >= 0) {
-    const remoteCall = await gameServer.matchMaker.remoteRoomCall(report.roomId, 'getSerializerDebugData');
+    const remoteCall = await matchMaker.remoteRoomCall(report.roomId, 'getSerializerDebugData');
     if (remoteCall && remoteCall[1]) {
       report.debug = remoteCall[1];
     }
