@@ -74,7 +74,78 @@ export class DungeonRoom extends Room<DungeonState> {
     this.state.events.on('broadcast', this.broadcastToAll.bind(this));
     this.state.events.on('event', this.broadcastEvent.bind(this));
 
+    this.registerMessages();
     this.setSimulationInterval(() => this.tick(), 1000 / TICK_RATE);
+  }
+
+  registerMessages() {
+    this.onMessage("*", (client, key, value) => {
+      const player = this.players.get(client)
+
+      if (!player) {
+        console.log("ERROR: message comming from invalid player.")
+        return
+      }
+
+      player.lastInteractionTime = this.clock.currentTime;
+
+      if (!player.isAlive) {
+        console.log("a dead player cannot perform actions!");
+        return;
+      }
+
+      if (key == 'move') {
+        (player.position as Movement).target = null;
+        this.state.move(player, value, true)
+
+      } else if (key == 'atk') {
+        player.autoAttack(value);
+
+      } else if (key == 'type') {
+        player.isTyping = value;
+
+      } else if (key == 'distribute-point') {
+        const { attribute } = value;
+        player.distributePoint(attribute);
+
+      } else if (key == 'inventory-drag') {
+        const { fromInventoryType, toInventoryType, itemId, switchItemId } = value;
+        // debugLog(`trading from '${fromInventoryType}' to ${toInventoryType}`);;
+        player.inventoryDrag(fromInventoryType, toInventoryType, itemId, switchItemId);
+
+      } else if (key == 'inventory-sell') {
+        const { fromInventoryType, itemId } = value;
+        // debugLog(`selling from '${fromInventoryType}'`);
+        player.inventorySell(fromInventoryType, itemId);
+
+      } else if (key == 'use-item') {
+        const { inventoryType, itemId } = value;
+        player.useItem(inventoryType, itemId);
+
+      } else if (key == 'skill') {
+        player.useSkill(value);
+
+      } else if (key == 'cast') {
+        const { inventoryType, itemId, position } = value;
+        player.castItem(inventoryType, itemId, position);
+
+      } else if (key == 'drop-item') {
+        const { inventoryType, itemId } = value;
+        player.dropItem(inventoryType, itemId);
+
+      } else if (key == 'checkpoint') {
+        const progress = parseInt(value);
+
+        // TODO: check if player is actually on top of a checkpoint tile
+        if (player.hero.checkPoints.includes(progress)) {
+          this.onGoTo(player, { progress }, { isCheckPoint: true });
+        }
+
+      } else if (key == 'msg') {
+        player.isTyping = false;
+        this.state.addMessage(player, value);
+      }
+    });
   }
 
   async onAuth (client, options) {
@@ -106,8 +177,8 @@ export class DungeonRoom extends Room<DungeonState> {
 
     if (hero.online) {
       // prevent users from opening multiple tabs
-      this.send(client, ["already-logged-in"]);
-      client.close();
+      client.send("already-logged-in");
+      client.leave();
       return false;
 
     } else {
@@ -137,81 +208,6 @@ export class DungeonRoom extends Room<DungeonState> {
       }
 
       Hero.updateOne({ _id: hero._id }, { $set }).then(() => {});
-    }
-  }
-
-  onMessage (client: Client, data) {
-    if (!data || !data.length) {
-      // invalid command arrived!
-      return;
-    }
-
-    const key = data[0]
-        , value = data[1]
-        , player = this.players.get(client)
-
-    if (!player) {
-      console.log("ERROR: message comming from invalid player.")
-      return
-    }
-
-    player.lastInteractionTime = this.clock.currentTime;
-
-    if (!player.isAlive) {
-      console.log("a dead player cannot perform actions!");
-      return;
-    }
-
-    if (key == 'move') {
-      (player.position as Movement).target = null;
-      this.state.move(player, value, true)
-
-    } else if (key == 'atk') {
-      player.autoAttack(value);
-
-    } else if (key == 'type') {
-      player.isTyping = value;
-
-    } else if (key == 'distribute-point') {
-      const { attribute } = value;
-      player.distributePoint(attribute);
-
-    } else if (key == 'inventory-drag') {
-      const { fromInventoryType, toInventoryType, itemId, switchItemId } = value;
-      // debugLog(`trading from '${fromInventoryType}' to ${toInventoryType}`);;
-      player.inventoryDrag(fromInventoryType, toInventoryType, itemId, switchItemId);
-
-    } else if (key == 'inventory-sell') {
-      const { fromInventoryType, itemId } = value;
-      // debugLog(`selling from '${fromInventoryType}'`);
-      player.inventorySell(fromInventoryType, itemId);
-
-    } else if (key == 'use-item') {
-      const { inventoryType, itemId } = value;
-      player.useItem(inventoryType, itemId);
-
-    } else if (key == 'skill') {
-      player.useSkill(value);
-
-    } else if (key == 'cast') {
-      const { inventoryType, itemId, position } = value;
-      player.castItem(inventoryType, itemId, position);
-
-    } else if (key == 'drop-item') {
-      const { inventoryType, itemId } = value;
-      player.dropItem(inventoryType, itemId);
-
-    } else if (key == 'checkpoint') {
-      const progress = parseInt(value);
-
-      // TODO: check if player is actually on top of a checkpoint tile
-      if (player.hero.checkPoints.includes(progress)) {
-        this.onGoTo(player, { progress }, { isCheckPoint: true });
-      }
-
-    } else if (key == 'msg') {
-      player.isTyping = false;
-      this.state.addMessage(player, value);
     }
   }
 
@@ -248,24 +244,24 @@ export class DungeonRoom extends Room<DungeonState> {
       destinyParams.progress = hero.latestProgress;
     }
 
-    this.send(client, ['goto', destinyParams, params]);
+    client.send('goto', [destinyParams, params]);
   }
 
   onDisconnect (player) {
-    const client = this.clientMap.get(player);
-    if (client) { client.close(); }
+    this.clientMap.get(player)?.leave();
   }
 
   sendToPlayer (player, data) {
     const client = this.clientMap.get(player);
 
     if (player && client) {
-      this.send(client, data);
+      client.send(data[0], data[1]);
     }
   }
 
   broadcastToAll (data) {
-    this.broadcast(data);
+    const type = data.shift();
+    this.broadcast(type, data);
   }
 
   broadcastEvent (data) {
@@ -277,14 +273,14 @@ export class DungeonRoom extends Room<DungeonState> {
       const client = this.clientMap.get(player);
 
       if (client) {
-        this.send(this.clientMap.get(player), ["sound", soundName]);
+        this.clientMap.get(player).send("sound", soundName);
 
       } else {
         console.log("trying to broadcast sound to NPC. skip.");
       }
 
     } else {
-      this.broadcast(["sound", soundName]);
+      this.broadcast("sound", soundName);
     }
   }
 
@@ -307,9 +303,9 @@ export class DungeonRoom extends Room<DungeonState> {
       autoDisposeTimeout = 60 * 2;
     }
 
-    // const quickInventory = Object.values(player.quickInventory.slots).map(slot => slot.toJSON());
-    const inventory = Object.values(player.inventory.slots).map(slot => slot.toJSON());
-    const equipedItems = Object.values(player.equipedItems.slots).map(slot => slot.toJSON());
+    // const quickInventory = Array.from(player.quickInventory.slots.values()).map(slot => slot.toJSON());
+    const inventory = Array.from(player.inventory.slots.values()).map(slot => slot.toJSON());
+    const equipedItems = Array.from(player.equipedItems.slots.values()).map(slot => slot.toJSON());
 
     const additionalData: {[id: string]: any} = { inventory, equipedItems }; // quickInventory,
 

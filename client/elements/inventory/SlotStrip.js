@@ -40,12 +40,14 @@ export default class SlotStrip extends THREE.Object3D {
 
     this.clearItems();
 
-    const itemIds = Object.keys(items);
-    for (let i = 0; i < this.numSlots; i++) {
-      this.slots[i].item = null;
+    // const itemIds = Object.keys(items);
+    let i = 0;
 
-      const itemId = itemIds[i];
-      const item = items[itemId];
+    items.forEach((item, itemId) => {
+      // skip if item surpass number of slots
+      if (i >= this.numSlots) { return; }
+
+      this.slots[i].item = null;
 
       if (item) {
         const itemIcon = ResourceManager.getHUDElement(`items-${item.type}`);
@@ -56,7 +58,8 @@ export default class SlotStrip extends THREE.Object3D {
       }
 
       this.slots[i].enabled = this.enabled;
-    }
+      i++;
+    });
   }
 
   set numSlots (total) {

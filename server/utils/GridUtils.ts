@@ -1,8 +1,9 @@
 import { Entity } from "../entities/Entity";
 import { Unit } from "../entities/Unit";
+import { MapSchema } from "@colyseus/schema";
 
 export class GridUtils {
-  entities: {[id: string]: Unit};
+  entities: MapSchema<Unit>;
 
   constructor (entities) {
     this.entities = entities
@@ -10,12 +11,15 @@ export class GridUtils {
 
   getEntityAt (x, y, classReference: any = Entity, meetAttribute?: string) {
     // var entities = []
-    for (var id in this.entities) {
-      // return first entity found at that position
-      if (this.entities[ id ].position.y == x && this.entities[ id ].position.x == y &&
-          this.entities[ id ] instanceof classReference &&
-          (!meetAttribute || this.entities[ id ][ meetAttribute ])) {
-        return this.entities[ id ]
+    // const values = this.entities.values();
+
+    for (const entity of this.entities.values()) {
+      if (
+        entity.position.y == x && entity.position.x == y &&
+        entity instanceof classReference &&
+        (!meetAttribute || entity[meetAttribute])
+      ) {
+        return entity;
       }
     }
 
@@ -23,7 +27,7 @@ export class GridUtils {
   }
 
   getAllEntitiesAt (x, y) {
-    return Object.values(this.entities).filter(entity => {
+    return Array.from(this.entities.values()).filter(entity => {
       return (entity.position.y == x && entity.position.x == y);
     });
   }

@@ -55,47 +55,46 @@ export abstract class Item extends Entity {
   getPrice(allowPremium: boolean = true) {
     let price = 0;
 
-    for (let i = 0; i < this.modifiers.length; i++) {
-
+    this.modifiers.forEach((modifier, i) => {
       if (
-        this.modifiers[i].attr == "hp" ||
-        this.modifiers[i].attr == "mp"
+        modifier.attr == "hp" ||
+        modifier.attr == "mp"
       ) {
-        price += this.modifiers[i].modifier * 2;
+        price += modifier.modifier * 2;
 
-      } else if (this.modifiers[i].attr == "xp") {
+      } else if (modifier.attr == "xp") {
         const tier = parseInt(this.type[this.type.length - 1]) - 1;
-        price += (this.modifiers[i].modifier * 50) - ((tier * tier) * 200);
+        price += (modifier.modifier * 50) - ((tier * tier) * 200);
 
       } else if (
-        this.modifiers[i].attr == "strength" ||
-        this.modifiers[i].attr == "agility" ||
-        this.modifiers[i].attr == "intelligence"
+        modifier.attr == "strength" ||
+        modifier.attr == "agility" ||
+        modifier.attr == "intelligence"
       ) {
-        price += this.modifiers[i].modifier * 500;
+        price += modifier.modifier * 500;
 
-      } else if (this.modifiers[i].attr == "armor") {
-        price += this.modifiers[i].modifier * 400;
+      } else if (modifier.attr == "armor") {
+        price += modifier.modifier * 400;
 
-      } else if (this.modifiers[i].attr == "damage") {
-        price += this.modifiers[i].modifier * 400;
+      } else if (modifier.attr == "damage") {
+        price += modifier.modifier * 400;
 
-      } else if (this.modifiers[i].attr == "movementSpeed") {
-        price += this.modifiers[i].modifier * 400;
+      } else if (modifier.attr == "movementSpeed") {
+        price += modifier.modifier * 400;
 
-      } else if (this.modifiers[i].attr == "attackDistance") {
-        price += this.modifiers[i].modifier * 400;
+      } else if (modifier.attr == "attackDistance") {
+        price += modifier.modifier * 400;
 
-      } else if (this.modifiers[i].attr == "attackSpeed") {
-        price += this.modifiers[i].modifier * 400;
+      } else if (modifier.attr == "attackSpeed") {
+        price += modifier.modifier * 400;
 
-      } else if (this.modifiers[i].attr == "evasion") {
-        price += this.modifiers[i].modifier * 400;
+      } else if (modifier.attr == "evasion") {
+        price += modifier.modifier * 400;
 
-      } else if (this.modifiers[i].attr == "criticalStrikeChance") {
-        price += this.modifiers[i].modifier * 600;
+      } else if (modifier.attr == "criticalStrikeChance") {
+        price += modifier.modifier * 600;
       }
-    }
+    });
 
     return (!this.premium || !allowPremium)
       ? Math.round(price * 10) / 10

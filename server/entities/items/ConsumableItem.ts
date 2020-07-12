@@ -1,6 +1,6 @@
 import { Item } from "../Item";
 import { Player } from "../Player";
-import { type } from "@colyseus/schema";
+import { type, MapSchema } from "@colyseus/schema";
 
 const MAX_ITEM_STACK = 9;
 
@@ -14,13 +14,16 @@ export class ConsumableItem extends Item {
     return this.qty <= 0;
   }
 
-  getSameItemToIncrement(slots, combineWith?: ConsumableItem) {
+  getSameItemToIncrement(slots: MapSchema, combineWith?: ConsumableItem) {
     const qtyToAdd = (combineWith && combineWith.qty) || 1;
-    for (let itemId in slots) {
-      if (slots[itemId].type === this.type && slots[itemId].qty + qtyToAdd <= MAX_ITEM_STACK) {
-        return slots[itemId];
+    return Array.from(slots.values()).find((item) => {
+      if (
+        item.type === this.type &&
+        item.qty + qtyToAdd <= MAX_ITEM_STACK
+      ) {
+        return item;
       }
-    }
+    });
   }
 
   incrementQtyFromSlots(slots, combineWith?: ConsumableItem) {

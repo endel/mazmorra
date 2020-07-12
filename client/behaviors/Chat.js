@@ -13,13 +13,13 @@ export default class Chat extends Behaviour {
 
     this.room = await enterChat();
 
-    setInterval(() => this.room.send(['ping']), 30 * 1000);
+    setInterval(() => this.room.send('ping'), 30 * 1000);
 
     this.room.onError((e) => {
       this.room.removeAllListeners();
     });
 
-    this.room.onMessage((message) => this.addMessage(message))
+    this.room.onMessage("msg", (message) => this.addMessage(message))
     this.room.onLeave(() => {
       if (confirm("The server has been restarted, refresh the game? Please join the Discord Server if you think this is a bug.")) {
         trackEvent('unexpected-disconnect', {
@@ -93,14 +93,14 @@ export default class Chat extends Behaviour {
 
   startTyping () {
     if (!this.isTyping) {
-      this.level.room.send(['type', true]);
+      this.level.room.send('type', true);
       this.isTyping = true;
     }
   }
 
   stopTyping () {
     if (this.isTyping) {
-      this.level.room.send(['type', false]);
+      this.level.room.send('type', false);
       this.isTyping = false;
     }
   }
@@ -152,14 +152,14 @@ export default class Chat extends Behaviour {
     if (message !== "" && message !== this.lastMessage) {
       this.lastMessage = message
 
-      this.room.send(['msg', {
+      this.room.send('msg', {
         name: (player && player.userData.name) || "{not connected}",
         lvl: player && player.userData.lvl,
         progress: this.level.progress,
         text: message,
-      }]);
+      });
 
-      this.level.room.send(['msg', message]);
+      this.level.room.send('msg', message);
 
       this.stopTyping();
     }

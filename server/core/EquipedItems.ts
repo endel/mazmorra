@@ -34,12 +34,9 @@ export class EquipedItems extends Inventory {
 
     } else {
       // allow to get item by id
-      for (let slotName in this.slots) {
-        const itemInSlot: Item = this.slots[slotName];
-        if (itemInSlot.id === itemIdOrSlotName) {
-          return itemInSlot;
-        }
-      }
+      return Array.from(this.slots.values()).find((item) =>  {
+        return item.id === itemIdOrSlotName;
+      });
     }
   }
 

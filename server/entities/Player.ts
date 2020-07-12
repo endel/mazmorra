@@ -93,13 +93,11 @@ export class Player extends Unit {
     const inventoriesToSearchFor: InventoryType[] = ['inventory']; // , 'quickInventory'
 
     for (let i = 0; i < inventoriesToSearchFor.length; i++) {
-      const _inventoryType = inventoriesToSearchFor[i];
-      const inventory: Inventory = this[_inventoryType];
-      for (const _itemId in inventory.slots) {
-        const item: Item = inventory.slots[_itemId];
-        if (item.type === type) {
-          return item;
-        }
+      const inventoryType = inventoriesToSearchFor[i];
+      const inventory: Inventory = this[inventoryType];
+      const item = Array.from(inventory.slots.values()).find(item => item.type === type);
+      if (item) {
+        return item;
       }
     }
   }
@@ -149,14 +147,14 @@ export class Player extends Unit {
       // this.quickInventory,
       this.equipedItems
     ].forEach(inventory => {
-      for (let itemId in inventory.slots) {
+      inventory.slots.forEach((item, itemId) => {
         if (inventory === this.purchase) {
-          inventory.slots[itemId].price = inventory.slots[itemId].getPrice();
+          item.price = item.getPrice();
 
         } else {
-          inventory.slots[itemId].price = inventory.slots[itemId].getSellPrice();
+          item.price = item.getSellPrice();
         }
-      }
+      });
     });
 
     this.state.events.emit("send", this, ["trading-items", this.purchase.slots]);

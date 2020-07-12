@@ -409,9 +409,7 @@ export class DungeonState extends Schema {
     const allowedPath = this.pathgrid.clone();
 
     // Check which entities are walkable.
-    for (const id in this.entities) {
-      const entity: Entity = this.entities[id];
-
+    this.entities.forEach((entity, _) => {
       if (
         unit instanceof NPC ||// npc should avoid Checkpoint
         (
@@ -435,8 +433,7 @@ export class DungeonState extends Schema {
       ) {
         allowedPath.setWalkableAt(entity.position.x, entity.position.y, false);
       }
-    }
-
+    });
 
     const moves = this.finder.findPath(
       unit.position.x, unit.position.y,
@@ -543,11 +540,11 @@ export class DungeonState extends Schema {
     //   return;
     // }
 
-    for (var id in this.entities) {
-      if (!this.entities[id].removed) {
-        this.entities[id].update(currentTime)
+    this.entities.forEach((entity, _) => {
+      if (!entity.removed) {
+        entity.update(currentTime);
       }
-    }
+    });
 
     this.disposeEntities();
   }

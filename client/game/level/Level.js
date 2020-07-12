@@ -73,7 +73,7 @@ export default class Level extends THREE.Object3D {
     this.hud.addEventListener("atk", (e) => {
       e.stopPropagation = true;
       if (this.room.connection) {
-        this.room.send(["atk"]);
+        this.room.send("atk");
       }
     });
 
@@ -81,7 +81,7 @@ export default class Level extends THREE.Object3D {
     this.hud.addEventListener("skill", (e) => {
       e.stopPropagation = true;
       if (this.room.connection) {
-        this.room.send(["skill", e.skill]);
+        this.room.send("skill", e.skill);
       }
     });
 
@@ -90,10 +90,10 @@ export default class Level extends THREE.Object3D {
       e.stopPropagation = true;
 
       if (this.room.connection) {
-        this.room.send(["use-item", {
+        this.room.send("use-item", {
           inventoryType: e.inventoryType,
           itemId: e.itemId
-        }]);
+        });
       }
 
       if (e.inventoryType === "purchase") {
@@ -105,12 +105,12 @@ export default class Level extends THREE.Object3D {
       e.stopPropagation = true;
 
       if (this.room.connection) {
-        this.room.send(["inventory-drag", {
+        this.room.send("inventory-drag", {
           fromInventoryType: e.fromInventoryType,
           toInventoryType: e.toInventoryType,
           itemId: e.itemId,
           switchItemId: e.switchItemId,
-        }]);
+        });
       }
 
       if (e.fromInventoryType === "purchase") {
@@ -122,10 +122,10 @@ export default class Level extends THREE.Object3D {
       e.stopPropagation = true;
 
       if (this.room.connection) {
-        this.room.send(["inventory-sell", {
+        this.room.send("inventory-sell", {
           fromInventoryType: e.fromInventoryType,
           itemId: e.itemId
-        }]);
+        });
       }
 
       sounds.inventorySound.sell.play();
@@ -133,7 +133,7 @@ export default class Level extends THREE.Object3D {
 
     this.hud.addEventListener("checkpoint", (e) => {
       if (this.room.connection) {
-        this.room.send(["checkpoint", e.progress]);
+        this.room.send("checkpoint", e.progress);
       }
     });
   }
@@ -147,11 +147,11 @@ export default class Level extends THREE.Object3D {
 
     this.updateClickedTileLight();
 
-    this.room.send(["atk", {
+    this.room.send("atk", {
       // FIXME: why need to invert here?
       x: this.targetPosition.y,
       y: this.targetPosition.x,
-    }]);
+    });
   }
 
   onMouseOver (e) {
@@ -201,84 +201,88 @@ export default class Level extends THREE.Object3D {
     });
     // this.room.onLeave(() => this.cleanup());
 
-    this.room.onMessage((payload) => {
-      const [ evt, data ] = payload;
+    this.room.onMessage("checkpoints", (data) => {
+      this.hud.onOpenCheckPoints(data.sort((a, b) => a - b), this.progress);
+    });
 
-      if (evt === "checkpoints") {
-        this.hud.onOpenCheckPoints(data.sort((a, b) => a - b), this.progress);
+    this.room.onMessage("goto", (payload) => {
+      const data = payload[0];
+      const params = payload[1];
 
-      } else if (evt === "goto") {
-        const params = payload[2];
-        const roomName = (data.room) ? data.room : "dungeon";
+      const roomName = (data.room) ? data.room : "dungeon";
 
-        if (params.isPortal) {
-          sounds.portal.play();
-          data.isPortal = true;
+      if (params.isPortal) {
+        sounds.portal.play();
+        data.isPortal = true;
 
-        } else if (params.isCheckPoint) {
-          sounds.checkpoint.play();
-          data.isCheckPoint = true;
+      } else if (params.isCheckPoint) {
+        sounds.checkpoint.play();
+        data.isCheckPoint = true;
 
-        } else {
-          doorSound.play();
-        }
+      } else {
+        doorSound.play();
+      }
 
-        player.getEntity().emit('zoom', 1.5);
+      player.getEntity().emit('zoom', 1.5);
 
-        this.room.onLeave.once(() => {
-          // analytics event
-          trackEvent('gameplay-progress', {
-            event_category: 'Gameplay',
-            event_label: 'Progress',
-            value: data.progress
-          });
-
-          setTimeout(async () => this.room = await this.enterRoom(roomName, data), 500);
+      this.room.onLeave.once(() => {
+        // analytics event
+        trackEvent('gameplay-progress', {
+          event_category: 'Gameplay',
+          event_label: 'Progress',
+          value: data.progress
         });
 
-        setTimeout(() => this.room.leave(), 200);
+        setTimeout(async () => this.room = await this.enterRoom(roomName, data), 500);
+      });
 
+      setTimeout(() => this.room.leave(), 200);
+    });
 
-      } else if (evt === "trading-items") {
-        this.hud.inventory.setTradingItems(data);
+    this.room.onMessage("trading-items", (data) => {
+      this.hud.inventory.setTradingItems(new Map(Object.entries(data)));
 
-        // FIXME: this piece of code is repeated in many places!
-        // force to open inventory if it's closed
-        if (!this.hud.isInventoryOpen()) {
-          this.hud.onToggleInventory();
-        }
-
-        this.playSound("approve");
-
-      } else if (evt === "skill") {
-        // this.playSound(data);
-        var object = this.entities[data];
-        var skillName = payload[2];
-        var skillDuration = payload[3];
-        if (object) {
-          object.add(new SkillUse(skillName, skillDuration));
-
-          if (skillName === "movement-speed") {
-            player.getEntity().emit('zoom', 0.7);
-            setTimeout(() => player.getEntity().emit('zoom', 1), skillDuration);
-          }
-        }
-
-      } else if (evt === "sound") {
-        this.playSound(data);
-
-      } else if (evt === "announcement") {
-        var [title, sound] = data;
-
-        this.hud.announcement(title);
-        this.playSound(sound);
-
-      } else if (evt === "leaderboard") {
-        this.hud.openLeaderboard(data);
-
-      } else if (evt === "already-logged-in") {
-        alert("Already logged in. If you think this message is a bug please report in the Discord Server.");
+      // FIXME: this piece of code is repeated in many places!
+      // force to open inventory if it's closed
+      if (!this.hud.isInventoryOpen()) {
+        this.hud.onToggleInventory();
       }
+
+      this.playSound("approve");
+    });
+
+    this.room.onMessage("skill", (payload) => {
+      const data = payload[0];
+      // this.playSound(data);
+      var object = this.entities[data];
+      var skillName = payload[1];
+      var skillDuration = payload[2];
+      if (object) {
+        object.add(new SkillUse(skillName, skillDuration));
+
+        if (skillName === "movement-speed") {
+          player.getEntity().emit('zoom', 0.7);
+          setTimeout(() => player.getEntity().emit('zoom', 1), skillDuration);
+        }
+      }
+    });
+
+    this.room.onMessage("sound", (data) => {
+      this.playSound(data);
+    })
+
+    this.room.onMessage("announcement", (data) => {
+      var [title, sound] = data;
+      this.hud.announcement(title);
+      this.playSound(sound);
+    });
+
+    this.room.onMessage("leaderboard", (data) => {
+      this.hud.openLeaderboard(data);
+    });
+
+    this.room.onMessage("already-logged-in", () => {
+      alert("Already logged in. If you think this message is a bug please report in the Discord Server.");
     });
 
     return this.room;
@@ -307,53 +311,64 @@ export default class Level extends THREE.Object3D {
         /**
          * update inventory
          */
-        entity.inventory.onChange = (_) => { this.hud.getEntity().emit('update-inventory', 'inventory'); }
-        entity.inventory.triggerAll();
+        entity.inventory.slots.onChange = () => {
+          this.hud.getEntity().emit('update-inventory', 'inventory');
+        };
+        entity.inventory.slots.onAdd = (item, key) => {
+          item.onChange = entity.inventory.slots.onChange;
+          entity.inventory.slots.onChange();
+        };
+        entity.inventory.slots.onRemove = entity.inventory.slots.onChange;
+        entity.inventory.slots.triggerAll();
 
-        // update inventory
-        entity.equipedItems.onChange = (_) => { this.hud.getEntity().emit('update-inventory', 'equipedItems'); }
-        entity.equipedItems.triggerAll();
+        // update inventory / equippedItems
+        entity.equipedItems.slots.onChange = (item, key) => {
+          this.hud.getEntity().emit('update-inventory', 'equipedItems');
+        }
+        entity.equipedItems.slots.onAdd = entity.equipedItems.slots.onChange;
+        entity.equipedItems.slots.onRemove = entity.equipedItems.slots.onChange;
+        entity.equipedItems.slots.onChange();
+
+        entity.hp.onChange = () => { this.hud.getEntity().emit('update-bars', entity); };
+        entity.mp.onChange = entity.hp.onChange;
+        entity.xp.onChange = entity.hp.onChange;
       }
 
       // may not be a player
       if (entity.hp) {
-        entity.hp.onChange = (changes) => {
-          for (const change of changes) {
-            if (change.field === "current") {
-              if (change.value <= 0) {
-                object.getEntity().emit('died');
+        entity.hp.listen("current", (currentHP) => {
+          if (currentHP <= 0) {
+            object.getEntity().emit('died');
 
-                // kill boss camera effect!
+            // kill boss camera effect!
 
-                if (
-                  entity.isBoss &&
-                  !PlayerPrefs.hasKilledBoss(entity)
-                ) {
-                  PlayerPrefs.hasKilledBoss(entity, true);
-                  this.playSound("killBoss");
+            if (
+              entity.isBoss &&
+              !PlayerPrefs.hasKilledBoss(entity)
+            ) {
+              PlayerPrefs.hasKilledBoss(entity, true);
+              this.playSound("killBoss");
 
-                  player.getEntity().emit('target', object);
-                  player.getEntity().emit('zoom', 2);
+              player.getEntity().emit('target', object);
+              player.getEntity().emit('zoom', 2);
 
-                  setTimeout(() => {
-                    player.getEntity().emit('target', player);
-                    player.getEntity().emit('zoom', 1);
-                  }, 2000);
-                }
+              setTimeout(() => {
+                player.getEntity().emit('target', player);
+                player.getEntity().emit('zoom', 1);
+              }, 2000);
+            }
 
-                // Go back to lobby if current player has died
-                // (After 5 seconds)
-                if (key === getClientId()) {
-                  this.dispatchEvent({ type: 'died' });
-                  setTimeout(() => {
-                    this.room.onLeave.once(() => this.enterRoom('dungeon', { progress: 1 }));
-                    this.room.leave();
-                  }, 4000);
-                }
-              }
+            // Go back to lobby if current player has died
+            // (After 5 seconds)
+            if (key === getClientId()) {
+              this.dispatchEvent({ type: 'died' });
+              setTimeout(() => {
+                this.room.onLeave.once(() => this.enterRoom('dungeon', { progress: 1 }));
+                this.room.leave();
+              }, 4000);
             }
           }
-        };
+        });
       }
       // entity.hp.triggerAll() ??
 
@@ -391,8 +406,13 @@ export default class Level extends THREE.Object3D {
             object.typing = change.value;
 
           } else if (change.field === "action") {
-            const actionType = change.value && change.value.active && change.value.type;
-            object.getEntity().emit(actionType, change.value);
+            if (change.value) {
+              change.value.onChange = function () {
+                const actionType = change.value.active && change.value.type;
+                object.getEntity().emit(actionType, change.value);
+              }
+              change.value.onChange();
+            }
 
           } else if (change.field === "active" && change.value !== change.previousValue) {
             object.getEntity().emit('active', change.value);
@@ -409,16 +429,12 @@ export default class Level extends THREE.Object3D {
               // this.hud.getEntity().emit('update-attribute', 'pointsToDistribute', change.value);
               // FIXME: this piece of code is duplicated
               this.hud.getEntity().emit('update-attributes', entity);
-
-            } else if (
-              change.field === "hp" ||
-              change.field === "mp" ||
-              change.field === "xp" ||
-              change.field === "gold" ||
-              change.field === "diamond"
-            ) {
-              this.hud.getEntity().emit('update-bars', entity);
             }
+          } else if (
+            change.field === "gold" ||
+            change.field === "diamond"
+          ) {
+              this.hud.getEntity().emit('update-currencies', entity);
           }
 
         }
@@ -661,7 +677,7 @@ export default class Level extends THREE.Object3D {
     if (App.cursor.isPerformingCast()) {
       const castingItem = App.cursor.castingItem;
 
-      this.room.send(['cast', {
+      this.room.send('cast', {
         inventoryType: castingItem.userData.inventoryType,
         itemId: castingItem.userData.itemId,
         position: {
@@ -669,7 +685,7 @@ export default class Level extends THREE.Object3D {
           x: this.targetPosition.y,
           y: this.targetPosition.x,
         }
-      }]);
+      });
 
       App.cursor.performItemCast();
 
@@ -681,7 +697,7 @@ export default class Level extends THREE.Object3D {
         y: this.targetPosition.y,
       };
 
-      this.room.send(['move', moveCommand]);
+      this.room.send('move', moveCommand);
     }
   }
 
@@ -698,7 +714,7 @@ export default class Level extends THREE.Object3D {
       value: event.attribute
     });
 
-    this.room.send(['distribute-point', { attribute: event.attribute }]);
+    this.room.send('distribute-point', { attribute: event.attribute });
   }
 
   playerActionDrop() {
@@ -742,10 +758,10 @@ export default class Level extends THREE.Object3D {
         item: false
       });
 
-      this.room.send(['drop-item', {
+      this.room.send('drop-item', {
         inventoryType: item.inventoryType,
         itemId: item.itemId
-      }]);
+      });
       return;
     }
 

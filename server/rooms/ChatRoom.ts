@@ -15,6 +15,19 @@ export class ChatRoom extends Room {
     // listen to events from other rooms.
     this.presence.subscribe("events", (message) => this.broadcast(this.appendMessage(message)));
 
+    this.onMessage("*", (client, command, data) => {
+      if (command == "msg") {
+        const msg = {
+          name: data.name,
+          lvl: data.lvl,
+          progress: data.progress,
+          say: data.text
+        };
+
+        this.broadcast("msg", this.appendMessage(msg));
+      };
+    });
+
     // every 20 minutes
     // this.setSimulationInterval(() => this.sendBetaMessage(), 20 * 1000 * 60);
   }
@@ -24,7 +37,7 @@ export class ChatRoom extends Room {
   }
 
   onJoin (client: Client) {
-    this.lastMessages.forEach(msg => this.send(client, msg))
+    this.lastMessages.forEach(msg => client.send("msg", msg));
   }
 
   appendMessage(message) {
@@ -52,23 +65,6 @@ export class ChatRoom extends Room {
   //     timestamp: Date.now()
   //   });
   // }
-
-  onMessage (client: Client, message) {
-    if (!Array.isArray(message)) { return; }
-
-    const [command, data] = message;
-
-    if (command == "msg") {
-      const msg = {
-        name: data.name,
-        lvl: data.lvl,
-        progress: data.progress,
-        say: data.text
-      };
-
-      this.broadcast(this.appendMessage(msg));
-    }
-  }
 
   async onLeave (client) {}
 
