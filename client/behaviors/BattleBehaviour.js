@@ -45,7 +45,6 @@ export default class BattleBehaviour extends Behaviour {
   }
 
   onAttack (actionData) {
-    console.log("ON ATTACK", actionData);
     if (!actionData.type) { return this.disable(); }
 
     this.damageAttribute = this.getDamageAttribute();
