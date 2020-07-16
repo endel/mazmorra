@@ -31,15 +31,14 @@ export class Scroll extends ConsumableItem {
       //
       // remove previous portals from this player.
       //
-      for (let id in state.entities) {
-        const entity = state.entities[id];
+      state.entities.forEach((entity, id) => {
         if (
           entity.type === helpers.ENTITIES.PORTAL &&
           entity.ownerId === player.hero._id.toString()
         ) {
           state.removeEntity(entity);
         }
-      }
+      });
 
       const portal = new Portal({
         x: availablePosition[1],

@@ -13,7 +13,7 @@ export class ChatRoom extends Room {
     this.lastMessages = (await ChatLog.find().sort({_id: -1}).limit(30)).reverse();
 
     // listen to events from other rooms.
-    this.presence.subscribe("events", (message) => this.broadcast(this.appendMessage(message)));
+    this.presence.subscribe("events", (message) => this.broadcast("msg", this.appendMessage(message)));
 
     this.onMessage("*", (client, command, data) => {
       if (command == "msg") {

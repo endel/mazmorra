@@ -332,6 +332,18 @@ export default class Level extends THREE.Object3D {
         entity.hp.onChange = () => { this.hud.getEntity().emit('update-bars', entity); };
         entity.mp.onChange = entity.hp.onChange;
         entity.xp.onChange = entity.hp.onChange;
+
+        const updateAttributes = () => {
+          // this.hud.getEntity().emit('update-attribute', 'pointsToDistribute', change.value);
+          // FIXME: this piece of code is duplicated
+          this.hud.getEntity().emit('update-attributes', entity);
+        };
+        entity.listen("pointsToDistribute", updateAttributes);
+        entity.listen("equipedItems", updateAttributes);
+
+        const updateCurrencies = () => this.hud.getEntity().emit('update-currencies', entity);
+        entity.listen("gold", updateCurrencies);
+        entity.listen("diamond", updateCurrencies);
       }
 
       // may not be a player
@@ -377,68 +389,55 @@ export default class Level extends THREE.Object3D {
        * Entity Change:
        * Level / Position / Direction
        */
-      entity.onChange = (changes) => {
-        for (const change of changes) {
-          if (change.field === "lvl" && change.value !== change.previousValue) {
-            object.add(new LevelUp())
+      entity.listen("lvl", (value, previousValue) => {
+        // do not trigger "level up" animation if entity just entered the game.
+        if (previousValue !== undefined) {
+          object.add(new LevelUp())
 
-            this.factory.createEntity({
-              type: helpers.ENTITIES.TEXT_EVENT,
-              text: 'Level Up!',
-              kind: 'warn',
-              ttl: 500,
-              special: true,
-              position: object.userData.position
-            });
-
-          // } else if (change.field === "position") {
-          //   object.getEntity().emit('nextPoint', this.factory.fixTilePosition(object.position.clone(), change.value.y, change.value.x));
-
-          } else if (change.field === "direction") {
-            object.direction = change.value;
-
-          } else if (change.field === "stunned") {
-            if (change.value) {
-              this.playSound('stun');
-            }
-
-          } else if (change.field === "isTyping") {
-            object.typing = change.value;
-
-          } else if (change.field === "action") {
-            if (change.value) {
-              change.value.onChange = function () {
-                const actionType = change.value.active && change.value.type;
-                object.getEntity().emit(actionType, change.value);
-              }
-              change.value.onChange();
-            }
-
-          } else if (change.field === "active" && change.value !== change.previousValue) {
-            object.getEntity().emit('active', change.value);
-
-          } else if (change.field === "isLocked") {
-            // change locked
-            object.getEntity().emit('update');
-
-          } else if (object.userData.id === getClientId()) {
-            if (
-              change.field === "pointsToDistribute" ||
-              change.field === "equipedItems"
-            )  {
-              // this.hud.getEntity().emit('update-attribute', 'pointsToDistribute', change.value);
-              // FIXME: this piece of code is duplicated
-              this.hud.getEntity().emit('update-attributes', entity);
-            }
-          } else if (
-            change.field === "gold" ||
-            change.field === "diamond"
-          ) {
-              this.hud.getEntity().emit('update-currencies', entity);
-          }
-
+          this.factory.createEntity({
+            type: helpers.ENTITIES.TEXT_EVENT,
+            text: 'Level Up!',
+            kind: 'warn',
+            ttl: 500,
+            special: true,
+            position: object.userData.position
+          });
         }
-      };
+      });
+
+      entity.listen("direction", (direction) => {
+        object.direction = direction;
+      });
+
+      entity.listen("stunned", (value) => {
+        if (value) {
+          this.playSound('stun');
+        }
+      })
+
+      entity.listen("isTyping", (value) => {
+        object.typing = value;
+      });
+
+      entity.listen("action", (action) => {
+        if (action) {
+          action.onChange = function () {
+            const actionType = action.active && action.type;
+            object.getEntity().emit(actionType, action);
+          }
+          action.onChange();
+        }
+      });
+
+      entity.listen("active", (value, previousValue) => {
+        // if (change.value !== change.previousValue) {
+        object.getEntity().emit('active', value);
+      });
+
+      entity.listen("isLocked", (value) => {
+        // change locked
+        object.getEntity().emit('update');
+      });
 
       entity.position.onChange = (changes) => {
         object.getEntity().emit('nextPoint', this.factory.fixTilePosition(object.position.clone(), entity.position.y, entity.position.x));

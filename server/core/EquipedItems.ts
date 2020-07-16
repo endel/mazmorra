@@ -65,9 +65,8 @@ export class EquipedItems extends Inventory {
       return true;
 
     } else {
-      for (let slotName in this.slots) {
-        const itemInSlot: Item = this.slots[slotName];
-
+      const entries = Array.from(this.slots.entries());
+      for (const [slotName, itemInSlot] of entries) {
         if (itemInSlot.id === itemIdOrSlotName) {
           delete this.slots[slotName];
           this.events.emit('change');

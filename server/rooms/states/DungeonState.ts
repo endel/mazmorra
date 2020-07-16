@@ -235,7 +235,7 @@ export class DungeonState extends Schema {
     var player = new Player(client.sessionId, hero, this);
 
     // find and remove portals from this player!
-    const portal = this.getAllEntitiesOfType<Portal>(Portal).find(portal => portal.ownerId === hero._id.toString());
+    const portal = this.getAllEntitiesOfType(Portal).find(portal => portal.ownerId === hero._id.toString());
     if (portal) { this.removeEntity(portal); }
     if (options.isPortal) {
       if (this.progress === 1) {
@@ -508,15 +508,9 @@ export class DungeonState extends Schema {
   }
 
   getAllEntitiesOfType<T extends Entity>(klass: EntityConstructor<T>) {
-    const entities: T[] = [];
-
-    for (var id in this.entities) {
-      if (this.entities[id] instanceof klass) {
-        entities.push(this.entities[id]);
-      }
-    }
-
-    return entities;
+    return Array.from(this.entities.values()).filter((entity) => {
+      return entity instanceof klass;
+    }) as T[];
   }
 
   findClosestPlayer(unit: Entity, dist: number) {
