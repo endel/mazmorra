@@ -1,6 +1,6 @@
 <img src="logo.png?raw=true" width="256" align="right" />
 
-## [Mazmorra.io](https://mazmorra.io): Retro Roguelite RPG
+## [Mazmorra.io](https://mazmorra.io): Retro Multiplayer Roguelite RPG
 
 [Mazmorra.io](https://mazmorra.io) has a long history with Colyseus. This project has started to validate the very first vesions of Colyseus, as you can see in [commits dating back from 2015](https://github.com/endel/mazmorra/commit/7d2f631a48f8907f5031a3c9a1936d012bbe2090), when the Colyseus version was **0.2**
 
