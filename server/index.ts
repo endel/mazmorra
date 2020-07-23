@@ -102,8 +102,7 @@ app.post("/report", async (req, res) => {
 app.use('/', socialRoutes);
 app.use('/hero', hero);
 
-// app.use('/colyseus', basicAuth, monitor(gameServer));
-app.use('/colyseus', basicAuth, monitor(gameServer));
+app.use('/colyseus', basicAuth, monitor());
 
 server.listen(port);
 
