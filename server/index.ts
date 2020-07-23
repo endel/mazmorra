@@ -35,7 +35,7 @@ if (process.env.NODE_ENV !== "production") {
 app.use(express.json());
 
 const basicAuth = expressBasicAuth({
-  users: { admin: "mazmorra" },
+  users: { admin: process.env.MONITOR_PASSWORD },
   challenge: true
 });
 
