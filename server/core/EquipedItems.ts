@@ -20,7 +20,7 @@ export class EquipedItems extends Inventory {
     const hasAvailability = this.isSlotAvailable(item.slotName) || force;
 
     if (hasAvailability) {
-      this.slots[item.slotName] = item.clone();
+      this.slots[item.slotName] = item;
       this.events.emit('change');
     }
 

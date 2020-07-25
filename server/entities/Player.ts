@@ -363,7 +363,7 @@ export class Player extends Unit {
     }
 
     if (item && inventory.remove(itemId)) {
-      this.state.dropItemFrom(this, item.clone());
+      this.state.dropItemFrom(this, item);
     }
   }
 

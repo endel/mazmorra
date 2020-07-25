@@ -39,7 +39,7 @@ export class Inventory extends Schema {
     const hasAvailability = this.hasAvailability();
 
     if (hasAvailability) {
-      this.slots[item.id] = item.clone();
+      this.slots[item.id] = item;
     }
 
     return hasAvailability;

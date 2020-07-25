@@ -40,7 +40,6 @@ export class Entity extends Schema {
   dispose() {
     this.behaviours = null;
     this.removed = true;
-    delete this.position;
   }
 
 }
