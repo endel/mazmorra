@@ -344,6 +344,7 @@ export default class Level extends THREE.Object3D {
         const updateCurrencies = () => this.hud.getEntity().emit('update-currencies', entity);
         entity.listen("gold", updateCurrencies);
         entity.listen("diamond", updateCurrencies);
+        updateCurrencies();
       }
 
       // may not be a player
