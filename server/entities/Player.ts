@@ -272,10 +272,11 @@ export class Player extends Unit {
 
       if (success && !hasIncrementedQty) {
         // update price to sell price once player bought it
-        item.price = item.getSellPrice();
+        const addedItem = item.clone();
+        addedItem.price = addedItem.getSellPrice();
+        addedItem.id = generateId();
 
-        item.id = generateId();
-        toInventory.add(item);
+        toInventory.add(addedItem);
       }
 
       // this.state.events.emit('sound', 'buy', this);
