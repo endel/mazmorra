@@ -24,14 +24,9 @@ export class DungeonRoom extends Room<DungeonState> {
   async onCreate (options) {
     this.progress = options.progress || 1;
 
-    if (this.progress !== 1 && this.progress < NUM_LEVELS_PER_CHECKPOINT) {
-      this.setPrivate();
-      this.lock();
-    }
-
-    // maximum of 5 players allowed on each room.
+    // maximum of 8 players allowed on each room.
     if (this.progress !== 1 && this.progress !== MAX_LEVELS) {
-      this.maxClients = 5;
+      this.maxClients = 8;
     }
 
     if (roomTypes.indexOf(this.roomName) === -1) {

@@ -572,40 +572,40 @@ export class RoomUtils {
       }, true);
     }
 
-    //
-    // TUTORIAL
-    //
-    if (this.state.progress <= NUM_LEVELS_PER_CHECKPOINT - 1) {
-      this.addEntity(this.endRoom, (position) => {
-        const npc = new NPC('warrior-woman', {}, this.state);
-        npc.wanderer = false;
-        npc.walkable = false;
-        npc.position.set(position);
+    // //
+    // // TUTORIAL
+    // //
+    // if (this.state.progress <= NUM_LEVELS_PER_CHECKPOINT - 1) {
+    //   this.addEntity(this.endRoom, (position) => {
+    //     const npc = new NPC('warrior-woman', {}, this.state);
+    //     npc.wanderer = false;
+    //     npc.walkable = false;
+    //     npc.position.set(position);
 
-        let messages: string[] = [];
-        switch (this.state.progress) {
-          case 2: messages = [`First ${NUM_LEVELS_PER_CHECKPOINT - 1} stages are alone`]; break;
-          case 3: messages = [`When you die, you...`, `drop an equipped item.`]; break;
-          case 4: messages = [`Kill enemies to level up`]; break;
-          case 5: messages = [`Open chests for loot`]; break;
-          case 6: messages = [`Kill enemies for loot`]; break;
-          case 7: messages = [`You did it! Good luck!`]; break;
-        }
+    //     let messages: string[] = [];
+    //     switch (this.state.progress) {
+    //       case 2: messages = [`First ${NUM_LEVELS_PER_CHECKPOINT - 1} stages are alone`]; break;
+    //       case 3: messages = [`When you die, you...`, `drop an equipped item.`]; break;
+    //       case 4: messages = [`Kill enemies to level up`]; break;
+    //       case 5: messages = [`Open chests for loot`]; break;
+    //       case 6: messages = [`Kill enemies for loot`]; break;
+    //       case 7: messages = [`You did it! Good luck!`]; break;
+    //     }
 
-        npc.generateRotatingMessages(messages);
-        return npc;
-      }, true);
+    //     npc.generateRotatingMessages(messages);
+    //     return npc;
+    //   }, true);
 
-      if (checkPointRoom) {
-        this.addEntity(checkPointRoom, (position) => {
-          const npc = new NPC('merchant', {}, this.state);
-          npc.wanderer = false;
-          npc.position.set(position);
-          npc.generateRotatingMessages([`Go back to the Castle...`, `and sell your stuff!`,]);;
-          return npc;
-        }, true);
-      }
-    }
+    //   if (checkPointRoom) {
+    //     this.addEntity(checkPointRoom, (position) => {
+    //       const npc = new NPC('merchant', {}, this.state);
+    //       npc.wanderer = false;
+    //       npc.position.set(position);
+    //       npc.generateRotatingMessages([`Go back to the Castle...`, `and sell your stuff!`,]);;
+    //       return npc;
+    //     }, true);
+    //   }
+    // }
 
     this.rooms.forEach(room => {
       if (this.isBossDungeon && room === this.endRoom) {
@@ -1223,7 +1223,7 @@ export class RoomUtils {
       maxAttackDistance = Math.ceil(MAX_BOW_ATTACK_DISTANCE * goodness.ratio);
 
     } else if (item.damageAttribute === "intelligence") {
-      item.manaCost = 2;
+      // item.manaCost = 2;
       goodness = this.getItemGoodness(dropOptions, ALL_STAFFS);
 
       minDamage = Math.floor(MAX_STAFF_DAMAGE * goodness.ratio);
@@ -1424,7 +1424,10 @@ export class RoomUtils {
   }
 
   setItemProgressRequired(item: EquipableItem, dropOptions?: ItemDropOptions) {
-    item.progressRequired = Math.min(Math.max(1, dropOptions.progress - NUM_LEVELS_PER_CHECKPOINT), MAX_LEVELS);
+    // progress required is always the current dungeon the item has been dropped.
+    item.progressRequired = this.state.progress;
+
+    // Math.min(Math.max(1, dropOptions.progress - NUM_LEVELS_PER_CHECKPOINT), MAX_LEVELS);
   }
 
   // assignItemModifier(item: Item, options)

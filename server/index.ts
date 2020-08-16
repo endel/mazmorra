@@ -43,8 +43,8 @@ const server = http.createServer(app);
 const gameServer = new Server({
   server: server,
   express: app,
-  pingTimeout: 8000,
-  pingCountMax: 3
+  pingInterval: 8000,
+  pingMaxRetries: 3,
 });
 
 connectDatabase(async () => {

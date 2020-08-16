@@ -110,12 +110,13 @@ export class DungeonState extends Schema {
         numRooms = 1;
         break;
       default:
-        numRooms = Math.max(2, // generate at least 2 rooms!
-          Math.min(
+        const minRooms = (this.progress == 1 || this.progress === MAX_LEVELS) ? 2 : 3;
+        const maxRooms = (this.progress == 1 || this.progress === MAX_LEVELS) ? 2
+          : Math.min(
             Math.floor((this.width * this.height) / (maxRoomSize.x * maxRoomSize.y)),
             Math.floor(progress / 2)
-          )
-        );
+          );
+        numRooms = Math.max(minRooms, maxRooms);
     }
 
     debugLog(`Dungeon config, size: { x: ${this.width}, y: ${this.height} }, { minRoomSize: ${minRoomSize}, maxRoomSize: ${maxRoomSize}, numRooms: ${numRooms} }`);

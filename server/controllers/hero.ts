@@ -52,7 +52,6 @@ router.post('/', jwtMiddleware, async (req, res) => {
         attr: "attackDistance",
         modifier: 1
       }],
-      manaCost: 1
     },
     'agility': {
       type: helpers.ENTITIES.BOW_1, modifiers: [{

@@ -17,7 +17,7 @@
     "@colyseus/monitor": "^0.12.2",
     "@colyseus/social": "^0.11.2",
     "clock-timer.js": "^1.1.4",
-    "colyseus": "^0.14.0-alpha.10",
+    "colyseus": "^0.14.0-alpha.11",
     "cors": "^2.7.1",
     "dotenv": "^2.0.0",
     "express": "^4.17.1",
