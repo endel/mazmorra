@@ -7,6 +7,7 @@ import { Player } from "../entities/Player";
 import { NPC } from "../entities/NPC";
 import { ConsumableItem } from "../entities/items/ConsumableItem";
 import { Enemy } from "../entities/Enemy";
+import { Unit } from "../entities/Unit";
 
 describe("Schema Edge Cases", () => {
 
@@ -36,42 +37,48 @@ describe("Schema Edge Cases", () => {
     assert.equal(2, items[1].qty);
   });
 
-  it("should not fail creating multiple BattleAction's between patches", () => {
-    const state = new DungeonState(30, "hello", 'dungeon');
-    const player = state.createPlayer(
-      { sessionId: "player" },
-      { gold: 100000 } as DBHero,
-      {}
-    );
+  describe("refId not found", () => {
+    const originalGetAttackSpeed = Unit.prototype.getAttackSpeed;
 
-    const bow = state.roomUtils.createWeapon("agility", { goodness: 1, progress: 30, isMagical: true, isRare: true });
-    player.attributes.agility = 999;
-    player.statsModifiers.attackDistance = 999;
-    player.statsModifiers.attackSpeed = 2000;
-    player.primaryAttribute = "agility";
-    player.equipedItems.add(bow);
+    before(() => Unit.prototype.getAttackSpeed = function () { return 0; });
+    after(() => Unit.prototype.getAttackSpeed = originalGetAttackSpeed);
 
-    const decodedState = Reflection.decode<DungeonState>(Reflection.encode(state));
-    decodedState.decode(state.encodeAll());
+    it("should not fail creating multiple BattleAction's between patches", () => {
+      const state = new DungeonState(3, "hello", 'dungeon');
+      const player = state.createPlayer(
+        { sessionId: "player" },
+        { gold: 100000 } as DBHero,
+        {}
+      );
 
-    const enemies = Array.from(state.entities.values()).filter(entity => entity instanceof Enemy);
+      const weapon = state.roomUtils.createWeapon("strength", { goodness: 1, progress: 30, isMagical: true, isRare: true });
+      player.attributes.strength = 999;
+      player.attributes.agility = 8;
+      player.primaryAttribute = "strength";
+      player.equipedItems.add(weapon);
 
-    console.log("NUM ENEMIES:", enemies.length)
+      const decodedState = Reflection.decode<DungeonState>(Reflection.encode(state));
+      decodedState.decode(state.encodeAll());
 
-    let now = 0;
-    state.update(now);
+      const enemies = Array.from(state.entities.values()).filter(entity => entity instanceof Enemy);
 
-    player.useSkill('attack-speed');
-
-    for (let i = 0; i < enemies.length; i++) {
-      console.log("Auto attack!", i, enemies[i].position.toJSON());
-      player.autoAttack(enemies[i].position);
-
-      now += 50;
+      let now = Date.now();
       state.update(now);
 
-      decodedState.decode(state.encode());
-    }
+      for (let i = 0; i < enemies.length; i++) {
+        enemies[i].position.set(player.position);
+        (enemies[i] as Enemy).attack(player);
+        player.attack(enemies[i]);
+
+        console.log("ENCODE/DECODE", { i });
+        decodedState.decode(state.encode());
+
+        now += 50;
+        console.log("UPDATE!");
+        state.update(now);
+      }
+    });
+
   });
 
 });
