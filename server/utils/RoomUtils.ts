@@ -887,15 +887,15 @@ export class RoomUtils {
     lady.position.set(this.endRoom.position.y + 1, this.endRoom.position.x + Math.ceil(this.endRoom.size.x / 2) - 2);
     this.state.addEntity(lady);
 
-    // Door for PVP
-    const pvpDoor = new Door({
-      x: lady.position.x + 4,
-      y: lady.position.y - 1,
-    }, new DoorDestiny({
-      progress: 5,
-      room: "pvp"
-    }));
-    this.state.addEntity(pvpDoor);
+    // // Door for PVP
+    // const pvpDoor = new Door({
+    //   x: lady.position.x + 4,
+    //   y: lady.position.y - 1,
+    // }, new DoorDestiny({
+    //   progress: 5,
+    //   room: "pvp"
+    // }));
+    // this.state.addEntity(pvpDoor);
 
     // Door for TrueHell
     // const hellDoor = new Door({
