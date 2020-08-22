@@ -14,6 +14,7 @@ export default class HUDController extends Behaviour {
     this.on("update-inventory", this.onUpdateInventory.bind(this));
     this.on("update-attributes", this.onUpdateAttributes.bind(this));
     this.on("update-bars", this.onUpdateBars.bind(this));
+    this.on("update-currencies", this.onUpdateCurrencies.bind(this));
 
     if (playerObject.userData.latestProgress <= LEVELS_WITH_TUTORIAL) {
       this.on("update-bars", this.onUpdateBarsTutorial.bind(this));
@@ -42,13 +43,10 @@ export default class HUDController extends Behaviour {
       const slots = this.object.inventory.slots.userData.slots;
 
       shortcutButtons.forEach((shortcutButton) => {
-        for (let itemId in slots) {
-          if (slots[itemId].type.indexOf(shortcutButton.type) === 0) {
-            shortcutButton.item = slots[itemId];
-            return;
-          }
-        }
-        shortcutButton.item = null;
+        const item = Array.from(slots.values()).find((item) => {
+          return item.type.indexOf(shortcutButton.type) === 0;
+        })
+        shortcutButton.item = item || null;
       });
     }
   }
@@ -58,11 +56,12 @@ export default class HUDController extends Behaviour {
     // this.object.character.updateAttribute(attribute, value);
   }
 
-  onUpdateBars (data) {
-    // TODO: only update texts when they really change
+  onUpdateCurrencies (data) {
     this.object.resources.goldAmount.text = data.gold.toString();
     this.object.resources.diamondAmount.text = data.diamond.toString();
+  }
 
+  onUpdateBars (data) {
     this.object.lifeText.text = Math.ceil(data.hp.current) + "/" + data.hp.max;
     this.object.manaText.text = Math.ceil(data.mp.current) + "/" + data.mp.max;
     this.object.expText.text = Math.ceil(data.xp.current) + "/" + data.xp.max;
@@ -112,7 +111,7 @@ export default class HUDController extends Behaviour {
      * Displays hint to go to portal
      */
     if (inventoryType === "inventory") {
-      const occupiedSlots = Object.keys(this.playerObject.userData.inventory.slots).length;
+      const occupiedSlots = this.playerObject.userData.inventory.slots.size;
 
       if (occupiedSlots === this.object.inventory.slots.numSlots) {
         if (!this.hasSeenPortalTutorial) {

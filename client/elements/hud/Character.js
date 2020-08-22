@@ -309,14 +309,13 @@ export default class Character extends THREE.Object3D {
       criticalStrikeChance: 0,
     };
 
-    for (const slotName in data.equipedItems.slots) {
-      const item = data.equipedItems.slots[slotName];
+    data.equipedItems.slots.forEach((item, slotName) => {
       if (item) {
         item.modifiers.forEach(modifier => {
           statsModifiers[modifier.attr] += modifier.modifier;
         });
       }
-    }
+    })
 
     const damageAttribute = this.getDamageAttribute();
 

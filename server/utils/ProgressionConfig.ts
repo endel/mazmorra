@@ -32,9 +32,9 @@ export type MapConfig = {
   boss?: string[]
 };
 
-export const NUM_LEVELS_PER_MAP = 20;
+export const NUM_LEVELS_PER_MAP = 12;
 export const NUM_LEVELS_PER_CHECKPOINT = 8;
-export const NUM_LEVELS_PER_LOOT_ROOM = 12;
+export const NUM_LEVELS_PER_LOOT_ROOM = 11;
 
 /**
  * Maximum attribute modifiers
@@ -117,9 +117,13 @@ export function getMapConfig(progress: number, roomType?: RoomType) {
       maxRoomSize: { x: 8, y: 8 },
       enemies: {}
     }
-  } else {
+  } else if (progress < MAX_LEVELS) {
     const index = Math.floor(progress / NUM_LEVELS_PER_MAP);
     return MAP_CONFIGS[index];
+
+  } else {
+    return MAP_CONFIGS[Math.floor(Math.random() * Object.keys(MAP_CONFIGS).length)];
+
   }
 }
 

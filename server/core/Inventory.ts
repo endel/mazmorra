@@ -25,9 +25,7 @@ export class Inventory extends Schema {
   }
 
   clear() {
-    for (let id in this.slots) {
-      delete this.slots[id];
-    }
+    this.slots.clear();
   }
 
   set (items: Item[] | DBItem[]) {
@@ -41,13 +39,13 @@ export class Inventory extends Schema {
     const hasAvailability = this.hasAvailability();
 
     if (hasAvailability) {
-      this.slots[item.id] = item.clone();
+      this.slots[item.id] = item;
     }
 
     return hasAvailability;
   }
 
-  getItem(itemId: string) {
+  getItem(itemId: string): Item {
     return this.slots[itemId];
   }
 
@@ -64,7 +62,7 @@ export class Inventory extends Schema {
   }
 
   get numItems () {
-    return Object.keys(this.slots).length;
+    return this.slots.size;
   }
 
   dispose() {

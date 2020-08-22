@@ -35,7 +35,7 @@ if (process.env.NODE_ENV !== "production") {
 app.use(express.json());
 
 const basicAuth = expressBasicAuth({
-  users: { admin: "mazmorra" },
+  users: { admin: process.env.MONITOR_PASSWORD },
   challenge: true
 });
 
@@ -43,8 +43,8 @@ const server = http.createServer(app);
 const gameServer = new Server({
   server: server,
   express: app,
-  pingTimeout: 8000,
-  pingCountMax: 3
+  pingInterval: 8000,
+  pingMaxRetries: 3,
 });
 
 connectDatabase(async () => {
@@ -102,8 +102,7 @@ app.post("/report", async (req, res) => {
 app.use('/', socialRoutes);
 app.use('/hero', hero);
 
-// app.use('/colyseus', basicAuth, monitor(gameServer));
-app.use('/colyseus', basicAuth, monitor(gameServer));
+app.use('/colyseus', basicAuth, monitor());
 
 server.listen(port);
 

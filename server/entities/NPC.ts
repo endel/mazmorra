@@ -156,11 +156,17 @@ export class NPC extends Player {
 
     } else {
       this.generateRotatingMessages((!isLastLevel) ? [
-        `PvP is experimental.`,
-        `Join the Discord Server for feedback!`,
+        `Press 'Q' for attack speed.`,
+        `Press 'W' for movement speed.`,
+        `Press '1' for health potion.`,
+        `Press '2' for mana potion.`,
+        `Press '3' for teleport.`,
+        `Use right-click to attack!`,
+        // `PvP is experimental.`,
+        `Join our Discord Server!`,
       ] : [
         `You're awesome!`,
-        `Majesty has the best items you can find.`
+        `Majesty has the best items`
       ]);
 
       if (

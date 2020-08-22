@@ -5,6 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "mocha --require ts-node/register test/**Test.ts test/**/**Test.ts",
     "start-production": "pm2 start index.js --node-args='--harmony --use-strict'",
     "start": "DEBUG=colyseus:matchmaking,mazmorra:* ts-node ./index.ts localhost 3553",
     "dev": "DEBUG=colyseus:* nodemon --watch '**/*.ts'  --exec 'ts-node' ./index.ts localhost 3553",
@@ -13,10 +14,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@colyseus/monitor": "^0.11.5",
+    "@colyseus/monitor": "^0.12.2",
     "@colyseus/social": "^0.11.2",
     "clock-timer.js": "^1.1.4",
-    "colyseus": "^0.11.20",
+    "colyseus": "^0.14.0-alpha.11",
     "cors": "^2.7.1",
     "dotenv": "^2.0.0",
     "express": "^4.17.1",
@@ -27,9 +28,11 @@
   },
   "devDependencies": {
     "@types/express": "^4.16.1",
+    "@types/mocha": "^8.0.1",
     "@types/mongoose": "^5.5.5",
     "@types/pathfinding": "0.0.2",
     "@types/random-seed": "^0.3.3",
+    "mocha": "^8.1.1",
     "nodemon": "^1.18.11",
     "ts-node": "^8.2.0",
     "typescript": "^3.4.3"

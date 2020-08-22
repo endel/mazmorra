@@ -211,14 +211,13 @@ export class Unit extends Entity {
     }
 
     // cache all equiped items modifiers
-    for (const slotName in this.equipedItems.slots) {
-      const item: Item = this.equipedItems.slots[slotName];
+    this.equipedItems.slots.forEach((item, slotName) => {
       if (item) {
         item.modifiers.forEach(modifier => {
           this.statsModifiers[modifier.attr] += modifier.modifier
         });
       }
-    }
+    });
 
     const hpPercent = this.hp.current / this.hp.max;
     this.hp.max = this.baseHp + this.statsModifiers['hp'] + this.statsBoostModifiers['hp'] + (

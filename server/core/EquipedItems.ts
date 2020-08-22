@@ -20,7 +20,7 @@ export class EquipedItems extends Inventory {
     const hasAvailability = this.isSlotAvailable(item.slotName) || force;
 
     if (hasAvailability) {
-      this.slots[item.slotName] = item.clone();
+      this.slots[item.slotName] = item;
       this.events.emit('change');
     }
 
@@ -34,12 +34,9 @@ export class EquipedItems extends Inventory {
 
     } else {
       // allow to get item by id
-      for (let slotName in this.slots) {
-        const itemInSlot: Item = this.slots[slotName];
-        if (itemInSlot.id === itemIdOrSlotName) {
-          return itemInSlot;
-        }
-      }
+      return Array.from(this.slots.values()).find((item) =>  {
+        return item.id === itemIdOrSlotName;
+      });
     }
   }
 
@@ -68,9 +65,8 @@ export class EquipedItems extends Inventory {
       return true;
 
     } else {
-      for (let slotName in this.slots) {
-        const itemInSlot: Item = this.slots[slotName];
-
+      const entries = Array.from(this.slots.entries());
+      for (const [slotName, itemInSlot] of entries) {
         if (itemInSlot.id === itemIdOrSlotName) {
           delete this.slots[slotName];
           this.events.emit('change');

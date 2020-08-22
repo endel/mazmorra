@@ -110,12 +110,13 @@ export class DungeonState extends Schema {
         numRooms = 1;
         break;
       default:
-        numRooms = Math.max(2, // generate at least 2 rooms!
-          Math.min(
+        const minRooms = (this.progress == 1 || this.progress === MAX_LEVELS) ? 2 : 3;
+        const maxRooms = (this.progress == 1 || this.progress === MAX_LEVELS) ? 2
+          : Math.min(
             Math.floor((this.width * this.height) / (maxRoomSize.x * maxRoomSize.y)),
             Math.floor(progress / 2)
-          )
-        );
+          );
+        numRooms = Math.max(minRooms, maxRooms);
     }
 
     debugLog(`Dungeon config, size: { x: ${this.width}, y: ${this.height} }, { minRoomSize: ${minRoomSize}, maxRoomSize: ${maxRoomSize}, numRooms: ${numRooms} }`);
@@ -235,7 +236,7 @@ export class DungeonState extends Schema {
     var player = new Player(client.sessionId, hero, this);
 
     // find and remove portals from this player!
-    const portal = this.getAllEntitiesOfType<Portal>(Portal).find(portal => portal.ownerId === hero._id.toString());
+    const portal = this.getAllEntitiesOfType(Portal).find(portal => portal.ownerId === hero._id.toString());
     if (portal) { this.removeEntity(portal); }
     if (options.isPortal) {
       if (this.progress === 1) {
@@ -409,9 +410,7 @@ export class DungeonState extends Schema {
     const allowedPath = this.pathgrid.clone();
 
     // Check which entities are walkable.
-    for (const id in this.entities) {
-      const entity: Entity = this.entities[id];
-
+    this.entities.forEach((entity, _) => {
       if (
         unit instanceof NPC ||// npc should avoid Checkpoint
         (
@@ -435,8 +434,7 @@ export class DungeonState extends Schema {
       ) {
         allowedPath.setWalkableAt(entity.position.x, entity.position.y, false);
       }
-    }
-
+    });
 
     const moves = this.finder.findPath(
       unit.position.x, unit.position.y,
@@ -511,15 +509,9 @@ export class DungeonState extends Schema {
   }
 
   getAllEntitiesOfType<T extends Entity>(klass: EntityConstructor<T>) {
-    const entities: T[] = [];
-
-    for (var id in this.entities) {
-      if (this.entities[id] instanceof klass) {
-        entities.push(this.entities[id]);
-      }
-    }
-
-    return entities;
+    return Array.from(this.entities.values()).filter((entity) => {
+      return entity instanceof klass;
+    }) as T[];
   }
 
   findClosestPlayer(unit: Entity, dist: number) {
@@ -543,11 +535,11 @@ export class DungeonState extends Schema {
     //   return;
     // }
 
-    for (var id in this.entities) {
-      if (!this.entities[id].removed) {
-        this.entities[id].update(currentTime)
+    this.entities.forEach((entity, _) => {
+      if (!entity.removed) {
+        entity.update(currentTime);
       }
-    }
+    });
 
     this.disposeEntities();
   }

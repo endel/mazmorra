@@ -93,13 +93,11 @@ export class Player extends Unit {
     const inventoriesToSearchFor: InventoryType[] = ['inventory']; // , 'quickInventory'
 
     for (let i = 0; i < inventoriesToSearchFor.length; i++) {
-      const _inventoryType = inventoriesToSearchFor[i];
-      const inventory: Inventory = this[_inventoryType];
-      for (const _itemId in inventory.slots) {
-        const item: Item = inventory.slots[_itemId];
-        if (item.type === type) {
-          return item;
-        }
+      const inventoryType = inventoriesToSearchFor[i];
+      const inventory: Inventory = this[inventoryType];
+      const item = Array.from(inventory.slots.values()).find(item => item.type === type);
+      if (item) {
+        return item;
       }
     }
   }
@@ -149,14 +147,14 @@ export class Player extends Unit {
       // this.quickInventory,
       this.equipedItems
     ].forEach(inventory => {
-      for (let itemId in inventory.slots) {
+      inventory.slots.forEach((item, itemId) => {
         if (inventory === this.purchase) {
-          inventory.slots[itemId].price = inventory.slots[itemId].getPrice();
+          item.price = item.getPrice();
 
         } else {
-          inventory.slots[itemId].price = inventory.slots[itemId].getSellPrice();
+          item.price = item.getSellPrice();
         }
-      }
+      });
     });
 
     this.state.events.emit("send", this, ["trading-items", this.purchase.slots]);
@@ -274,10 +272,11 @@ export class Player extends Unit {
 
       if (success && !hasIncrementedQty) {
         // update price to sell price once player bought it
-        item.price = item.getSellPrice();
+        const addedItem = item.clone();
+        addedItem.price = addedItem.getSellPrice();
+        addedItem.id = generateId();
 
-        item.id = generateId();
-        toInventory.add(item);
+        toInventory.add(addedItem);
       }
 
       // this.state.events.emit('sound', 'buy', this);
@@ -365,7 +364,7 @@ export class Player extends Unit {
     }
 
     if (item && inventory.remove(itemId)) {
-      this.state.dropItemFrom(this, item.clone());
+      this.state.dropItemFrom(this, item);
     }
   }
 
