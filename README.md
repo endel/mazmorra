@@ -2,9 +2,7 @@
   <a href="http://gum.co/colyseus-legionary-course-vol1">
     <img src="press/legionary-course.png?raw=true" />
   </a>
-  <a href="http://gum.co/colyseus-legionary-course-vol1">
-    <h3>Support my work, get my ebook!</h3>
-  </a>
+  <h3><a href="http://gum.co/colyseus-legionary-course-vol1">Support my work, get my ebook!</a></h3>
 </div>
 
 ---
