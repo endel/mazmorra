@@ -27,8 +27,8 @@ export type MapConfig = {
   obstaclesChance?: (rand: RandomSeed, progress) => number,
   maxStunTilesPerRoom?: number,
 
-  enemies: string[],
-  strongerEnemies: string[],
+  enemies?: string[],
+  strongerEnemies?: string[],
   boss?: string[]
 };
 
@@ -64,7 +64,7 @@ export function getMapKind(progress: number, multiplier: number = 0) {
   return (config && config.mapkind) || MapKind.INFERNO;
 }
 
-export function getMapConfig(progress: number, roomType?: RoomType) {
+export function getMapConfig(progress: number, roomType?: RoomType): MapConfig {
   if (roomType === "loot") {
     return {
       daylight: Math.random() > 0.5,
@@ -73,7 +73,7 @@ export function getMapConfig(progress: number, roomType?: RoomType) {
       getMapHeight: (progress: number) => 20,
       minRoomSize: { x: 6, y: 6 },
       maxRoomSize: { x: 6, y: 6 },
-      enemies: {}
+      enemies: []
     }
   } else if (roomType === "truehell") {
     return {
@@ -83,7 +83,7 @@ export function getMapConfig(progress: number, roomType?: RoomType) {
       getMapHeight: (progress: number) => 9,
       minRoomSize: { x: 6, y: 6 },
       maxRoomSize: { x: 6, y: 6 },
-      enemies: {}
+      enemies: []
     }
   } else if (roomType === "pvp") {
     // castle / lobby!
@@ -100,7 +100,7 @@ export function getMapConfig(progress: number, roomType?: RoomType) {
       maxStunTilesPerRoom: 10,
       minRoomSize: { x: 8, y: 8 },
       maxRoomSize: { x: 9, y: 9 },
-      enemies: {}
+      enemies: []
     }
   } else if (progress === 1 || progress === MAX_LEVELS) {
     // castle / lobby!
@@ -115,7 +115,7 @@ export function getMapConfig(progress: number, roomType?: RoomType) {
       oneDirection: (rand, progress) => true,
       minRoomSize: { x: 8, y: 8 },
       maxRoomSize: { x: 8, y: 8 },
-      enemies: {}
+      enemies: []
     }
   } else if (progress < MAX_LEVELS) {
     const index = Math.floor(progress / NUM_LEVELS_PER_MAP);
