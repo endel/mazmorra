@@ -3,6 +3,7 @@ import helpers from "../../shared/helpers"
 import { jwtMiddleware } from "@colyseus/social/express";
 
 import { Hero, ATTRIBUTE_BASE_VALUE, DBItem } from "../db/Hero";
+import { Attribute } from "../entities/Unit";
 
 export const router = express.Router()
 
@@ -31,7 +32,7 @@ router.delete('/', jwtMiddleware, async (req, res) => {
 
 router.post('/', jwtMiddleware, async (req, res) => {
     // see client/config.js for ordering
-  const primaryAttributes = [
+  const primaryAttributes: Attribute[] = [
     'strength',
     'intelligence',
     'agility',
