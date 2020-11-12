@@ -82,8 +82,8 @@ export interface DBHero extends mongoose.Document {
   eye: number;
   body: number;
 
-  currentRoom: RoomType;
-  currentProgress: number;
+  currentRoom?: RoomType;
+  currentProgress?: number;
 
   latestProgress: number;
   alive: boolean;

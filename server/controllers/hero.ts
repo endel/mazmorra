@@ -72,6 +72,8 @@ router.post('/', jwtMiddleware, async (req, res) => {
 
   // each player can only have 3 heroes
   if (numHeroes < 3) {
+    // (mongoose type definitions used to allow the call below.)
+    // @ts-ignore
     res.json(await Hero.create({
       userId: req.cauth._id,
 
