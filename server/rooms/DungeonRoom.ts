@@ -38,8 +38,8 @@ export class DungeonRoom extends Room<DungeonState> {
 
     // Get season/random seed for this room.
     let seed: string;
-    if (this.progress === 1) {
-      seed = "castleseed1";
+    if (this.progress === 1 || this.progress === MAX_LEVELS) {
+      seed = "castleseed";
 
     } else {
       let season = await Season.find({}).sort({ until: -1 }).findOne();
