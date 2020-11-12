@@ -82,7 +82,7 @@ export class DungeonState extends Schema {
 
     this.rand = gen.create(seed + progress);
     this.progress = progress;
-    this.isPVPAllowed = (roomType === "pvp");
+    this.isPVPAllowed = (roomType === "pvp" || progress > MAX_LEVELS);
 
     this.config = getMapConfig(this.progress, roomType);
 
