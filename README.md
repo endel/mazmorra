@@ -1,16 +1,3 @@
-<div align="center">
-  <a href="http://gum.co/mazmorra">
-    <img src="press/legionary-course.png?raw=true" />
-  </a>
-  <h3><a href="http://gum.co/mazmorra">Support my work, get my ebook!</a></h3>
-  <p>Or, <a href="https://www.patreon.com/endel">support me on Patreon</a> to get it!</p>
-</div>
-
----
-
-<br />
-<br />
-
 <img src="logo.png?raw=true" width="256" align="right" />
 
 # [Mazmorra.io](https://mazmorra.io): Online Multiplayer Dungeon Crawler
