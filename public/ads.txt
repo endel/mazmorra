@@ -1,4 +1,4 @@
-# AdinPlay.com ads.txt - 20-05-21  
+# AdinPlay.com ads.txt - 06-08-21  
 ##################################
 
 #Google
@@ -95,22 +95,25 @@ openx.com,540003333,RESELLER,6a698e2ec38604c6
 aps.amazon.com,53b902f9-cf9c-4605-aec3-2c8ce65042b8,DIRECT
 gumgum.com,13543,DIRECT,ffdef49475d318a9
 appnexus.com,8631,DIRECT,f5ab79cb980f11d1
+loopme.com,11405,RESELLER,6c8d5f95897a5a3b
+pubmatic.com,160006,RESELLER,5d62403b186f2ace
+pubmatic.com,160096,RESELLER,5d62403b186f2ace
+rubiconproject.com,18020,RESELLER,0bfd66d529a55807
 pubmatic.com,157150,RESELLER,5d62403b186f2ace
 openx.com,540191398,RESELLER,6a698e2ec38604c6
-rubiconproject.com,18020,RESELLER,0bfd66d529a55807
 appnexus.com,1908,RESELLER,f5ab79cb980f11d1
 smaato.com,1100044650,RESELLER,07bcf65f187117b4
 ad-generation.jp,12474,RESELLER,7f4ea9029ac04e53
 districtm.io,100962,RESELLER,3fd707be9c4527c3
+yieldmo.com,2719019867620450718,RESELLER
 appnexus.com,3663,RESELLER,f5ab79cb980f11d1
 rhythmone.com,1654642120,RESELLER,a670c89d4a324e47
 yahoo.com,55029,RESELLER,e1a5b5b6e3255540
 gumgum.com,14141,RESELLER,ffdef49475d318a9
 admanmedia.com,726,RESELLER
-pubmatic.com,160006,RESELLER,5d62403b186f2ace
-pubmatic.com,160096,RESELLER,5d62403b186f2ace
-yieldmo.com, 2719019867620450718, RESELLER
-
+sharethrough.com,7144eb80,RESELLER
+emxdgt.com,2009,RESELLER,1e1d41537f7cad7f
+appnexus.com,1356,RESELLER,f5ab79cb980f11d1
 
 # 33Across 
 rubiconproject.com, 16414, RESELLER, 0bfd66d529a55807 #33Across #hb #tag
@@ -363,3 +366,9 @@ pubmatic.com, 160319, RESELLER, 5d62403b186f2ace
 appnexus.com, 10112, RESELLER
 google.com, pub-0679975395820445, RESELLER, f08c47fec0942fa0
 google.com, pub-9936969251765866, RESELLER, f08c47fec0942fa0
+
+#Fluct
+adingo.jp, 25262, RESELLER
+pubmatic.com, 156313, RESELLER, 5d62403b186f2ace
+appnexus.com, 7044, RESELLER, f5ab79cb980f11d1
+pubmatic.com, 158060, RESELLER, 5d62403b186f2ace
